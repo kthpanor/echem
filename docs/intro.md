@@ -1,7 +1,14 @@
 Getting started
 ===============
 
-This is a small sample book to give you a feel for how book content is
-structured.
+Vision
+-------
 
-Check out the content pages bundled with this sample book to get started.
+On a laptop
+-----------
+
+To the exa-scale
+----------------
+
+Software components
+-------------------
