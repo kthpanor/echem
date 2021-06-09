@@ -1,2 +1,2 @@
-Density Functional Theory
+Density functional theory
 =========================
