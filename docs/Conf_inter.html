@@ -405,10 +405,17 @@
 <h2>General theory<a class="headerlink" href="#general-theory" title="Permalink to this headline">¶</a></h2>
 <p>One of the conceptually (but not computationally) simplest way to solve the Schrödinger equation is to simply expand our many-body wavefunction on a n-electron basis set (not to be confused with the 1-electron basis functions used to expand orbitals):</p>
 <div class="math notranslate nohighlight">
-\[| \Psi_{CI} \rangle = \sum_k c_k | \mathbf{k} \rangle \]</div>
+\[
+| \Psi_{CI} \rangle = \sum_k c_k | \mathbf{k} \rangle 
+\tag{1.1}
+\]</div>
 <p>with energy:</p>
 <div class="math notranslate nohighlight">
-\[ E = \frac{\langle \Psi_{CI} | H | \Psi_{CI} \rangle}{\langle \Psi_{CI} | \Psi_{CI} \rangle} \]</div>
+\[
+E = \frac{\langle \Psi_{CI} | H | \Psi_{CI} \rangle}{\langle \Psi_{CI} | \Psi_{CI} \rangle} 
+\tag{2}
+\label{CIene}
+\]</div>
 <p>We will discuss in the next section the choice of the basis, but in all cases, as the size of this basis set increases, the solution converges to the exact solution of the Schrödinger equation.</p>
 <p>There is a redundancy in the parameters <span class="math notranslate nohighlight">\(c_k\)</span> as multiplying them all by a constant does not change the energy. We thus add the constraint that the wavefunction should be normalised <span class="math notranslate nohighlight">\(\langle \Psi_{CI} | \Psi_{CI} \rangle = \sum_k c_k^2 = 1\)</span>. To minimize the wavefunction subject to this constraint, we write a Lagrangian:</p>
 <div class="math notranslate nohighlight">
@@ -419,7 +426,7 @@
 <p>with <span class="math notranslate nohighlight">\(cc.\)</span> the complex conjugate of the expression. This can finally be recast in the familiar form:</p>
 <div class="math notranslate nohighlight">
 \[ \mathbf{H} \mathbf{c} = \epsilon \mathbf{c} \]</div>
-<p>showing that minimising the wavefunction is equivalent to diagonalising the Hamiltonian matrix in our chosen basis, with the eigenvalues being the energies of all possible states in the system. The ground state simply corresponds to the lowest eigenvalue.</p>
+<p>showing that minimising the wavefunction \ref{CIene} is equivalent to diagonalising the Hamiltonian matrix in our chosen basis, with the eigenvalues being the energies of all possible states in the system. The ground state simply corresponds to the lowest eigenvalue.</p>
 </div>
 <div class="section" id="the-n-electron-basis">
 <h2>The n-electron basis<a class="headerlink" href="#the-n-electron-basis" title="Permalink to this headline">¶</a></h2>
@@ -429,7 +436,7 @@
 <p>In some codes, configuration state functions (CSF) are used instead of SDs. CSF are fixed linear combinations of SD but with the attractive properties that they are also eigenfunctions of the <span class="math notranslate nohighlight">\(S^2\)</span> spin operator. This spin constraints means that the resulting wavefunction will always be spin-adapted and also that CSF are less numerous than Slater Determinants which has advantages on a computational standpoint. However, SD can be expressed as ordered “strings” of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> creating operators, and this separation of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> electrons allows to write efficient computer implementation, outweighing the benefits of the slightly smaller expansion of CSF.</p>
 <p>Having chosen SD as our basis functions, we now need an efficient way to create our expansion, i.e. a direct link between a given index in our expansion and the corresponding occupation of the SD. This link should work both ways, matching a given occupation to the corresponding index in the expansion. A common choice is the so-called lexical ordering or the reverse lexical ordering. The details are beyond the scope of this page, but fortunately, the MultiPsi package provide the tools to do this.</p>
 <p>Let’s start by initialising a calculation for O<span class="math notranslate nohighlight">\(_2\)</span>. We will first run a Hartree-Fock calculation to generate starting orbitals. The ground state of this molecule is a triplet, but for the Hartree-Fock step we will simply run a singlet closed-shell. This is not an issue as full CI is exact and does not depend on the actual shape of the orbitals.</p>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
@@ -495,11 +502,11 @@ Primitive Basis Functions  : 30
                                                                                                                           
 * Info * Nuclear repulsion energy: 28.2227845824 au                                                                       
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+* Info * Overlap matrix computed in 0.01 sec.                                                                             
                                                                                                                           
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+* Info * Kinetic energy matrix computed in 0.01 sec.                                                                      
                                                                                                                           
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+* Info * Nuclear potential matrix computed in 0.01 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -512,7 +519,7 @@ Primitive Basis Functions  : 30
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -147.550438910060 au. Time: 0.03 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -147.550438910060 au. Time: 0.06 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -575,8 +582,8 @@ Primitive Basis Functions  : 30
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.0 Energy:   -0.58501 au                                                                      
-               (   1 O   2s  :     0.33) (   1 O   1p0 :    -0.61) (   2 O   2s  :     0.33)                              
-               (   2 O   1p0 :     0.61)                                                                                  
+               (   1 O   2s  :    -0.33) (   1 O   1p0 :     0.61) (   2 O   2s  :    -0.33)                              
+               (   2 O   1p0 :    -0.61)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -586,7 +593,7 @@ Primitive Basis Functions  : 30
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.0 Energy:   -0.32847 au                                                                      
-               (   1 O   1p-1:     0.76) (   2 O   1p-1:    -0.76)                                                        
+               (   1 O   1p-1:    -0.76) (   2 O   1p-1:     0.76)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -648,7 +655,7 @@ Number of determinants:      120
 </div>
 <p>This number is much more manageable.</p>
 <p>Now we can look at the determinants themselves. The easiest way is to use the generator detlist() of the expansion class in a python for loop, which as the name implies will provide the determinants in order, here in reverse lexical ordering. By printing the determinant directly, we get the string representation, with a character for each orbital in the system. ‘2’ indicates that the orbital is doubly occupied, ‘a’ and ‘b’ indicates an <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span> electron, and ‘0’ an empty orbital. The determinant also provides a python list of the orbitals containing a <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span> electron.</p>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">det</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
@@ -851,17 +858,17 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.970 -0.000 0.000 0.000 -0.000 -0.000 -0.000 -0.000 0.179 0.000 0.000
- -0.000 -0.000 -0.000 0.000 0.071 0.071 0.000 0.000 -0.000 0.000 0.000
- -0.000 -0.000 0.000 -0.000 -0.000 -0.000 0.000 0.003 -0.000 0.000 0.000
- 0.000 -0.001 -0.000 0.000 0.000 0.000 0.000 0.000 -0.000 0.000 0.000
- -0.000 0.000 0.000 0.003 -0.000 0.000 -0.000 0.000 0.000 -0.000 0.000
- -0.000 0.000 -0.001 -0.000 -0.000 0.000 0.000 -0.000 -0.000 0.000 0.007
- 0.000 0.000 0.000 0.000 0.019 0.000 0.000 0.000 0.000 0.000 -0.000 -0.000
- 0.000 0.000 0.000 -0.000 0.000 -0.075 0.075 0.000 -0.000 0.000 0.000
- 0.000 0.000 0.061 0.000 0.000 -0.000 0.000 0.000 0.000 0.000 0.033 0.000
- -0.000 -0.007 -0.000 0.000 -0.000 0.000 -0.000 -0.000 -0.000 0.000 0.000
- 0.019 -0.000 0.000 -0.000 0.000 0.000 0.000 0.000]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.970 -0.000 -0.000 -0.000 -0.000 0.000 -0.000 0.000 0.179 -0.000 -0.000
+ 0.000 -0.000 0.000 -0.000 -0.071 0.071 -0.000 0.000 -0.000 0.000 0.000
+ 0.000 0.000 -0.000 0.000 0.000 0.000 0.000 -0.003 0.000 -0.000 0.000
+ -0.000 -0.001 -0.000 0.000 0.000 -0.000 0.000 -0.000 0.000 0.000 0.000
+ 0.000 0.000 0.000 0.003 -0.000 0.000 -0.000 -0.000 -0.000 0.000 0.000
+ 0.000 -0.000 -0.001 0.000 0.000 -0.000 0.000 0.000 0.000 0.000 0.007
+ -0.000 -0.000 -0.000 0.000 -0.019 -0.000 0.000 -0.000 -0.000 0.000 -0.000
+ -0.000 0.000 0.000 0.000 0.000 0.000 0.075 0.075 -0.000 -0.000 0.000
+ 0.000 -0.000 -0.000 -0.061 0.000 0.000 0.000 -0.000 0.000 0.000 0.000
+ 0.033 -0.000 0.000 0.007 -0.000 -0.000 -0.000 0.000 -0.000 0.000 -0.000
+ 0.000 0.000 -0.019 0.000 0.000 0.000 0.000 0.000 -0.000 -0.000]
 </pre></div>
 </div>
 </div>
@@ -1100,28 +1107,28 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.63165528656145
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.6316552865614
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.71817343458136
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.7181734345814
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.72128294675662
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.7212829467566
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.7214115279628
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.7214239610271
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.72142396102706
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72142538615003
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72142538615
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.721425631017
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.72142563101707
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.72142567436052
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.7214256743605
 </pre></div>
 </div>
 </div>
@@ -1173,7 +1180,7 @@ Natural orbitals for state 1
 </div>
 </div>
 </div>
-<p>The CI code converges a little bit faster than our test code by keeping old vectors when forming the small Hamiltonian (up to 10 by default). It also has a slightly stricter convergence threshold. Otherwise the result is essentially the same.</p>
+<p>The CI code is of course more efficient, being fully optimised, and also converges in slightly fewer iterations than our test code, despite a stricter convergence threshold, by keeping old vectors when forming the small Hamiltonian (up to 10 by default). It also has a stricter convergence threshold. Otherwise the result is essentially the same.</p>
 </div>
 </div>
 
