@@ -507,12 +507,12 @@ Primitive Basis Functions  : 30
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.01 sec.                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -147.550438910060 au. Time: 0.04 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -147.550438910060 au. Time: 0.03 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -570,7 +570,7 @@ Primitive Basis Functions  : 30
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.0 Energy:   -0.64661 au                                                                      
-               (   1 O   1p+1:    -0.66) (   2 O   1p+1:    -0.66)                                                        
+               (   1 O   1p+1:     0.66) (   2 O   1p+1:     0.66)                                                        
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -591,7 +591,7 @@ Primitive Basis Functions  : 30
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.0 Energy:    0.19167 au                                                                      
-               (   1 O   1p-1:     0.77) (   2 O   1p-1:    -0.77)                                                        
+               (   1 O   1p-1:    -0.77) (   2 O   1p-1:     0.77)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -629,7 +629,7 @@ Number of determinants:      1200
 </div>
 </div>
 </div>
-<p>Printing the expansion shows the number of Slater determinants. As you can see, the number is already fairly large. This is not an issue in a real calculation, but for testing purposes, we will restrict this number a bit. For this, we will simply excluse the 1s and 2s of the oxygen from the calculation by defining an active space. There are 8 electrons and 6 orbitals remaining, so we will define it as a CAS(8,6):</p>
+<p>Printing the expansion shows the number of Slater determinants. As you can see, the number is already fairly large. This is not an issue in a real calculation, but for testing purposes, we will restrict this number a bit. For this, we will simply exclude the 1s and 2s of the oxygen from the calculation by defining an active space. There are 8 electrons and 6 orbitals remaining, so we will define it as a CAS(8,6):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
@@ -841,13 +841,40 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 </div>
-<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree-Fock level. This comes both from electron correlation and from using the correct triplet multiplicity.</p>
-<p>It is important to note at that point that some of the states obtained here are not actually triplet but have a higher multiplicity. As we discussed in the previous section, the basis of Slater Determinant is not spin-adapted.  The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electron than <span class="math notranslate nohighlight">\(\beta\)</span>. This excluses singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
+<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree-Fock level. This comes both from electron correlation and from using the correct triplet multiplicity. However, it is important to note that some of the states obtained here are not actually triplet but have a higher multiplicity. As we discussed in the previous section, the basis of Slater Determinant is not spin-adapted.  The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electron than <span class="math notranslate nohighlight">\(\beta\)</span>. This excludes singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
+<p>We can also print the first eigenvector:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;float_kind&#39;</span><span class="p">:</span><span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.970 -0.000 -0.000 0.000 -0.000 -0.000 0.000 -0.000 0.179 0.000 0.000
+ 0.000 -0.000 0.000 -0.000 0.071 -0.071 0.000 0.000 0.000 -0.000 -0.000
+ -0.000 0.000 0.000 -0.000 -0.000 0.000 -0.000 0.003 0.000 0.000 -0.000
+ 0.000 -0.001 -0.000 0.000 -0.000 -0.000 -0.000 -0.000 0.000 -0.000 0.000
+ 0.000 -0.000 0.000 -0.003 0.000 0.000 -0.000 -0.000 0.000 0.000 -0.000
+ 0.000 0.000 -0.001 -0.000 -0.000 0.000 0.000 0.000 0.000 0.000 -0.007
+ 0.000 0.000 0.000 0.000 -0.019 0.000 -0.000 -0.000 0.000 0.000 -0.000
+ 0.000 -0.000 -0.000 0.000 0.000 0.000 -0.075 -0.075 -0.000 -0.000 -0.000
+ -0.000 -0.000 0.000 -0.061 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+ 0.033 0.000 0.000 -0.007 0.000 0.000 -0.000 -0.000 -0.000 0.000 0.000
+ -0.000 0.000 -0.019 -0.000 0.000 0.000 0.000 0.000 0.000 -0.000]
+</pre></div>
+</div>
+</div>
+</div>
+<p>One can see that the largest coefficient is the first one, corresponding to the ‘222aa0’ determinant, which intuitively is indeed the expected ground state configuration.</p>
 <p>You may be curious as to what happens in the Hij function, that is, how we compute the <span class="math notranslate nohighlight">\(\langle i | H | j \rangle \)</span> matrix elements. The answer to this is the Slater-Condon rules. This rules define the matrix elements in terms of molecular integrals, depending on the difference in occupation between the 2 determinants. The difference in occupation is easily formulated in terms of excitations, with different rules depending on if <span class="math notranslate nohighlight">\(|j \rangle\)</span> is singly or doubly excited compared to <span class="math notranslate nohighlight">\(|i \rangle\)</span>. Any higher excitation will simply lead to 0.</p>
 <p>These rules are relatively easy to derive, both in standard and second quantization formulation. The idea is that the Hamiltonian has to “reconcile” the excitations. Being a two-electron operator, the Hamiltonian can reconcile at most two excitations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">SC_diag</span><span class="p">(</span><span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The energy of a given SD, as a function of its list of occupied orbitals</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Hij</span><span class="o">=</span><span class="mi">0</span>
     <span class="n">Hij</span><span class="o">+=</span><span class="n">CIham</span><span class="o">.</span><span class="n">inEne</span> <span class="c1">#Inactive energy (inc. nuclear repulsion)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
@@ -864,6 +891,10 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
                 <span class="n">Hij</span><span class="o">+=</span><span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
 <span class="k">def</span> <span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Slater-Condon between a SD and a singly excited, depending on the excited orbitals (i,a)</span>
+<span class="sd">    and the same-spin (compared to spin of the excitated electron) and opposite-spin occupation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Hij</span><span class="o">=</span><span class="mi">0</span>
     <span class="n">Hij</span><span class="o">+=</span><span class="n">CIham</span><span class="o">.</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ss_occ</span><span class="p">:</span>
@@ -872,15 +903,23 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
         <span class="n">Hij</span><span class="o">+=</span><span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
 <span class="k">def</span> <span class="nf">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Slater-Condon between a SD and a singly excited determinant,</span>
+<span class="sd">    with both excited electrons having the same spin</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
 <span class="k">def</span> <span class="nf">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Slater-Condon between a SD and a singly excited determinant,</span>
+<span class="sd">    with the excited electrons having opposite spin</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The difficult part is to make sure that the occupations of the Slater determinants are brought to maximum concordance. The expansion produced by lexical ordering may not have this property, but one can switch electrons until we reach this maximum concordance, introducing a negative phase factor at each electron exchange. Again, MultiPsi provides a convenient way to achieve this. The idea is to explicitely created the single excitation (or double by applying it twice) and then keeps track of the number of exchanges to bring it to natural ordering. The excite_alpha and excite_beta functions do this, providing both the excited determinant and the phase factor.</p>
-<p>One can now form the Hamiltonian as described below:</p>
+<p>The difficult part is to make sure that the occupations of the Slater determinants are brought to maximum concordance. The expansion produced by lexical ordering may not have this property, but one can switch electrons until we reach this maximum concordance, introducing a negative phase factor at each electron exchange. Again, MultiPsi provides a convenient way to achieve this. The idea is to explicitely create the singly excitated determinant (or doubly excited by applying the operation twice) and then keep track of the number of exchanges to bring it to natural ordering. The excite_alpha and excite_beta functions do this, providing both the excited determinant and the phase factor. The index() function of the determinants then provides the index of the given determinant in the expansion, in order to associate the energy to the correct position in the Hamiltonian.</p>
+<p>With this new tools and our Slater-Condon functions, we can now rewrite the above code. We replace the double loop by a simple loop and then an explicit construction of all singly and doubly excited determinants. The resulting code looks more complex but is relatively easy to follow.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ham</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">,</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">))</span>
@@ -933,7 +972,7 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-147.72142568 -147.49304166 -147.49304166]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-147.721 -147.493 -147.493]
 </pre></div>
 </div>
 </div>
