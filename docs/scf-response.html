@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SCF states &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>X-ray absorption spectroscopy with TDDFT &#8212; Computational Chemistry from  Laptop to HPC</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -49,9 +49,11 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Complex polarization propagator" href="cpp.html" />
+    <link rel="next" title="Algebraic diagrammatic construction" href="adc.html" />
     <link rel="prev" title="Exact states" href="exact-response.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -247,12 +249,7 @@
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     SCF states
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="cpp.html">
-     Complex polarization propagator
+     X-ray absorption spectroscopy with TDDFT
     </a>
    </li>
   </ul>
@@ -320,9 +317,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/scf-response.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/scf-response.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
             onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -356,11 +353,147 @@
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/docs/scf-response.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#full-excitation-space">
+   Full excitation space
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#core-valence-separation-cvs">
+   Core-valence separation (CVS)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tammdancoff-approximation-tda">
+   Tamm–Dancoff approximation (TDA)
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#veloxchem-in-juputer-notebook">
+     VeloxChem in Juputer notebook
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#system-specification">
+     System specification
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ordering-of-atomic-orbitals">
+     Ordering of atomic orbitals
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scf-optimization">
+     SCF optimization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#molecular-orbitals-and-energies">
+     Molecular orbitals and energies
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ordering-of-molecular-orbitals">
+     Ordering of molecular orbitals
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#core-excitation-and-symmetry">
+     Core excitation and symmetry
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ground-to-core-excited-state-transition-in-a-frozen-orbital-picture">
+     Ground to core-excited state transition in a frozen orbital picture
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tddft-framework">
+   TDDFT framework
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#electronic-hessian">
+     Electronic Hessian
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#spin-adapted-excitation-operators">
+       Spin-adapted excitation operators
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#overlap-matrix">
+     Overlap matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#property-gradient">
+     Property gradient
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#transition-energies">
+     Transition energies
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#transition-moments">
+     Transition moments
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#corevalence-separation-cvs-approximation">
+     Core–valence separation (CVS) approximation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tamm-dancoff-approximation-tda">
+     Tamm-Dancoff approximation (TDA)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#natural-transition-orbitals-ntos">
+     Natural transition orbitals (NTOs)
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -369,8 +502,912 @@
         
               <div>
                 
-  <div class="section" id="scf-states">
-<h1>SCF states<a class="headerlink" href="#scf-states" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="x-ray-absorption-spectroscopy-with-tddft">
+<h1>X-ray absorption spectroscopy with TDDFT<a class="headerlink" href="#x-ray-absorption-spectroscopy-with-tddft" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="full-excitation-space">
+<h2>Full excitation space<a class="headerlink" href="#full-excitation-space" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="core-valence-separation-cvs">
+<h2>Core-valence separation (CVS)<a class="headerlink" href="#core-valence-separation-cvs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="tammdancoff-approximation-tda">
+<h2>Tamm–Dancoff approximation (TDA)<a class="headerlink" href="#tammdancoff-approximation-tda" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="veloxchem-in-juputer-notebook">
+<h3>VeloxChem in Juputer notebook<a class="headerlink" href="#veloxchem-in-juputer-notebook" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">132</span><span class="p">)</span> <span class="c1"># printout format of NumPy arrays</span>
+
+<span class="n">au_to_ang</span> <span class="o">=</span> <span class="mf">0.529177</span> <span class="c1"># length conversion factor</span>
+<span class="n">au_to_ev</span> <span class="o">=</span> <span class="mf">27.2114</span> <span class="c1"># energy conversion factor</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="system-specification">
+<h3>System specification<a class="headerlink" href="#system-specification" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">C        0.67759997    0.00000000    0.00000000</span>
+<span class="s2">C       -0.67759997    0.00000000    0.00000000</span>
+<span class="s2">H        1.21655197    0.92414474    0.00000000</span>
+<span class="s2">H        1.21655197   -0.92414474    0.00000000</span>
+<span class="s2">H       -1.21655197   -0.92414474    0.00000000</span>
+<span class="s2">H       -1.21655197    0.92414474    0.00000000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;sto-3g&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ordering-of-atomic-orbitals">
+<h3>Ordering of atomic orbitals<a class="headerlink" href="#ordering-of-atomic-orbitals" title="Permalink to this headline">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\chi_{1s}^{H1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{H2}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{H3}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{H4}\)</span>
+<span class="math notranslate nohighlight">\(\chi_{1s}^{C1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{C1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{C2}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{C2}\)</span>
+<span class="math notranslate nohighlight">\(\chi_{2py}^{C1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2py}^{C2}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{C1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{C2}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{C1}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{C2}\)</span></p>
+</div>
+<div class="section" id="scf-optimization">
+<h3>SCF optimization<a class="headerlink" href="#scf-optimization" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 33.3086336071 au                                                                       
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -77.069246351713 au. Time: 0.05 sec.                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -77.069246358896    0.0000000000      0.00003960      0.00000947      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -77.069246359247   -0.0000000004      0.00000281      0.00000073      0.00003064                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -77.069246359249   -0.0000000000      0.00000013      0.00000003      0.00000185                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 3 iterations. Time: 0.04 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :      -77.0692463592 au                                                
+               Electronic Energy                  :     -110.3778799663 au                                                
+               Nuclear Repulsion Energy           :       33.3086336071 au                                                
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000001250 au                                                
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.74975 au                                                                      
+               (   1 C   2s  :     0.42) (   1 C   1p+1:     0.20) (   2 C   2s  :    -0.42)                              
+               (   2 C   1p+1:     0.20) (   3 H   1s  :     0.22) (   4 H   1s  :     0.22)                              
+               (   5 H   1s  :    -0.22) (   6 H   1s  :    -0.22)                                                        
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.60874 au                                                                      
+               (   1 C   1p-1:     0.39) (   2 C   1p-1:     0.39) (   3 H   1s  :     0.26)                              
+               (   4 H   1s  :    -0.26) (   5 H   1s  :    -0.26) (   6 H   1s  :     0.26)                              
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.52384 au                                                                      
+               (   1 C   1p+1:    -0.51) (   2 C   1p+1:     0.51) (   3 H   1s  :    -0.21)                              
+               (   4 H   1s  :    -0.21) (   5 H   1s  :    -0.21) (   6 H   1s  :    -0.21)                              
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.47291 au                                                                      
+               (   1 C   1p-1:    -0.39) (   2 C   1p-1:     0.39) (   3 H   1s  :    -0.34)                              
+               (   4 H   1s  :     0.34) (   5 H   1s  :    -0.34) (   6 H   1s  :     0.34)                              
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.31834 au                                                                      
+               (   1 C   1p0 :     0.64) (   2 C   1p0 :     0.64)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.31057 au                                                                      
+               (   1 C   1p0 :     0.81) (   2 C   1p0 :    -0.81)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.65780 au                                                                      
+               (   1 C   1p-1:    -0.73) (   2 C   1p-1:    -0.73) (   3 H   1s  :     0.64)                              
+               (   4 H   1s  :    -0.64) (   5 H   1s  :    -0.64) (   6 H   1s  :     0.64)                              
+                                                                                                                          
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.69522 au                                                                      
+               (   1 C   2s  :    -0.84) (   1 C   1p+1:    -0.51) (   2 C   2s  :    -0.84)                              
+               (   2 C   1p+1:     0.51) (   3 H   1s  :     0.63) (   4 H   1s  :     0.63)                              
+               (   5 H   1s  :     0.63) (   6 H   1s  :     0.63)                                                        
+                                                                                                                          
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.70654 au                                                                      
+               (   1 C   1s  :    -0.17) (   1 C   2s  :     1.07) (   1 C   1p+1:     0.21)                              
+               (   2 C   1s  :     0.17) (   2 C   2s  :    -1.07) (   2 C   1p+1:     0.21)                              
+               (   3 H   1s  :    -0.65) (   4 H   1s  :    -0.65) (   5 H   1s  :     0.65)                              
+               (   6 H   1s  :     0.65)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.  13:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.95189 au                                                                      
+               (   1 C   2s  :    -0.82) (   1 C   1p+1:     1.13) (   2 C   2s  :     0.82)                              
+               (   2 C   1p+1:     1.13)                                                                                  
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="molecular-orbitals-and-energies">
+<h3>Molecular orbitals and energies<a class="headerlink" href="#molecular-orbitals-and-energies" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Orbital energies:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Coefficients MO 2:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Coefficients MO 9:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="mi">8</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Orbital energies:
+ [-11.0184 -11.0177  -0.975   -0.7497  -0.6087  -0.5238  -0.4729  -0.3183   0.3106   0.6578   0.6952   0.7065   0.9519   0.9593]
+Coefficients MO 2:
+ [ 0.7014  0.0308 -0.7014 -0.0308 -0.005  -0.005   0.005   0.005   0.      0.      0.     -0.     -0.0041 -0.0041]
+Coefficients MO 9:
+ [ 0.     -0.      0.     -0.     -0.      0.     -0.     -0.      0.     -0.      0.8063 -0.8063 -0.      0.    ]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ordering-of-molecular-orbitals">
+<h3>Ordering of molecular orbitals<a class="headerlink" href="#ordering-of-molecular-orbitals" title="Permalink to this headline">¶</a></h3>
+<p>Occupied: <span class="math notranslate nohighlight">\(1a_{g}\)</span>, <span class="math notranslate nohighlight">\(1b_{3u}\)</span>, <span class="math notranslate nohighlight">\(2a_{g}\)</span>, <span class="math notranslate nohighlight">\(2b_{3u}\)</span>, <span class="math notranslate nohighlight">\(1b_{2u}\)</span>, <span class="math notranslate nohighlight">\(3a_{g}\)</span>, <span class="math notranslate nohighlight">\(1b_{1g}\)</span>, <span class="math notranslate nohighlight">\(1b_{1u}\)</span></p>
+<p>Unoccupied: <span class="math notranslate nohighlight">\(1b_{2g}\)</span>, <span class="math notranslate nohighlight">\(2b_{2u}\)</span>, <span class="math notranslate nohighlight">\(4a_{g}\)</span>, <span class="math notranslate nohighlight">\(3b_{3u}\)</span>, <span class="math notranslate nohighlight">\(4b_{3u}\)</span>, <span class="math notranslate nohighlight">\(2b_{1g}\)</span></p>
+</div>
+<div class="section" id="core-excitation-and-symmetry">
+<h3>Core excitation and symmetry<a class="headerlink" href="#core-excitation-and-symmetry" title="Permalink to this headline">¶</a></h3>
+<p>Symmetry of core excited state: <span class="math notranslate nohighlight">\(^1 B_{1u}\)</span></p>
+<p>Excitation operator: <span class="math notranslate nohighlight">\(\hat{\mu}_z\)</span></p>
+<p>Electronic excitation channels:</p>
+<p><span class="math notranslate nohighlight">\(1b_{3u} \rightarrow 1b_{2g}\)</span></p>
+<p><span class="math notranslate nohighlight">\(2b_{3u} \rightarrow 1b_{2g}\)</span></p>
+<p><span class="math notranslate nohighlight">\(2b_{3u} \rightarrow 1b_{2g}\)</span></p>
+<p><span class="math notranslate nohighlight">\(1b_{1u} \rightarrow 4a_{g}\)</span></p>
+<p>Core-excitation channel:</p>
+<p><span class="math notranslate nohighlight">\(1b_{3u} \rightarrow 1b_{2g}\)</span></p>
+<p>or with another notation</p>
+<p><span class="math notranslate nohighlight">\(\sigma_{u} \rightarrow \pi^{*}\)</span></p>
+</div>
+<div class="section" id="ground-to-core-excited-state-transition-in-a-frozen-orbital-picture">
+<h3>Ground to core-excited state transition in a frozen orbital picture<a class="headerlink" href="#ground-to-core-excited-state-transition-in-a-frozen-orbital-picture" title="Permalink to this headline">¶</a></h3>
+<p>With a single electronic excitation channel:</p>
+<p><span class="math notranslate nohighlight">\(\langle X ^1A_g | \hat{\mu}_z | ^1B_{1u} \rangle = \sqrt{2} \langle \sigma_u | \hat{\mu}_z |\pi^* \rangle\)</span></p>
+<p>Note: The factor of <span class="math notranslate nohighlight">\(\sqrt{2}\)</span> is due to spin-adaptation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
+
+<span class="n">dipole_mats</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">z_ao</span> <span class="o">=</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span>
+<span class="n">z_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+
+<span class="n">tmom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_mo</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Transition moment (a.u.): </span><span class="si">{</span><span class="n">tmom</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Orbital energy difference: </span><span class="si">{</span><span class="n">F</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">-</span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1"> a.u. (or </span><span class="si">{</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">-</span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.):  0.139783
+Orbital energy difference:  11.328276 a.u. (or  308.3 eV)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="tddft-framework">
+<h2>TDDFT framework<a class="headerlink" href="#tddft-framework" title="Permalink to this headline">¶</a></h2>
+<p>Parameterization of SCF states:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-55560ab1-8d6a-43cc-a6f0-916fd6ae8da2">
+<span class="eqno">(4)<a class="headerlink" href="#equation-55560ab1-8d6a-43cc-a6f0-916fd6ae8da2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\label{psi-kappa-param}
+  | \bar{\psi}(t) \rangle =
+    e^{-i\hat{\kappa}(t)} |0\rangle ; \quad
+  \hat{\kappa}(t) =
+  \sum_s^\mathrm{unocc} \sum_i^\mathrm{occ} \left[
+    \kappa_{si}(t) \hat{a}^\dagger_s \hat{a}_i + \kappa_{si}^*(t) \hat{a}^\dagger_i \hat{a}_s
+    \right] ,
+\end{equation}\]</div>
+<p>where the creation, <span class="math notranslate nohighlight">\(\hat{a}^\dagger\)</span>, and annihilation, <span class="math notranslate nohighlight">\(\hat{a}\)</span>, operators act on unoccupied, secondary, <span class="math notranslate nohighlight">\(s\)</span> and occupied, inactive, <span class="math notranslate nohighlight">\(i\)</span> molecular orbitals.</p>
+<p>The linear response function introduces the RPA matrix</p>
+<div class="math notranslate nohighlight">
+\[
+\langle\langle \hat{\mu}_\alpha; \hat{V} \rangle\rangle_\omega =
+-{\mu^{[1]}}^\dagger
+\Big(
+E^{[2]} - \omega S^{[2]}
+\Big)^{-1}
+V^{[1]}
+\]</div>
+<div class="section" id="electronic-hessian">
+<h3>Electronic Hessian<a class="headerlink" href="#electronic-hessian" title="Permalink to this headline">¶</a></h3>
+<p>In terms of these elementary electronic excitation operators, the electronic Hessian reads</p>
+<div class="amsmath math notranslate nohighlight" id="equation-1abea496-78c0-4a7b-a503-67a02b9d2a16">
+<span class="eqno">(5)<a class="headerlink" href="#equation-1abea496-78c0-4a7b-a503-67a02b9d2a16" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+E^{[2]} &amp; = &amp;
+	\begin{pmatrix}
+    \rule[-5pt]{0pt}{20pt}
+	\rule{5pt}{0pt}
+	A &amp; B \rule{5pt}{0pt}
+	\\
+    \rule[-10pt]{0pt}{25pt}
+    \rule{5pt}{0pt}    
+	B^* &amp; A^* \\
+	\end{pmatrix}
+&amp;	= &amp;
+    \begin{pmatrix}
+    \rule[-10pt]{0pt}{30pt}
+    \langle 0_i^s | \hat{H}_0 | 0_j^t \rangle - 
+    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{st}\delta_{ij} 
+    &amp; 
+     -\langle 0_{ij}^{st} | \hat{H}_0 | 0 \rangle 
+    (1 - \delta_{ij})(1-\delta_{st}) 
+    \\
+    \rule[-10pt]{0pt}{30pt}
+    -\langle 0 | \hat{H}_0 | 0_{ij}^{st} \rangle 
+    (1 - \delta_{ij})(1-\delta_{st}) 
+     &amp; 
+    \langle 0_j^t | \hat{H}_0 | 0_i^s \rangle - 
+    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{st}\delta_{ij} 
+    \\
+  \end{pmatrix} 
+\end{eqnarray}\]</div>
+<ul class="simple">
+<li><p>The Hessian matrix is Hermitian and has an internal structure in terms of the matrix blocks <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span></p></li>
+<li><p>The diagonal elements correspond to differences in energy between the single-excited determinants <span class="math notranslate nohighlight">\(|0_i^s\rangle\)</span> and the reference state
+<span class="math notranslate nohighlight">\(|0\rangle\)</span></p></li>
+<li><p>The <span class="math notranslate nohighlight">\(A\)</span>-block corresponds to the CIS approximation</p></li>
+</ul>
+<p>In the Hartree–Fock approximation, the Hessian can be expressed as the differences in orbital energies corrected by an anti-symmetrized two-electron integral</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E^{[2]} = 
+\begin{pmatrix}
+    \rule[-10pt]{0pt}{30pt}
+    F_{st} \delta_{ij} \!-\! F_{ji}\delta_{st} \!-\! \langle sj || ti
+    \rangle 
+    &amp; 
+    -\langle st||ij \rangle 
+    \\
+    \rule[-10pt]{0pt}{30pt}
+    -\langle ij||st \rangle 
+    &amp; 
+    F_{ts} \delta_{ij}\! -\! F_{ij} \delta_{st} 
+    \! - \! \langle ti || sj \rangle 
+    \\
+\end{pmatrix}
+\end{split}\]</div>
+<ul class="simple">
+<li><p>The anti-symmetrized ERI gives the correct asymptotic behavior for charge-transfer excitations</p></li>
+<li><p>At the level of DFT, the exchange–correlation functional is introduced and the asymptotic behavior becomes incorrect</p></li>
+</ul>
+<div class="section" id="spin-adapted-excitation-operators">
+<h4>Spin-adapted excitation operators<a class="headerlink" href="#spin-adapted-excitation-operators" title="Permalink to this headline">¶</a></h4>
+<p>In practice, we employ spin-adapted excitation operators</p>
+<div class="amsmath math notranslate nohighlight" id="equation-a9883628-80fa-4107-9d80-7696daf94326">
+<span class="eqno">(6)<a class="headerlink" href="#equation-a9883628-80fa-4107-9d80-7696daf94326" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+  \hat{\kappa} =
+  \sum_{s,i} \left[
+    \kappa_{si} \hat{E}_{si}^\dagger +
+    \kappa_{si}^* \hat{E}_{si}
+    \right]
+\end{equation}\]</div>
+<p>where the summations run over spatial unoccupied and occupied MOs and the singlet excitation operator reads</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{E}_{si}^\dagger = \hat{a}^\dagger_s \hat{a}_i + \hat{a}^\dagger_\bar{s} \hat{a}_\bar{i}
+\]</div>
+<p>The diagonal elements of the Hessian becomes</p>
+<div class="math notranslate nohighlight">
+\[
+E^{[2]}_{si,si} = 2 \times 
+\big[
+(F_{ss} - F_{ii}) - (ss|ii) + 2(si|is)
+\big]
+\]</div>
+<ul class="simple">
+<li><p>The factor of 2 stems from the adoption of non-normalized excitation operators</p></li>
+<li><p>With triplet excitation operators the exchange integrals vanish</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">lrs</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+
+<span class="n">nocc</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">ncore</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">nvirt</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">norb</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">+</span> <span class="n">nvirt</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">*</span> <span class="n">nvirt</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;n =&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dimension of E[2] matrix:&#39;</span><span class="p">,</span> <span class="n">E2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Diagonal element for (sigma_u, pi*)-core excitation: </span><span class="si">{</span><span class="n">E2</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
+
+<span class="c1"># ERI integrals in physicist&#39;s notation</span>
+<span class="n">moints_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MOIntegralsDriver</span><span class="p">()</span>
+<span class="n">isis</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OVOV&quot;</span><span class="p">)</span>
+<span class="n">iiss</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OOVV&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Diagonal element: </span><span class="si">{</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">isis</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">iiss</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Diagonal element without exchange: </span><span class="si">{</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">isis</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 192)                                                                      
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>n = 48
+Dimension of E[2] matrix: (96, 96)
+Diagonal element for (sigma_u, pi*)-core excitation:  146.0 eV
+Diagonal element:  292.0 eV
+Diagonal element without exchange:  291.2 eV
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="overlap-matrix">
+<h3>Overlap matrix<a class="headerlink" href="#overlap-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The overlap matrix in the SCF approximation is trivial and equal to</p>
+<div class="amsmath math notranslate nohighlight" id="equation-b316594e-11cf-450a-ae3f-257228350e50">
+<span class="eqno">(7)<a class="headerlink" href="#equation-b316594e-11cf-450a-ae3f-257228350e50" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+\label{S2}
+S^{[2]} &amp; = &amp;
+	\begin{pmatrix}
+    \rule[-5pt]{0pt}{20pt}
+	\rule{5pt}{0pt}
+	1 &amp; 0 \rule{5pt}{0pt}
+	\\
+    \rule[-10pt]{0pt}{25pt}
+    \rule{5pt}{0pt}    
+	0 &amp; -1 \\
+	\end{pmatrix} ,
+\end{eqnarray}\]</div>
+<p>where the “1” and the “0” are here understood to be the identity and zero matrices, respectively, of the same rank as sub-blocks A and B in the electronic Hessian.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># factor of 2 due to spin-adaptation</span>
+<span class="n">S2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+<span class="n">S2</span><span class="p">[</span><span class="n">n</span><span class="p">:,</span><span class="n">n</span><span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dimension of S[2] matrix:&#39;</span><span class="p">,</span> <span class="n">S2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of S[2] matrix: (96, 96)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="property-gradient">
+<h3>Property gradient<a class="headerlink" href="#property-gradient" title="Permalink to this headline">¶</a></h3>
+<p>In the SCF approximation, the property gradient takes the form</p>
+<div class="amsmath math notranslate nohighlight" id="equation-257c7374-016c-4447-8811-cb6c3cff7f7e">
+<span class="eqno">(8)<a class="headerlink" href="#equation-257c7374-016c-4447-8811-cb6c3cff7f7e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+  V^{[1]} =
+  \begin{pmatrix}
+    \rule[-10pt]{0pt}{20pt}
+     \langle 0 | [\hat{a}_{i}^\dagger\hat{a}_{s}, \hat{V}] | 0 \rangle
+       \\
+    \rule[-5pt]{0pt}{20pt}
+     \langle 0 | [\hat{a}_{s}^\dagger\hat{a}_{i}, \hat{V}] | 0 \rangle
+\\
+  \end{pmatrix} 
+  =
+  \begin{pmatrix}
+    \rule[-5pt]{0pt}{15pt}
+     \langle 0_i^s | \hat{V} | 0 \rangle
+       \\
+    \rule[-5pt]{0pt}{0pt}
+     -\langle 0 | \hat{V} | 0_i^s \rangle
+    \\
+  \end{pmatrix}
+  =
+      \begin{pmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    g
+       \\
+    \rule[-5pt]{0pt}{0pt}
+     -g^*
+\\
+  \end{pmatrix}
+\end{equation}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rsp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
+<span class="n">V1</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dimension of V[1] vector:&#39;</span><span class="p">,</span> <span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  g: </span><span class="si">{</span><span class="n">V1</span><span class="p">[</span><span class="n">nvirt</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;-g*: </span><span class="si">{</span><span class="n">V1</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="n">nvirt</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MO integral 2 * &lt; sigma_u | z | pi* &gt;: </span><span class="si">{</span><span class="mi">2</span> <span class="o">*</span> <span class="n">z_mo</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of V[1] vector: (96,)
+  g:  0.098842
+-g*: -0.098842
+MO integral 2 * &lt; sigma_u | z | pi* &gt;:  0.197684
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="transition-energies">
+<h3>Transition energies<a class="headerlink" href="#transition-energies" title="Permalink to this headline">¶</a></h3>
+<p>We denote by <span class="math notranslate nohighlight">\(X_e\)</span> the eigenvectors of the generalized eigenvalue equation</p>
+<div class="amsmath math notranslate nohighlight" id="equation-dfcb9b16-2e20-4724-b01a-7ca44b283af2">
+<span class="eqno">(9)<a class="headerlink" href="#equation-dfcb9b16-2e20-4724-b01a-7ca44b283af2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+  E^{[2]} X_e = \lambda_e S^{[2]} X_e, \quad e = -n,\ldots,-1,1,\ldots,n ,
+\end{equation}\]</div>
+<p>where the matrix dimension is <span class="math notranslate nohighlight">\(2n\)</span>. We find the set of eigenvalues and eigenvectors by diagonalizing the non-Hermitian matrix <span class="math notranslate nohighlight">\(\left(S^{[2]}\right)^{-1} E^{[2]}\)</span> according to</p>
+<div class="amsmath math notranslate nohighlight" id="equation-db6b4ac6-3565-4c7f-9449-90b87bf20c22">
+<span class="eqno">(10)<a class="headerlink" href="#equation-db6b4ac6-3565-4c7f-9449-90b87bf20c22" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\label{gen-eig}
+  X^{-1} \left[ \left(S^{[2]}\right)^{-1} E^{[2]} \right] X = 
+  \begin{bmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    \rule{9pt}{0pt}
+    \lambda &amp; \rule{3pt}{0pt} 0 \rule{3pt}{0pt} \\
+    \rule{3pt}{0pt}
+    0 &amp; -\lambda \rule{3pt}{0pt} \\
+  \end{bmatrix} ,
+\end{equation}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lambda\)</span> is a diagonal matrix of dimension <span class="math notranslate nohighlight">\(n\)</span> collecting the eigenvalues with positive index and the columns of <span class="math notranslate nohighlight">\(X\)</span> store the eigenvectors (<span class="math notranslate nohighlight">\(X\)</span> is assumed to be nonsingular). This pairing of eigenvalues has its correspondence in the eigenvectors through</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  X_e =
+  \begin{pmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    Z_e \\
+    \rule[-5pt]{0pt}{0pt}
+    Y_e^* \\
+  \end{pmatrix}
+\; \mbox{with eigenvalue}\; \lambda_e
+; \qquad
+  X_{-e} =
+  \begin{pmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    Y_{e} \\
+    \rule[-5pt]{0pt}{0pt}
+    Z_{e}^* \\
+  \end{pmatrix} 
+\; \mbox{with eigenvalue}\; -\!\lambda_e .
+\end{equation*}\]</div>
+<p>The matrix <span class="math notranslate nohighlight">\(X\)</span> will therefore have the structure</p>
+<div class="amsmath math notranslate nohighlight" id="equation-125edf10-27f6-4472-8e70-29081c774d10">
+<span class="eqno">(11)<a class="headerlink" href="#equation-125edf10-27f6-4472-8e70-29081c774d10" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\label{X-struct}
+  X = 
+  \begin{bmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    \rule{3pt}{0pt}
+    Z &amp; \rule{3pt}{0pt} Y \rule{3pt}{0pt} \\
+    \rule{8pt}{0pt}
+    Y^* &amp; \rule{3pt}{0pt} Z^* \rule{3pt}{0pt} \\
+  \end{bmatrix} .
+\end{equation}\]</div>
+<p>With an appropriate scaling of the eigenvectors <span class="math notranslate nohighlight">\(X_e\)</span>, the non-unitary matrix <span class="math notranslate nohighlight">\(X\)</span> achieves a simultaneous diagonalization of the two non-commuting matrices <span class="math notranslate nohighlight">\(E^{[2]}\)</span> and <span class="math notranslate nohighlight">\(S^{[2]}\)</span> as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-1f848b04-3561-4401-a35e-eabd9b37695a">
+<span class="eqno">(12)<a class="headerlink" href="#equation-1f848b04-3561-4401-a35e-eabd9b37695a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\label{sim-diag}
+  X^\dagger E^{[2]} X = 
+  \begin{bmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    \rule{9pt}{0pt}
+    \lambda &amp; \rule{3pt}{0pt} 0 \rule{3pt}{0pt} \\
+    \rule{3pt}{0pt}
+    0 &amp; \lambda \rule{3pt}{0pt} \\
+  \end{bmatrix} ; \qquad
+  X^\dagger S^{[2]} X =
+  \begin{bmatrix}
+    \rule[-5pt]{0pt}{15pt}
+    \rule{8pt}{0pt}
+    I &amp; \rule{5pt}{0pt} 0 \rule{3pt}{0pt} \\
+    \rule{5pt}{0pt}
+    0 &amp; -I \rule{3pt}{0pt} \\
+  \end{bmatrix} .
+\end{equation}\]</div>
+<p>For each pair of eigenvectors, the second equation involving the metric of the generalized eigenvalue equation defines which of the two that should be indexed with a positive index. We also emphasize that <span class="math notranslate nohighlight">\(X^\dagger \neq X^{-1}\)</span> and for this reason the <span class="math notranslate nohighlight">\(X_e\)</span>’s are eigenvectors neither of <span class="math notranslate nohighlight">\(E^{[2]}\)</span> nor of <span class="math notranslate nohighlight">\(S^{[2]}\)</span>, just as the <span class="math notranslate nohighlight">\(\lambda_e\)</span>’s are not the eigenvalues of <span class="math notranslate nohighlight">\(E^{[2]}\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eigs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S2</span><span class="p">),</span> <span class="n">E2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigs</span><span class="p">)</span>
+
+<span class="c1"># the second smallest positive eigenvalue is the sigma-pi* transition</span>
+<span class="n">eigs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eigs</span><span class="o">&gt;</span><span class="mi">10</span><span class="p">,</span> <span class="n">eigs</span><span class="p">,</span> <span class="mi">999</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eigs</span><span class="o">&gt;</span><span class="mi">10</span><span class="p">,</span> <span class="n">eigs</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
+
+<span class="n">Xf</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="n">pos</span><span class="p">]</span>
+<span class="n">Xf</span> <span class="o">=</span>  <span class="n">Xf</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Xf</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">S2</span><span class="p">,</span><span class="n">Xf</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Eigenvector position:&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sigma_u - pi* transition energy: </span><span class="si">{</span><span class="n">eigs</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .4f</span><span class="si">}</span><span class="s1"> a.u. (or </span><span class="si">{</span><span class="n">eigs</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Xf norm under metric S[2] = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Xf</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">S2</span><span class="p">,</span><span class="n">Xf</span><span class="p">))</span> <span class="si">:</span><span class="s1"> .4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 5.3643 -5.3643  5.3646 -5.3646 -5.7678  5.7678  5.7677  5.5383 -5.7677  5.5483  5.739   5.6223  5.6224 -5.6223 -5.5383 -5.739
+  5.5392  5.5474  5.739  -5.739  -5.6224 -5.5392 -5.5483 -5.5474 -0.7813  0.7813 -0.7568  0.7568 -0.1979  0.1979 -0.7033 -0.6896
+ -0.6895  0.7033  0.6896  0.6895 -0.3471 -0.1843  0.1843 -0.6571 -0.6481 -0.2096  0.6481  0.2096  0.3471  0.6571 -0.3959 -0.3328
+ -0.6305 -0.299  -0.2682  0.2682  0.6305  0.299   0.3328 -0.3777  0.3959 -0.4541 -0.5909  0.4541 -0.5812 -0.583  -0.5531  0.5909
+  0.5812  0.583  -0.5387  0.3777 -0.5691 -0.5737  0.5531  0.5691  0.5737  0.5387 -0.5141 -0.5099 -0.503   0.5141  0.5099  0.503
+ -0.4122 -0.4182  0.4122  0.4436  0.5011  0.4198  0.4182 -0.5011 -0.4386 -0.4358  0.4386 -0.4436 -0.4198 -0.4365  0.4358  0.4365]
+Eigenvector position: 0
+sigma_u - pi* transition energy:  999.0000 a.u. (or  27184.2 eV)
+Xf norm under metric S[2] =  1.0000
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="transition-moments">
+<h3>Transition moments<a class="headerlink" href="#transition-moments" title="Permalink to this headline">¶</a></h3>
+<p>Since <span class="math notranslate nohighlight">\((\Omega \Lambda)^{-1} = \Lambda^{-1} \Omega^{-1}\)</span>, we can form the inverse of the RPA matrix as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-1a3209a2-bd85-49e0-937c-187ad1528520">
+<span class="eqno">(13)<a class="headerlink" href="#equation-1a3209a2-bd85-49e0-937c-187ad1528520" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+  \left( E^{[2]} - \omega S^{[2]} \right)^{-1} =
+  X \left[ X^\dagger \left( E^{[2]} - \omega S^{[2]} \right) X \right]^{-1} X^\dagger
+\end{equation}\]</div>
+<p>which yields an expression for the linear response function that reads</p>
+<div class="amsmath math notranslate nohighlight" id="equation-c162f560-9a85-4f79-99ae-dd9763ea6290">
+<span class="eqno">(14)<a class="headerlink" href="#equation-c162f560-9a85-4f79-99ae-dd9763ea6290" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+\label{lrf-resolved}
+  \langle
+  \langle
+  \hat{\Omega}; \hat{V}
+  \rangle
+  \rangle &amp; = &amp;
+  -
+  \left[\Omega^{[1]}\right]^\dagger 
+  \sum_{e=1}^n
+  \left(
+  \frac{
+    X_e
+    X^\dagger_e
+    }{
+    \lambda_e - \hbar \omega
+    }
+  +
+  \frac{
+    X_e
+    X^\dagger_e 
+    }{
+    \lambda_e + \hbar \omega
+    }
+  \right) V^{[1]} 
+\end{eqnarray}\]</div>
+<p>This equation suggests that we identify the <span class="math notranslate nohighlight">\(\lambda\)</span>-eigenvalues as excitation energies of the system and transition moments in the SCF approximation are identified as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-6725a2f8-ba30-4c22-a9f2-8ee69ee5b912">
+<span class="eqno">(15)<a class="headerlink" href="#equation-6725a2f8-ba30-4c22-a9f2-8ee69ee5b912" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\label{tranmom}
+    \langle f | \hat{V} | 0 \rangle =
+    X^\dagger_f V^{[1]}
+\end{equation}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tmom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Xf</span><span class="p">,</span> <span class="n">V1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Transition moment (a.u.): </span><span class="si">{</span><span class="n">tmom</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -0.000000
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="corevalence-separation-cvs-approximation">
+<h3>Core–valence separation (CVS) approximation<a class="headerlink" href="#corevalence-separation-cvs-approximation" title="Permalink to this headline">¶</a></h3>
+<p>Due to the large energy separation of core and valence electronic states there will be negigiible contribution from the valence-excitaiton channels.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">*</span> <span class="n">nvirt</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">ncore</span> <span class="o">*</span> <span class="n">nvirt</span>
+
+<span class="n">E2_CVS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span><span class="p">))</span>
+
+<span class="n">E2_CVS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span>
+<span class="n">E2_CVS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">c</span><span class="p">]</span>
+<span class="n">E2_CVS</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span>
+<span class="n">E2_CVS</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">c</span><span class="p">]</span>
+
+<span class="n">S2_CVS</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+<span class="n">S2_CVS</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="n">V1_CVS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+<span class="n">V1_CVS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span>
+<span class="n">V1_CVS</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">c</span><span class="p">]</span>
+
+<span class="n">eigs_CVS</span><span class="p">,</span> <span class="n">X_CVS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S2_CVS</span><span class="p">),</span> <span class="n">E2_CVS</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigs_CVS</span><span class="p">)</span>
+
+<span class="c1"># the second smallest positive eigenvalue is the sigma-pi* transition</span>
+<span class="n">eigs_CVS</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eigs_CVS</span><span class="o">&gt;</span><span class="mi">10</span><span class="p">,</span> <span class="n">eigs_CVS</span><span class="p">,</span> <span class="mi">999</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eigs_CVS</span><span class="o">&gt;</span><span class="mi">10</span><span class="p">,</span> <span class="n">eigs_CVS</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Eigenvector position:&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sigma_u - pi* transition energy in CVS: </span><span class="si">{</span><span class="n">eigs_CVS</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .4f</span><span class="si">}</span><span class="s1"> a.u. (or </span><span class="si">{</span><span class="n">eigs_CVS</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .1f</span><span class="si">}</span><span class="s1"> eV)&#39;</span><span class="p">)</span>
+<span class="n">Xf_CVS</span> <span class="o">=</span> <span class="n">X_CVS</span><span class="p">[:,</span><span class="n">pos</span><span class="p">]</span>
+<span class="n">Xf_CVS</span> <span class="o">=</span>  <span class="n">Xf_CVS</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Xf_CVS</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">S2_CVS</span><span class="p">,</span> <span class="n">Xf_CVS</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Xf norm under metric S[2] = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Xf_CVS</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">S2_CVS</span><span class="p">,</span> <span class="n">Xf_CVS</span><span class="p">))</span> <span class="si">:</span><span class="s1"> .4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">tmom_CVS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Xf_CVS</span><span class="p">,</span> <span class="n">V1_CVS</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Transition moment in CVS (a.u.): </span><span class="si">{</span><span class="n">tmom_CVS</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 5.3643  5.3645  5.5382  5.5392  5.5482  5.5474  5.6222  5.6224  5.7678  5.7677  5.739   5.739  -5.3643 -5.3645 -5.5382 -5.5392
+ -5.5482 -5.5474 -5.6222 -5.6224 -5.7678 -5.7677 -5.739  -5.739 ]
+Eigenvector position: 0
+sigma_u - pi* transition energy in CVS:  999.0000 a.u. (or  27184.2 eV)
+Xf norm under metric S[2] =  1.0000
+Transition moment in CVS (a.u.):  0.000000
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="tamm-dancoff-approximation-tda">
+<h3>Tamm-Dancoff approximation (TDA)<a class="headerlink" href="#tamm-dancoff-approximation-tda" title="Permalink to this headline">¶</a></h3>
+<p>The TDA corresponds to setting <span class="math notranslate nohighlight">\(B=0\)</span> in the electronic Hessian and diagonalize matrix block <span class="math notranslate nohighlight">\(A\)</span>:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-7d53ef61-9ab2-4785-b91d-89371436ff9f">
+<span class="eqno">(16)<a class="headerlink" href="#equation-7d53ef61-9ab2-4785-b91d-89371436ff9f" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+E^{[2]} &amp; = &amp;
+	\begin{pmatrix}
+    \rule[-5pt]{0pt}{20pt}
+	\rule{5pt}{0pt}
+	A &amp; B \rule{5pt}{0pt}
+	\\
+    \rule[-10pt]{0pt}{25pt}
+    \rule{5pt}{0pt}    
+	B^* &amp; A^* \\
+	\end{pmatrix}
+\end{eqnarray}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># divide by factors of 2 and sqrt(2) to account for normalization of spin-adapted excitation operators</span>
+<span class="n">E2_CVS_TDA</span> <span class="o">=</span> <span class="n">E2_CVS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">V1_CVS_TDA</span> <span class="o">=</span> <span class="n">V1_CVS</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">eigs_CVS_TDA</span><span class="p">,</span> <span class="n">X_CVS_TDA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">E2_CVS_TDA</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigs_CVS_TDA</span><span class="p">)</span>
+
+<span class="n">pos</span><span class="o">=</span><span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sigma_u - pi* transition energy with CVS and TDA (eV): </span><span class="si">{</span><span class="n">eigs_CVS_TDA</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">au_to_ev</span> <span class="si">:</span><span class="s1"> .4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">Xf_CVS_TDA</span> <span class="o">=</span> <span class="n">X_CVS_TDA</span><span class="p">[:,</span><span class="n">pos</span><span class="p">]</span>
+
+<span class="n">tmom_CVS_TDA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Xf_CVS_TDA</span><span class="p">,</span> <span class="n">V1_CVS_TDA</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Transition moment with CVS and TDA (a.u.): </span><span class="si">{</span><span class="n">tmom_CVS_TDA</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[5.3643 5.3645 5.5382 5.5392 5.5474 5.5482 5.6222 5.6224 5.739  5.739  5.7677 5.7678]
+sigma_u - pi* transition energy with CVS and TDA (eV):  145.9764
+Transition moment with CVS and TDA (a.u.):  0.069892
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="natural-transition-orbitals-ntos">
+<h3>Natural transition orbitals (NTOs)<a class="headerlink" href="#natural-transition-orbitals-ntos" title="Permalink to this headline">¶</a></h3>
+<p>Collecting occupied and unoccupied (real) MOs as vectors</p>
+<div class="math notranslate nohighlight">
+\[
+\bar{\phi}_\mathrm{occ} = (\ldots, \phi_i(\mathbf{r}),  \ldots)^T; \quad
+\bar{\phi}_\mathrm{unocc} = (\ldots, \phi_s(\mathbf{r}),  \ldots)^T
+\]</div>
+<p>and scattering the (real) RPA eigenvector into a rectangular transition matrix <span class="math notranslate nohighlight">\(T\)</span> of dimension <span class="math notranslate nohighlight">\(n_\mathrm{occ} \times n_\mathrm{unocc}\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+T_{f, is} = Z_{f, is} - Y_{f, is}
+\]</div>
+<p>we can write the transition moment as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-dfd79925-8a51-4abb-abc9-bc3719a7d13d">
+<span class="eqno">(17)<a class="headerlink" href="#equation-dfd79925-8a51-4abb-abc9-bc3719a7d13d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+    \langle f | \hat{V} | 0 \rangle =
+    X^T_f V^{[1]} = 
+    \big(
+    Z_f^T, Y_f^T
+    \big)
+    \begin{pmatrix}
+    g\\-g
+    \end{pmatrix}
+    =
+    \big(
+    Z_f - Y_f
+    \big)^T
+    g
+    =
+    \int
+    \hat{\mu}_\alpha
+    \bar{\phi}_\mathrm{occ}^T
+    T
+    \bar{\phi}_\mathrm{unocc} \;
+    d^3\mathbf{r}
+\end{equation}\]</div>
+<p>By means of a singular value decomposition (SVD), we can factorize the transition matrix</p>
+<div class="math notranslate nohighlight">
+\[
+T = U \Lambda V^T
+\]</div>
+<p>where matrices <span class="math notranslate nohighlight">\(U\)</span> and <span class="math notranslate nohighlight">\(V\)</span> are unitary and <span class="math notranslate nohighlight">\(\Lambda\)</span> is rectangular diagonal.</p>
+<p>The SVD transformation matrices define the pairs of hole and electron NTOs</p>
+<div class="math notranslate nohighlight">
+\[
+\bar{\phi}_\mathrm{h}^T = \bar{\phi}_\mathrm{occ}^T U; \quad
+\bar{\phi}_\mathrm{e} = V^T \bar{\phi}_\mathrm{unocc}
+\]</div>
+<p>such that</p>
+<div class="amsmath math notranslate nohighlight" id="equation-2e710918-9efb-463d-8598-79831b4e4554">
+<span class="eqno">(18)<a class="headerlink" href="#equation-2e710918-9efb-463d-8598-79831b4e4554" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+    \langle f | \hat{\mu}_\alpha | 0 \rangle =
+    \int
+    \hat{\mu}_\alpha
+    \bar{\phi}_\mathrm{h}^T
+    \Lambda
+    \bar{\phi}_\mathrm{e} \;
+    d^3\mathbf{r}
+\end{equation}\]</div>
+<p>In our CVS example, we get</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\bar{\phi}_\mathrm{occ}^T = (\sigma_g, \sigma_u) ; \quad
+\Lambda =
+\begin{bmatrix}
+ \lambda_1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+ 0 &amp; \lambda_2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\end{bmatrix}; \quad
+\bar{\phi}_\mathrm{unocc}^T = (\pi^*, 2b_{2u}, 4a_{g}, 3b_{3u}, 4b_{3u}, 2b_{1g})
+\end{split}\]</div>
+<p>and the associated contributing electron orbital becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\phi_\mathrm{e} = \sum_s T_{f,is} \phi_s; \quad i=2
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Zf</span> <span class="o">=</span> <span class="n">Xf_CVS</span><span class="p">[:</span><span class="n">ncore</span><span class="o">*</span><span class="n">nvirt</span><span class="p">]</span>
+<span class="n">Yf</span> <span class="o">=</span> <span class="n">Xf_CVS</span><span class="p">[</span><span class="n">ncore</span><span class="o">*</span><span class="n">nvirt</span><span class="p">:]</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Zf</span> <span class="o">-</span> <span class="n">Yf</span><span class="p">,</span> <span class="p">(</span><span class="n">ncore</span><span class="p">,</span><span class="n">nvirt</span><span class="p">))</span>
+<span class="n">U</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">VT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unitary matrix for occupied MOs:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Lambda diagonal elements:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unitary matrix for unoccupied MOs:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">VT</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Unitary matrix for occupied MOs:
+ [[-1.  0.]
+ [ 0.  1.]]
+Lambda diagonal elements:
+ [0.7067 0.    ]
+Unitary matrix for unoccupied MOs:
+ [[ 1.      0.      0.     -0.      0.      0.    ]
+ [ 0.     -0.9132 -0.0577 -0.1786 -0.1774 -0.3151]
+ [-0.     -0.0577  0.9983 -0.0054 -0.0054 -0.0095]
+ [ 0.     -0.1786 -0.0054  0.9833 -0.0166 -0.0294]
+ [ 0.     -0.1774 -0.0054 -0.0166  0.9835 -0.0292]
+ [-0.     -0.3151 -0.0095 -0.0294 -0.0292  0.9481]]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -399,7 +1436,7 @@
         <div class='prev-next-bottom'>
             
     <a class='left-prev' id="prev-link" href="exact-response.html" title="previous page">Exact states</a>
-    <a class='right-next' id="next-link" href="cpp.html" title="next page">Complex polarization propagator</a>
+    <a class='right-next' id="next-link" href="adc.html" title="next page">Algebraic diagrammatic construction</a>
 
         </div>
         
