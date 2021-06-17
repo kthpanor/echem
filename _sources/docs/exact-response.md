@@ -1,8 +1,6 @@
-Exact states
-============
+# Exact states
 
-Ehrenfest theorem based
------------------------
+## Ehrenfest theorem based
 
 The exact eigenstates of the molecular Hamiltonian are never available in practice and any attempt to derive response functions for exact states may therefore appear as an academic exercise. However, there are several good and practical reasons to do so:
 
@@ -149,8 +147,7 @@ A residue analysis provides a means to obtain *excited state properties* from a 
   \langle f | \hat{V}^{\omega} | 0 \rangle .
 \end{eqnarray*}
 
-Complex polarization propagator
--------------------------------
+## Complex polarization propagator
 
 ### Relaxation in density-matrix theory
 
@@ -183,6 +180,7 @@ The Liouville formalism of quantum mechanics offer the opportunity to include ef
 where the damping term $\gamma_{mn}$ corresponds to the rate at which matrix element $\rho_{mn}$ of the density operator relaxes to its equilibrium value $\rho_{mn}^\mathrm{eq}$.
 
 ### Relaxation in wave-function theory
+
 Expressed in terms of the phase-isolated wave function, the above equation takes the form {cite}`Norman2018`
 
 \begin{align*}
