@@ -4,13 +4,13 @@ In a simplistic and generalized view of spectroscopy, the observable is the numb
 
 Although perturbation theory seems motivated from a comparison of external electric field strengths and internal atomic fields, why do we not simply time propagate the Schrödinger equation for the system in its entire (molecule and time-dependent fields) in a direct and nonperturbational manner? Such a strategy provides the principle for *real-time* methods in quantum chemistry and they have been proven computationally tractable in practical applications, giving direct access to time-dependent observables. In this workshop, we instead insist on invoking perturbation theory and our motivations to do so include:
 
-1. The response functions defined in perturbation theory provide the natural meeting point between experiment and theory with a distinct separation of one-, two-, three-photon, etc., optical processes
+- The response functions defined in perturbation theory provide the natural meeting point between experiment and theory with a distinct separation of one-, two-, three-photon, etc., optical processes
 
-2. Error control is difficult to achieve as the accuracy depends on the propagation scheme, time length, and time step
+- Error control is difficult to achieve as the accuracy depends on the propagation scheme, time length, and time step
 
-3. It is a numerically elaborate process to separate out nonlinearities from dominant lower-order components in the polarization
+- It is a numerically elaborate process to separate out nonlinearities from dominant lower-order components in the polarization
 
-4. Calculation of vibrational contributions can hardly be made practical in a nonperturbational approach.
+- Calculation of vibrational contributions can hardly be made practical in a nonperturbational approach.
 
 Response theory {cite}`Norman2018` may be thought of as a reformulation of standard time-dependent perturbation theory into a form suitable for approximate state theory. Virtually all spectroscopic properties are encompassed by the theory as possible perturbations include:
 
