@@ -1,25 +1,22 @@
-## Some commands
+# Some commands
 
+```
 $ pip install -U jupyter-book
-
 $ git clone https://github.com/kthpanor/echem.git
-
 $ cd echem
-
 $ vi docs/dft.md
-
 $ jupyter-book build .
+$ open _build/html/index.html
+```
 
-$ open open _build/html/index.html
+# Publish the html-version
 
-
-## Creating final html-version
-
+```
+$ pip install ghp-import
 $ ghp-import -n -p -f _build/html
+```
 
-This requires installing ghp-import
-
-## Distribution of labour
+# Distribution of labour
 
 1. Tutorials and Workflows: TF will get started on this section by setting up a few tutorials on spectroscopy (UV/vis, X-ray);
 
