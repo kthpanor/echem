@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,11 +37,14 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -373,6 +376,54 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xas-in-continuum">
+   XAS: In continuum
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xes-delta-or-overlap-model">
+   XES: delta or overlap model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#relaxation-effects">
+   Relaxation effects
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tddft">
+   TDDFT
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#self-interaction-error">
+   Self-interaction error
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basis-set-dependence">
+   Basis set dependence
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#analysis">
+   Analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#application-others-also-check-exercises">
+   Application? Others. Also check exercises
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -383,6 +434,115 @@
                 
   <div class="section" id="x-ray-spectroscopies">
 <h1>X-ray spectroscopies<a class="headerlink" href="#x-ray-spectroscopies" title="Permalink to this headline">¶</a></h1>
+<p>XAS, XES, XPS, and RIXS in brief. Compare and contrast to UV/vis</p>
+<ul class="simple">
+<li><p>illustration: XAS, XES, XPS, RIXS processes</p></li>
+<li><p>illustration: IP of elements / other illustration on element-specificity (?)</p></li>
+<li><p>maybe illustration: Augen/fluorescent yield</p></li>
+</ul>
+<p>XAS: focus on NEXAFS (prototypical spectrum, maybe)</p>
+<p>In X-ray absorption spectroscopy the photon energy is tuned such that core electrons are targeted and excited to either bound or continuum states, and X-ray emission spectroscopy measures the subsequent decay from such an excited state. These core excitations/de-excitations exhibit strong relaxation effects, making theoretical considerations of the processes particularly challenging. While the removal of a valence electron leaves the remaining electrons relatively unaffected, removing core electrons has a substantial effect on the other electrons due to the significant
+change in the screening of the nucleus. Additionally, the core-excited states are embedded in a manifold of valence-excited states that needs to be considered by some computationally feasible method.</p>
+<div class="highlight-md notranslate"><div class="highlight"><pre><span></span>struct = gator.get_molecule(&quot;&quot;&quot;
+O       0.0000000000     0.0000000000     0.1187290000
+H      -0.7532010000    -0.0000000000    -0.4749160000
+H       0.7532010000     0.0000000000    -0.4749160000
+&quot;&quot;&quot;)
+basis  = gator.get_molecular_basis(struct,&#39;6-31G&#39;)
+scfres = gator.run_scf(struct,basis)
+adcres = gator.run_adc(struct,basis,scfres,method=&#39;cvs-adc2x&#39;,singlets=4,core_orbitals=1)
+</pre></div>
+</div>
+<p>or as an input file:</p>
+<div class="highlight-md notranslate"><div class="highlight"><pre><span></span><span class="ni">@jobs</span>
+task: adc
+<span class="ni">@end</span>
+...
+<span class="ni">@adc</span>
+method: cvs-adc2x
+core_orbitals: 1
+<span class="ni">@end</span>
+...
+</pre></div>
+</div>
+<p>[water with 6-311++G**?]</p>
+<p>Example input (bash and Python): CVS-ADC(2)-x and CPP-B3LYP and <span class="math notranslate nohighlight">\(\Delta\)</span>SCF ADC(2) and B3LYP (maybe overlap for B3LYP?)</p>
+<ul class="simple">
+<li><p>illustration: versus experiment (shifted) - XAS and XES</p></li>
+</ul>
+<div class="section" id="xas-in-continuum">
+<h2>XAS: In continuum<a class="headerlink" href="#xas-in-continuum" title="Permalink to this headline">¶</a></h2>
+<p>CVS and CPP.</p>
+<ul class="simple">
+<li><p>illustration: water spectrum for 0-1000 eV</p></li>
+</ul>
+</div>
+<div class="section" id="xes-delta-or-overlap-model">
+<h2>XES: delta or overlap model<a class="headerlink" href="#xes-delta-or-overlap-model" title="Permalink to this headline">¶</a></h2>
+<p>MOM etc</p>
+</div>
+<div class="section" id="relaxation-effects">
+<h2>Relaxation effects<a class="headerlink" href="#relaxation-effects" title="Permalink to this headline">¶</a></h2>
+<p>Inclusion through electron correlation, Maybe Z+1. Maybe <span class="math notranslate nohighlight">\(\Delta\)</span>SCF.</p>
+<ul class="simple">
+<li><p>Illustration: ADC(n) hierarchy (1, 2, 2x, 3 for water)</p></li>
+</ul>
+<p>Discuss difference XAS/XES</p>
+</div>
+<div class="section" id="tddft">
+<h2>TDDFT<a class="headerlink" href="#tddft" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="self-interaction-error">
+<h2>Self-interaction error<a class="headerlink" href="#self-interaction-error" title="Permalink to this headline">¶</a></h2>
+<p>While there is no principal differences in considering either the valence or core densities in DFT, the use of approximate functionals introduce an error that is more important to account for when core electrons are addressed: the self-interaction error (SIE). This error is a result of spurious self-interactions for all electrons, but the larger density of the core orbitals makes it more influential for such a considerations — localized densities have larger self-repulsion than delocalized densities. For a single-electron systems the following equality should hold for the two-electron terms:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-28bd92ec-dabd-47e2-8998-3121f43cdef3">
+<span class="eqno">(1)<a class="headerlink" href="#equation-28bd92ec-dabd-47e2-8998-3121f43cdef3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+J[\rho] + E_{xc} [\rho] = 0.0
+\end{equation}\]</div>
+<p>This cancellation is achieved for, e.g. Hartree–Fock theory, but for any approximate functionals in DFT it will instead result in an erronous contribution to the energy. As the erronous self-interaction occurs in terms of self-repulsion, this will lead to an increase in the energy of the orbital in question (i.e. the absolute value will decrease). The simplest correction to this error was proposed by Perdew and Zunger, by correcting the total exchange-correlation energy by a term</p>
+<div class="amsmath math notranslate nohighlight" id="equation-d0a2b899-eafe-4355-bcfb-6da744d103e2">
+<span class="eqno">(2)<a class="headerlink" href="#equation-d0a2b899-eafe-4355-bcfb-6da744d103e2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+XE PZ = E DFT -
+(J[\rho_i] + E_{xc}[\rho_i]),
+\end{equation}\]</div>
+<p>summed over all singly occupied orbitals. This correction improves the potential energy surfaces, but gives minor improvements for orbital energies. Several schemes of correcting the SIE also exists for correcting orbital energies, 111–113 but none have been utilized in this thesis — we argue instead that the relative energies are most important and thus, in most cases, treat the SIE as a scalar element-dependent error to be accounted for. The SIE will be more thoroughly discussed in Section 5.2, but we here want to reiterate that the self-interaction depends strongly on the density of the orbital, and is thus most significant for core electrons of heavy elements.</p>
+<p>DFT-based methods generally suffer from self-interaction error (SIE), which corresponds to the sum of Coulomb and exchange self-interactions that remain because of the use of approximate exchange functionals. In more detail, the Coulomb self-repulsion of each electron included in the Coulomb operator is exactly canceled by the nonlocal exchange self-attraction in Hartree–Fock theory, but this is no longer the case when the exchange operator is replaced by an approximate exchange functional. 128 For occupied orbitals, the SIE is defined as</p>
+<p>Imamura and Nakai have determined the ground-state SIE of the C(1s) orbital of CO and shown that it amounts to 0.76, 1.30, and 0.40 eV at the BLYP, 141,142 B3LYP, 143,144 and BHHLYP 145 levels of theory, respectively. 146 The source origin of this SIE in the SCF approximation is the Coulomb operator with its sum over occupied orbitals, and, without a cancellation from the full exact Hartree–Fock exchange operator, it will lead to the SIE given in eq 36. Virtual orbitals will consequently not see an SIE in accordance with that for occupied orbitals. Instead, Imamura and Nakai defined an SIE for virtual orbitals in the context of electronic transitions and which depends on the occupied core orbital from which an excitation takes place.</p>
+<ul class="simple">
+<li><p>Spectrum as function of exact exchange</p></li>
+<li><p>maybe table with RPA/TDA</p></li>
+<li><p>maybe something with B3LYP versus CAM or something? (Functional dependence)</p></li>
+</ul>
+</div>
+<div class="section" id="basis-set-dependence">
+<h2>Basis set dependence<a class="headerlink" href="#basis-set-dependence" title="Permalink to this headline">¶</a></h2>
+<p>Z-level, diffuse, tight</p>
+<ul class="simple">
+<li><p>illustration: DZ, TZ, CT, aCT with ADC and B3LYP</p></li>
+</ul>
+</div>
+<div class="section" id="analysis">
+<h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<p>Maybe explain input more</p>
+<p>Use of specialized CVS space?</p>
+<p>Polarization dependence - illustrate</p>
+<p>Atom assignment - illustrate</p>
+<p>Visualization and descriptors - illustrate/tabulate</p>
+<p>CVS versus CPP? Example</p>
+</div>
+<div class="section" id="application-others-also-check-exercises">
+<h2>Application? Others. Also check exercises<a class="headerlink" href="#application-others-also-check-exercises" title="Permalink to this headline">¶</a></h2>
+<p>Maybe: moving to heavier elements: splitting of 2p lines and quadrupole-allowed transitions</p>
+<p>Relativistic effects</p>
+<p>Maybe RIXS</p>
+<p>Consider ethylene, vinylfluoride, difluoroethylene, and trifluoroethylene:</p>
+<ol class="simple">
+<li><p>Compute the C K-edge X-ray absorption spectra of the ethylene molecule using CVS-ADC(0), CVS-ADC(1), and CVS-ADC(2) in combination with the def2-SVP basis set. Choose an appropriate core space. What are the differences between the spectra computed at the different CVS-ADC levels? Are the differences between levels of theory larger in the case of core excitations or valence excitations?</p></li>
+<li><p>Compute the C K-edge XAS of vinylfluoride at the CVS-ADC(2) level of theory and using the def2-SVP basis set. Choose an appropriate core space and an appropriate number of excitation vectors. How does your result compare to the calculated spectrum from Ref. \cite{fransson2013}?</p></li>
+<li><p>Plot your CVS-ADC(2) spectrum in comparison to the experimental spectrum from Ref. \cite{fransson2013} (provided in the file {vinylfluoride.dat}). Identify the contribution of each of the two chemically inequivalent carbon atoms to the experimental peaks.</p></li>
+<li><p>Compute also the C K-edge XAS spectra of difluoroethylene, and trifluoroethylene at the CVS-ADC(2) level of theory. Compare the spectra of ethylene, vinylfluoride, difluoroethylene, and trifluoroethylene to each other. What are the effects of fluorine substitution on the C K-edge spectrum? How large are the chemical shifts?</p></li>
+</ol>
+</div>
 </div>
 
     <script type="text/x-thebe-config">

@@ -19,39 +19,31 @@ nbclient.exceptions.CellExecutionError: An error occurred while executing the fo
 ------------------
 import veloxchem as vlx
 import multipsi as mtp
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy import interpolate
-from scipy.integrate import simps
-
-mol_str = """
-H     0.000000    0.000000   -0.370500
-H     0.000000    0.000000    0.370500
+O2_xyz="""2
+O2                                                                                                                         
+O    0.000000000000        0.000000000000       -0.600000000000 
+O    0.000000000000        0.000000000000        0.600000000000 
 """
 
-au_to_nm = 0.0529177 # length conversion factor
-Hz = 0.370500 / 10 / au_to_nm #Position of the H in atomic units.
+molecule = vlx.Molecule.from_xyz_string(O2_xyz)
+print(molecule.get_string())
 
-molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
-basis = vlx.MolecularBasis.read(molecule, 'sto-3g')
+basis = vlx.MolecularBasis.read(molecule,"STO-3G")
+print(basis.get_string(molecule))
 
-scf_drv = vlx.ScfRestrictedDriver()
-scf_drv.compute(molecule, basis)
-
-space=mtp.MolSpace(molecule,scf_drv.mol_orbs)
-space.FCI()
-CIdrv=mtp.CIDriver(molecule,basis,space)
-CIdrv.compute(1)
+scfdrv = vlx.ScfRestrictedDriver()
+scfdrv.compute(molecule, basis)
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-[0;32m<ipython-input-1-ece40c37425f>[0m in [0;36m<module>[0;34m[0m
+[0;32m<ipython-input-1-da51556469e1>[0m in [0;36m<module>[0;34m[0m
 [1;32m      1[0m [0;32mimport[0m [0mveloxchem[0m [0;32mas[0m [0mvlx[0m[0;34m[0m[0;34m[0m[0m
 [0;32m----> 2[0;31m [0;32mimport[0m [0mmultipsi[0m [0;32mas[0m [0mmtp[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      3[0m [0;32mimport[0m [0mmatplotlib[0m[0;34m.[0m[0mpyplot[0m [0;32mas[0m [0mplt[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m [0;32mimport[0m [0mnumpy[0m [0;32mas[0m [0mnp[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      5[0m [0;32mfrom[0m [0mscipy[0m [0;32mimport[0m [0minterpolate[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      3[0m [0;32mimport[0m [0mnumpy[0m [0;32mas[0m [0mnp[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m O2_xyz="""2
+[1;32m      5[0m [0mO2[0m[0;34m[0m[0;34m[0m[0m
 
 [0;31mModuleNotFoundError[0m: No module named 'multipsi'
 ModuleNotFoundError: No module named 'multipsi'
