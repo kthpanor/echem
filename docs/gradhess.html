@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Conical intersection &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>Gradients and Hessians &#8212; Computational Chemistry from  Laptop to HPC</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -51,8 +51,8 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Molecular dynamics" href="moldyn.html" />
-    <link rel="prev" title="Transition-state theory" href="tst.html" />
+    <link rel="next" title="Force fields" href="forcefields.html" />
+    <link rel="prev" title="Choice of coordinates" href="coordinates.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -235,23 +235,23 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="pes-general.html">
    General aspects
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="coordinates.html">
      Choice of coordinates
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="gradhess.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Gradients and Hessians
     </a>
    </li>
@@ -272,8 +272,8 @@
    Transition-state theory
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="conint.html">
    Conical intersection
   </a>
  </li>
@@ -386,7 +386,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/conint.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/gradhess.md"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -406,7 +406,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdocs/conint.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdocs/gradhess.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -427,6 +427,60 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gradients">
+   Gradients
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ground-state">
+     Ground state
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#hartree-fock">
+       Hartree–Fock
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#dft">
+       DFT
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#mp2">
+       MP2
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#excited-states">
+     Excited states
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tamm-dancoff-approximation">
+       Tamm–Dancoff approximation
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hessians">
+   Hessians
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -435,8 +489,32 @@
         
               <div>
                 
-  <div class="section" id="conical-intersection">
-<h1>Conical intersection<a class="headerlink" href="#conical-intersection" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gradients-and-hessians">
+<h1>Gradients and Hessians<a class="headerlink" href="#gradients-and-hessians" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="gradients">
+<h2>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ground-state">
+<h3>Ground state<a class="headerlink" href="#ground-state" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="hartree-fock">
+<h4>Hartree–Fock<a class="headerlink" href="#hartree-fock" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="dft">
+<h4>DFT<a class="headerlink" href="#dft" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="mp2">
+<h4>MP2<a class="headerlink" href="#mp2" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="excited-states">
+<h3>Excited states<a class="headerlink" href="#excited-states" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tamm-dancoff-approximation">
+<h4>Tamm–Dancoff approximation<a class="headerlink" href="#tamm-dancoff-approximation" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+</div>
+<div class="section" id="hessians">
+<h2>Hessians<a class="headerlink" href="#hessians" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -464,8 +542,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="tst.html" title="previous page">Transition-state theory</a>
-    <a class='right-next' id="next-link" href="moldyn.html" title="next page">Molecular dynamics</a>
+    <a class='left-prev' id="prev-link" href="coordinates.html" title="previous page">Choice of coordinates</a>
+    <a class='right-next' id="next-link" href="forcefields.html" title="next page">Force fields</a>
 
         </div>
         
