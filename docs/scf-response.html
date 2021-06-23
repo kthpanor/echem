@@ -799,19 +799,16 @@ S^{[2]} &amp; = &amp;
 <p>Let us consider ethylene in a minimal basis set. We perform an SCF optimization of the Hartree–Fock reference state with use of the VeloxChem program. The dictonary <code class="docutils literal notranslate"><span class="pre">scf_tensors</span></code> contains information of the SCF calculation and we retrieve the orbital energies.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="s1">&#39;/dev/null&#39;</span><span class="p">)</span> <span class="c1"># we will suppress program output</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="c1"># suppress program output</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
+* Warning * Setting OMP_NUM_THREADS to 4.
 </pre></div>
 </div>
 </div>
@@ -829,7 +826,7 @@ S^{[2]} &amp; = &amp;
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31g&quot;</span><span class="p">)</span>
 
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
@@ -867,7 +864,7 @@ Dimension of A-block in E2: 144
 <p>We get the <span class="math notranslate nohighlight">\(E^{[2]}\)</span>-matrix from the <code class="docutils literal notranslate"><span class="pre">LinearResponseEigenSolver</span></code> class object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 
 <span class="c1"># index position for (pi,pi*) excitation</span>
@@ -930,7 +927,7 @@ Diagonal element for the (pi,pi*)-excitation:  0.722298 a.u.
 <p>We get the <span class="math notranslate nohighlight">\(V^{\omega,[1]}\)</span>-vector from the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> class object. We assume the perturbation operator to equal minus the electric dipole moment operator along the <span class="math notranslate nohighlight">\(x\)</span>-axis, i.e., the molecular C–C axis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 
 <span class="n">mu_x</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">mu_y</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -1014,7 +1011,7 @@ V^{\omega,[1]}
 <p>A reduced-space iterative algorithm for solving the linear response funciton is available from the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> class object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1077,7 +1074,7 @@ alpha_zz(0):  7.201370
 <p>In this example, the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> was using its default settings for operators and frequencies, both of which can be changed. We change the value of the optical frequency from the default zero to 0.0656 a.u. with use of the dictionary <code class="docutils literal notranslate"><span class="pre">rsp_settings</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0656</span><span class="p">]}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Hartree-Fock is default</span>
 <span class="n">lrs_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
@@ -1130,7 +1127,7 @@ alpha_zz(w=0.0656):  7.244821
 <p>From linear response theory, we can also obtain excitation energies and transition moments. An iterative reduced-spece solution of the generlized eigenvalue equation is provided by the <code class="docutils literal notranslate"><span class="pre">LinearResponseEigenSolver</span></code> class object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nstates&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span> <span class="c1"># the (pi,pi*)-transition</span>
 <span class="n">lres_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
@@ -1268,8 +1265,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="transition-moments">
 <h4>Transition moments<a class="headerlink" href="#transition-moments" title="Permalink to this headline">¶</a></h4>
 <p>Since <span class="math notranslate nohighlight">\((\Omega \Lambda)^{-1} = \Lambda^{-1} \Omega^{-1}\)</span>, we can form the inverse of the RPA matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d855d9bd-cf06-411e-8a2c-8a18c76d946f">
-<span class="eqno">(4)<a class="headerlink" href="#equation-d855d9bd-cf06-411e-8a2c-8a18c76d946f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-84278e7f-afab-45a5-acd2-669c01d585f7">
+<span class="eqno">(4)<a class="headerlink" href="#equation-84278e7f-afab-45a5-acd2-669c01d585f7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \left( E^{[2]} - \omega S^{[2]} \right)^{-1} =
   X \left[ X^\dagger \left( E^{[2]} - \omega S^{[2]} \right) X \right]^{-1} X^\dagger
 \end{equation}\]</div>
@@ -1319,7 +1316,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.):  1.531506
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -1.531506
 </pre></div>
 </div>
 </div>
@@ -1329,8 +1326,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="tamm-dancoff-approximation">
 <h3>Tamm–Dancoff approximation<a class="headerlink" href="#tamm-dancoff-approximation" title="Permalink to this headline">¶</a></h3>
 <p>The Tamm–Dancoff approximation (TDA) corresponds to setting <span class="math notranslate nohighlight">\(B=0\)</span> in the electronic Hessian and diagonalize matrix block <span class="math notranslate nohighlight">\(A\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-45b7e096-364d-455e-948c-af87e9876a0c">
-<span class="eqno">(5)<a class="headerlink" href="#equation-45b7e096-364d-455e-948c-af87e9876a0c" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-301ef596-6096-4b3d-b38a-93949b715ae2">
+<span class="eqno">(5)<a class="headerlink" href="#equation-301ef596-6096-4b3d-b38a-93949b715ae2" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 E^{[2]} &amp; = &amp;
 	\begin{pmatrix}
     \rule[-5pt]{0pt}{20pt}
@@ -1345,7 +1342,7 @@ E^{[2]} &amp; = &amp;
 <p>The <code class="docutils literal notranslate"><span class="pre">TDAExciDriver</span></code> class object implements an iterative reduced-space TDA solver.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">tda_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">tda_results</span> <span class="o">=</span> <span class="n">tda_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 <span class="n">tda_eig_vals</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
@@ -1496,8 +1493,8 @@ T = U \Lambda V^T
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0. -0.  0.  0. -0.  0.  0.  1.]
-Electron orbital no. 1: [-1.    0.    0.    0.    0.    0.    0.   -0.   -0.    0.04 -0.   -0.   -0.   -0.    0.   -0.    0.   -0.  ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [-0. -0. -0. -0.  0. -0.  0. -1.]
+Electron orbital no. 1: [-1.   -0.    0.   -0.    0.    0.    0.    0.   -0.    0.04  0.   -0.    0.    0.   -0.   -0.   -0.    0.  ]
 </pre></div>
 </div>
 </div>
@@ -1527,7 +1524,7 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
 <p>We can determine complex response functions by means of the <code class="docutils literal notranslate"><span class="pre">ComplexResponse</span></code> class object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ComplexResponse</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ComplexResponse</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 
 <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.0025</span><span class="p">)</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="n">freqs</span><span class="p">}</span>
