@@ -452,8 +452,23 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#electronic-wave-functions">
-   Electronic wave functions
+  <a class="reference internal nav-link" href="#electronic-wave-functions-and-molecular-orbitals">
+   Electronic wave functions and molecular orbitals
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-combination-of-atomic-orbitals">
+   Linear combination of atomic orbitals
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ordering-of-atomic-orbitals">
+   Ordering of atomic orbitals
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overlap-matrix">
+   Overlap matrix
   </a>
  </li>
 </ul>
@@ -469,8 +484,8 @@
                 
   <div class="section" id="orbitals">
 <h1>Orbitals<a class="headerlink" href="#orbitals" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="electronic-wave-functions">
-<h2>Electronic wave functions<a class="headerlink" href="#electronic-wave-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="electronic-wave-functions-and-molecular-orbitals">
+<h2>Electronic wave functions and molecular orbitals<a class="headerlink" href="#electronic-wave-functions-and-molecular-orbitals" title="Permalink to this headline">¶</a></h2>
 <p>State vectors representing single-electron systems reside in a Hilbert space formed as a direct product</p>
 <div class="math notranslate nohighlight">
 \[
@@ -553,7 +568,7 @@ n(\mathbf{r},t) =
 \psi^{\mathrm{L}\beta}
 \end{pmatrix}
 \end{split}\]</div>
-<p>For a system described by a spin-independent Hamiltonian, the spatial and spin degrees of freedom are separable and we arrive at (suppressing the time variable)</p>
+<p>For a system described by a spin-independent Hamiltonian, the spatial and spin degrees of freedom are separable and we arrive at (suppressing the time variable) single-electron wave functions, or spin orbitals, of the form</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \psi(\mathbf{r}) =
@@ -570,15 +585,145 @@ c_\beta
 1
 \end{pmatrix}
 \end{split}\]</div>
-<ul class="simple">
-<li><p>molecular orbitals</p>
-<ul>
-<li><p>spin orbitals</p></li>
-<li><p>spatial orbitals</p></li>
-</ul>
-</li>
-<li><p>linear combination of atomic orbitals</p></li>
-</ul>
+<p>In the collinear approximation, all spin orbitals are eigenfunctions of the spin operator <span class="math notranslate nohighlight">\(\hat{s}_z\)</span> such that every spatial function (or molecular orbital), <span class="math notranslate nohighlight">\(\phi(\mathrm{r})\)</span>, gives rise to two spin orbitals</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\psi_{a}(\mathbf{r}) = \phi_a(\mathbf{r})
+\begin{pmatrix}
+1 \\
+0
+\end{pmatrix} ; \quad
+\psi_{\bar{a}}(\mathbf{r}) = \phi_a(\mathbf{r})
+\begin{pmatrix}
+0 \\
+1
+\end{pmatrix}
+\end{split}\]</div>
+<p>referred to as <span class="math notranslate nohighlight">\(\alpha\)</span>- and <span class="math notranslate nohighlight">\(\beta\)</span>-spin orbitals, respectively.</p>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+
+<span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">C        0.00000000    0.00000000    0.00000000</span>
+<span class="s2">O        0.00000000    0.00000000    1.43</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;sto-3g&quot;</span><span class="p">)</span>
+
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="linear-combination-of-atomic-orbitals">
+<h2>Linear combination of atomic orbitals<a class="headerlink" href="#linear-combination-of-atomic-orbitals" title="Permalink to this headline">¶</a></h2>
+<p>In quantum chemistry, molecular orbitals (MOs) are normally expanded in a set of atom-centered basis functions, or localized atomic orbitals (AOs)</p>
+<div class="math notranslate nohighlight">
+\[
+\phi_a(\mathbf{r}) =
+\sum_\alpha
+c_{\alpha a} \chi_\alpha(\mathbf{r} - \mathbf{R}_\alpha)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{R}_\alpha\)</span> denotes the atomic position center of basis function <span class="math notranslate nohighlight">\(\chi_\alpha\)</span>, and the expansion coefficients <span class="math notranslate nohighlight">\(c_{\alpha a}\)</span> are known as molecular orbital (MO) coefficients. Using the Dirac notation, this linear combination of atomic orbitals (LCAO) expansion takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+| \phi_a \rangle =
+\sum_\alpha
+| \chi_\alpha \rangle c_{\alpha a}
+\]</div>
+<p>It can be convenient to collect the set of MOs (and AOs) as a row vector and introduce a notation</p>
+<div class="math notranslate nohighlight">
+\[
+| \overline{\phi} \rangle = (\ldots, | \phi_a \rangle, \ldots)
+\]</div>
+<p>The LCAO expansion for the entire set of MOs can then be compactly written as</p>
+<div class="math notranslate nohighlight">
+\[
+| \overline{\phi} \rangle = | \overline{\chi} \rangle C
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(C\)</span> is the MO coefficient matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">suppress</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">170</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MO coefficient matrix:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO coefficient matrix:
+ [[-0.001 -0.994 -0.091  0.228 -0.109  0.     0.     0.    -0.     0.105]
+ [ 0.004 -0.024  0.26  -0.836  0.47  -0.    -0.    -0.     0.    -0.536]
+ [-0.995 -0.    -0.231 -0.114 -0.036  0.    -0.    -0.    -0.    -0.089]
+ [-0.023  0.005  0.856  0.526  0.196 -0.     0.     0.     0.     0.547]
+ [-0.     0.    -0.    -0.     0.     0.42   0.099  0.132  0.903 -0.   ]
+ [-0.     0.     0.     0.     0.     0.825  0.194 -0.079 -0.542  0.   ]
+ [ 0.004 -0.004  0.141  0.003 -0.621  0.     0.    -0.    -0.    -0.942]
+ [ 0.003 -0.002 -0.112  0.38   0.578 -0.    -0.    -0.    -0.    -0.852]
+ [ 0.     0.     0.     0.     0.    -0.099  0.42  -0.903  0.132  0.   ]
+ [-0.    -0.    -0.    -0.     0.    -0.194  0.825  0.542 -0.079 -0.   ]]
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ordering-of-atomic-orbitals">
+<h2>Ordering of atomic orbitals<a class="headerlink" href="#ordering-of-atomic-orbitals" title="Permalink to this headline">¶</a></h2>
+<p>The VeloxChem program orders AO basis functions based on</p>
+<ol class="simple">
+<li><p>Angular momentum quantum number, <span class="math notranslate nohighlight">\(l\)</span></p></li>
+<li><p>Angular momentum quantum number, <span class="math notranslate nohighlight">\(m_l\)</span></p></li>
+<li><p>User-defined order of atoms</p></li>
+</ol>
+<p>In our present example of carbon monoxide using a mimal basis set, the order of basis functions become</p>
+<p><span class="math notranslate nohighlight">\(\chi_{1s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{O}\)</span>
+<span class="math notranslate nohighlight">\(\chi_{2py}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2py}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{O}\)</span></p>
+</div>
+<div class="section" id="overlap-matrix">
+<h2>Overlap matrix<a class="headerlink" href="#overlap-matrix" title="Permalink to this headline">¶</a></h2>
+<p>The overlap between two basis functions is</p>
+<div class="math notranslate nohighlight">
+\[
+S_{\alpha\beta} = \langle \chi_\alpha | \chi_\beta \rangle
+\]</div>
+<p>and the overlap matrix can be written as</p>
+<div class="math notranslate nohighlight">
+\[
+S = \langle \overline{\chi} | \overline{\chi} \rangle
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \overline{\chi} | = 
+(\ldots, \langle \chi_\alpha |, \ldots)^T
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Overlap matrix:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overlap matrix:
+ [[ 1.     0.248  0.     0.017  0.     0.     0.    -0.031  0.     0.   ]
+ [ 0.248  1.     0.022  0.255  0.     0.     0.    -0.251  0.     0.   ]
+ [ 0.     0.022  1.     0.237  0.     0.     0.036  0.     0.     0.   ]
+ [ 0.017  0.255  0.237  1.     0.     0.     0.337  0.     0.     0.   ]
+ [ 0.     0.     0.     0.     1.     0.132  0.     0.     0.     0.   ]
+ [ 0.     0.     0.     0.     0.132  1.     0.     0.     0.     0.   ]
+ [ 0.     0.     0.036  0.337  0.     0.     1.    -0.285  0.     0.   ]
+ [-0.031 -0.251  0.     0.     0.     0.    -0.285  1.     0.     0.   ]
+ [ 0.     0.     0.     0.     0.     0.     0.     0.     1.     0.132]
+ [ 0.     0.     0.     0.     0.     0.     0.     0.     0.132  1.   ]]
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
