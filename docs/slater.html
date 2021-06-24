@@ -49,6 +49,8 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Second quantization" href="secondquant.html" />
@@ -386,9 +388,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/slater.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/slater.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
             onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -422,11 +424,106 @@
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/docs/slater.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#many-electron-wave-functions">
+   Many-electron wave functions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pauli-principle">
+     Pauli principle
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Slater determinants
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#unitary-orbital-transformations">
+       Unitary orbital transformations
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#operators">
+   Operators
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#one-electron-operators">
+     One-electron operators
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#two-electron-operators">
+     Two-electron operators
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#matrix-elements-for-slater-determinants">
+   Matrix elements for Slater determinants
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#numerical-example">
+     Numerical example
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#expectation-value-of-one-electron-hamiltonian">
+       Expectation value of one-electron Hamiltonian
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#expectation-value-of-two-electron-hamiltonian">
+       Expectation value of two-electron Hamiltonian
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#expectation-value-of-electronic-hamiltonian">
+       Expectation value of electronic Hamiltonian
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -437,6 +534,285 @@
                 
   <div class="section" id="slater-determinants">
 <h1>Slater determinants<a class="headerlink" href="#slater-determinants" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="many-electron-wave-functions">
+<h2>Many-electron wave functions<a class="headerlink" href="#many-electron-wave-functions" title="Permalink to this headline">¶</a></h2>
+<p>State vectors for a system with <span class="math notranslate nohighlight">\(N\)</span> electrons are elements of a Hilbert space of the form</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{V} =
+\mathcal{V}^1 \otimes \mathcal{V}^2 \otimes \cdots \otimes \mathcal{V}^N
+\]</div>
+<p>where the separate particle spaces are described under the section discussing <a class="reference internal" href="orbitals.html#sec-orbitals"><span class="std std-ref">orbitals</span></a>.</p>
+<div class="section" id="pauli-principle">
+<h3>Pauli principle<a class="headerlink" href="#pauli-principle" title="Permalink to this headline">¶</a></h3>
+<p>Electrons are fermions and obey the Pauli principle so <span class="math notranslate nohighlight">\(\mathcal{V}\)</span> is limited to include only anti-symmetrized state vectors</p>
+<div class="math notranslate nohighlight">
+\[
+| \Psi \rangle =
+\frac{1}{\sqrt{N!}}
+\sum \mathcal{P}_{1,2,\ldots,N}
+\Big[
+| \psi_{a1} \rangle \otimes | \psi_{a2} \rangle \otimes \cdots \otimes | \psi_{aN} \rangle 
+\Big]
+\]</div>
+<p>where the sum includes all <span class="math notranslate nohighlight">\(N!\)</span> permutations of the <span class="math notranslate nohighlight">\(N\)</span> spin orbitals, <span class="math notranslate nohighlight">\(| \psi_{ai} \rangle\)</span>, in the <span class="math notranslate nohighlight">\(N\)</span> particle spaces.</p>
+</div>
+<div class="section" id="id1">
+<h3>Slater determinants<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Expressed in coordinate space, the anti-symmetrized state vectors are known as Slater determinants</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+    | \Psi \rangle =
+    |\psi_{a1}, \ldots, \psi_{aN} \rangle \leftrightarrow
+    \frac{1}{\sqrt{N!}}
+    \begin{vmatrix}
+    \psi_{a1}(\mathbf{r}_1) &amp; \cdots &amp; \psi_{aN}(\mathbf{r}_1) \\
+    \vdots &amp; \ddots &amp; \vdots \\
+    \psi_{a1}(\mathbf{r}_N) &amp; \cdots &amp; \psi_{aN}(\mathbf{r}_N) \\
+    \end{vmatrix} 
+\end{split}\]</div>
+<p>With a set of spin orbitals that spans the one-electron space <span class="math notranslate nohighlight">\(\mathcal{V}^1\)</span>, the set of all distinct Slater determinants span the <span class="math notranslate nohighlight">\(N\)</span>-electron space <span class="math notranslate nohighlight">\(\mathcal{V}\)</span>.</p>
+<div class="section" id="unitary-orbital-transformations">
+<h4>Unitary orbital transformations<a class="headerlink" href="#unitary-orbital-transformations" title="Permalink to this headline">¶</a></h4>
+<p>Let <span class="math notranslate nohighlight">\(A\)</span> be a matrix with orbital values as elements</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A =
+\begin{pmatrix}
+    \psi_{a1}(\mathbf{r}_1) &amp; \cdots &amp; \psi_{aN}(\mathbf{r}_1) \\
+    \vdots &amp; \ddots &amp; \vdots \\
+    \psi_{a1}(\mathbf{r}_N) &amp; \cdots &amp; \psi_{aN}(\mathbf{r}_N) \\
+\end{pmatrix}
+\end{split}\]</div>
+<p>such that the Slater determinant is equal to</p>
+<div class="math notranslate nohighlight">
+\[
+\Psi_A(\mathbf{r}_1, \ldots, \mathbf{r}_N) =
+\frac{1}{\sqrt{N!}} \mathrm{det}\big(A\big)
+\]</div>
+<p>Let matrix <span class="math notranslate nohighlight">\(B\)</span> relate to <span class="math notranslate nohighlight">\(A\)</span> by means of a unitary tranformation</p>
+<div class="math notranslate nohighlight">
+\[
+B = A U
+\]</div>
+<p>Since, for deteminants, we have</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{det}\big(B\big) =
+\mathrm{det}\big(A U\big) = \mathrm{det}\big(A\big) \mathrm{det}\big(U\big) =
+\mathrm{det}\big(A\big) e^{i\phi}
+\]</div>
+<p>This shows that a unitary transformation of occupied orbitals in a Slater deteminant does not change the many-electron wave function with more than a trivial overall phase factor.</p>
+</div>
+</div>
+</div>
+<div class="section" id="operators">
+<h2>Operators<a class="headerlink" href="#operators" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="one-electron-operators">
+<h3>One-electron operators<a class="headerlink" href="#one-electron-operators" title="Permalink to this headline">¶</a></h3>
+<p>One-electron operators take the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\Omega} =
+\hat{\omega} \otimes \hat{I} \otimes \cdots \otimes \hat{I} + \cdots +
+\hat{I} \otimes \hat{I} \otimes \cdots \otimes \hat{\omega}
+\]</div>
+<p>Despite the name, one-electron operators act on many-electron wave functions, but each term in the sum has a non-trivial action only in a single particle space. Furthermore, the non-trivial one-particle operator <span class="math notranslate nohighlight">\(\hat{\omega}\)</span> is identical in all terms in the sum.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is a common practice to leave out a reference to identiy operators.</p>
+</div>
+<p>Example: The kinetic energy operator for a <span class="math notranslate nohighlight">\(N\)</span>-electron system can be written</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{K} = 
+\sum_{i=1}^N
+\frac{\hat{p}^2(i)}{2 m_\mathrm{e}}
+\]</div>
+<p>where the particle index, <span class="math notranslate nohighlight">\(i\)</span>, is used to denote in which particle space the action takes place.</p>
+</div>
+<div class="section" id="two-electron-operators">
+<h3>Two-electron operators<a class="headerlink" href="#two-electron-operators" title="Permalink to this headline">¶</a></h3>
+<p>Two-electron operators take the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\Omega} =
+\sum_{j &gt; i}^N
+\hat{\omega}(i,j)
+\]</div>
+<p>Analogous to one-electron operators, two-electron operators act on many-electron wave functions, but each term in the sum has a non-trivial action only in a two particle spaces. Furthermore, the non-trivial two-particle operator <span class="math notranslate nohighlight">\(\hat{\omega}(i,j)\)</span> is identical in all terms in the sum, where the particle indices, <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, are used to denote in which two particle spaces the action takes place.</p>
+<p>Example: The Coulomb repulsion operator for a <span class="math notranslate nohighlight">\(N\)</span>-electron system can be written</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{V}^\mathrm{e-e} = 
+\sum_{j &gt; i}^N
+\frac{e^2}{4 \pi \varepsilon_0 |\mathbf{r}_i - \mathbf{r}_j|}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(e\)</span> is the elementary charge.</p>
+</div>
+</div>
+<div class="section" id="matrix-elements-for-slater-determinants">
+<h2>Matrix elements for Slater determinants<a class="headerlink" href="#matrix-elements-for-slater-determinants" title="Permalink to this headline">¶</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(|\Psi \rangle\)</span> be a Slater determinant for an <span class="math notranslate nohighlight">\(N\)</span>-electron system.</p>
+<p>With <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span> being a one-electron operator, the pertinent matrix elements become</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+    \langle \Psi | \hat{\Omega} | \Psi \rangle &amp;=
+    \sum_{i}^\mathrm{occ}
+    \langle i| \hat{\omega} | i \rangle
+    \\
+    \langle \Psi | \hat{\Omega} | \Psi_{i}^{s} \rangle &amp;=
+    \langle i|  \hat{\omega} |s \rangle 
+\end{align*}\]</div>
+<p>With <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span> being a two-electron operator, the pertinent matrix elements become</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+    \langle \Psi | \hat{\Omega} | \Psi \rangle &amp;=
+    \frac{1}{2} \sum_{i,j}^\mathrm{occ}
+    \left[\rule{0pt}{12pt}
+    \langle ij| \hat{\omega} | ij \rangle - \langle ij|  \hat{\omega} |ji \rangle
+    \right]
+    \\
+    \langle \Psi | \hat{\Omega} | \Psi_{i}^{s} \rangle &amp;=
+    \sum_{j}^\mathrm{occ}
+    \left[\rule{0pt}{12pt}
+    \langle ij|  \hat{\omega} |sj \rangle - \langle ij|  \hat{\omega} |js \rangle
+    \right]
+    \\
+    \langle \Psi | \hat{\Omega} | \Psi_{ij}^{st} \rangle &amp;=
+     \langle ij|  \hat{\omega} |st \rangle - \langle ij|  \hat{\omega} |ts \rangle
+\end{align*}\]</div>
+<p>The two-electron integrals are here written in physicist’s notation and summation run over occupied spin orbitals.</p>
+<div class="section" id="numerical-example">
+<h3>Numerical example<a class="headerlink" href="#numerical-example" title="Permalink to this headline">¶</a></h3>
+<p>Let us determine expectation values of the one- and two-electron parts of the electronic many-electron Hamiltonian for carbon monoxide with respect to a Slater deteminant in terms of the closed-shell Hartree–Fock ground state.</p>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">C        0.00000000    0.00000000    0.00000000</span>
+<span class="s2">O        0.00000000    0.00000000    1.43</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;cc-pVDZ&#39;</span><span class="p">)</span>
+
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Some information after the SCF optimization.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
+
+<span class="n">E_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
+<span class="n">E_tot</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+<span class="n">E_elec</span> <span class="o">=</span> <span class="n">E_tot</span> <span class="o">-</span> <span class="n">E_nuc</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of occupied orbitals:&#39;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nuclear repulsion energy: </span><span class="si">{</span><span class="n">E_nuc</span> <span class="si">:</span><span class="s1"> 19.12f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Electronic energy: </span><span class="si">{</span><span class="n">E_elec</span> <span class="si">:</span><span class="s1"> 26.12f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total Hartree-Fock energy: </span><span class="si">{</span><span class="n">E_tot</span> <span class="si">:</span><span class="s1"> 18.12f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals: 7
+Nuclear repulsion energy:     17.762591695217
+Electronic energy:          -130.366128021001
+Total Hartree-Fock energy:  -112.603536325784
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="expectation-value-of-one-electron-hamiltonian">
+<h4>Expectation value of one-electron Hamiltonian<a class="headerlink" href="#expectation-value-of-one-electron-hamiltonian" title="Permalink to this headline">¶</a></h4>
+<p>For a closed-shell Slater determinant, the expectation value of a one-electron operator becomes</p>
+<div class="math notranslate nohighlight">
+\[
+    \langle \Psi | \hat{\Omega} | \Psi \rangle = 2
+    \sum_{i}^\mathrm{occ}
+    ( i| \hat{\omega} | i )
+\]</div>
+<p>where the sum now runs over doubly occpuied molecular orbitals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kin_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
+<span class="n">T_ao</span> <span class="o">=</span> <span class="n">kin_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ai, ab, bj -&gt; ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">T_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+
+<span class="n">npot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
+<span class="n">V_ao</span> <span class="o">=</span> <span class="o">-</span><span class="n">npot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ai, ab, bj -&gt; ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">V_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+
+<span class="c1"># core Hamiltonian</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
+
+<span class="n">h_aver</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="n">h</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expectation value of one-electron Hamiltonian:&#39;</span><span class="p">,</span> <span class="n">h_aver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Expectation value of one-electron Hamiltonian: -188.97928533248333
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="expectation-value-of-two-electron-hamiltonian">
+<h4>Expectation value of two-electron Hamiltonian<a class="headerlink" href="#expectation-value-of-two-electron-hamiltonian" title="Permalink to this headline">¶</a></h4>
+<p>For a closed-shell Slater determinant, the expectation value of a two-electron operator becomes</p>
+<div class="math notranslate nohighlight">
+\[
+    \langle \Psi | \hat{\Omega} | \Psi \rangle =
+    \sum_{i,j}^\mathrm{occ}
+    \left[\rule{0pt}{12pt}
+    2 ( ii| \hat{\omega} | jj ) - ( ij|  \hat{\omega} |ji )
+    \right]
+\]</div>
+<p>where the sum now runs over doubly occpuied molecular orbitals in the spatial two-electron integrals (Coulomb and exchange) are written in the chemist’s notation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># obtain all-occupied &quot;OOOO&quot;-block of ERIs in physicist&#39;s notation</span>
+<span class="n">moints_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MOIntegralsDriver</span><span class="p">()</span>
+<span class="n">ijij</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OOOO&quot;</span><span class="p">)</span>
+
+<span class="n">g_aver</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijij&#39;</span><span class="p">,</span> <span class="n">ijij</span><span class="p">[:,:,:,:])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijji&#39;</span><span class="p">,</span> <span class="n">ijij</span><span class="p">[:,:,:,:])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expectation value of two-electron Hamiltonian:&#39;</span><span class="p">,</span> <span class="n">g_aver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Expectation value of two-electron Hamiltonian: 58.613157311482574
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="expectation-value-of-electronic-hamiltonian">
+<h4>Expectation value of electronic Hamiltonian<a class="headerlink" href="#expectation-value-of-electronic-hamiltonian" title="Permalink to this headline">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expectation value of electronic Hamiltonian:&#39;</span><span class="p">,</span> <span class="n">h_aver</span> <span class="o">+</span> <span class="n">g_aver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Expectation value of electronic Hamiltonian: -130.36612802100075
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
