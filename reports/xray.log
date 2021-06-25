@@ -1,0 +1,45 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 553, in async_execute
+    await self.async_execute_cell(
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+from pyscf import gto, scf
+import copy
+mol = gto.Mole()
+mol.atom  = mol_str; mol.basis = '6-31G'
+mol.build(); scfres = scf.UHF(mol); scfres.kernel()
+# create a core-hole in beta 1s (MO1)
+mo0 = copy.deepcopy(scfres.mo_coeff); occ0 = copy.deepcopy(scfres.mo_occ)
+occ0[0][0] = 0.0
+scfion = scf.UHF(mol); scfion.conv_tol = 1e-12; scfion.conv_tol_grad = 1e-9
+scf.addons.mom_occ(scfion, mo0, occ0)
+scfion.kernel()
+print('Ionization potential:',np.around(au2ev*(scfion.energy_tot() - scfres.energy_tot()),3),'eV')
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+[0;32m<ipython-input-2-210fcb1a927c>[0m in [0;36m<module>[0;34m[0m
+[0;32m----> 1[0;31m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mgto[0m[0;34m,[0m [0mscf[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      2[0m [0;32mimport[0m [0mcopy[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      3[0m [0mmol[0m [0;34m=[0m [0mgto[0m[0;34m.[0m[0mMole[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m [0mmol[0m[0;34m.[0m[0matom[0m  [0;34m=[0m [0mmol_str[0m[0;34m;[0m [0mmol[0m[0;34m.[0m[0mbasis[0m [0;34m=[0m [0;34m'6-31G'[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0mmol[0m[0;34m.[0m[0mbuild[0m[0;34m([0m[0;34m)[0m[0;34m;[0m [0mscfres[0m [0;34m=[0m [0mscf[0m[0;34m.[0m[0mUHF[0m[0;34m([0m[0mmol[0m[0;34m)[0m[0;34m;[0m [0mscfres[0m[0;34m.[0m[0mkernel[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mModuleNotFoundError[0m: No module named 'pyscf'
+ModuleNotFoundError: No module named 'pyscf'
+
