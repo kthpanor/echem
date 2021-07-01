@@ -388,9 +388,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/wft-general.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/wft-general.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
             onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -424,6 +424,23 @@
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/docs/wft-general.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
@@ -442,6 +459,16 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#variational-principle">
    Variational principle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#electron-correlation">
+   Electron correlation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#integral-transformation-techniques">
+   Integral transformation techniques
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -473,6 +500,341 @@
 </div>
 <div class="section" id="variational-principle">
 <h2>Variational principle<a class="headerlink" href="#variational-principle" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="electron-correlation">
+<h2>Electron correlation<a class="headerlink" href="#electron-correlation" title="Permalink to this headline">¶</a></h2>
+<p>The electron correlation describes instantaneous interaction between electrons in a molecular system. This interaction manifests itself as a relationship between one- and two-electron density matrices</p>
+<div class="math notranslate nohighlight">
+\[
+\rho(\mathbf{r}, \mathbf{r}') \neq \rho(\mathbf{r}) \rho(\mathbf{r}')
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\rho(\mathbf{r}, \mathbf{r}')\)</span> is the two-electron density. If the molecular system is described by the wave function model, which does not permit instantaneous electron interaction, the relationship between density matrices becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\rho(\mathbf{r}, \mathbf{r}') = \rho(\mathbf{r}) \rho(\mathbf{r}')
+\]</div>
+<p>indicating completely independent motion of electron in the molecular system. The electron correlation arises from two primary sources fermionic nature of electrons and interaction between electrons. From the perspective of the Hartree-Fock method,  the fermionic nature of electrons is accounted for by the construction of wave function from a single Slater determinant, and the latter source of electron correlation is neglected by introducing effective Coulomb interaction between electrons. The ability of the wave function model to describe electron correlation can be quantified via electron correlation energy <span class="math notranslate nohighlight">\(E_{corr}\)</span>, which is defined following Löwdin <span id="id1">[<a class="reference internal" href="intro.html#id123">Low80</a>]</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+E_{corr} = E_{WF} - E_{HF} \ , 
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(E_{WF}\)</span> is the energy of the molecular system computed by the selected wave function model, <span class="math notranslate nohighlight">\(E_{HF}\)</span> is the energy of the molecular system computed using the Hartree-Fock method.</p>
+<p>To illustrate these concepts, we will use the configuration interaction (CI) method on the H<span class="math notranslate nohighlight">\(_2\)</span> molecule. The theory for the method will be explained in the next section. For now, it suffices to say that it provides the exact correlation energy within the chosen atomic basis set.</p>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simps</span>
+
+<span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">H     0.000000    0.000000   -0.370500</span>
+<span class="s2">H     0.000000    0.000000    0.370500</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">au_to_nm</span> <span class="o">=</span> <span class="mf">0.0529177</span> <span class="c1"># length conversion factor</span>
+<span class="n">Hz</span> <span class="o">=</span> <span class="mf">0.370500</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">/</span> <span class="n">au_to_nm</span> <span class="c1">#Position of the H in atomic units.</span>
+
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;sto-3g&#39;</span><span class="p">)</span>
+
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">MolSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">()</span>
+<span class="n">CIdrv</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">space</span><span class="p">)</span>
+<span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 0.7141392860 au                                                                        
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -1.116706137236 au. Time: 0.02 sec.                                    
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1        -1.116706137236    0.0000000000      0.00000000      0.00000000      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 1 iterations. Time: 0.01 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :       -1.1167061372 au                                                
+               Electronic Energy                  :       -1.8308454232 au                                                
+               Nuclear Repulsion Energy           :        0.7141392860 au                                                
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000000000 au                                                
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.57814 au                                                                      
+               (   1 H   1s  :    -0.55) (   2 H   1s  :    -0.55)                                                        
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.67011 au                                                                      
+               (   1 H   1s  :     1.21) (   2 H   1s  :    -1.21)                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
+          ------------------------
+Number of inactive (occupied) orbitals: 0
+Number of active orbitals:              2
+Number of virtual orbitals:             0
+
+    This is a CASSCF wavefunction: CAS(2,2)
+
+          CI expansion:
+          -------------
+Number of determinants:      3
+
+
+
+        CI Iterations
+        -------------
+
+Iteration   Average energy      Time
+     1        -1.13727441   0:00:00
+Convergence reached in 1 iterations
+
+State energies:
+[-1.13727]
+
+Natural orbitals for state 1
+[1.97458 0.02542]
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we print the HF and the CI energy, we can see that the CI energy is indeed lower, although the electron correlation is a relatively small correction compared to the absolute energy of the molecule. In other words, HF already captured by far most of the energy of the system.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hartree-Fock energy:             &quot;</span><span class="p">,</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configuration interaction energy:&quot;</span><span class="p">,</span><span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlation energy:              &quot;</span><span class="p">,</span> <span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hartree-Fock energy:              -1.116706137236124
+Configuration interaction energy: -1.1372744055294606
+Correlation energy:               -0.020568268293336578
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now that we have both the Hartree-Fock and a correlated wavefunction, we can visualize the densities using the Visualization driver of Veloxchem. This module will give us the value of the two orbitals of the system (<span class="math notranslate nohighlight">\(\sigma_g\)</span> and <span class="math notranslate nohighlight">\(\sigma_u\)</span>) along the z-axis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualization</span>
+<span class="n">vis_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">VisualizationDriver</span><span class="p">()</span>
+
+<span class="c1"># mo values at given coordinates</span>
+<span class="n">mol_orbs</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sigma_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">))</span>
+<span class="n">sigma_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can now plot the densities of both HF and CI along this axis. The density is simply the product of the density matrix with the value of the density of the orbitals on the grid. For HF, the density matrix is simply “2” for the occupied orbitals and “0” for the unoccupied ones. For CI, it is a bit more complicated, but is provided by the CI driver.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CIDM</span><span class="o">=</span><span class="n">CIdrv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CI density matrix&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CIDM</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI density matrix
+[[1.97458 0.00000]
+ [0.00000 0.02542]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n1_HF</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_g</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">n1_CI</span> <span class="o">=</span> <span class="n">CIDM</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_g</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">CIDM</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_u</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_HF</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_CI</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3.0, 3.0, 0.0, 0.4]
+</pre></div>
+</div>
+<img alt="../_images/wft-general_9_1.png" src="../_images/wft-general_9_1.png" />
+</div>
+</div>
+<p>As you can see, the difference in densities is very minor. Looking closely, it is possible to notice a little decreased density in the middle of the bond for CI, compensated by a minor increase around the nuclei. It fits the intuitive picture that correlation allows the electrons to stay away from each other, increasing the probability that each is around a different nucleus and reducing the probability that they both stand in the center of the bond. Still the effect is relatively minor.</p>
+<p>Let us now look instead at the two-body density, but fixing the position of the first electron to be on the nucleus:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CIDM2</span><span class="o">=</span><span class="n">CIdrv</span><span class="o">.</span><span class="n">get2den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CI 2-body density matrix&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CIDM2</span><span class="p">)</span>
+
+<span class="c1"># electron 1 at the position of the hydrogen nucleus</span>
+<span class="c1"># electron 2 anywhere on the internuclear axis</span>
+<span class="n">h1</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Hz</span><span class="p">]]</span>
+<span class="n">sigma_g_at_h1</span> <span class="o">=</span> <span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sigma_u_at_h1</span> <span class="o">=</span> <span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI 2-body density matrix
+[[[[1.97458 0.00000]
+   [0.00000 0.00000]]
+
+  [[0.00000 -0.22405]
+   [0.00000 -0.00000]]]
+
+
+ [[[0.00000 0.00000]
+   [-0.22405 -0.00000]]
+
+  [[0.00000 -0.00000]
+   [-0.00000 0.02542]]]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n12_HF</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_g_at_h1</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_g</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">n12_CI</span> <span class="o">=</span> <span class="p">(</span><span class="n">CIDM2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_g_at_h1</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_g</span><span class="o">**</span><span class="mi">2</span> 
+       <span class="o">+</span> <span class="n">CIDM2</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_u_at_h1</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_u</span><span class="o">**</span><span class="mi">2</span>
+       <span class="o">+</span> <span class="mi">2</span><span class="o">*</span> <span class="n">CIDM2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_g</span> <span class="o">*</span> <span class="n">sigma_u</span> <span class="o">*</span> <span class="n">sigma_g_at_h1</span><span class="o">*</span> <span class="n">sigma_u_at_h1</span><span class="p">)</span>
+        
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n12_HF</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n12_CI</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3.0, 3.0, 0.0, 0.1]
+</pre></div>
+</div>
+<img alt="../_images/wft-general_12_1.png" src="../_images/wft-general_12_1.png" />
+</div>
+</div>
+<p>This results shows very clearly how for the CI wavefunction, the density of electron 2 for electron 1 fixed at the hydrogen atom is very different than the total density, with the second electron preferentially sitting on the other hydrogen. This effect was not showing in the 1-body density because the 1-body density shows only the averaged result, taking into account all possible positions of the other electron. On the other hand, for the Hartree-Fock wavefunction, even the two-body density does not show any correlation: the wavefunction itself is uncorrelated.</p>
+</div>
+<div class="section" id="integral-transformation-techniques">
+<h2>Integral transformation techniques<a class="headerlink" href="#integral-transformation-techniques" title="Permalink to this headline">¶</a></h2>
+<p>Most correlated wavefunction theories rely on the integrals in the molecular orbital basis. For some methods, like Møller-Plesset second order perturbation theory, this step is even the most time-consuming step of the calculation.</p>
+<p>Conventionally, this is done by transforming the atomic orbital integrals (a four-dimensional tensor) to molecular basis. For example the <span class="math notranslate nohighlight">\(\langle ij|ab \rangle\)</span> integrals can be obtained via</p>
+<div class="amsmath math notranslate nohighlight" id="equation-e096af96-6901-4bfd-b413-691e7d4b8d0e">
+<span class="eqno">(14)<a class="headerlink" href="#equation-e096af96-6901-4bfd-b413-691e7d4b8d0e" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+\langle \mu \nu|\lambda b \rangle &amp;= \sum_{\sigma} C_{\sigma b} \langle \mu \nu | \lambda \sigma \rangle \\
+\langle \mu \nu|a b \rangle &amp;= \sum_{\lambda} C_{\lambda a} \langle \mu \nu | \lambda b \rangle \\
+\langle \mu j|a b \rangle &amp;= \sum_{\nu} C_{\nu j} \langle \mu \nu | a b \rangle \\
+\langle i j|a b \rangle &amp;= \sum_{\mu} C_{\mu i} \langle \mu j | a b \rangle
+\end{eqnarray}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu\)</span>, <span class="math notranslate nohighlight">\(\nu\)</span>, <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> denote the atomic orbitals.
+The computational cost of this procedure is <span class="math notranslate nohighlight">\(O(N^5)\)</span>, since each summation involves five indices. Note that the intermediate result of the transformation needs to be explicitly stored in memory. This can be demanding as the required memory increases as <span class="math notranslate nohighlight">\(O(N^4)\)</span> where <span class="math notranslate nohighlight">\(N\)</span> is the number of contracted basis functions.</p>
+<p>An alternative way of getting the molecular orbital integrals is through the direct formation of many Fock matrices. Taking the <span class="math notranslate nohighlight">\(\langle ij|ab \rangle\)</span> integrals as an example, we can in practice build <span class="math notranslate nohighlight">\(N_{occ} \times N_{occ}\)</span> density matrices using the coefficients of the occupied orbitals, and form the corresponding Fock matrices that can then be transformed into molecular basis by the coefficients of the virtual orbitals.</p>
+<div class="amsmath math notranslate nohighlight" id="equation-5974275c-d6e6-4400-ae89-ef0bf7cd94f2">
+<span class="eqno">(15)<a class="headerlink" href="#equation-5974275c-d6e6-4400-ae89-ef0bf7cd94f2" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+D^{ij}_{\mu \nu} &amp;= C_{\mu i} C_{\nu j} \\
+K^{ij}_{\lambda \sigma} &amp;= \sum_{\mu\nu} \langle \mu \nu| \lambda \sigma \rangle D^{ij}_{\mu\nu} \\
+\langle ij|ab \rangle &amp;= \sum_{\lambda \sigma} C_{\lambda a} K^{ij}_{\lambda \sigma} C_{\sigma b}
+\end{eqnarray}\]</div>
+<p>The computational cost of this approach is formally <span class="math notranslate nohighlight">\(O(N^6)\)</span>; however, in practice the cost scales between <span class="math notranslate nohighlight">\(O(N^4)\)</span> and <span class="math notranslate nohighlight">\(O(N^5)\)</span> due to screening of integrals in the formation of Fock matrices. An advantage of this approach is that the Fock matrices can be computed and stored on individual compute nodes, making it suitable for large-scale parallelization on HPC systems.</p>
 </div>
 <div class="section" id="rayleigh-schrodinger-perturbation-theory">
 <h2>Rayleigh–Schrödinger perturbation theory<a class="headerlink" href="#rayleigh-schrodinger-perturbation-theory" title="Permalink to this headline">¶</a></h2>
