@@ -1,3 +1,6 @@
+# Compiled page
+https://kthpanor.github.io/echem/docs/intro.html
+
 # Some commands
 
 ```
