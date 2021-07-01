@@ -459,6 +459,11 @@
    Tranlation–rotaion internal coordinates
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
 </ul>
 
             </nav>
@@ -472,25 +477,111 @@
                 
   <div class="section" id="choice-of-coordinates">
 <h1>Choice of coordinates<a class="headerlink" href="#choice-of-coordinates" title="Permalink to this headline">¶</a></h1>
-<p>A fundamental concept in quantum chemistry is the multi-dimensional potential energy surface (PES). This mathematical object captures the interplay between the electronic and nuclear degrees of freedom in a particular system (molecule, complex, etc.), where the special points on the PES are important in elucidating molecular conformations and explaining the mechanisms of chemical and photo-chemical reactions. The first and second order derivatives of the energy with respect to nuclear displacements (gradients, Hessians, respectively) are key elements in locating these special points (local minima, transition states) and determining minimum energy reaction pathways. In this section, we will discuss how analytical expressions for the first order energy derivatives with respect to nuclear displacements are derived, while in the next section we will see how these energy derivatives are used to perform structure and transition state optimizations.</p>
+<p>A fundamental concept in quantum chemistry is the multi-dimensional potential energy surface (PES). This mathematical object captures the interplay between the electronic and nuclear degrees of freedom in a particular system (molecule, complex, etc.), where the special points on the PES are important in elucidating molecular conformations and explaining the mechanisms of chemical and photo-chemical reactions. The first and second order derivatives of the energy with respect to nuclear displacements (gradients, Hessians, respectively) are key elements in locating these special points (local minima, transition states) and determining minimum energy reaction pathways. In this section, we will discuss:</p>
+<ul class="simple">
+<li><p>how the molecular geometry is defined in terms of the atomic positions (link);</p></li>
+<li><p>how analytical expressions for the first order energy derivatives with respect to nuclear displacements are derived (link);</p></li>
+<li><p>second order derivatives (link);
+In the next section, we will see how these energy derivatives are used to perform structure and transition state optimizations (link, link).</p></li>
+</ul>
 <div class="section" id="cartesian">
 <h2>Cartesian<a class="headerlink" href="#cartesian" title="Permalink to this headline">¶</a></h2>
-<p>There are multiple ways to define relative atomic positions. The simplest way is to use a Cartesian reference system and define each atomic position in terms of its <span class="math notranslate nohighlight">\((x,y,z)\)</span> coordinates. In this coordinate system it is very easy to determine the total energy and energy gradient, but this choice is not favourable for geometry optimization because the energy depends non-linearly on atomic Cartesian coordinates and these coordinates are strongly coupled to each other \cite{Wang2016, Schlegel2011}. A more favourable choice is to work with internal coordinates, such as bond lengths, valence angles and dihedrals (one example is the Z-matrix). Using internal coordinates poses, however, two problems: (1) the choice of coordinates is not unique (they are redundant) and (2) internal coordinates have to be transformed back into Cartesian coordinates to compute the energy and gradient. Several ways of handling these problems and performing geometry optimizations using internal coordinates are discussed below.</p>
+<p>There are multiple ways to define relative atomic positions. The simplest way is to use a Cartesian reference system and define each atomic position in terms of its <span class="math notranslate nohighlight">\((x,y,z)\)</span> coordinates. In this coordinate system it is very easy to determine the total energy and energy gradient, but this choice is not favourable for geometry optimization because the energy depends non-linearly on atomic Cartesian coordinates and these coordinates are strongly coupled to each other <span id="id1">[<a class="reference internal" href="#id104">Sch11</a>, <a class="reference internal" href="#id103">WS16</a>]</span>.</p>
 <div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/coordinates.svg"><img alt="../_images/coordinates.svg" height="192" src="../_images/coordinates.svg" width="423" /></a>
+<a class="reference internal image-reference" href="../_images/coordinates.svg"><img alt="../_images/coordinates.svg" height="245" src="../_images/coordinates.svg" width="510" /></a>
 </div>
+<p>A more favourable choice is to work with internal coordinates, such as bond lengths, valence angles and dihedrals (one example is the Z-matrix). Using internal coordinates poses, however, two problems: (1) the choice of coordinates is not unique (they are redundant) and (2) internal coordinates have to be transformed back into Cartesian coordinates to compute the energy and gradient. Several ways of handling these problems are discussed below.</p>
 </div>
 <div class="section" id="redundant-coordinates">
 <h2>Redundant coordinates<a class="headerlink" href="#redundant-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>One common choice of coordinates in molecular structure optimization are the Redundant internal coordinates (RIC).<span id="id2">[<a class="reference internal" href="#id105">PF92</a>]</span></p>
+<p>Given the set of internal coordinates <span class="math notranslate nohighlight">\(\mathbf{q}=(q_1,q_2,...,q_{n_q})\)</span>, we would like to relate displacements performed in these coordinates to displacements in the <span class="math notranslate nohighlight">\(n_x=3N\)</span> Cartesian coordinates <span class="math notranslate nohighlight">\(\mathbf{x}=(x_1,x_2,...,x_{n_x})\)</span> (to simplify, we denoted all Cartesian coordinates by <span class="math notranslate nohighlight">\(x\)</span>). For this purpose, we define a rectangular matrix B (called Wilson B-matrix)  <span id="id3">[<a class="reference internal" href="#id108">Nee09</a>]</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-b-ij">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-b-ij" title="Permalink to this equation">¶</a></span>\[    B_{ij} = \frac{\partial q_i}{\partial x_j}\,.\]</div>
+<p>To determine the changes in <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> as a result of changes performed in <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>, we basically need to obtain the inverse relation <span class="math notranslate nohighlight">\(\partial x_j/\partial q_i\)</span>. However, because <span class="math notranslate nohighlight">\(B\)</span> is rectangular and cannot be directly inverted, we first have to construct a square matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-g">
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-g" title="Permalink to this equation">¶</a></span>\[    \mathbf{G} = \mathbf{B}\mathbf{B}^\mathrm{T} \,.\]</div>
+<p>Additionally, the internal coordinates are redundant, meaning that the rows of <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> are linearly dependent. We therefore have to set up and solve an eigenvalue equation that will allow us to separate out the redundancies <span id="id4">[<a class="reference internal" href="#id105">PF92</a>]</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-g-eigenval">
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-g-eigenval" title="Permalink to this equation">¶</a></span>\[\begin{split}    \mathbf{G} 
+    \begin{pmatrix}
+    \mathbf{U} &amp; \mathbf{R}
+    \end{pmatrix} = 
+    \begin{pmatrix}
+    \mathbf{U} &amp; \mathbf{R}
+    \end{pmatrix} 
+    \begin{bmatrix}
+    \boldsymbol{\Lambda} &amp; 0 \\
+    0 &amp; 0
+    \end{bmatrix} \,.\end{split}\]</div>
+<p>This equation has <span class="math notranslate nohighlight">\(n=3N-6\)</span> (or <span class="math notranslate nohighlight">\(3N-5\)</span> for linear molecules) non-zero eigenvalues and <span class="math notranslate nohighlight">\(n_q-n\)</span> zero eigenvalues. The non-zero eigenvalues correspond to linearly independent coordinates, while those which are zero identify the redundant ones. Furthermore, the first <span class="math notranslate nohighlight">\(n\)</span> eigenvectors contained in the matrix <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> are non-redundant and can be used to define a set of non-redundant coordinates <span class="math notranslate nohighlight">\(\mathbf{s}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-non-redundant">
+<span class="eqno">(7)<a class="headerlink" href="#equation-eq-non-redundant" title="Permalink to this equation">¶</a></span>\[    \mathbf{s} = \mathbf{U}^\mathrm{T} \mathbf{q} \,. \]</div>
+<p>The eigenvalue equation, Eq. <a class="reference internal" href="#equation-eq-g-eigenval">(6)</a>, can be used to define a generalized inverse matrix <span class="math notranslate nohighlight">\(\mathbf{G}^{-}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-generalized-inverse">
+<span class="eqno">(8)<a class="headerlink" href="#equation-eq-generalized-inverse" title="Permalink to this equation">¶</a></span>\[\begin{split} \mathbf{G}^{-} = 
+    \begin{pmatrix}
+    \mathbf{U} &amp; \mathbf{R}
+    \end{pmatrix}    
+    \begin{bmatrix}
+    \boldsymbol{\Lambda}^{-1} &amp; 0 \\
+    0\,\,\,\,\,\,\,\, &amp; 0
+    \end{bmatrix}
+    \begin{pmatrix}
+    \mathbf{U}^\mathrm{T}\\ 
+    \mathbf{R}^\mathrm{T}
+    \end{pmatrix}\, , \end{split}\]</div>
+<p>which, in turn, is used to determine the transformation between Cartesian and internal coordinates displacements <span id="id5">[<a class="reference internal" href="#id103">WS16</a>]</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-displacement-q-to-x">
+<span class="eqno">(9)<a class="headerlink" href="#equation-eq-displacement-q-to-x" title="Permalink to this equation">¶</a></span>\[    \Delta\mathbf{x} = \mathbf{B}^\mathrm{T}\mathbf{G}^{-}\Delta\mathbf{q}\, . \]</div>
+<p>In a similar way, the gradient can be transformed from Cartesian to internal coordinates <span id="id6">[<a class="reference internal" href="#id108">Nee09</a>]</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-gradient-x-to-q">
+<span class="eqno">(10)<a class="headerlink" href="#equation-eq-gradient-x-to-q" title="Permalink to this equation">¶</a></span>\[    \nabla E_q = \mathbf{G}^{-}\mathbf{B}\nabla E_x \, , \]</div>
+<p>where we have denoted the gradient in Cartesian coordinates by <span class="math notranslate nohighlight">\(\nabla E_x\)</span> and the gradient in internal coordinates by <span class="math notranslate nohighlight">\(\nabla E_q\)</span>.</p>
+<p>With Eqs.<a class="reference internal" href="#equation-eq-displacement-q-to-x">(9)</a> and <a class="reference internal" href="#equation-eq-gradient-x-to-q">(10)</a> we can now transform a displacement in internal coordinates to a displacement in Cartesian coordinates, compute the energy gradient, and transform the gradient back to internal coordinates.</p>
 </div>
 <div class="section" id="delocalized-internal-coordinates">
 <h2>Delocalized internal coordinates<a class="headerlink" href="#delocalized-internal-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>. This is an expensive step, since the matrices involved in Eq. <a class="reference internal" href="#equation-eq-generalized-inverse">(8)</a> are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. <a class="reference internal" href="#equation-eq-non-redundant">(7)</a>. These new coordinates are actually linear combinations of primitives, and therefore are called “delocalized” internal coordinates (DLC).<span id="id7">[<a class="reference internal" href="#id106">BKP99</a>]</span></p>
+<p>Within this coordinate system, we define a new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix which now has a significantly smaller dimension (3<span class="math notranslate nohighlight">\(N\)</span>-6) compared to the <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix in primitive internal coordinates. The new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix is then used to reformulate the displacement and gradient transformations between the Cartesian and delocalized internal coordinate systems. For a detailed derivation of these transformations see Ref. <span id="id8">[<a class="reference internal" href="#id106">BKP99</a>]</span>.</p>
 </div>
 <div class="section" id="hybrid-delocalized-internal-coordinates">
 <h2>Hybrid delocalized internal coordinates<a class="headerlink" href="#hybrid-delocalized-internal-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>The situation becomes a bit more complicated when the system we would like to optimize is composed of two ore more individual molecules. In this case, fictitious intermolecular bonds, angles, and dihedrals have to be included to define the relative positions between the separate components of the multi-molecular system <span id="id9">[<a class="reference internal" href="#id107">BTT00</a>, <a class="reference internal" href="#id103">WS16</a>]</span>. In an analogous way as for single molecules, hybrid delocalized internal coordinates (HDLC) can be obtained by including the intermolecular primitives in the transformation defined by Eq. <a class="reference internal" href="#equation-eq-non-redundant">(7)</a>. In this approach, the intra- and intermolecular degrees of freedom become mixed, i.e., a displacement in one intermolecular primitive will affects both the intramolecular and intermolecular structures<span id="id10">[<a class="reference internal" href="#id103">WS16</a>]</span></p>
 </div>
 <div class="section" id="tranlation-rotaion-internal-coordinates">
 <h2>Tranlation–rotaion internal coordinates<a class="headerlink" href="#tranlation-rotaion-internal-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Another option is to treat the intra- and intermolecular coordinates separately, by introducing translation and rotation coordinates into the set of internal primitives. The resulting choice of coordinates are known as translation–rotation internal coordinates (TRIC) <span id="id11">[<a class="reference internal" href="#id103">WS16</a>]</span>. What this actually means is that, instead of adding the full set of Cartesian coordinates in the construction of primitive internal coordinates (HDLC), only six new internal coordinates are used for each molecule to describe its translation and rotation, essentially constraining the intermolecular orientations. This reduces the computational cost and represents a more intuitive way to define the relative orientation between molecules <span id="id12">[<a class="reference internal" href="#id103">WS16</a>]</span></p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="id13"><dl class="citation">
+<dt class="label" id="id106"><span class="brackets">BKP99</span><span class="fn-backref">(<a href="#id7">1</a>,<a href="#id8">2</a>)</span></dt>
+<dd><p>J. Baker, D. Kinghorn, and P. Pulay. Geometry optimization in delocalized internal coordinates: an efficient quadratically scaling algorithm for large molecules. <em>J. Chem. Phys.</em>, 110(11):4986–4991, 1999.</p>
+</dd>
+<dt class="label" id="id107"><span class="brackets"><a class="fn-backref" href="#id9">BTT00</a></span></dt>
+<dd><p>S. R. Billeter, A. J. Turner, and W. Thiel. Linear scaling geometry optimisation and transition state search in hybrid delocalised internal coordinates. <em>Phys. Chem. Chem. Phys.</em>, 2(10):2177–2186, 2000.</p>
+</dd>
+<dt class="label" id="id135"><span class="brackets">Low80</span></dt>
+<dd><p>Per-Olov Löwdin. Molecular structure calculations**work supported in part by the u.s. national science foundation. In Per-Olov Löwdin, editor, <em>Advances in Quantum Chemistry</em>, volume 12, pages 263 – 316. Academic Press, 1980.</p>
+</dd>
+<dt class="label" id="id108"><span class="brackets">Nee09</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id6">2</a>)</span></dt>
+<dd><p>et al. Neese, F. Orca. <em>An Ab Initio, DFT and Semiempirical electronic structure package</em>, 2009.</p>
+</dd>
+<dt class="label" id="id32"><span class="brackets">NRS18</span></dt>
+<dd><p>Patrick Norman, Kenneth Ruud, and Trond Saue. <em>Principles and practices of molecular properties</em>. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.</p>
+</dd>
+<dt class="label" id="id105"><span class="brackets">PF92</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id4">2</a>)</span></dt>
+<dd><p>P. Pulay and G. Fogarasi. Geometry optimization in redundant internal coordinates. <em>J. Chem. Phys.</em>, 96(4):2856–2860, 1992.</p>
+</dd>
+<dt class="label" id="id104"><span class="brackets"><a class="fn-backref" href="#id1">Sch11</a></span></dt>
+<dd><p>H. B. Schlegel. Geometry optimization. <em>WIREs Comput. Mol. Sci.</em>, 1(5):790–809, 2011.</p>
+</dd>
+<dt class="label" id="id103"><span class="brackets">WS16</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id5">2</a>,<a href="#id9">3</a>,<a href="#id10">4</a>,<a href="#id11">5</a>,<a href="#id12">6</a>)</span></dt>
+<dd><p>L.-P. Wang and C. Song. Geometry optimization made simple with translation and rotation coordinates. <em>J. Chem. Phys.</em>, 144(21):214108, 2016.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 
