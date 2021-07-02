@@ -44,7 +44,3 @@ By using the Lagrangian, we have shifted the difficult problem of computing ${\m
 
 ## Hessians
 
-### References
-
-```{bibliography} ../references.bib
-```

@@ -344,7 +344,7 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="visual.html">
-   Electron correlation and two-electron densities
+   One- and two-electron densities
   </a>
  </li>
 </ul>
@@ -791,29 +791,21 @@ S^{[2]} &amp; = &amp;
 \end{equation*}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It is a common practice to adopt the use of spin-adapted electron excitation vectors as a means to reduce the dimension of matrices and vectors. The expressions for the matrix elements then become modified accordingly.</p>
+<p>It is a common practice to adopt the use of spin-adapted electron excitation vectors as a means to reduce the dimension of matrices and vectors.</p>
 </div>
 </div>
 <div class="section" id="numerical-example">
 <h3>Numerical example<a class="headerlink" href="#numerical-example" title="Permalink to this headline">¶</a></h3>
 <p>Let us consider ethylene in a minimal basis set. We perform an SCF optimization of the Hartree–Fock reference state with use of the VeloxChem program. The dictonary <code class="docutils literal notranslate"><span class="pre">scf_tensors</span></code> contains information of the SCF calculation and we retrieve the orbital energies.</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="c1"># suppress program output</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">C        0.67759997    0.00000000    0.00000000</span>
@@ -826,11 +818,170 @@ S^{[2]} &amp; = &amp;
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31g&quot;</span><span class="p">)</span>
 
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="c1"># MO coefficients</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 33.3086336071 au                                                                       
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -78.002642779674 au. Time: 0.09 sec.                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -78.002642782787    0.0000000000      0.00003567      0.00000803      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -78.002642783085   -0.0000000003      0.00001162      0.00000253      0.00002363                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -78.002642783108   -0.0000000000      0.00000124      0.00000031      0.00000434                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -78.002642783108   -0.0000000000      0.00000009      0.00000002      0.00000144                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.07 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :      -78.0026427831 au                                                
+               Electronic Energy                  :     -111.3112763902 au                                                
+               Nuclear Repulsion Energy           :       33.3086336071 au                                                
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000000897 au                                                
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.79297 au                                                                      
+               (   1 C   2s  :    -0.25) (   1 C   3s  :    -0.24) (   1 C   1p+1:    -0.16)                              
+               (   2 C   2s  :     0.25) (   2 C   3s  :     0.24) (   2 C   1p+1:    -0.16)                              
+               (   3 H   1s  :    -0.15) (   4 H   1s  :    -0.15) (   5 H   1s  :     0.15)                              
+               (   6 H   1s  :     0.15)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.64755 au                                                                      
+               (   1 C   1p-1:    -0.32) (   2 C   1p-1:    -0.32) (   3 H   1s  :    -0.16)                              
+               (   4 H   1s  :     0.16) (   5 H   1s  :     0.16) (   6 H   1s  :    -0.16)                              
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.57528 au                                                                      
+               (   1 C   1p+1:     0.41) (   1 C   2p+1:     0.15) (   2 C   1p+1:    -0.41)                              
+               (   2 C   2p+1:    -0.15)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.51028 au                                                                      
+               (   1 C   1p-1:    -0.31) (   1 C   2p-1:    -0.20) (   2 C   1p-1:     0.31)                              
+               (   2 C   2p-1:     0.20) (   3 H   1s  :    -0.20) (   4 H   1s  :     0.20)                              
+               (   5 H   1s  :    -0.20) (   6 H   1s  :     0.20)                                                        
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.36646 au                                                                      
+               (   1 C   1p0 :     0.37) (   1 C   2p0 :     0.31) (   2 C   1p0 :     0.37)                              
+               (   2 C   2p0 :     0.31)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.17011 au                                                                      
+               (   1 C   1p0 :     0.35) (   1 C   2p0 :     0.73) (   2 C   1p0 :    -0.35)                              
+               (   2 C   2p0 :    -0.73)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.26253 au                                                                      
+               (   1 C   3s  :    -1.49) (   1 C   2p+1:    -0.62) (   2 C   3s  :    -1.49)                              
+               (   2 C   2p+1:     0.62) (   3 H   2s  :     1.03) (   4 H   2s  :     1.03)                              
+               (   5 H   2s  :     1.03) (   6 H   2s  :     1.03)                                                        
+                                                                                                                          
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.29521 au                                                                      
+               (   1 C   1p-1:     0.25) (   1 C   2p-1:     0.85) (   2 C   1p-1:     0.25)                              
+               (   2 C   2p-1:     0.85) (   3 H   2s  :    -1.14) (   4 H   2s  :     1.14)                              
+               (   5 H   2s  :     1.14) (   6 H   2s  :    -1.14)                                                        
+                                                                                                                          
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.31110 au                                                                      
+               (   1 C   3s  :    -1.96) (   2 C   3s  :     1.96) (   3 H   2s  :     1.08)                              
+               (   4 H   2s  :     1.08) (   5 H   2s  :    -1.08) (   6 H   2s  :    -1.08)                              
+                                                                                                                          
+               Molecular Orbital No.  13:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.38858 au                                                                      
+               (   1 C   1p-1:     0.25) (   1 C   2p-1:     1.90) (   2 C   1p-1:    -0.25)                              
+               (   2 C   2p-1:    -1.90) (   3 H   2s  :    -1.66) (   4 H   2s  :     1.66)                              
+               (   5 H   2s  :    -1.66) (   6 H   2s  :     1.66)                                                        
+                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -864,7 +1015,7 @@ Dimension of A-block in E2: 144
 <p>We get the <span class="math notranslate nohighlight">\(E^{[2]}\)</span>-matrix from the <code class="docutils literal notranslate"><span class="pre">LinearResponseEigenSolver</span></code> class object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
 <span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 
 <span class="c1"># index position for (pi,pi*) excitation</span>
@@ -876,6 +1027,10 @@ Dimension of A-block in E2: 144
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 576)                                                                      
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of E[2] matrix: (288, 288)
 Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 </pre></div>
@@ -889,14 +1044,13 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <span class="n">moints_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MOIntegralsDriver</span><span class="p">()</span>
 <span class="n">isis</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OVOV&quot;</span><span class="p">)</span>
 <span class="n">iiss</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OOVV&quot;</span><span class="p">)</span>
-<span class="c1"># Determine the specific diagonal matrix element of E[2] explicitly with</span>
-<span class="c1"># account made for use of spin-adapted excitation operators</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Diagonal element (explicit calculation): </span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">orbital_energies</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span> <span class="n">isis</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">iiss</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1"> a.u.&#39;</span><span class="p">)</span>
+<span class="c1"># Determine the specific diagonal matrix element of E[2] explicitly </span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Diagonal element (explicit calculation): </span><span class="si">{</span><span class="n">orbital_energies</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span> <span class="n">isis</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">iiss</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1"> a.u.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Diagonal element (explicit calculation):  0.722298 a.u.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Diagonal element (explicit calculation):  0.361149 a.u.
 </pre></div>
 </div>
 </div>
@@ -907,8 +1061,7 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <p>We construct the trivial <span class="math notranslate nohighlight">\(S^{[2]}\)</span>-matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># factor of 2 due to spin-adaptation</span>
-<span class="n">S2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
 <span class="n">S2</span><span class="p">[</span><span class="n">n</span><span class="p">:,</span><span class="n">n</span><span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dimension of S[2] matrix:&#39;</span><span class="p">,</span> <span class="n">S2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -927,7 +1080,7 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <p>We get the <span class="math notranslate nohighlight">\(V^{\omega,[1]}\)</span>-vector from the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> class object. We assume the perturbation operator to equal minus the electric dipole moment operator along the <span class="math notranslate nohighlight">\(x\)</span>-axis, i.e., the molecular C–C axis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
 
 <span class="n">mu_x</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">mu_y</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -945,8 +1098,8 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of V[1] vector: 288
 Elements for (pi,pi*)-excitation:
-(upper)   g:  1.417901
-(lower) -g*: -1.417901
+(upper)   g: -1.417901
+(lower) -g*:  1.417901
 </pre></div>
 </div>
 </div>
@@ -960,13 +1113,12 @@ Elements for (pi,pi*)-excitation:
 <span class="n">x_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
 <span class="n">x_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
 
-<span class="c1"># factor of 2 due to spin-adaptation</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MO integral 2 * &lt; pi | x | pi* &gt;: </span><span class="si">{</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x_mo</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MO integral &lt; pi | x | pi* &gt;: </span><span class="si">{</span><span class="n">x_mo</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO integral 2 * &lt; pi | x | pi* &gt;: -2.835801
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO integral &lt; pi | x | pi* &gt;:  1.417901
 </pre></div>
 </div>
 </div>
@@ -1009,10 +1161,143 @@ V^{\omega,[1]}
 -{\mu^{[1]}}^\dagger N(\omega)
 \]</div>
 <p>A reduced-space iterative algorithm for solving the linear response funciton is available from the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> class object.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
 <span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                               Linear Response Solver Setup                                               
+                                              ==============================                                              
+                                                                                                                          
+                               Number of Frequencies           : 1                                                        
+                               Max. Number of Iterations       : 150                                                      
+                               Convergence Threshold           : 1.0e-04                                                  
+                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
+                               ERI Screening Threshold         : 1.0e-15                                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 3)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 3 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 17.15 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   1 * Residuals (Max,Min): 7.44e-01 and 1.61e-01                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -28.27903680 Residual Norm: 0.74411729                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0000 :    -18.70087855 Residual Norm: 0.30874955                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0000 :     -7.17596843 Residual Norm: 0.16123889                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 3)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 6 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 24.06 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   2 * Residuals (Max,Min): 1.70e-01 and 3.31e-02                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -32.41968172 Residual Norm: 0.16986350                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0000 :    -19.26310840 Residual Norm: 0.03593920                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0000 :     -7.20082953 Residual Norm: 0.03313235                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 3)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 9 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 30.97 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   3 * Residuals (Max,Min): 4.31e-02 and 5.33e-03                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -32.95691328 Residual Norm: 0.04312012                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0000 :    -19.26806982 Residual Norm: 0.00582253                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0000 :     -7.20135726 Residual Norm: 0.00532885                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 3)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 12 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 37.89 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   4 * Residuals (Max,Min): 8.34e-03 and 3.73e-04                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -32.98536060 Residual Norm: 0.00834114                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0000 :    -19.26812051 Residual Norm: 0.00072657                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0000 :     -7.20136952 Residual Norm: 0.00037298                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 3)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 15 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 44.99 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   5 * Residuals (Max,Min): 1.30e-03 and 4.86e-05                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -32.98592918 Residual Norm: 0.00129893                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0000 :    -19.26812153 Residual Norm: 0.00005077                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0000 :     -7.20136966 Residual Norm: 0.00004855                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 1)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 0 gerade trial vectors in reduced space                                                                          
+* Info * 16 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 47.10 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   6 * Residuals (Max,Min): 9.86e-05 and 4.86e-05                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0000 :    -32.98593338 Residual Norm: 0.00009855                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Linear response converged in 6 iterations. Time: 0.13 sec                                              
+                                                                                                                          
+                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -1072,9 +1357,9 @@ alpha_zz(0):  3.600685
 </div>
 </div>
 <p>In this example, the <code class="docutils literal notranslate"><span class="pre">LinearResponseSolver</span></code> was using its default settings for operators and frequencies, both of which can be changed. We change the value of the optical frequency from the default zero to 0.0656 a.u. with use of the dictionary <code class="docutils literal notranslate"><span class="pre">rsp_settings</span></code>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0656</span><span class="p">]}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Hartree-Fock is default</span>
 <span class="n">lrs_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
@@ -1092,6 +1377,154 @@ alpha_zz(0):  3.600685
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                               Linear Response Solver Setup                                               
+                                              ==============================                                              
+                                                                                                                          
+                               Number of Frequencies           : 1                                                        
+                               Max. Number of Iterations       : 150                                                      
+                               Convergence Threshold           : 1.0e-04                                                  
+                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
+                               ERI Screening Threshold         : 1.0e-15                                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 3 gerade trial vectors in reduced space                                                                          
+* Info * 3 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 24.11 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   1 * Residuals (Max,Min): 7.29e-01 and 1.61e-01                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -28.90809542 Residual Norm: 0.72909372                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0656 :    -18.90028164 Residual Norm: 0.30812658                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0656 :     -7.21864937 Residual Norm: 0.16109607                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 6 gerade trial vectors in reduced space                                                                          
+* Info * 6 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 37.93 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   2 * Residuals (Max,Min): 1.72e-01 and 3.38e-02                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -33.34208799 Residual Norm: 0.17151690                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0656 :    -19.48584668 Residual Norm: 0.03653567                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0656 :     -7.24417404 Residual Norm: 0.03380463                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 9 gerade trial vectors in reduced space                                                                          
+* Info * 9 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 51.76 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   3 * Residuals (Max,Min): 4.56e-02 and 5.91e-03                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -33.98163708 Residual Norm: 0.04558834                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0656 :    -19.49128605 Residual Norm: 0.00590678                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0656 :     -7.24480443 Residual Norm: 0.00607951                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 12 gerade trial vectors in reduced space                                                                         
+* Info * 12 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 65.58 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   4 * Residuals (Max,Min): 8.78e-03 and 4.89e-04                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -34.01825127 Residual Norm: 0.00877993                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0656 :    -19.49134296 Residual Norm: 0.00076089                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0656 :     -7.24482122 Residual Norm: 0.00048936                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 15 gerade trial vectors in reduced space                                                                         
+* Info * 15 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 79.57 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   5 * Residuals (Max,Min): 1.35e-03 and 5.72e-05                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -34.01898601 Residual Norm: 0.00134990                                                 
+               &lt;&lt;y;y&gt;&gt;_0.0656 :    -19.49134415 Residual Norm: 0.00006027                                                 
+               &lt;&lt;z;z&gt;&gt;_0.0656 :     -7.24482146 Residual Norm: 0.00005715                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 16 gerade trial vectors in reduced space                                                                         
+* Info * 16 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 84.18 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   6 * Residuals (Max,Min): 1.06e-04 and 5.72e-05                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -34.01899131 Residual Norm: 0.00010574                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 17 gerade trial vectors in reduced space                                                                         
+* Info * 17 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 88.62 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   7 * Residuals (Max,Min): 6.03e-05 and 8.72e-06                                            
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.0656 :    -34.01899140 Residual Norm: 0.00000872                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Linear response converged in 7 iterations. Time: 0.18 sec                                              
+                                                                                                                          
+                                                                                                                          
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>alpha_xx(w=0.0656):  34.018991
 alpha_yy(w=0.0656):  19.491344
 alpha_zz(w=0.0656):  7.244821
@@ -1114,9 +1547,9 @@ alpha_zz(w=0.0656):  7.244821
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>alpha_xx(w=0.0656):  18.899231
-alpha_yy(w=0.0656):  10.098294
-alpha_zz(w=0.0656):  3.689457
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>alpha_xx(w=0.0656):  17.009496
+alpha_yy(w=0.0656):  9.745672
+alpha_zz(w=0.0656):  3.622411
 </pre></div>
 </div>
 </div>
@@ -1125,13 +1558,156 @@ alpha_zz(w=0.0656):  3.689457
 <div class="section" id="uv-vis-spectrum">
 <h2>UV/vis spectrum<a class="headerlink" href="#uv-vis-spectrum" title="Permalink to this headline">¶</a></h2>
 <p>From linear response theory, we can also obtain excitation energies and transition moments. An iterative reduced-spece solution of the generlized eigenvalue equation is provided by the <code class="docutils literal notranslate"><span class="pre">LinearResponseEigenSolver</span></code> class object.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nstates&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span> <span class="c1"># the (pi,pi*)-transition</span>
 <span class="n">lres_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
 <span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Linear Response EigenSolver Setup                                             
+                                           ===================================                                            
+                                                                                                                          
+                               Number of States                : 1                                                        
+                               Max. Number of Iterations       : 150                                                      
+                               Convergence Threshold           : 1.0e-04                                                  
+                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
+                               ERI Screening Threshold         : 1.0e-15                                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 1 gerade trial vectors in reduced space                                                                          
+* Info * 1 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 7.40 kB of memory used for subspace procedure on the master node                                                 
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   1 * Residuals (Max,Min): 5.37e-01 and 5.37e-01                                            
+                                                                                                                          
+               Excitation 1   :      0.34325718 Residual Norm: 0.53728667                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 2 gerade trial vectors in reduced space                                                                          
+* Info * 2 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 12.01 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   2 * Residuals (Max,Min): 1.07e-01 and 1.07e-01                                            
+                                                                                                                          
+               Excitation 1   :      0.29472379 Residual Norm: 0.10677743                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 3 gerade trial vectors in reduced space                                                                          
+* Info * 3 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 16.62 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   3 * Residuals (Max,Min): 2.02e-02 and 2.02e-02                                            
+                                                                                                                          
+               Excitation 1   :      0.29161379 Residual Norm: 0.02023871                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 4 gerade trial vectors in reduced space                                                                          
+* Info * 4 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 21.22 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   4 * Residuals (Max,Min): 2.55e-03 and 2.55e-03                                            
+                                                                                                                          
+               Excitation 1   :      0.29153485 Residual Norm: 0.00254911                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 5 gerade trial vectors in reduced space                                                                          
+* Info * 5 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 25.83 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   5 * Residuals (Max,Min): 6.61e-04 and 6.61e-04                                            
+                                                                                                                          
+               Excitation 1   :      0.29153359 Residual Norm: 0.00066119                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 6 gerade trial vectors in reduced space                                                                          
+* Info * 6 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 30.44 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   6 * Residuals (Max,Min): 1.26e-04 and 1.26e-04                                            
+                                                                                                                          
+               Excitation 1   :      0.29153355 Residual Norm: 0.00012641                                                 
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 2)                                                                        
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * 7 gerade trial vectors in reduced space                                                                          
+* Info * 7 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 35.05 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   7 * Residuals (Max,Min): 2.14e-05 and 2.14e-05                                            
+                                                                                                                          
+               Excitation 1   :      0.29153354 Residual Norm: 0.00002137   converged                                     
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Linear response converged in 7 iterations. Time: 0.13 sec                                              
+                                                                                                                          
+                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -1159,7 +1735,7 @@ alpha_zz(w=0.0656):  3.689457
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.): [0.291534]
-Transition moments (a.u.): [ 1.531492  0.       -0.      ]
+Transition moments (a.u.): [-1.531492 -0.        0.      ]
 Oscillator strength: [0.455855]
 </pre></div>
 </div>
@@ -1256,7 +1832,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.):  0.145767
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.):  0.291534
 </pre></div>
 </div>
 </div>
@@ -1265,8 +1841,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="transition-moments">
 <h4>Transition moments<a class="headerlink" href="#transition-moments" title="Permalink to this headline">¶</a></h4>
 <p>Since <span class="math notranslate nohighlight">\((\Omega \Lambda)^{-1} = \Lambda^{-1} \Omega^{-1}\)</span>, we can form the inverse of the RPA matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-719b8520-cc4c-4b1b-8590-64a3a85ed3e9">
-<span class="eqno">(57)<a class="headerlink" href="#equation-719b8520-cc4c-4b1b-8590-64a3a85ed3e9" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-09ec84d4-f5e0-4500-a6b8-1218f094874e">
+<span class="eqno">(57)<a class="headerlink" href="#equation-09ec84d4-f5e0-4500-a6b8-1218f094874e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \left( E^{[2]} - \omega S^{[2]} \right)^{-1} =
   X \left[ X^\dagger \left( E^{[2]} - \omega S^{[2]} \right) X \right]^{-1} X^\dagger
 \end{equation}\]</div>
@@ -1316,7 +1892,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -0.765753
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -1.082938
 </pre></div>
 </div>
 </div>
@@ -1326,8 +1902,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="tamm-dancoff-approximation">
 <h3>Tamm–Dancoff approximation<a class="headerlink" href="#tamm-dancoff-approximation" title="Permalink to this headline">¶</a></h3>
 <p>The Tamm–Dancoff approximation (TDA) corresponds to setting <span class="math notranslate nohighlight">\(B=0\)</span> in the electronic Hessian and diagonalize matrix block <span class="math notranslate nohighlight">\(A\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e7610b4d-c9e7-4a6f-8ee2-fb87bc5fc8de">
-<span class="eqno">(58)<a class="headerlink" href="#equation-e7610b4d-c9e7-4a6f-8ee2-fb87bc5fc8de" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-fa74caea-234b-4ef5-b77a-4b2e0cd763f2">
+<span class="eqno">(58)<a class="headerlink" href="#equation-fa74caea-234b-4ef5-b77a-4b2e0cd763f2" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 E^{[2]} &amp; = &amp;
 	\begin{pmatrix}
     \rule[-5pt]{0pt}{20pt}
@@ -1340,14 +1916,74 @@ E^{[2]} &amp; = &amp;
 	\end{pmatrix}
 \end{eqnarray}\]</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">TDAExciDriver</span></code> class object implements an iterative reduced-space TDA solver.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">()</span>
 <span class="n">tda_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">tda_results</span> <span class="o">=</span> <span class="n">tda_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 <span class="n">tda_eig_vals</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TDA excitation energy (a.u.):&#39;</span><span class="p">,</span> <span class="n">tda_eig_vals</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                     TDA Driver Setup                                                     
+                                                    ==================                                                    
+                                                                                                                          
+                               Number of States                : 1                                                        
+                               Max. Number of Iterations       : 150                                                      
+                               Convergence Threshold           : 1.0e-04                                                  
+                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
+                               ERI Screening Threshold         : 1.0e-15                                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   1 * Reduced Space:    1 * Residues (Max,Min): 2.19e-01 and 2.19e-01                   
+                                                                                                                          
+                   State  1: 0.36114890 au Residual Norm: 0.21928366                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   2 * Reduced Space:    2 * Residues (Max,Min): 3.62e-02 and 3.62e-02                   
+                                                                                                                          
+                   State  1: 0.31331307 au Residual Norm: 0.03621689                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   3 * Reduced Space:    3 * Residues (Max,Min): 6.49e-03 and 6.49e-03                   
+                                                                                                                          
+                   State  1: 0.31146741 au Residual Norm: 0.00648663                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   4 * Reduced Space:    4 * Residues (Max,Min): 1.94e-03 and 1.94e-03                   
+                                                                                                                          
+                   State  1: 0.31143925 au Residual Norm: 0.00194218                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   5 * Reduced Space:    5 * Residues (Max,Min): 5.77e-04 and 5.77e-04                   
+                                                                                                                          
+                   State  1: 0.31143791 au Residual Norm: 0.00057689                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   6 * Reduced Space:    6 * Residues (Max,Min): 4.72e-05 and 4.72e-05                   
+                                                                                                                          
+                   State  1: 0.31143783 au Residual Norm: 0.00004723                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** 1 excited states converged in 6 iterations. Time: 0.08 sec                                             
+                                                                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TDA excitation energy (a.u.):&#39;</span><span class="p">,</span> <span class="n">tda_eig_vals</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1360,8 +1996,7 @@ E^{[2]} &amp; = &amp;
 <p>Alternatively, given the small matrix dimension in our numerical example, we can perform a direct matrix diagonalization of the Hermitial <span class="math notranslate nohighlight">\(A\)</span>-block with use of NumPy routine <code class="docutils literal notranslate"><span class="pre">linalg.eigh</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># factor of 2 due to spin-adaptation</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]</span>
 
 <span class="n">eigs_TDA</span><span class="p">,</span> <span class="n">X_TDA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TDA excitation energy (a.u.): </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">eigs_TDA</span><span class="p">)</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1369,7 +2004,7 @@ E^{[2]} &amp; = &amp;
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TDA excitation energy (a.u.):  0.155719
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TDA excitation energy (a.u.):  0.311438
 </pre></div>
 </div>
 </div>
@@ -1472,7 +2107,7 @@ T = U \Lambda V^T
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lambda diagonal elements:
- [0.641983 0.155708 0.076962 0.06892  0.066587 0.045278 0.000694 0.000541]
+ [0.907902 0.220204 0.10884  0.097467 0.094168 0.064033 0.000982 0.000764]
 </pre></div>
 </div>
 </div>
@@ -1493,8 +2128,8 @@ T = U \Lambda V^T
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [-0. -0. -0.  0.  0. -0. -0.  1.]
-Electron orbital no. 1: [-1.    0.    0.    0.   -0.   -0.   -0.   -0.    0.    0.04 -0.    0.    0.   -0.    0.    0.   -0.   -0.  ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0. -0.  0. -0. -0.  0. -0. -1.]
+Electron orbital no. 1: [-1.    0.   -0.   -0.   -0.    0.   -0.   -0.    0.    0.04  0.   -0.   -0.    0.   -0.    0.    0.   -0.  ]
 </pre></div>
 </div>
 </div>
@@ -1522,9 +2157,9 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
 \]</div>
 <p>where the phenomenological damping parameter <span class="math notranslate nohighlight">\(\gamma\)</span> is associated with the inverse of the finite lifetime of the excited states in the molecular system. A polarizability calculated in this manner is physically sound for all optical frequencies, be it in the nonresonance or resonence regions of the spectrum. The real and imaginary parts of such complex response functions are related by the Kramers–Kronig relations and typically associated with separate spectroscopies and/or physical phenomena. In the case of the electric-dipole polarizability, the real and imaginary parts are associated with light scattering and absorption, respectively.</p>
 <p>We can determine complex response functions by means of the <code class="docutils literal notranslate"><span class="pre">ComplexResponse</span></code> class object.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ComplexResponse</span><span class="p">(</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cpp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ComplexResponse</span><span class="p">()</span>
 
 <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.0025</span><span class="p">)</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="n">freqs</span><span class="p">}</span>
@@ -1536,6 +2171,524 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
     <span class="n">alpha_xx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">cpp_out</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="p">)])</span>
 
 <span class="n">alpha_xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">alpha_xx</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                              Complex Response Solver Setup                                               
+                                             ===============================                                              
+                                                                                                                          
+                               Number of Frequencies           : 29                                                       
+                               Max. Number of Iterations       : 150                                                      
+                               Convergence Threshold           : 1.0e-04                                                  
+                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
+                               ERI Screening Threshold         : 1.0e-15                                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 15)                                                                       
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 7 gerade trial vectors in reduced space                                                                          
+* Info * 8 ungerade trial vectors in reduced space                                                                        
+                                                                                                                          
+* Info * 584.75 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   1 * Residuals (Max,Min): 5.10e-01 and 1.50e-01                                            
+                                                                                                                          
+               Operator:  electric dipole (xyz)                                                                           
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.2600 :    -52.86686984     -2.06412983j   Residual Norm: 0.50978898                              
+               &lt;&lt;x;x&gt;&gt;_0.2625 :    -54.03038650     -2.21689717j   Residual Norm: 0.50811109                              
+               &lt;&lt;x;x&gt;&gt;_0.2650 :    -55.28087916     -2.38764698j   Residual Norm: 0.50642412                              
+               &lt;&lt;x;x&gt;&gt;_0.2675 :    -56.62865367     -2.57935186j   Residual Norm: 0.50472766                              
+               &lt;&lt;x;x&gt;&gt;_0.2700 :    -58.08572285     -2.79562480j   Residual Norm: 0.50302131                              
+               &lt;&lt;x;x&gt;&gt;_0.2725 :    -59.66617315     -3.04089188j   Residual Norm: 0.50130462                              
+               &lt;&lt;x;x&gt;&gt;_0.2750 :    -61.38662908     -3.32062156j   Residual Norm: 0.49957712                              
+               &lt;&lt;x;x&gt;&gt;_0.2775 :    -63.26684710     -3.64163305j   Residual Norm: 0.49783829                              
+               &lt;&lt;x;x&gt;&gt;_0.2800 :    -65.33048260     -4.01251614j   Residual Norm: 0.49608761                              
+               &lt;&lt;x;x&gt;&gt;_0.2825 :    -67.60609096     -4.44421105j   Residual Norm: 0.49432449                              
+               &lt;&lt;x;x&gt;&gt;_0.2850 :    -70.12844906     -4.95082159j   Residual Norm: 0.49254835                              
+               &lt;&lt;x;x&gt;&gt;_0.2875 :    -72.94032137     -5.55077489j   Residual Norm: 0.49075855                              
+               &lt;&lt;x;x&gt;&gt;_0.2900 :    -76.09485137     -6.26850655j   Residual Norm: 0.48895443                              
+               &lt;&lt;x;x&gt;&gt;_0.2925 :    -79.65884545     -7.13696010j   Residual Norm: 0.48713528                              
+               &lt;&lt;x;x&gt;&gt;_0.2950 :    -83.71734987     -8.20138010j   Residual Norm: 0.48530039                              
+               &lt;&lt;x;x&gt;&gt;_0.2975 :    -88.38012978     -9.52521781j   Residual Norm: 0.48344898                              
+               &lt;&lt;x;x&gt;&gt;_0.3000 :    -93.79098589    -11.19959441j   Residual Norm: 0.48158028                              
+               &lt;&lt;x;x&gt;&gt;_0.3025 :   -100.14135364    -13.35896597j   Residual Norm: 0.47969345                              
+               &lt;&lt;x;x&gt;&gt;_0.3050 :   -107.69039356    -16.20802907j   Residual Norm: 0.47778766                              
+               &lt;&lt;x;x&gt;&gt;_0.3075 :   -116.79479625    -20.06991723j   Residual Norm: 0.47586200                              
+               &lt;&lt;x;x&gt;&gt;_0.3100 :   -127.95229161    -25.47677068j   Residual Norm: 0.47391559                              
+               &lt;&lt;x;x&gt;&gt;_0.3125 :   -141.86054241    -33.34940198j   Residual Norm: 0.47194747                              
+               &lt;&lt;x;x&gt;&gt;_0.3150 :   -159.47445676    -45.37554303j   Residual Norm: 0.46995671                              
+               &lt;&lt;x;x&gt;&gt;_0.3175 :   -181.94868368    -64.85484382j   Residual Norm: 0.46794230                              
+               &lt;&lt;x;x&gt;&gt;_0.3200 :   -209.88448831    -98.65759239j   Residual Norm: 0.46590325                              
+               &lt;&lt;x;x&gt;&gt;_0.3225 :   -239.04316378   -161.38415825j   Residual Norm: 0.46383855                              
+               &lt;&lt;x;x&gt;&gt;_0.3250 :   -240.67660942   -277.34681047j   Residual Norm: 0.46174715                              
+               &lt;&lt;x;x&gt;&gt;_0.3275 :   -121.66724848   -422.38345573j   Residual Norm: 0.45962802                              
+               &lt;&lt;x;x&gt;&gt;_0.3300 :    103.48464757   -402.56708426j   Residual Norm: 0.45748011                              
+               &lt;&lt;y;y&gt;&gt;_0.2600 :    -22.78106489     -0.17062898j   Residual Norm: 0.23864742                              
+               &lt;&lt;y;y&gt;&gt;_0.2625 :    -22.87552135     -0.17382892j   Residual Norm: 0.23826423                              
+               &lt;&lt;y;y&gt;&gt;_0.2650 :    -22.97175064     -0.17709609j   Residual Norm: 0.23787991                              
+               &lt;&lt;y;y&gt;&gt;_0.2675 :    -23.06979019     -0.18043267j   Residual Norm: 0.23749452                              
+               &lt;&lt;y;y&gt;&gt;_0.2700 :    -23.16967864     -0.18384087j   Residual Norm: 0.23710813                              
+               &lt;&lt;y;y&gt;&gt;_0.2725 :    -23.27145586     -0.18732305j   Residual Norm: 0.23672080                              
+               &lt;&lt;y;y&gt;&gt;_0.2750 :    -23.37516304     -0.19088161j   Residual Norm: 0.23633259                              
+               &lt;&lt;y;y&gt;&gt;_0.2775 :    -23.48084273     -0.19451908j   Residual Norm: 0.23594358                              
+               &lt;&lt;y;y&gt;&gt;_0.2800 :    -23.58853887     -0.19823808j   Residual Norm: 0.23555382                              
+               &lt;&lt;y;y&gt;&gt;_0.2825 :    -23.69829687     -0.20204133j   Residual Norm: 0.23516340                              
+               &lt;&lt;y;y&gt;&gt;_0.2850 :    -23.81016366     -0.20593167j   Residual Norm: 0.23477236                              
+               &lt;&lt;y;y&gt;&gt;_0.2875 :    -23.92418777     -0.20991207j   Residual Norm: 0.23438080                              
+               &lt;&lt;y;y&gt;&gt;_0.2900 :    -24.04041936     -0.21398559j   Residual Norm: 0.23398876                              
+               &lt;&lt;y;y&gt;&gt;_0.2925 :    -24.15891032     -0.21815546j   Residual Norm: 0.23359634                              
+               &lt;&lt;y;y&gt;&gt;_0.2950 :    -24.27971435     -0.22242502j   Residual Norm: 0.23320358                              
+               &lt;&lt;y;y&gt;&gt;_0.2975 :    -24.40288701     -0.22679776j   Residual Norm: 0.23281058                              
+               &lt;&lt;y;y&gt;&gt;_0.3000 :    -24.52848580     -0.23127732j   Residual Norm: 0.23241740                              
+               &lt;&lt;y;y&gt;&gt;_0.3025 :    -24.65657029     -0.23586752j   Residual Norm: 0.23202412                              
+               &lt;&lt;y;y&gt;&gt;_0.3050 :    -24.78720214     -0.24057231j   Residual Norm: 0.23163081                              
+               &lt;&lt;y;y&gt;&gt;_0.3075 :    -24.92044525     -0.24539586j   Residual Norm: 0.23123755                              
+               &lt;&lt;y;y&gt;&gt;_0.3100 :    -25.05636585     -0.25034249j   Residual Norm: 0.23084442                              
+               &lt;&lt;y;y&gt;&gt;_0.3125 :    -25.19503258     -0.25541674j   Residual Norm: 0.23045150                              
+               &lt;&lt;y;y&gt;&gt;_0.3150 :    -25.33651662     -0.26062335j   Residual Norm: 0.23005886                              
+               &lt;&lt;y;y&gt;&gt;_0.3175 :    -25.48089182     -0.26596728j   Residual Norm: 0.22966659                              
+               &lt;&lt;y;y&gt;&gt;_0.3200 :    -25.62823478     -0.27145372j   Residual Norm: 0.22927477                              
+               &lt;&lt;y;y&gt;&gt;_0.3225 :    -25.77862504     -0.27708812j   Residual Norm: 0.22888348                              
+               &lt;&lt;y;y&gt;&gt;_0.3250 :    -25.93214515     -0.28287618j   Residual Norm: 0.22849282                              
+               &lt;&lt;y;y&gt;&gt;_0.3275 :    -26.08888089     -0.28882387j   Residual Norm: 0.22810287                              
+               &lt;&lt;y;y&gt;&gt;_0.3300 :    -26.24892136     -0.29493745j   Residual Norm: 0.22771372                              
+               &lt;&lt;z;z&gt;&gt;_0.2600 :     -7.91838128     -0.02912432j   Residual Norm: 0.15806394                              
+               &lt;&lt;z;z&gt;&gt;_0.2625 :     -7.93447433     -0.02954919j   Residual Norm: 0.15786700                              
+               &lt;&lt;z;z&gt;&gt;_0.2650 :     -7.95080195     -0.02997970j   Residual Norm: 0.15766435                              
+               &lt;&lt;z;z&gt;&gt;_0.2675 :     -7.96736727     -0.03041600j   Residual Norm: 0.15745587                              
+               &lt;&lt;z;z&gt;&gt;_0.2700 :     -7.98417351     -0.03085824j   Residual Norm: 0.15724145                              
+               &lt;&lt;z;z&gt;&gt;_0.2725 :     -8.00122397     -0.03130658j   Residual Norm: 0.15702097                              
+               &lt;&lt;z;z&gt;&gt;_0.2750 :     -8.01852204     -0.03176121j   Residual Norm: 0.15679431                              
+               &lt;&lt;z;z&gt;&gt;_0.2775 :     -8.03607120     -0.03222228j   Residual Norm: 0.15656135                              
+               &lt;&lt;z;z&gt;&gt;_0.2800 :     -8.05387505     -0.03268998j   Residual Norm: 0.15632197                              
+               &lt;&lt;z;z&gt;&gt;_0.2825 :     -8.07193727     -0.03316449j   Residual Norm: 0.15607605                              
+               &lt;&lt;z;z&gt;&gt;_0.2850 :     -8.09026164     -0.03364602j   Residual Norm: 0.15582350                              
+               &lt;&lt;z;z&gt;&gt;_0.2875 :     -8.10885206     -0.03413475j   Residual Norm: 0.15556418                              
+               &lt;&lt;z;z&gt;&gt;_0.2900 :     -8.12771254     -0.03463091j   Residual Norm: 0.15529801                              
+               &lt;&lt;z;z&gt;&gt;_0.2925 :     -8.14684720     -0.03513471j   Residual Norm: 0.15502487                              
+               &lt;&lt;z;z&gt;&gt;_0.2950 :     -8.16626030     -0.03564637j   Residual Norm: 0.15474466                              
+               &lt;&lt;z;z&gt;&gt;_0.2975 :     -8.18595620     -0.03616613j   Residual Norm: 0.15445729                              
+               &lt;&lt;z;z&gt;&gt;_0.3000 :     -8.20593942     -0.03669424j   Residual Norm: 0.15416267                              
+               &lt;&lt;z;z&gt;&gt;_0.3025 :     -8.22621459     -0.03723095j   Residual Norm: 0.15386072                              
+               &lt;&lt;z;z&gt;&gt;_0.3050 :     -8.24678651     -0.03777652j   Residual Norm: 0.15355137                              
+               &lt;&lt;z;z&gt;&gt;_0.3075 :     -8.26766009     -0.03833124j   Residual Norm: 0.15323455                              
+               &lt;&lt;z;z&gt;&gt;_0.3100 :     -8.28884044     -0.03889540j   Residual Norm: 0.15291020                              
+               &lt;&lt;z;z&gt;&gt;_0.3125 :     -8.31033281     -0.03946929j   Residual Norm: 0.15257827                              
+               &lt;&lt;z;z&gt;&gt;_0.3150 :     -8.33214260     -0.04005324j   Residual Norm: 0.15223875                              
+               &lt;&lt;z;z&gt;&gt;_0.3175 :     -8.35427543     -0.04064757j   Residual Norm: 0.15189160                              
+               &lt;&lt;z;z&gt;&gt;_0.3200 :     -8.37673707     -0.04125262j   Residual Norm: 0.15153682                              
+               &lt;&lt;z;z&gt;&gt;_0.3225 :     -8.39953350     -0.04186877j   Residual Norm: 0.15117443                              
+               &lt;&lt;z;z&gt;&gt;_0.3250 :     -8.42267089     -0.04249639j   Residual Norm: 0.15080447                              
+               &lt;&lt;z;z&gt;&gt;_0.3275 :     -8.44615564     -0.04313587j   Residual Norm: 0.15042698                              
+               &lt;&lt;z;z&gt;&gt;_0.3300 :     -8.46999435     -0.04378763j   Residual Norm: 0.15004205                              
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 19)                                                                       
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 17 gerade trial vectors in reduced space                                                                         
+* Info * 17 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 628.53 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.38 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   2 * Residuals (Max,Min): 6.32e-02 and 2.36e-02                                            
+                                                                                                                          
+               Operator:  electric dipole (xyz)                                                                           
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.2600 :    -95.29458806    -10.04657105j   Residual Norm: 0.06321668                              
+               &lt;&lt;x;x&gt;&gt;_0.2625 :   -101.00601061    -11.73709729j   Residual Norm: 0.06313989                              
+               &lt;&lt;x;x&gt;&gt;_0.2650 :   -107.67021863    -13.89245315j   Residual Norm: 0.06306195                              
+               &lt;&lt;x;x&gt;&gt;_0.2675 :   -115.53899186    -16.69812618j   Residual Norm: 0.06298276                              
+               &lt;&lt;x;x&gt;&gt;_0.2700 :   -124.95562539    -20.44067810j   Residual Norm: 0.06290223                              
+               &lt;&lt;x;x&gt;&gt;_0.2725 :   -136.39564928    -25.58027685j   Residual Norm: 0.06282023                              
+               &lt;&lt;x;x&gt;&gt;_0.2750 :   -150.52507584    -32.89005096j   Residual Norm: 0.06273665                              
+               &lt;&lt;x;x&gt;&gt;_0.2775 :   -168.27317850    -43.73943517j   Residual Norm: 0.06265136                              
+               &lt;&lt;x;x&gt;&gt;_0.2800 :   -190.87271080    -60.70627247j   Residual Norm: 0.06256425                              
+               &lt;&lt;x;x&gt;&gt;_0.2825 :   -219.60240118    -88.97323528j   Residual Norm: 0.06247516                              
+               &lt;&lt;x;x&gt;&gt;_0.2850 :   -253.90782415   -139.53754235j   Residual Norm: 0.06238397                              
+               &lt;&lt;x;x&gt;&gt;_0.2875 :   -281.62289214   -234.86271102j   Residual Norm: 0.06229052                              
+               &lt;&lt;x;x&gt;&gt;_0.2900 :   -241.32118977   -397.48839087j   Residual Norm: 0.06219467                              
+               &lt;&lt;x;x&gt;&gt;_0.2925 :    -22.79508836   -514.89039574j   Residual Norm: 0.06209625                              
+               &lt;&lt;x;x&gt;&gt;_0.2950 :    192.65200188   -394.09888239j   Residual Norm: 0.06199511                              
+               &lt;&lt;x;x&gt;&gt;_0.2975 :    230.56274125   -232.51133824j   Residual Norm: 0.06189107                              
+               &lt;&lt;x;x&gt;&gt;_0.3000 :    202.40580076   -138.30783772j   Residual Norm: 0.06178396                              
+               &lt;&lt;x;x&gt;&gt;_0.3025 :    168.14479636    -88.32561392j   Residual Norm: 0.06167360                              
+               &lt;&lt;x;x&gt;&gt;_0.3050 :    139.51589922    -60.35112360j   Residual Norm: 0.06155981                              
+               &lt;&lt;x;x&gt;&gt;_0.3075 :    116.99455147    -43.54176193j   Residual Norm: 0.06144239                              
+               &lt;&lt;x;x&gt;&gt;_0.3100 :     99.29503009    -32.78456678j   Residual Norm: 0.06132115                              
+               &lt;&lt;x;x&gt;&gt;_0.3125 :     85.18962927    -25.53330071j   Residual Norm: 0.06119589                              
+               &lt;&lt;x;x&gt;&gt;_0.3150 :     73.75456450    -20.43370677j   Residual Norm: 0.06106642                              
+               &lt;&lt;x;x&gt;&gt;_0.3175 :     64.32796394    -16.72042176j   Residual Norm: 0.06093251                              
+               &lt;&lt;x;x&gt;&gt;_0.3200 :     56.43718363    -13.93749039j   Residual Norm: 0.06079396                              
+               &lt;&lt;x;x&gt;&gt;_0.3225 :     49.74090543    -11.80075781j   Residual Norm: 0.06065055                              
+               &lt;&lt;x;x&gt;&gt;_0.3250 :     43.98870565    -10.12617561j   Residual Norm: 0.06050208                              
+               &lt;&lt;x;x&gt;&gt;_0.3275 :     38.99372351     -8.79051762j   Residual Norm: 0.06034832                              
+               &lt;&lt;x;x&gt;&gt;_0.3300 :     34.61421745     -7.70887903j   Residual Norm: 0.06018906                              
+               &lt;&lt;y;y&gt;&gt;_0.2600 :    -23.58487300     -0.18954463j   Residual Norm: 0.02359041                              
+               &lt;&lt;y;y&gt;&gt;_0.2625 :    -23.68983872     -0.19326074j   Residual Norm: 0.02363545                              
+               &lt;&lt;y;y&gt;&gt;_0.2650 :    -23.79686477     -0.19706145j   Residual Norm: 0.02368044                              
+               &lt;&lt;y;y&gt;&gt;_0.2675 :    -23.90599828     -0.20094970j   Residual Norm: 0.02372538                              
+               &lt;&lt;y;y&gt;&gt;_0.2700 :    -24.01728804     -0.20492852j   Residual Norm: 0.02377024                              
+               &lt;&lt;y;y&gt;&gt;_0.2725 :    -24.13078453     -0.20900109j   Residual Norm: 0.02381500                              
+               &lt;&lt;y;y&gt;&gt;_0.2750 :    -24.24654000     -0.21317072j   Residual Norm: 0.02385966                              
+               &lt;&lt;y;y&gt;&gt;_0.2775 :    -24.36460855     -0.21744087j   Residual Norm: 0.02390418                              
+               &lt;&lt;y;y&gt;&gt;_0.2800 :    -24.48504623     -0.22181513j   Residual Norm: 0.02394855                              
+               &lt;&lt;y;y&gt;&gt;_0.2825 :    -24.60791110     -0.22629730j   Residual Norm: 0.02399276                              
+               &lt;&lt;y;y&gt;&gt;_0.2850 :    -24.73326332     -0.23089130j   Residual Norm: 0.02403677                              
+               &lt;&lt;y;y&gt;&gt;_0.2875 :    -24.86116526     -0.23560126j   Residual Norm: 0.02408058                              
+               &lt;&lt;y;y&gt;&gt;_0.2900 :    -24.99168160     -0.24043147j   Residual Norm: 0.02412416                              
+               &lt;&lt;y;y&gt;&gt;_0.2925 :    -25.12487944     -0.24538647j   Residual Norm: 0.02416750                              
+               &lt;&lt;y;y&gt;&gt;_0.2950 :    -25.26082839     -0.25047095j   Residual Norm: 0.02421057                              
+               &lt;&lt;y;y&gt;&gt;_0.2975 :    -25.39960069     -0.25568988j   Residual Norm: 0.02425336                              
+               &lt;&lt;y;y&gt;&gt;_0.3000 :    -25.54127139     -0.26104842j   Residual Norm: 0.02429584                              
+               &lt;&lt;y;y&gt;&gt;_0.3025 :    -25.68591841     -0.26655201j   Residual Norm: 0.02433800                              
+               &lt;&lt;y;y&gt;&gt;_0.3050 :    -25.83362272     -0.27220636j   Residual Norm: 0.02437982                              
+               &lt;&lt;y;y&gt;&gt;_0.3075 :    -25.98446848     -0.27801742j   Residual Norm: 0.02442127                              
+               &lt;&lt;y;y&gt;&gt;_0.3100 :    -26.13854321     -0.28399150j   Residual Norm: 0.02446235                              
+               &lt;&lt;y;y&gt;&gt;_0.3125 :    -26.29593795     -0.29013517j   Residual Norm: 0.02450302                              
+               &lt;&lt;y;y&gt;&gt;_0.3150 :    -26.45674742     -0.29645537j   Residual Norm: 0.02454328                              
+               &lt;&lt;y;y&gt;&gt;_0.3175 :    -26.62107024     -0.30295938j   Residual Norm: 0.02458311                              
+               &lt;&lt;y;y&gt;&gt;_0.3200 :    -26.78900912     -0.30965489j   Residual Norm: 0.02462249                              
+               &lt;&lt;y;y&gt;&gt;_0.3225 :    -26.96067107     -0.31654995j   Residual Norm: 0.02466140                              
+               &lt;&lt;y;y&gt;&gt;_0.3250 :    -27.13616761     -0.32365307j   Residual Norm: 0.02469984                              
+               &lt;&lt;y;y&gt;&gt;_0.3275 :    -27.31561508     -0.33097323j   Residual Norm: 0.02473777                              
+               &lt;&lt;y;y&gt;&gt;_0.3300 :    -27.49913479     -0.33851986j   Residual Norm: 0.02477520                              
+               &lt;&lt;z;z&gt;&gt;_0.2600 :     -7.96284753     -0.03011129j   Residual Norm: 0.02900385                              
+               &lt;&lt;z;z&gt;&gt;_0.2625 :     -7.97948723     -0.03055581j   Residual Norm: 0.02937230                              
+               &lt;&lt;z;z&gt;&gt;_0.2650 :     -7.99637238     -0.03100641j   Residual Norm: 0.02975393                              
+               &lt;&lt;z;z&gt;&gt;_0.2675 :     -8.01350637     -0.03146326j   Residual Norm: 0.03014948                              
+               &lt;&lt;z;z&gt;&gt;_0.2700 :     -8.03089267     -0.03192656j   Residual Norm: 0.03055969                              
+               &lt;&lt;z;z&gt;&gt;_0.2725 :     -8.04853486     -0.03239650j   Residual Norm: 0.03098541                              
+               &lt;&lt;z;z&gt;&gt;_0.2750 :     -8.06643664     -0.03287330j   Residual Norm: 0.03142755                              
+               &lt;&lt;z;z&gt;&gt;_0.2775 :     -8.08460182     -0.03335716j   Residual Norm: 0.03188711                              
+               &lt;&lt;z;z&gt;&gt;_0.2800 :     -8.10303434     -0.03384835j   Residual Norm: 0.03236520                              
+               &lt;&lt;z;z&gt;&gt;_0.2825 :     -8.12173827     -0.03434710j   Residual Norm: 0.03286303                              
+               &lt;&lt;z;z&gt;&gt;_0.2850 :     -8.14071782     -0.03485369j   Residual Norm: 0.03338193                              
+               &lt;&lt;z;z&gt;&gt;_0.2875 :     -8.15997737     -0.03536843j   Residual Norm: 0.03392339                              
+               &lt;&lt;z;z&gt;&gt;_0.2900 :     -8.17952144     -0.03589162j   Residual Norm: 0.03448907                              
+               &lt;&lt;z;z&gt;&gt;_0.2925 :     -8.19935476     -0.03642361j   Residual Norm: 0.03508080                              
+               &lt;&lt;z;z&gt;&gt;_0.2950 :     -8.21948224     -0.03696480j   Residual Norm: 0.03570066                              
+               &lt;&lt;z;z&gt;&gt;_0.2975 :     -8.23990901     -0.03751561j   Residual Norm: 0.03635096                              
+               &lt;&lt;z;z&gt;&gt;_0.3000 :     -8.26064043     -0.03807649j   Residual Norm: 0.03703434                              
+               &lt;&lt;z;z&gt;&gt;_0.3025 :     -8.28168215     -0.03864800j   Residual Norm: 0.03775377                              
+               &lt;&lt;z;z&gt;&gt;_0.3050 :     -8.30304010     -0.03923071j   Residual Norm: 0.03851266                              
+               &lt;&lt;z;z&gt;&gt;_0.3075 :     -8.32472056     -0.03982531j   Residual Norm: 0.03931488                              
+               &lt;&lt;z;z&gt;&gt;_0.3100 :     -8.34673019     -0.04043258j   Residual Norm: 0.04016491                              
+               &lt;&lt;z;z&gt;&gt;_0.3125 :     -8.36907611     -0.04105344j   Residual Norm: 0.04106795                              
+               &lt;&lt;z;z&gt;&gt;_0.3150 :     -8.39176593     -0.04168895j   Residual Norm: 0.04203003                              
+               &lt;&lt;z;z&gt;&gt;_0.3175 :     -8.41480791     -0.04234040j   Residual Norm: 0.04305823                              
+               &lt;&lt;z;z&gt;&gt;_0.3200 :     -8.43821099     -0.04300931j   Residual Norm: 0.04416089                              
+               &lt;&lt;z;z&gt;&gt;_0.3225 :     -8.46198504     -0.04369757j   Residual Norm: 0.04534794                              
+               &lt;&lt;z;z&gt;&gt;_0.3250 :     -8.48614094     -0.04440749j   Residual Norm: 0.04663126                              
+               &lt;&lt;z;z&gt;&gt;_0.3275 :     -8.51069094     -0.04514199j   Residual Norm: 0.04802522                              
+               &lt;&lt;z;z&gt;&gt;_0.3300 :     -8.53564890     -0.04590480j   Residual Norm: 0.04954730                              
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 19)                                                                       
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 26 gerade trial vectors in reduced space                                                                         
+* Info * 27 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 672.30 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.37 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   3 * Residuals (Max,Min): 5.63e-03 and 1.76e-03                                            
+                                                                                                                          
+               Operator:  electric dipole (xyz)                                                                           
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.2600 :    -97.35352759    -10.63651184j   Residual Norm: 0.00540383                              
+               &lt;&lt;x;x&gt;&gt;_0.2625 :   -103.39817921    -12.48474463j   Residual Norm: 0.00540884                              
+               &lt;&lt;x;x&gt;&gt;_0.2650 :   -110.48162571    -14.85875619j   Residual Norm: 0.00541405                              
+               &lt;&lt;x;x&gt;&gt;_0.2675 :   -118.88625056    -17.97610895j   Residual Norm: 0.00541947                              
+               &lt;&lt;x;x&gt;&gt;_0.2700 :   -128.99946880    -22.17760520j   Residual Norm: 0.00542510                              
+               &lt;&lt;x;x&gt;&gt;_0.2725 :   -141.36063737    -28.01943828j   Residual Norm: 0.00543095                              
+               &lt;&lt;x;x&gt;&gt;_0.2750 :   -156.72610817    -36.45393139j   Residual Norm: 0.00543702                              
+               &lt;&lt;x;x&gt;&gt;_0.2775 :   -176.14045322    -49.20542498j   Residual Norm: 0.00544332                              
+               &lt;&lt;x;x&gt;&gt;_0.2800 :   -200.92082209    -69.60059191j   Residual Norm: 0.00544984                              
+               &lt;&lt;x;x&gt;&gt;_0.2825 :   -232.06651955   -104.48720791j   Residual Norm: 0.00545660                              
+               &lt;&lt;x;x&gt;&gt;_0.2850 :   -266.69111662   -168.48064954j   Residual Norm: 0.00546359                              
+               &lt;&lt;x;x&gt;&gt;_0.2875 :   -280.79180958   -288.56847149j   Residual Norm: 0.00547083                              
+               &lt;&lt;x;x&gt;&gt;_0.2900 :   -181.23185778   -462.37178691j   Residual Norm: 0.00547830                              
+               &lt;&lt;x;x&gt;&gt;_0.2925 :     78.75288503   -492.90609487j   Residual Norm: 0.00548602                              
+               &lt;&lt;x;x&gt;&gt;_0.2950 :    222.47541031   -326.42201935j   Residual Norm: 0.00549398                              
+               &lt;&lt;x;x&gt;&gt;_0.2975 :    222.72222129   -189.90836405j   Residual Norm: 0.00550219                              
+               &lt;&lt;x;x&gt;&gt;_0.3000 :    189.15031503   -115.84073411j   Residual Norm: 0.00551065                              
+               &lt;&lt;x;x&gt;&gt;_0.3025 :    156.62475658    -75.99022913j   Residual Norm: 0.00551935                              
+               &lt;&lt;x;x&gt;&gt;_0.3050 :    130.40910303    -53.07716652j   Residual Norm: 0.00552830                              
+               &lt;&lt;x;x&gt;&gt;_0.3075 :    109.86118481    -38.96074438j   Residual Norm: 0.00553749                              
+               &lt;&lt;x;x&gt;&gt;_0.3100 :     93.64102985    -29.73709902j   Residual Norm: 0.00554692                              
+               &lt;&lt;x;x&gt;&gt;_0.3125 :     80.63250526    -23.41324090j   Residual Norm: 0.00555659                              
+               &lt;&lt;x;x&gt;&gt;_0.3150 :     70.01890136    -18.90372830j   Residual Norm: 0.00556650                              
+               &lt;&lt;x;x&gt;&gt;_0.3175 :     61.21746807    -15.58224455j   Residual Norm: 0.00557663                              
+               &lt;&lt;x;x&gt;&gt;_0.3200 :     53.81070463    -13.06897036j   Residual Norm: 0.00558698                              
+               &lt;&lt;x;x&gt;&gt;_0.3225 :     47.49539372    -11.12357298j   Residual Norm: 0.00559755                              
+               &lt;&lt;x;x&gt;&gt;_0.3250 :     42.04765275     -9.58834374j   Residual Norm: 0.00560833                              
+               &lt;&lt;x;x&gt;&gt;_0.3275 :     37.29937426     -8.35649536j   Residual Norm: 0.00561931                              
+               &lt;&lt;x;x&gt;&gt;_0.3300 :     33.12228259     -7.35372484j   Residual Norm: 0.00563047                              
+               &lt;&lt;y;y&gt;&gt;_0.2600 :    -23.58982838     -0.18972737j   Residual Norm: 0.00336364                              
+               &lt;&lt;y;y&gt;&gt;_0.2625 :    -23.69489578     -0.19344909j   Residual Norm: 0.00335714                              
+               &lt;&lt;y;y&gt;&gt;_0.2650 :    -23.80202662     -0.19725562j   Residual Norm: 0.00335030                              
+               &lt;&lt;y;y&gt;&gt;_0.2675 :    -23.91126818     -0.20114990j   Residual Norm: 0.00334311                              
+               &lt;&lt;y;y&gt;&gt;_0.2700 :    -24.02266935     -0.20513498j   Residual Norm: 0.00333556                              
+               &lt;&lt;y;y&gt;&gt;_0.2725 :    -24.13628074     -0.20921405j   Residual Norm: 0.00332766                              
+               &lt;&lt;y;y&gt;&gt;_0.2750 :    -24.25215474     -0.21339043j   Residual Norm: 0.00331937                              
+               &lt;&lt;y;y&gt;&gt;_0.2775 :    -24.37034560     -0.21766759j   Residual Norm: 0.00331071                              
+               &lt;&lt;y;y&gt;&gt;_0.2800 :    -24.49090949     -0.22204915j   Residual Norm: 0.00330165                              
+               &lt;&lt;y;y&gt;&gt;_0.2825 :    -24.61390465     -0.22653890j   Residual Norm: 0.00329218                              
+               &lt;&lt;y;y&gt;&gt;_0.2850 :    -24.73939138     -0.23114078j   Residual Norm: 0.00328230                              
+               &lt;&lt;y;y&gt;&gt;_0.2875 :    -24.86743225     -0.23585894j   Residual Norm: 0.00327200                              
+               &lt;&lt;y;y&gt;&gt;_0.2900 :    -24.99809210     -0.24069771j   Residual Norm: 0.00326126                              
+               &lt;&lt;y;y&gt;&gt;_0.2925 :    -25.13143822     -0.24566160j   Residual Norm: 0.00325008                              
+               &lt;&lt;y;y&gt;&gt;_0.2950 :    -25.26754042     -0.25075536j   Residual Norm: 0.00323844                              
+               &lt;&lt;y;y&gt;&gt;_0.2975 :    -25.40647116     -0.25598395j   Residual Norm: 0.00322634                              
+               &lt;&lt;y;y&gt;&gt;_0.3000 :    -25.54830570     -0.26135258j   Residual Norm: 0.00321377                              
+               &lt;&lt;y;y&gt;&gt;_0.3025 :    -25.69312220     -0.26686669j   Residual Norm: 0.00320071                              
+               &lt;&lt;y;y&gt;&gt;_0.3050 :    -25.84100187     -0.27253202j   Residual Norm: 0.00318715                              
+               &lt;&lt;y;y&gt;&gt;_0.3075 :    -25.99202914     -0.27835456j   Residual Norm: 0.00317309                              
+               &lt;&lt;y;y&gt;&gt;_0.3100 :    -26.14629180     -0.28434063j   Residual Norm: 0.00315852                              
+               &lt;&lt;y;y&gt;&gt;_0.3125 :    -26.30388117     -0.29049684j   Residual Norm: 0.00314342                              
+               &lt;&lt;y;y&gt;&gt;_0.3150 :    -26.46489230     -0.29683016j   Residual Norm: 0.00312780                              
+               &lt;&lt;y;y&gt;&gt;_0.3175 :    -26.62942412     -0.30334792j   Residual Norm: 0.00311163                              
+               &lt;&lt;y;y&gt;&gt;_0.3200 :    -26.79757969     -0.31005781j   Residual Norm: 0.00309492                              
+               &lt;&lt;y;y&gt;&gt;_0.3225 :    -26.96946638     -0.31696795j   Residual Norm: 0.00307765                              
+               &lt;&lt;y;y&gt;&gt;_0.3250 :    -27.14519613     -0.32408690j   Residual Norm: 0.00305982                              
+               &lt;&lt;y;y&gt;&gt;_0.3275 :    -27.32488565     -0.33142364j   Residual Norm: 0.00304142                              
+               &lt;&lt;y;y&gt;&gt;_0.3300 :    -27.50865673     -0.33898770j   Residual Norm: 0.00302245                              
+               &lt;&lt;z;z&gt;&gt;_0.2600 :     -7.96351686     -0.03015327j   Residual Norm: 0.00175924                              
+               &lt;&lt;z;z&gt;&gt;_0.2625 :     -7.98018010     -0.03060003j   Residual Norm: 0.00179655                              
+               &lt;&lt;z;z&gt;&gt;_0.2650 :     -7.99709007     -0.03105304j   Residual Norm: 0.00183527                              
+               &lt;&lt;z;z&gt;&gt;_0.2675 :     -8.01425023     -0.03151249j   Residual Norm: 0.00187549                              
+               &lt;&lt;z;z&gt;&gt;_0.2700 :     -8.03166416     -0.03197858j   Residual Norm: 0.00191729                              
+               &lt;&lt;z;z&gt;&gt;_0.2725 :     -8.04933557     -0.03245155j   Residual Norm: 0.00196076                              
+               &lt;&lt;z;z&gt;&gt;_0.2750 :     -8.06726828     -0.03293161j   Residual Norm: 0.00200601                              
+               &lt;&lt;z;z&gt;&gt;_0.2775 :     -8.08546624     -0.03341903j   Residual Norm: 0.00205315                              
+               &lt;&lt;z;z&gt;&gt;_0.2800 :     -8.10393355     -0.03391408j   Residual Norm: 0.00210229                              
+               &lt;&lt;z;z&gt;&gt;_0.2825 :     -8.12267445     -0.03441704j   Residual Norm: 0.00215358                              
+               &lt;&lt;z;z&gt;&gt;_0.2850 :     -8.14169337     -0.03492824j   Residual Norm: 0.00220715                              
+               &lt;&lt;z;z&gt;&gt;_0.2875 :     -8.16099490     -0.03544803j   Residual Norm: 0.00226317                              
+               &lt;&lt;z;z&gt;&gt;_0.2900 :     -8.18058382     -0.03597678j   Residual Norm: 0.00232181                              
+               &lt;&lt;z;z&gt;&gt;_0.2925 :     -8.20046514     -0.03651492j   Residual Norm: 0.00238328                              
+               &lt;&lt;z;z&gt;&gt;_0.2950 :     -8.22064412     -0.03706291j   Residual Norm: 0.00244780                              
+               &lt;&lt;z;z&gt;&gt;_0.2975 :     -8.24112625     -0.03762128j   Residual Norm: 0.00251561                              
+               &lt;&lt;z;z&gt;&gt;_0.3000 :     -8.26191734     -0.03819062j   Residual Norm: 0.00258700                              
+               &lt;&lt;z;z&gt;&gt;_0.3025 :     -8.28302355     -0.03877160j   Residual Norm: 0.00266229                              
+               &lt;&lt;z;z&gt;&gt;_0.3050 :     -8.30445139     -0.03936501j   Residual Norm: 0.00274185                              
+               &lt;&lt;z;z&gt;&gt;_0.3075 :     -8.32620784     -0.03997173j   Residual Norm: 0.00282608                              
+               &lt;&lt;z;z&gt;&gt;_0.3100 :     -8.34830039     -0.04059282j   Residual Norm: 0.00291547                              
+               &lt;&lt;z;z&gt;&gt;_0.3125 :     -8.37073710     -0.04122953j   Residual Norm: 0.00301058                              
+               &lt;&lt;z;z&gt;&gt;_0.3150 :     -8.39352678     -0.04188335j   Residual Norm: 0.00311206                              
+               &lt;&lt;z;z&gt;&gt;_0.3175 :     -8.41667907     -0.04255611j   Residual Norm: 0.00322068                              
+               &lt;&lt;z;z&gt;&gt;_0.3200 :     -8.44020466     -0.04325002j   Residual Norm: 0.00333734                              
+               &lt;&lt;z;z&gt;&gt;_0.3225 :     -8.46411549     -0.04396787j   Residual Norm: 0.00346314                              
+               &lt;&lt;z;z&gt;&gt;_0.3250 :     -8.48842509     -0.04471317j   Residual Norm: 0.00359939                              
+               &lt;&lt;z;z&gt;&gt;_0.3275 :     -8.51314898     -0.04549044j   Residual Norm: 0.00374768                              
+               &lt;&lt;z;z&gt;&gt;_0.3300 :     -8.53830522     -0.04630560j   Residual Norm: 0.00391000                              
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 17)                                                                       
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 34 gerade trial vectors in reduced space                                                                         
+* Info * 36 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 710.21 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.37 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   4 * Residuals (Max,Min): 5.27e-04 and 4.86e-05                                            
+                                                                                                                          
+               Operator:  electric dipole (xyz)                                                                           
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.2600 :    -97.35978109    -10.63838050j   Residual Norm: 0.00047227                              
+               &lt;&lt;x;x&gt;&gt;_0.2625 :   -103.40548675    -12.48712649j   Residual Norm: 0.00047411                              
+               &lt;&lt;x;x&gt;&gt;_0.2650 :   -110.49026599    -14.86185421j   Residual Norm: 0.00047594                              
+               &lt;&lt;x;x&gt;&gt;_0.2675 :   -118.89660318    -17.98023524j   Residual Norm: 0.00047779                              
+               &lt;&lt;x;x&gt;&gt;_0.2700 :   -129.01205921    -22.18325812j   Residual Norm: 0.00047964                              
+               &lt;&lt;x;x&gt;&gt;_0.2725 :   -141.37620187    -28.02744917j   Residual Norm: 0.00048150                              
+               &lt;&lt;x;x&gt;&gt;_0.2750 :   -156.74567874    -36.46576004j   Residual Norm: 0.00048337                              
+               &lt;&lt;x;x&gt;&gt;_0.2775 :   -176.16542371    -49.22379110j   Residual Norm: 0.00048525                              
+               &lt;&lt;x;x&gt;&gt;_0.2800 :   -200.95276666    -69.63090546j   Residual Norm: 0.00048715                              
+               &lt;&lt;x;x&gt;&gt;_0.2825 :   -232.10560947   -104.54089787j   Residual Norm: 0.00048905                              
+               &lt;&lt;x;x&gt;&gt;_0.2850 :   -266.72752882   -168.58189031j   Residual Norm: 0.00049098                              
+               &lt;&lt;x;x&gt;&gt;_0.2875 :   -280.76788678   -288.75208117j   Residual Norm: 0.00049291                              
+               &lt;&lt;x;x&gt;&gt;_0.2900 :   -180.99292999   -462.55005789j   Residual Norm: 0.00049487                              
+               &lt;&lt;x;x&gt;&gt;_0.2925 :     79.04352748   -492.77390334j   Residual Norm: 0.00049683                              
+               &lt;&lt;x;x&gt;&gt;_0.2950 :    222.53012787   -326.21668090j   Residual Norm: 0.00049882                              
+               &lt;&lt;x;x&gt;&gt;_0.2975 :    222.68825465   -189.78880878j   Residual Norm: 0.00050081                              
+               &lt;&lt;x;x&gt;&gt;_0.3000 :    189.10762282   -115.77758509j   Residual Norm: 0.00050282                              
+               &lt;&lt;x;x&gt;&gt;_0.3025 :    156.58886159    -75.95501844j   Residual Norm: 0.00050485                              
+               &lt;&lt;x;x&gt;&gt;_0.3050 :    130.38077461    -53.05607279j   Residual Norm: 0.00050688                              
+               &lt;&lt;x;x&gt;&gt;_0.3075 :    109.83885783    -38.94727580j   Residual Norm: 0.00050893                              
+               &lt;&lt;x;x&gt;&gt;_0.3100 :     93.62318182    -29.72803421j   Residual Norm: 0.00051097                              
+               &lt;&lt;x;x&gt;&gt;_0.3125 :     80.61798627    -23.40687208j   Residual Norm: 0.00051303                              
+               &lt;&lt;x;x&gt;&gt;_0.3150 :     70.00688688    -18.89909305j   Residual Norm: 0.00051508                              
+               &lt;&lt;x;x&gt;&gt;_0.3175 :     61.20736932    -15.57877092j   Residual Norm: 0.00051712                              
+               &lt;&lt;x;x&gt;&gt;_0.3200 :     53.80209656    -13.06630267j   Residual Norm: 0.00051915                              
+               &lt;&lt;x;x&gt;&gt;_0.3225 :     47.48796455    -11.12148122j   Residual Norm: 0.00052117                              
+               &lt;&lt;x;x&gt;&gt;_0.3250 :     42.04116989     -9.58667414j   Residual Norm: 0.00052316                              
+               &lt;&lt;x;x&gt;&gt;_0.3275 :     37.29366128     -8.35514207j   Residual Norm: 0.00052511                              
+               &lt;&lt;x;x&gt;&gt;_0.3300 :     33.11720357     -7.35261318j   Residual Norm: 0.00052702                              
+               &lt;&lt;y;y&gt;&gt;_0.2600 :    -23.58986809     -0.18972888j   Residual Norm: 0.00036556                              
+               &lt;&lt;y;y&gt;&gt;_0.2625 :    -23.69493633     -0.19345064j   Residual Norm: 0.00036787                              
+               &lt;&lt;y;y&gt;&gt;_0.2650 :    -23.80206804     -0.19725722j   Residual Norm: 0.00037023                              
+               &lt;&lt;y;y&gt;&gt;_0.2675 :    -23.91131049     -0.20115155j   Residual Norm: 0.00037265                              
+               &lt;&lt;y;y&gt;&gt;_0.2700 :    -24.02271258     -0.20513669j   Residual Norm: 0.00037512                              
+               &lt;&lt;y;y&gt;&gt;_0.2725 :    -24.13632492     -0.20921581j   Residual Norm: 0.00037763                              
+               &lt;&lt;y;y&gt;&gt;_0.2750 :    -24.25219990     -0.21339224j   Residual Norm: 0.00038018                              
+               &lt;&lt;y;y&gt;&gt;_0.2775 :    -24.37039176     -0.21766946j   Residual Norm: 0.00038277                              
+               &lt;&lt;y;y&gt;&gt;_0.2800 :    -24.49095670     -0.22205108j   Residual Norm: 0.00038539                              
+               &lt;&lt;y;y&gt;&gt;_0.2825 :    -24.61395292     -0.22654088j   Residual Norm: 0.00038803                              
+               &lt;&lt;y;y&gt;&gt;_0.2850 :    -24.73944077     -0.23114283j   Residual Norm: 0.00039069                              
+               &lt;&lt;y;y&gt;&gt;_0.2875 :    -24.86748277     -0.23586106j   Residual Norm: 0.00039337                              
+               &lt;&lt;y;y&gt;&gt;_0.2900 :    -24.99814380     -0.24069989j   Residual Norm: 0.00039605                              
+               &lt;&lt;y;y&gt;&gt;_0.2925 :    -25.13149113     -0.24566385j   Residual Norm: 0.00039872                              
+               &lt;&lt;y;y&gt;&gt;_0.2950 :    -25.26759458     -0.25075768j   Residual Norm: 0.00040139                              
+               &lt;&lt;y;y&gt;&gt;_0.2975 :    -25.40652662     -0.25598634j   Residual Norm: 0.00040404                              
+               &lt;&lt;y;y&gt;&gt;_0.3000 :    -25.54836249     -0.26135504j   Residual Norm: 0.00040666                              
+               &lt;&lt;y;y&gt;&gt;_0.3025 :    -25.69318035     -0.26686923j   Residual Norm: 0.00040924                              
+               &lt;&lt;y;y&gt;&gt;_0.3050 :    -25.84106144     -0.27253464j   Residual Norm: 0.00041177                              
+               &lt;&lt;y;y&gt;&gt;_0.3075 :    -25.99209016     -0.27835726j   Residual Norm: 0.00041424                              
+               &lt;&lt;y;y&gt;&gt;_0.3100 :    -26.14635433     -0.28434341j   Residual Norm: 0.00041664                              
+               &lt;&lt;y;y&gt;&gt;_0.3125 :    -26.30394525     -0.29049971j   Residual Norm: 0.00041895                              
+               &lt;&lt;y;y&gt;&gt;_0.3150 :    -26.46495797     -0.29683312j   Residual Norm: 0.00042115                              
+               &lt;&lt;y;y&gt;&gt;_0.3175 :    -26.62949143     -0.30335096j   Residual Norm: 0.00042325                              
+               &lt;&lt;y;y&gt;&gt;_0.3200 :    -26.79764870     -0.31006095j   Residual Norm: 0.00042521                              
+               &lt;&lt;y;y&gt;&gt;_0.3225 :    -26.96953714     -0.31697118j   Residual Norm: 0.00042702                              
+               &lt;&lt;y;y&gt;&gt;_0.3250 :    -27.14526868     -0.32409022j   Residual Norm: 0.00042867                              
+               &lt;&lt;y;y&gt;&gt;_0.3275 :    -27.32496005     -0.33142707j   Residual Norm: 0.00043013                              
+               &lt;&lt;y;y&gt;&gt;_0.3300 :    -27.50873304     -0.33899123j   Residual Norm: 0.00043138                              
+               &lt;&lt;z;z&gt;&gt;_0.2600 :     -7.96351977     -0.03015362j   Residual Norm: 0.00004857                              
+               &lt;&lt;z;z&gt;&gt;_0.2625 :     -7.98018322     -0.03060041j   Residual Norm: 0.00004894                              
+               &lt;&lt;z;z&gt;&gt;_0.2650 :     -7.99709340     -0.03105345j   Residual Norm: 0.00004940                              
+               &lt;&lt;z;z&gt;&gt;_0.2675 :     -8.01425379     -0.03151294j   Residual Norm: 0.00004995                              
+               &lt;&lt;z;z&gt;&gt;_0.2700 :     -8.03166798     -0.03197907j   Residual Norm: 0.00005060                              
+               &lt;&lt;z;z&gt;&gt;_0.2725 :     -8.04933967     -0.03245207j   Residual Norm: 0.00005135                              
+               &lt;&lt;z;z&gt;&gt;_0.2750 :     -8.06727267     -0.03293219j   Residual Norm: 0.00005221                              
+               &lt;&lt;z;z&gt;&gt;_0.2775 :     -8.08547096     -0.03341966j   Residual Norm: 0.00005319                              
+               &lt;&lt;z;z&gt;&gt;_0.2800 :     -8.10393862     -0.03391476j   Residual Norm: 0.00005429                              
+               &lt;&lt;z;z&gt;&gt;_0.2825 :     -8.12267992     -0.03441779j   Residual Norm: 0.00005551                              
+               &lt;&lt;z;z&gt;&gt;_0.2850 :     -8.14169926     -0.03492906j   Residual Norm: 0.00005687                              
+               &lt;&lt;z;z&gt;&gt;_0.2875 :     -8.16100124     -0.03544892j   Residual Norm: 0.00005838                              
+               &lt;&lt;z;z&gt;&gt;_0.2900 :     -8.18059067     -0.03597776j   Residual Norm: 0.00006003                              
+               &lt;&lt;z;z&gt;&gt;_0.2925 :     -8.20047255     -0.03651599j   Residual Norm: 0.00006184                              
+               &lt;&lt;z;z&gt;&gt;_0.2950 :     -8.22065213     -0.03706409j   Residual Norm: 0.00006381                              
+               &lt;&lt;z;z&gt;&gt;_0.2975 :     -8.24113494     -0.03762258j   Residual Norm: 0.00006595                              
+               &lt;&lt;z;z&gt;&gt;_0.3000 :     -8.26192677     -0.03819205j   Residual Norm: 0.00006828                              
+               &lt;&lt;z;z&gt;&gt;_0.3025 :     -8.28303379     -0.03877319j   Residual Norm: 0.00007079                              
+               &lt;&lt;z;z&gt;&gt;_0.3050 :     -8.30446254     -0.03936676j   Residual Norm: 0.00007349                              
+               &lt;&lt;z;z&gt;&gt;_0.3075 :     -8.32621999     -0.03997368j   Residual Norm: 0.00007640                              
+               &lt;&lt;z;z&gt;&gt;_0.3100 :     -8.34831365     -0.04059500j   Residual Norm: 0.00007953                              
+               &lt;&lt;z;z&gt;&gt;_0.3125 :     -8.37075161     -0.04123197j   Residual Norm: 0.00008287                              
+               &lt;&lt;z;z&gt;&gt;_0.3150 :     -8.39354268     -0.04188610j   Residual Norm: 0.00008644                              
+               &lt;&lt;z;z&gt;&gt;_0.3175 :     -8.41669653     -0.04255920j   Residual Norm: 0.00009024                              
+               &lt;&lt;z;z&gt;&gt;_0.3200 :     -8.44022389     -0.04325352j   Residual Norm: 0.00009430                              
+               &lt;&lt;z;z&gt;&gt;_0.3225 :     -8.46413672     -0.04397186j   Residual Norm: 0.00009860                              
+               &lt;&lt;z;z&gt;&gt;_0.3250 :     -8.48844860     -0.04471775j   Residual Norm: 0.00010316                              
+               &lt;&lt;z;z&gt;&gt;_0.3275 :     -8.51317510     -0.04549573j   Residual Norm: 0.00010799                              
+               &lt;&lt;z;z&gt;&gt;_0.3300 :     -8.53833435     -0.04631175j   Residual Norm: 0.00011310                              
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 14)                                                                       
+* Info *   batch 1/1                                                                                                      
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * 41 gerade trial vectors in reduced space                                                                         
+* Info * 43 ungerade trial vectors in reduced space                                                                       
+                                                                                                                          
+* Info * 743.73 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.37 GB of memory available for the solver on the master node                                                    
+                                                                                                                          
+               *** Iteration:   5 * Residuals (Max,Min): 9.86e-05 and 2.81e-05                                            
+                                                                                                                          
+               Operator:  electric dipole (xyz)                                                                           
+                                                                                                                          
+               &lt;&lt;x;x&gt;&gt;_0.2600 :    -97.35981940    -10.63839256j   Residual Norm: 0.00002830                              
+               &lt;&lt;x;x&gt;&gt;_0.2625 :   -103.40553186    -12.48714192j   Residual Norm: 0.00002864                              
+               &lt;&lt;x;x&gt;&gt;_0.2650 :   -110.49031972    -14.86187434j   Residual Norm: 0.00002898                              
+               &lt;&lt;x;x&gt;&gt;_0.2675 :   -118.89666803    -17.98026214j   Residual Norm: 0.00002931                              
+               &lt;&lt;x;x&gt;&gt;_0.2700 :   -129.01213863    -22.18329509j   Residual Norm: 0.00002964                              
+               &lt;&lt;x;x&gt;&gt;_0.2725 :   -141.37630071    -28.02750174j   Residual Norm: 0.00002997                              
+               &lt;&lt;x;x&gt;&gt;_0.2750 :   -156.74580380    -36.46583791j   Residual Norm: 0.00003029                              
+               &lt;&lt;x;x&gt;&gt;_0.2775 :   -176.16558417    -49.22391239j   Residual Norm: 0.00003061                              
+               &lt;&lt;x;x&gt;&gt;_0.2800 :   -200.95297286    -69.63110624j   Residual Norm: 0.00003092                              
+               &lt;&lt;x;x&gt;&gt;_0.2825 :   -232.10586223   -104.54125444j   Residual Norm: 0.00003124                              
+               &lt;&lt;x;x&gt;&gt;_0.2850 :   -266.72776168   -168.58256414j   Residual Norm: 0.00003155                              
+               &lt;&lt;x;x&gt;&gt;_0.2875 :   -280.76771198   -288.75330396j   Residual Norm: 0.00003186                              
+               &lt;&lt;x;x&gt;&gt;_0.2900 :   -180.99131109   -462.55123483j   Residual Norm: 0.00003217                              
+               &lt;&lt;x;x&gt;&gt;_0.2925 :     79.04547978   -492.77298654j   Residual Norm: 0.00003248                              
+               &lt;&lt;x;x&gt;&gt;_0.2950 :    222.53048340   -326.21528110j   Residual Norm: 0.00003279                              
+               &lt;&lt;x;x&gt;&gt;_0.2975 :    222.68801321   -189.78799391j   Residual Norm: 0.00003310                              
+               &lt;&lt;x;x&gt;&gt;_0.3000 :    189.10732444   -115.77715388j   Residual Norm: 0.00003341                              
+               &lt;&lt;x;x&gt;&gt;_0.3025 :    156.58861068    -75.95477742j   Residual Norm: 0.00003372                              
+               &lt;&lt;x;x&gt;&gt;_0.3050 :    130.38057601    -53.05592801j   Residual Norm: 0.00003403                              
+               &lt;&lt;x;x&gt;&gt;_0.3075 :    109.83870071    -38.94718309j   Residual Norm: 0.00003435                              
+               &lt;&lt;x;x&gt;&gt;_0.3100 :     93.62305569    -29.72797162j   Residual Norm: 0.00003466                              
+               &lt;&lt;x;x&gt;&gt;_0.3125 :     80.61788324    -23.40682797j   Residual Norm: 0.00003497                              
+               &lt;&lt;x;x&gt;&gt;_0.3150 :     70.00680127    -18.89906085j   Residual Norm: 0.00003529                              
+               &lt;&lt;x;x&gt;&gt;_0.3175 :     61.20729707    -15.57874671j   Residual Norm: 0.00003560                              
+               &lt;&lt;x;x&gt;&gt;_0.3200 :     53.80203474    -13.06628401j   Residual Norm: 0.00003592                              
+               &lt;&lt;x;x&gt;&gt;_0.3225 :     47.48791101    -11.12146654j   Residual Norm: 0.00003623                              
+               &lt;&lt;x;x&gt;&gt;_0.3250 :     42.04112300     -9.58666237j   Residual Norm: 0.00003655                              
+               &lt;&lt;x;x&gt;&gt;_0.3275 :     37.29361984     -8.35513250j   Residual Norm: 0.00003686                              
+               &lt;&lt;x;x&gt;&gt;_0.3300 :     33.11716663     -7.35260528j   Residual Norm: 0.00003717                              
+               &lt;&lt;y;y&gt;&gt;_0.2600 :    -23.58986904     -0.18972893j   Residual Norm: 0.00003367                              
+               &lt;&lt;y;y&gt;&gt;_0.2625 :    -23.69493731     -0.19345070j   Residual Norm: 0.00003450                              
+               &lt;&lt;y;y&gt;&gt;_0.2650 :    -23.80206905     -0.19725728j   Residual Norm: 0.00003534                              
+               &lt;&lt;y;y&gt;&gt;_0.2675 :    -23.91131154     -0.20115162j   Residual Norm: 0.00003620                              
+               &lt;&lt;y;y&gt;&gt;_0.2700 :    -24.02271366     -0.20513675j   Residual Norm: 0.00003706                              
+               &lt;&lt;y;y&gt;&gt;_0.2725 :    -24.13632604     -0.20921588j   Residual Norm: 0.00003793                              
+               &lt;&lt;y;y&gt;&gt;_0.2750 :    -24.25220106     -0.21339232j   Residual Norm: 0.00003880                              
+               &lt;&lt;y;y&gt;&gt;_0.2775 :    -24.37039296     -0.21766953j   Residual Norm: 0.00003968                              
+               &lt;&lt;y;y&gt;&gt;_0.2800 :    -24.49095794     -0.22205115j   Residual Norm: 0.00004057                              
+               &lt;&lt;y;y&gt;&gt;_0.2825 :    -24.61395421     -0.22654096j   Residual Norm: 0.00004146                              
+               &lt;&lt;y;y&gt;&gt;_0.2850 :    -24.73944210     -0.23114292j   Residual Norm: 0.00004236                              
+               &lt;&lt;y;y&gt;&gt;_0.2875 :    -24.86748415     -0.23586115j   Residual Norm: 0.00004326                              
+               &lt;&lt;y;y&gt;&gt;_0.2900 :    -24.99814523     -0.24069998j   Residual Norm: 0.00004416                              
+               &lt;&lt;y;y&gt;&gt;_0.2925 :    -25.13149261     -0.24566394j   Residual Norm: 0.00004507                              
+               &lt;&lt;y;y&gt;&gt;_0.2950 :    -25.26759611     -0.25075777j   Residual Norm: 0.00004597                              
+               &lt;&lt;y;y&gt;&gt;_0.2975 :    -25.40652820     -0.25598644j   Residual Norm: 0.00004687                              
+               &lt;&lt;y;y&gt;&gt;_0.3000 :    -25.54836413     -0.26135515j   Residual Norm: 0.00004777                              
+               &lt;&lt;y;y&gt;&gt;_0.3025 :    -25.69318206     -0.26686934j   Residual Norm: 0.00004866                              
+               &lt;&lt;y;y&gt;&gt;_0.3050 :    -25.84106320     -0.27253475j   Residual Norm: 0.00004954                              
+               &lt;&lt;y;y&gt;&gt;_0.3075 :    -25.99209199     -0.27835738j   Residual Norm: 0.00005042                              
+               &lt;&lt;y;y&gt;&gt;_0.3100 :    -26.14635622     -0.28434353j   Residual Norm: 0.00005128                              
+               &lt;&lt;y;y&gt;&gt;_0.3125 :    -26.30394721     -0.29049983j   Residual Norm: 0.00005212                              
+               &lt;&lt;y;y&gt;&gt;_0.3150 :    -26.46496000     -0.29683325j   Residual Norm: 0.00005295                              
+               &lt;&lt;y;y&gt;&gt;_0.3175 :    -26.62949354     -0.30335109j   Residual Norm: 0.00005375                              
+               &lt;&lt;y;y&gt;&gt;_0.3200 :    -26.79765088     -0.31006108j   Residual Norm: 0.00005453                              
+               &lt;&lt;y;y&gt;&gt;_0.3225 :    -26.96953939     -0.31697132j   Residual Norm: 0.00005528                              
+               &lt;&lt;y;y&gt;&gt;_0.3250 :    -27.14527101     -0.32409036j   Residual Norm: 0.00005600                              
+               &lt;&lt;y;y&gt;&gt;_0.3275 :    -27.32496246     -0.33142721j   Residual Norm: 0.00005667                              
+               &lt;&lt;y;y&gt;&gt;_0.3300 :    -27.50873552     -0.33899138j   Residual Norm: 0.00005731                              
+               &lt;&lt;z;z&gt;&gt;_0.3250 :     -8.48844860     -0.04471775j   Residual Norm: 0.00002807                              
+               &lt;&lt;z;z&gt;&gt;_0.3275 :     -8.51317510     -0.04549573j   Residual Norm: 0.00002915                              
+               &lt;&lt;z;z&gt;&gt;_0.3300 :     -8.53833436     -0.04631175j   Residual Norm: 0.00003016                              
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Complex response converged in 5 iterations. Time: 0.68 sec                                             
+                                                                                                                          
+                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -1567,7 +2720,7 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/scf-response_44_0.png" src="../_images/scf-response_44_0.png" />
+<img alt="../_images/scf-response_45_0.png" src="../_images/scf-response_45_0.png" />
 </div>
 </div>
 </div>

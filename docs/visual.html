@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Electron correlation and two-electron densities &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>One- and two-electron densities &#8212; Computational Chemistry from  Laptop to HPC</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -343,7 +343,7 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Electron correlation and two-electron densities
+   One- and two-electron densities
   </a>
  </li>
 </ul>
@@ -451,21 +451,6 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#molecule-specification">
-   Molecule specification
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scf-optimization">
-   SCF optimization
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scf-and-system-information">
-   SCF and system information
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#one-and-two-electron-integrals">
    One- and two-electron integrals
   </a>
@@ -476,7 +461,7 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#one-and-two-electron-densities">
+  <a class="reference internal nav-link" href="#id1">
    One- and two-electron densities
   </a>
   <ul class="nav section-nav flex-column">
@@ -503,66 +488,29 @@
         
               <div>
                 
-  <div class="section" id="electron-correlation-and-two-electron-densities">
-<h1>Electron correlation and two-electron densities<a class="headerlink" href="#electron-correlation-and-two-electron-densities" title="Permalink to this headline">¶</a></h1>
-<div class="cell docutils container">
+  <div class="section" id="one-and-two-electron-densities">
+<h1>One- and two-electron densities<a class="headerlink" href="#one-and-two-electron-densities" title="Permalink to this headline">¶</a></h1>
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
 <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simps</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span> <span class="c1"># used for MPI communication</span>
-<span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span> <span class="c1"># direct program output to standard out</span>
-<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">132</span><span class="p">)</span> <span class="c1"># printout format of NumPy arrays</span>
-<span class="n">au_to_nm</span> <span class="o">=</span> <span class="mf">0.0529177</span> <span class="c1"># length conversion factor</span>
-<span class="n">au_to_ev</span> <span class="o">=</span> <span class="mf">27.2114</span> <span class="c1"># energy conversion factor</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="molecule-specification">
-<h2>Molecule specification<a class="headerlink" href="#molecule-specification" title="Permalink to this headline">¶</a></h2>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">H     0.000000    0.000000   -0.370500</span>
-<span class="s2">H     0.000000    0.000000    0.370500</span>
+<span class="s2">H     0.000000    0.000000   -0.7</span>
+<span class="s2">H     0.000000    0.000000    0.7</span>
 <span class="s2">&quot;&quot;&quot;</span>
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
-
-<span class="n">Hz</span> <span class="o">=</span> <span class="mf">0.370500</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">/</span> <span class="n">au_to_nm</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Hydrogen z-coord (a.u.): </span><span class="si">{</span><span class="n">Hz</span> <span class="si">:</span><span class="s1"> .6</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hydrogen z-coord (a.u.):  0.700144
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="scf-optimization">
-<h2>SCF optimization<a class="headerlink" href="#scf-optimization" title="Permalink to this headline">¶</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;au&#39;</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;sto-3g&#39;</span><span class="p">)</span>
+
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -583,7 +531,7 @@
                    ERI Screening Threshold         : 1.0e-12                                                              
                    Linear Dependence Threshold     : 1.0e-06                                                              
                                                                                                                           
-* Info * Nuclear repulsion energy: 0.7141392860 au                                                                        
+* Info * Nuclear repulsion energy: 0.7142857143 au                                                                        
                                                                                                                           
 * Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
@@ -602,7 +550,7 @@
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -1.116706137236 au. Time: 0.01 sec.                                    
+* Info * ...done. SCF energy in reduced basis set: -1.116714325063 au. Time: 0.01 sec.                                    
                                                                                                                           
 </pre></div>
 </div>
@@ -621,22 +569,21 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1        -1.116706137236    0.0000000000      0.00000000      0.00000000      0.00000000                
+                  1        -1.116714325063    0.0000000000      0.00000000      0.00000000      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 1 iterations. Time: 0.01 sec.                                                         
+               *** SCF converged in 1 iterations. Time: 0.00 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
                -----------------------------                                                                              
-               Total Energy                       :       -1.1167061372 au                                                
-               Electronic Energy                  :       -1.8308454232 au                                                
-               Nuclear Repulsion Energy           :        0.7141392860 au                                                
+               Total Energy                       :       -1.1167143251 au                                                
+               Electronic Energy                  :       -1.8310000393 au                                                
+               Nuclear Repulsion Energy           :        0.7142857143 au                                                
                ------------------------------------                                                                       
                Gradient Norm                      :        0.0000000000 au                                                
-                                                                                                                          
                                                                                                                           
                Ground State Information                                                                                   
                ------------------------                                                                                   
@@ -650,40 +597,31 @@
                                                                                                                           
                Molecular Orbital No.   1:                                                                                 
                --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.57814 au                                                                      
-               (   1 H   1s  :    -0.55) (   2 H   1s  :    -0.55)                                                        
+               Occupation: 2.0 Energy:   -0.57820 au                                                                      
+               (   1 H   1s  :     0.55) (   2 H   1s  :     0.55)                                                        
                                                                                                                           
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.67011 au                                                                      
-               (   1 H   1s  :     1.21) (   2 H   1s  :    -1.21)                                                        
+               Occupation: 0.0 Energy:    0.67027 au                                                                      
+               (   1 H   1s  :    -1.21) (   2 H   1s  :     1.21)                                                        
                                                                                                                           
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="scf-and-system-information">
-<h2>SCF and system information<a class="headerlink" href="#scf-and-system-information" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
 <span class="n">S</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span>
-
-<span class="n">V_nrep</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">0.370500</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">/</span> <span class="n">au_to_nm</span><span class="p">)</span>
-
+<span class="n">V_nrep</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
 <span class="n">norb</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of orbitals:&#39;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nuclear repulsion energy (a.u.): </span><span class="si">{</span><span class="n">V_nrep</span> <span class="si">:</span><span class="s1"> .6f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of orbitals: 2
-Nuclear repulsion energy (a.u.):  0.714139
 </pre></div>
-</div>
 </div>
 </div>
 </div>
@@ -691,18 +629,18 @@ Nuclear repulsion energy (a.u.):  0.714139
 <h2>One- and two-electron integrals<a class="headerlink" href="#one-and-two-electron-integrals" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kin_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kin_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
 <span class="n">T_ao</span> <span class="o">=</span> <span class="n">kin_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ai, ab, bj&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">T_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
 
-<span class="n">npot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
+<span class="n">npot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
 <span class="n">V_ao</span> <span class="o">=</span> <span class="o">-</span><span class="n">npot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ai, ab, bj&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">V_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
 
 <span class="c1"># core Hamiltonian</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
 
-<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
+<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
 <span class="n">eri_ao</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
 <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">eri_ao</span><span class="p">)</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
@@ -727,24 +665,24 @@ Nuclear repulsion energy (a.u.):  0.714139
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T =
- [[0.6005 0.    ]
- [0.     1.5367]]
+ [[0.60053975 0.        ]
+ [0.         1.53685121]]
 V =
- [[-1.8532  0.    ]
- [-0.     -2.0124]]
+ [[-1.85333681e+00  0.00000000e+00]
+ [ 2.22044605e-16 -2.01245351e+00]]
 h =
- [[-1.2527  0.    ]
- [ 0.     -0.4757]]
+ [[-1.25279706e+00  0.00000000e+00]
+ [ 2.22044605e-16 -4.75602299e-01]]
 (11|11) = 0.6746
 (22|22) = 0.6975
-(11|22) = 0.6635
+(11|22) = 0.6636
 (12|12) = 0.1813
 
-Kinetic energy (a.u.):  1.201042
-Electronic-nuclear potential energy (a.u.): -3.706453
-Electron-electron repulsion energy (a.u.):  0.674565
-Nuclear repulsion energy (a.u.):  0.714139
-HF energy (a.u.): -1.116706
+Kinetic energy (a.u.):  1.201079
+Electronic-nuclear potential energy (a.u.): -3.706674
+Electron-electron repulsion energy (a.u.):  0.674594
+Nuclear repulsion energy (a.u.):  0.714286
+HF energy (a.u.): -1.116714
 </pre></div>
 </div>
 </div>
@@ -779,21 +717,21 @@ HF energy (a.u.): -1.116706
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hartree–Fock energy = -1.116706 (a.u.)
-Correlation energy = -0.020568 (a.u.)
-Total CID energy = -1.137275 (a.u.)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hartree–Fock energy = -1.116714 (a.u.)
+Correlation energy = -0.020562 (a.u.)
+Total CID energy = -1.137276 (a.u.)
 Weights (percent):  98.73  1.27
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="section" id="one-and-two-electron-densities">
-<h2>One- and two-electron densities<a class="headerlink" href="#one-and-two-electron-densities" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h2>One- and two-electron densities<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualization</span>
-<span class="n">vis_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">VisualizationDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
+<span class="n">vis_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">VisualizationDriver</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -870,6 +808,8 @@ $<span class="math notranslate nohighlight">\(
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_HF</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_CID</span><span class="p">)</span>
 
+<span class="n">Hz</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">molecule</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># z-coord of atom 2</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="n">Hz</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
@@ -880,7 +820,7 @@ $<span class="math notranslate nohighlight">\(
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3.0, 3.0, 0.0, 0.4]
 </pre></div>
 </div>
-<img alt="../_images/visual_17_1.png" src="../_images/visual_17_1.png" />
+<img alt="../_images/visual_12_1.png" src="../_images/visual_12_1.png" />
 </div>
 </div>
 </div>
@@ -972,7 +912,7 @@ $<span class="math notranslate nohighlight">\(
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3.0, 3.0, 0.0, 0.1]
 </pre></div>
 </div>
-<img alt="../_images/visual_20_1.png" src="../_images/visual_20_1.png" />
+<img alt="../_images/visual_15_1.png" src="../_images/visual_15_1.png" />
 </div>
 </div>
 </div>

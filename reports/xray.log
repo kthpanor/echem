@@ -17,42 +17,29 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-import veloxchem as vlx
-import multipsi as mtp
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy import interpolate
-from scipy.integrate import simps
-
-mol_str = """
-H     0.000000    0.000000   -0.370500
-H     0.000000    0.000000    0.370500
-"""
-
-au_to_nm = 0.0529177 # length conversion factor
-Hz = 0.370500 / 10 / au_to_nm #Position of the H in atomic units.
-
-molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
-basis = vlx.MolecularBasis.read(molecule, 'sto-3g')
-
-scf_drv = vlx.ScfRestrictedDriver()
-scf_drv.compute(molecule, basis)
-
-space=mtp.MolSpace(molecule,scf_drv.mol_orbs)
-space.FCI()
-CIdrv=mtp.CIDriver(molecule,basis,space)
-CIdrv.compute(1)
+from pyscf import gto, scf
+import copy
+mol = gto.Mole()
+mol.atom  = mol_str; mol.basis = '6-31G'
+mol.build(); scfres = scf.UHF(mol); scfres.kernel()
+# create a core-hole in beta 1s (MO1)
+mo0 = copy.deepcopy(scfres.mo_coeff); occ0 = copy.deepcopy(scfres.mo_occ)
+occ0[0][0] = 0.0
+scfion = scf.UHF(mol); scfion.conv_tol = 1e-12; scfion.conv_tol_grad = 1e-9
+scf.addons.mom_occ(scfion, mo0, occ0)
+scfion.kernel()
+print('Ionization potential:',np.around(au2ev*(scfion.energy_tot() - scfres.energy_tot()),3),'eV')
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-[0;32m<ipython-input-1-ece40c37425f>[0m in [0;36m<module>[0;34m[0m
-[1;32m      1[0m [0;32mimport[0m [0mveloxchem[0m [0;32mas[0m [0mvlx[0m[0;34m[0m[0;34m[0m[0m
-[0;32m----> 2[0;31m [0;32mimport[0m [0mmultipsi[0m [0;32mas[0m [0mmtp[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      3[0m [0;32mimport[0m [0mmatplotlib[0m[0;34m.[0m[0mpyplot[0m [0;32mas[0m [0mplt[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m [0;32mimport[0m [0mnumpy[0m [0;32mas[0m [0mnp[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      5[0m [0;32mfrom[0m [0mscipy[0m [0;32mimport[0m [0minterpolate[0m[0;34m[0m[0;34m[0m[0m
+[0;32m<ipython-input-2-210fcb1a927c>[0m in [0;36m<module>[0;34m[0m
+[0;32m----> 1[0;31m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mgto[0m[0;34m,[0m [0mscf[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      2[0m [0;32mimport[0m [0mcopy[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      3[0m [0mmol[0m [0;34m=[0m [0mgto[0m[0;34m.[0m[0mMole[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m [0mmol[0m[0;34m.[0m[0matom[0m  [0;34m=[0m [0mmol_str[0m[0;34m;[0m [0mmol[0m[0;34m.[0m[0mbasis[0m [0;34m=[0m [0;34m'6-31G'[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0mmol[0m[0;34m.[0m[0mbuild[0m[0;34m([0m[0;34m)[0m[0;34m;[0m [0mscfres[0m [0;34m=[0m [0mscf[0m[0;34m.[0m[0mUHF[0m[0;34m([0m[0mmol[0m[0;34m)[0m[0;34m;[0m [0mscfres[0m[0;34m.[0m[0mkernel[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mModuleNotFoundError[0m: No module named 'multipsi'
-ModuleNotFoundError: No module named 'multipsi'
+[0;31mModuleNotFoundError[0m: No module named 'pyscf'
+ModuleNotFoundError: No module named 'pyscf'
 
