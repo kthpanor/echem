@@ -1,11 +1,11 @@
-## Choice of coordinates
+# Choice of coordinates
 A fundamental concept in quantum chemistry is the multi-dimensional potential energy surface (PES). This mathematical object captures the interplay between the electronic and nuclear degrees of freedom in a particular system (molecule, complex, etc.), where the special points on the PES are important in elucidating molecular conformations and explaining the mechanisms of chemical and photo-chemical reactions. The first and second order derivatives of the energy with respect to nuclear displacements (gradients, Hessians, respectively) are key elements in locating these special points (local minima, transition states) and determining minimum energy reaction pathways. In this section, we will discuss:
 * how the molecular geometry is defined in terms of the atomic positions (link);
 * how analytical expressions for the first order energy derivatives with respect to nuclear displacements are derived (link);
 * second order derivatives (link);
 In the next section, we will see how these energy derivatives are used to perform structure and transition state optimizations (link, link).
 
-### Cartesian
+## Cartesian
 There are multiple ways to define relative atomic positions. The simplest way is to use a Cartesian reference system and define each atomic position in terms of its $(x,y,z)$ coordinates. In this coordinate system it is very easy to determine the total energy and energy gradient, but this choice is not favourable for geometry optimization because the energy depends non-linearly on atomic Cartesian coordinates and these coordinates are strongly coupled to each other {cite}`Wang2016, Schlegel2011`. 
 
  ```{figure} /img/pes/coordinates.svg
@@ -90,7 +90,7 @@ where we have denoted the gradient in Cartesian coordinates by $\nabla E_x$ and 
 
 With Eqs.{eq}`eq:displacement_q_to_x` and {eq}`eq:gradient_x_to_q` we can now transform a displacement in internal coordinates to a displacement in Cartesian coordinates, compute the energy gradient, and transform the gradient back to internal coordinates.
 
-### Delocalized internal coordinates
+## Delocalized internal coordinates
 Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix $\mathbf{G}$. This is an expensive step, since the matrices involved in Eq. {eq}`eq:generalized_inverse` are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. {eq}`eq:non-redundant`. These new coordinates are actually linear combinations of primitives, and therefore are called "delocalized" internal coordinates (DLC) {cite}`Baker1999`.
 
 Within this coordinate system, we define a new $\mathbf{B}$ matrix which now has a significantly smaller dimension (3$N$-6) compared to the $\mathbf{B}$ matrix in primitive internal coordinates. The new $\mathbf{B}$ matrix is then used to reformulate the displacement and gradient transformations between the Cartesian and delocalized internal coordinate systems. For a detailed derivation of these transformations see Ref. {cite}`Baker1999`.
@@ -98,10 +98,5 @@ Within this coordinate system, we define a new $\mathbf{B}$ matrix which now has
 ### Hybrid delocalized internal coordinates
 The situation becomes a bit more complicated when the system we would like to optimize is composed of two ore more individual molecules. In this case, fictitious intermolecular bonds, angles, and dihedrals have to be included to define the relative positions between the separate components of the multi-molecular system {cite}`Billeter2000, Wang2016`. In an analogous way as for single molecules, hybrid delocalized internal coordinates (HDLC) can be obtained by including the intermolecular primitives in the transformation defined by Eq. {eq}`eq:non-redundant`. In this approach, the intra- and intermolecular degrees of freedom become mixed, i.e., a displacement in one intermolecular primitive will affects both the intramolecular and intermolecular structures {cite}`Wang2016`.
 
-### Tranlation--rotaion internal coordinates
+## Tranlation--rotaion internal coordinates
 Another option is to treat the intra- and intermolecular coordinates separately, by introducing translation and rotation coordinates into the set of internal primitives. The resulting choice of coordinates are known as translation--rotation internal coordinates (TRIC) {cite}`Wang2016`. What this actually means is that, instead of adding the full set of Cartesian coordinates in the construction of primitive internal coordinates (HDLC), only six new internal coordinates are used for each molecule to describe its translation and rotation, essentially constraining the intermolecular orientations. This reduces the computational cost and represents a more intuitive way to define the relative orientation between molecules {cite}`Wang2016`.
-
-### References
-
-```{bibliography} ../references.bib
-```
