@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,14 +37,11 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -52,6 +49,8 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Configuration interaction" href="ci.html" />
@@ -345,7 +344,7 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="visual.html">
-   Electron correlation and two-electron densities
+   Reduced particle densities
   </a>
  </li>
 </ul>
@@ -467,6 +466,16 @@
      Canonical orbitals
     </a>
    </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#koopmans-theorem">
+     Koopmans’ theorem
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#brillouin-s-theorem">
+     Brillouin’s theorem
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -474,6 +483,11 @@
    SCF procedure
   </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lcao-expansion">
+     LCAO expansion
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#start-guess">
      Start guess
@@ -504,17 +518,222 @@
                 
   <div class="section" id="hartree-fock-theory">
 <h1>Hartree–Fock theory<a class="headerlink" href="#hartree-fock-theory" title="Permalink to this headline">¶</a></h1>
+<p>With the state of the system being described by a single Slater determinant, the Hartree–Fock wave function is given as that which minimizes the electronic energy in a variational sense with respect to variations in the spin orbitals. It represents a cornerstone in quantum chemistry and provides total electronic energies that are within 1% of the exact results and a wide range of molecular properties that are within 5–10% accuracy. Moreover, the Hartree–Fock method serves as a starting point for the formulation of a multitude of other, more accurate, wave function methods and it is also the foundation for the Kohn–Sham formulation of density functional theory.</p>
 <div class="section" id="hartree-fock-equation">
 <h2>Hartree–Fock equation<a class="headerlink" href="#hartree-fock-equation" title="Permalink to this headline">¶</a></h2>
+<p>In the Hartree–Fock approximation, the <a class="reference internal" href="slater.html#sec-slater"><span class="std std-ref">many-electron wave function</span></a> takes the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+    | \Psi \rangle =
+    \frac{1}{\sqrt{N!}}
+    \begin{vmatrix}
+    \psi_{1}(\mathbf{r}_1) &amp; \cdots &amp; \psi_{N}(\mathbf{r}_1) \\
+    \vdots &amp; \ddots &amp; \vdots \\
+    \psi_{1}(\mathbf{r}_N) &amp; \cdots &amp; \psi_{N}(\mathbf{r}_N) \\
+    \end{vmatrix} 
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\psi_i\)</span> are the single-electron wave functins known as <a class="reference internal" href="orbitals.html#sec-orbitals"><span class="std std-ref">spin orbitals</span></a>. The Hartree–Fock energy and the associated state is found by minimizing the energy functional</p>
+<div class="math notranslate nohighlight">
+\[
+E_\mathrm{HF} =
+\min_{\psi} E[\psi]
+\]</div>
+<p>under the constraint that the spin orbitals remain orthonormal. Here, <span class="math notranslate nohighlight">\(\psi\)</span> collectively refers to the entire set of <span class="math notranslate nohighlight">\(N\)</span> spin orbitals. Such a contrained minimization is conveniently formulated and performed by means of the technique of Lagrange multipliers.</p>
 <div class="section" id="lagrangian">
 <h3>Lagrangian<a class="headerlink" href="#lagrangian" title="Permalink to this headline">¶</a></h3>
+<p>In Hartree–Fock theory, we introduce the real-valued Lagrangian</p>
+<div class="math notranslate nohighlight">
+\[
+L[\psi] = E[\psi] - \sum_{i,j=1}^N
+\varepsilon_{ji} \big(
+\langle \psi_i | \psi_j \rangle - \delta_{ij}
+\big)
+\]</div>
+<p>and search for the set of spin orbitals, <span class="math notranslate nohighlight">\(\psi\)</span>, that results in a first variation that vanishes</p>
+<div class="math notranslate nohighlight">
+\[
+\delta L = 0
+\]</div>
+<p>Expressing the energy as the expectation value of the electronic Hamiltonian with respect to a Slater determinant and using the general expressions for <a class="reference internal" href="slater.html#sec-matrix-elements"><span class="std std-ref">matrix elements</span></a>, we arrive at</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\delta L &amp; =
+\sum_{i=1}^N
+\langle \delta \psi_i | \hat{h} | \psi_i \rangle +
+\sum_{i,j=1}^N
+\big(
+\langle \delta \psi_i \psi_j | \hat{g} | \psi_i \psi_j\rangle -
+\langle \delta \psi_i \psi_j | \hat{g} | \psi_j \psi_i\rangle
+-
+\varepsilon_{ji}
+\langle \delta \psi_i | \psi_j \rangle
+\big) +
+\mbox{complex conjugate} \\
+&amp;=
+\sum_{i=1}^N
+\langle \delta \psi_i | \big( 
+\hat{f} | \psi_i \rangle -
+\varepsilon_{ji} | \psi_j \rangle
+\big) +
+\mbox{complex conjugate}
+\end{align*}\]</div>
+<p>where we have introduced the <em>one-electron</em> Fock operator</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{f} = \hat{h} + \sum_{j=1}^N \big( \hat{J}_j - \hat{K}_j \big)
+\]</div>
+<p>with</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\hat{J}_j | \psi_i \rangle &amp; = 
+\Big[ 
+\int 
+\frac{e^2 |\psi_j(\mathbf{r}')|^2}{4\pi\varepsilon_0 |\mathbf{r} - \mathbf{r}'|}
+d^3\mathbf{r}'
+\Big]
+| \psi_i \rangle \\
+%
+\hat{K}_j | \psi_i \rangle &amp; = 
+\Big[
+\int
+\frac{e^2 \psi_j^\dagger(\mathbf{r}')\psi_i(\mathbf{r}')}{4\pi\varepsilon_0 |\mathbf{r} - \mathbf{r}'|}
+d^3\mathbf{r}'
+\Big]
+| \psi_j \rangle 
+\end{align*}\]</div>
+<p>Since the first-order variation in the Lagrangian must vanish for general variations in the spin orbitals, we have shown that the Hartree–Fock solution is given by</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{f} | \psi_i \rangle -
+\sum_{j=1}^N
+\varepsilon_{ji} | \psi_j \rangle = 0
+\]</div>
+<p>This equation is known as the Hartree–Fock equation and it to be solved for the spin orbitals and the associated Lagrange multipliers. We note that the matrix elements of the Fock operator equal the multipliers</p>
+<div class="math notranslate nohighlight">
+\[
+f_{ki} =
+\langle \psi_k | \hat{f} | \psi_i \rangle = 
+\sum_{j=1}^N
+\varepsilon_{ji} \langle \psi_k | \psi_j \rangle = \varepsilon_{ki}
+\]</div>
 </div>
 <div class="section" id="canonical-orbitals">
 <h3>Canonical orbitals<a class="headerlink" href="#canonical-orbitals" title="Permalink to this headline">¶</a></h3>
+<p>Apart from a trivial overall phase factor, <a class="reference internal" href="slater.html#sec-unitary"><span class="std std-ref">unitary transformations among the occupied orbitals</span></a> are shown to leave the Hartree–Fock wave function unchanged. We introduce a unitary transformation that diagonalizes the Hermitian Fock matrix</p>
+<div class="math notranslate nohighlight">
+\[
+f' = \langle \overline{\psi}' | \hat{f} | \overline{\psi}' \rangle 
+= U^\dagger \langle \overline{\psi} | \hat{f} | \overline{\psi} \rangle  U =
+U^\dagger f  U 
+\]</div>
+<p>We have here adopted the compact <a class="reference internal" href="orbitals.html#sec-lcao"><span class="std std-ref">overline notation</span></a> of orbitals. In this basis of <em>canonical spin orbitals</em>, the Hartree–Fock equaiton takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{f} | \psi_i \rangle =
+\varepsilon_{i} | \psi_i \rangle
+\]</div>
+<p>which we recognize as an eigenvalue equation introducing the <em>orbital energies</em>, <span class="math notranslate nohighlight">\(\varepsilon_{i}\)</span>, as the eigenvalues of the Fock operator. With an infinite number of solutions to the Hartree–Fock equation, the Hartree–Fock ground state is given by employing the <span class="math notranslate nohighlight">\(N\)</span> spin orbitals with lowest orbital energies in the Slater determinant.</p>
+</div>
+<div class="section" id="koopmans-theorem">
+<h3>Koopmans’ theorem<a class="headerlink" href="#koopmans-theorem" title="Permalink to this headline">¶</a></h3>
+<p>The orbital energies of occupied and unoccupied orbitals, respectively, equal</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\varepsilon_i &amp; = \langle \psi_i |\hat{f} | \psi_i \rangle =
+\langle \psi_i |\hat{h} | \psi_i \rangle +
+\sum_{j\neq i}^N
+\big(
+\langle \psi_i | \hat{J}_j | \psi_i \rangle -
+\langle \psi_i | \hat{K}_j | \psi_i \rangle 
+\big) \\
+\varepsilon_s &amp; = \langle \psi_s |\hat{f} | \psi_s \rangle =
+\langle \psi_s |\hat{h} | \psi_s \rangle +
+\sum_{j=1}^N
+\big(
+\langle \psi_s | \hat{J}_j | \psi_s \rangle -
+\langle \psi_s | \hat{K}_j | \psi_s \rangle 
+\big)
+\end{align*}\]</div>
+<p>where the cancellation between Coulomb and exchange terms for <span class="math notranslate nohighlight">\(j=i\)</span> has been used in the former case. It thus appears as if <span class="math notranslate nohighlight">\(\varepsilon_i\)</span> relates to the energy of an electron interacting with <span class="math notranslate nohighlight">\((N-1)\)</span> other electrons, whereas <span class="math notranslate nohighlight">\(\varepsilon_s\)</span> relates to the energy of an electron interacting with <span class="math notranslate nohighlight">\(N\)</span> other electrons. In accordance with these observations, it is readily shown from the expressions for <a class="reference internal" href="slater.html#sec-matrix-elements"><span class="std std-ref">matrix elements</span></a> that</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\mathrm{IP} &amp;= 
+E_i^{N-1} - E_\mathrm{HF}^N = - \varepsilon_i \qquad (\mbox{ionization potential}) \\
+\mathrm{EA} &amp;= 
+E_\mathrm{HF}^N - E_s^{N+1} = - \varepsilon_s \qquad (\mbox{electron affinity})
+\end{align*}\]</div>
+<p>where, in the frozen orbital approximation, <span class="math notranslate nohighlight">\(E_i^{N-1}\)</span> is the energy of the system after the removal of the electron in spin orbital <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(E_s^{N+1}\)</span> is the energy of the system after the addition of an electron in spin orbital <span class="math notranslate nohighlight">\(s\)</span>.</p>
+</div>
+<div class="section" id="brillouin-s-theorem">
+<h3>Brillouin’s theorem<a class="headerlink" href="#brillouin-s-theorem" title="Permalink to this headline">¶</a></h3>
+<p>Based on the expressions for <a class="reference internal" href="slater.html#sec-matrix-elements"><span class="std std-ref">matrix elements</span></a>, we find</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \Psi_\mathrm{HF} | \hat{H} | \Psi_i^s \rangle = 
+\langle \psi_i | \hat{f} | \psi_s \rangle = 0 
+\]</div>
+<p>which shows that there is no couling between the Hartree–Fock ground state and singly excited determinants. This result is known as the <em>Brillouin theorem</em>.</p>
 </div>
 </div>
 <div class="section" id="scf-procedure">
 <h2>SCF procedure<a class="headerlink" href="#scf-procedure" title="Permalink to this headline">¶</a></h2>
+<p>Due to the summation over occupied spin orbitals that express the effective electron interactions, the Fock opertor depends on its eigenfunctions and the canonical Hartree–Fock equation is therefore solved by means of a self-consistent field (SCF) procedure as illustrated in <a class="reference internal" href="#rh-scf-fig"><span class="std std-numref">Fig. 1</span></a>.</p>
+<div class="figure align-default" id="rh-scf-fig">
+<img alt="../_images/rh-scf.svg" src="../_images/rh-scf.svg" /><p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Self-consistent field solution of the Hatree–Fock equation by means of the Rothaan–Hall algorithm.</span><a class="headerlink" href="#rh-scf-fig" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="lcao-expansion">
+<h3>LCAO expansion<a class="headerlink" href="#lcao-expansion" title="Permalink to this headline">¶</a></h3>
+<p>The spatial parts of the spin orbitals, or molecular orbitals (MOs), are expanded as linear combination of atomic orbitals (<a class="reference internal" href="orbitals.html#sec-lcao"><span class="std std-ref">LCAO</span></a>). The Fock matrix becomes block diagonal in the basis of spin atomic orbitals</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+F =
+\begin{pmatrix}
+F^{\alpha\alpha} &amp;  0 \\
+0 &amp; F^{\beta\beta}
+\end{pmatrix}
+\end{split}\]</div>
+<p>Using the <a class="reference internal" href="orbitals.html#sec-orbitals"><span class="std std-ref">bar notation</span></a> to distinguish <span class="math notranslate nohighlight">\(\alpha\)</span>- and <span class="math notranslate nohighlight">\(\beta\)</span>-spin atomic orbitals, we get</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+F_{\mu\nu} &amp; = F^{\alpha\alpha}_{\mu\nu} =
+h_{\mu\nu} + \sum_{\gamma\delta} \Big(
+D_{\gamma\delta}(\mu\nu|\gamma\delta) -
+D^\alpha_{\gamma\delta}(\mu\delta|\gamma\nu)
+\Big)
+\\
+F_{\bar{\mu}\bar{\nu}} &amp; = F^{\beta\beta}_{\mu\nu} =
+h_{\mu\nu} + \sum_{\gamma\delta} \Big(
+D_{\gamma\delta}(\mu\nu|\gamma\delta) -
+D^\beta_{\gamma\delta}(\mu\delta|\gamma\nu)
+\Big)
+\\
+F_{\mu\bar{\nu}} &amp; = F_{\bar{\mu}\nu} = 0
+\end{align*}\]</div>
+<p>where</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+D_{\gamma\delta} &amp;= D^\alpha_{\gamma\delta} + D^\beta_{\gamma\delta} \\
+D^\alpha_{\gamma\delta}&amp; =
+\sum_{j=1}^{N_\alpha} \big[c_{\gamma j}^\alpha\big]^* c_{\delta j}^\alpha 
+; \quad
+D^\beta_{\gamma\delta} =
+\sum_{j=1}^{N_\beta} \big[c_{\gamma j}^\beta\big]^* c_{\delta j}^\beta 
+\\
+\end{align*}\]</div>
+<p>Let us consider the spin-restricted formulation with <span class="math notranslate nohighlight">\(\alpha\)</span>- and <span class="math notranslate nohighlight">\(\beta\)</span>-spin orbitals having identical spatial parts. We also restrict the situation to the common case of a closed-shell system such that</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+N_\alpha &amp; = N_\beta = \frac{1}{2} N \\
+D^\alpha_{\gamma\delta} &amp; = D^\beta_{\gamma\delta} = \frac{1}{2} D_{\gamma\delta} =
+\sum_{j=1}^{N/2} c_{\gamma j}^* c_{\delta j}
+\end{align*}\]</div>
+<p>In AO basis, the canonical Hartree–Fock equation thereby takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+F C = S C \varepsilon
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(S\)</span> is the <a class="reference internal" href="orbitals.html#sec-overlap"><span class="std std-ref">overlap matrix</span></a> and <span class="math notranslate nohighlight">\(\varepsilon\)</span> is a diagonal matrix collecting the orbital energies.</p>
+</div>
 <div class="section" id="start-guess">
 <h3>Start guess<a class="headerlink" href="#start-guess" title="Permalink to this headline">¶</a></h3>
 </div>
