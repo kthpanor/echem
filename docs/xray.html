@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,11 +37,14 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -49,8 +52,6 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="General aspects" href="elecstruct-general.html" />
@@ -616,21 +617,29 @@
 <p>Loading modules, parameters, and broadening functions:</p>
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># loading QC software suites and functionalities</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
 <span class="kn">import</span> <span class="nn">gator</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">adcc</span>
 <span class="kn">from</span> <span class="nn">veloxchem.rsplinabscross</span> <span class="kn">import</span> <span class="n">LinearAbsorptionCrossSection</span>
+
+<span class="c1"># loading python </span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+
+<span class="c1"># for vlx</span>
 <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
 <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
 <span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
+<span class="c1"># conversion factors</span>
+<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
+
+<span class="c1"># broadening functions</span>
 <span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
     <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
@@ -649,9 +658,10 @@
 </div>
 <div class="section" id="x-ray-photoemission-spectroscopy">
 <h2>X-ray photoemission spectroscopy<a class="headerlink" href="#x-ray-photoemission-spectroscopy" title="Permalink to this headline">¶</a></h2>
-<p><em>We will here focus on calculating ionization potentials (IP:s), from which the isotropic photoemission spectrum is formed by giving each IP the same intensity and then broadening with a function.</em></p>
+<p><em>We will here focus on calculating ionization potentials (IP:s), from which the isotropic photoemission spectrum is formed by giving each IP the same intensity and then broadening with a function. Can go beyond that using Dyson orbitals, but it doesn’t make much of a difference…</em></p>
 <div class="section" id="from-koopmans-theorem">
 <h3>From Koopmans’ theorem<a class="headerlink" href="#from-koopmans-theorem" title="Permalink to this headline">¶</a></h3>
+<p>IP of gas phase water, using HF MO energies:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -678,11 +688,22 @@
 </div>
 </div>
 </div>
-<p>This is to be compared to the experimental IP of gas phase water, which is 539.9 eV. The overestimation of almost 20 eV is due to lack of <strong>relaxation</strong>, which results from the reorganization of the valence electrons in response to a reduction of screening of the nuclei. An approach for including these effects in IP calculation is to use the <span class="math notranslate nohighlight">\(\Delta\)</span>SCF approach, in which the difference in total energy between the neutral and a core-hole system is considered as the IP.</p>
+<p>This is to be compared to the experimental value, which is 539.9 eV. The overestimation of almost 20 eV is due to lack of <strong>relaxation</strong>, which results from the reorganization of the valence electrons in response to a reduction of screening of the nuclei. An approach for including these effects in IP calculation is to use the <span class="math notranslate nohighlight">\(\Delta\)</span>SCF approach, in which the difference in total energy between the neutral and a core-hole system is considered as the IP.</p>
 </div>
 <div class="section" id="maximum-overlap-method-mom">
 <h3>Maximum overlap method (MOM)<a class="headerlink" href="#maximum-overlap-method-mom" title="Permalink to this headline">¶</a></h3>
-<p>Describe the approach.</p>
+<p>Eigenvalue equation</p>
+<div class="amsmath math notranslate nohighlight" id="equation-ebbeb6b3-5682-44e2-937c-0084987c82d3">
+<span class="eqno">(1)<a class="headerlink" href="#equation-ebbeb6b3-5682-44e2-937c-0084987c82d3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\textbf{FC}^{\textrm{new}} = 
+\textbf{SC}^{\textrm{new}} \epsilon
+\end{equation}\]</div>
+<p>Chose to overlap the most with the span</p>
+<div class="amsmath math notranslate nohighlight" id="equation-985d0c1a-2fd4-4074-8bdb-cc5879fa2707">
+<span class="eqno">(2)<a class="headerlink" href="#equation-985d0c1a-2fd4-4074-8bdb-cc5879fa2707" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\textbf{O} = 
+\left( \textbf{C} \right)^{\dagger} \textbf{SC}^{\textrm{new}}
+\end{equation}\]</div>
 <p>Note potential instabilities for post-HF on core-hole (and excited states as well).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -716,9 +737,16 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3460348e-12  2S+1 = 1
-converged SCF energy = -56.0754789470864  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
-Ionization potential: 541.735 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3389294e-12  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization potential: 541.735 eV
 </pre></div>
 </div>
 </div>
@@ -736,14 +764,18 @@ Ionization potential: 541.735 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.1130483955489  E_corr = -0.129178012829717
-E(UMP2) = -56.1523709631034  E_corr = -0.0768920160169649
-Ionization potential: 543.158 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.1130483955489  E_corr = -0.12917801282971
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -56.1523709631034  E_corr = -0.0768920160169648
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization potential: 543.158 eV
 </pre></div>
 </div>
 </div>
 </div>
-<p>Or with DFT:</p>
+<p>As well as use KS-DFT:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF calculation with unrestricted KS-DFT</span>
@@ -767,20 +799,27 @@ Ionization potential: 543.158 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -76.3480474320839  &lt;S^2&gt; = 2.5509372e-11  2S+1 = 1
-converged SCF energy = -56.412542119436  &lt;S^2&gt; = 0.75441021  2S+1 = 2.0044054
-Ionization potential: 542.473 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -76.3480474320838  &lt;S^2&gt; = 2.5510261e-11  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.dft.uks.UKS&#39;&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.4125421194361  &lt;S^2&gt; = 0.75441021  2S+1 = 2.0044054
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization potential: 542.473 eV
 </pre></div>
 </div>
 </div>
 </div>
-<p>This currently brings us <strong>away</strong> from experiment, but we note that the basis set is small and ill suited for core properties, and relativistic effects are not included either (more on this below). Corresponding values using a cc-pCVTZ basis amounts to:</p>
+<p>MP2 and DFT currently brings us <strong>away</strong> from experiment, but we note that the basis set is small and ill suited for core properties, and relativistic effects are not included either (more on this below). Using a cc-pCVTZ basis we instead obtain:</p>
 <ul class="simple">
 <li><p>HF: 538.929 eV</p></li>
 <li><p>MP2: 540.257 eV</p></li>
 <li><p>B3LYP: 539.192 eV</p></li>
 </ul>
-<p><em>i.e.</em> closer to experiment for the correlated methods (note that relativistic effects will shift these energies by <span class="math notranslate nohighlight">\(\sim\)</span>0.3 eV).</p>
+<p><em>i.e.</em> closer to experiment for the correlated methods (note that scalar-relativistic effects will shift these results upwards by <span class="math notranslate nohighlight">\(\sim\)</span>0.3 eV).</p>
 </div>
 <div class="section" id="xps-of-the-esca-molecule">
 <h3>XPS of the ESCA molecule<a class="headerlink" href="#xps-of-the-esca-molecule" title="Permalink to this headline">¶</a></h3>
@@ -801,7 +840,7 @@ Ionization potential: 542.473 eV
 
 <span class="c1"># Create mol-object and perform neutral SCF calculation</span>
 <span class="n">mol_ura</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol_ura</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">uracil</span><span class="p">;</span> <span class="n">mol_ura</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol_ura</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">uracil</span><span class="p">;</span> <span class="n">mol_ura</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;STO-3G&#39;</span>
 <span class="n">mol_ura</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="n">scf_ura</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol_ura</span><span class="p">)</span>
 <span class="n">scf_ura</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
@@ -812,37 +851,44 @@ Ionization potential: 542.473 eV
     <span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_ura</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
     <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_ura</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
     <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i_mo</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    
     <span class="n">ion_tmp</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol_ura</span><span class="p">)</span>
     <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">ion_tmp</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
     <span class="n">ion_tmp</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-    
     <span class="n">esca_ips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">ion_tmp</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_ura</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()))</span>
     
 <span class="c1"># Broaden with a Lorentzian and plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="c1"># Call Lorentzian broadening with x-data, y-data, lower x-lim, upper x-lim, xstep, and broadening gamma</span>
 <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">esca_ips</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">esca_ips</span><span class="p">)))</span>
+<span class="c1"># Call Lorentzian broadening with x-data, y-data, lower x-lim, upper x-lim, xstep, and broadening gamma</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -412.27920254005  &lt;S^2&gt; = 2.7561057e-08  2S+1 = 1.0000001
-SCF not converged.
-SCF energy = -401.292344334553 after 50 cycles  &lt;S^2&gt; = 0.87006777  2S+1 = 2.1166651
-converged SCF energy = -401.341585452586  &lt;S^2&gt; = 0.80717734  2S+1 = 2.0563826
-SCF not converged.
-SCF energy = -401.418242512695 after 50 cycles  &lt;S^2&gt; = 1.2389499  2S+1 = 2.4404507
-converged SCF energy = -401.511489489203  &lt;S^2&gt; = 0.79315028  2S+1 = 2.0426946
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -407.075332882538  &lt;S^2&gt; = 1.2292079e-06  2S+1 = 1.0000025
 </pre></div>
 </div>
-<img alt="../_images/xray_11_1.png" src="../_images/xray_11_1.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -396.183354220842  &lt;S^2&gt; = 0.84555897  2S+1 = 2.0933791
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -396.245415504634  &lt;S^2&gt; = 0.76427602  2S+1 = 2.0142254
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF not converged.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF energy = -396.328937970414 after 50 cycles  &lt;S^2&gt; = 0.99583232  2S+1 = 2.2323372
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -396.439776971732  &lt;S^2&gt; = 0.76032128  2S+1 = 2.0102948
+</pre></div>
+</div>
+<img alt="../_images/xray_11_6.png" src="../_images/xray_11_6.png" />
 </div>
 </div>
 <p><em>Note some convergence issues, largely relating to the small basis set.</em></p>
-<p>Can also broaden with a Gaussian (note that FWHM<span class="math notranslate nohighlight">\(= \gamma = 2\sqrt{2\ln{2}} \sigma\)</span>):</p>
+<p>We can also broaden with a Gaussian (note that FWHM<span class="math notranslate nohighlight">\(= \gamma = 2\sqrt{2\ln{2}} \sigma\)</span>):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
@@ -857,8 +903,8 @@ converged SCF energy = -401.511489489203  &lt;S^2&gt; = 0.79315028  2S+1 = 2.042
 </div>
 <p>Comparison to experiment using a cc-pCVTZ basis set:</p>
 <p><img alt="X-ray processes considered" src="../_images/esca_xps.svg" /></p>
-<p>Ref: O. Travnikovaa <em>et al., J. Elec. Spec. Rel. Phenom.</em> <strong>185</strong>, 191 (2012)</p>
-<p>The zero of the x-axis is the vertical energy of the CH3 peak, which corresponds to 291.47(1) eV on the binding energy scale.</p>
+<p>Expt: O. Travnikovaa <em>et al., J. Elec. Spec. Rel. Phenom.</em> <strong>185</strong>, 191 (2012)</p>
+<p>The features originate in, from low to high energy: -CH<span class="math notranslate nohighlight">\(_3\)</span>, -CH<span class="math notranslate nohighlight">\(_2\)</span>-, -CO-, and CF<span class="math notranslate nohighlight">\(_3\)</span>. We note a reasonable good agreement for the first two features, but the comparison is noticably worse for higher energies. This is likely an effect of the more significant change in electronic structure imposed by the very electronegative fluorine and oxygen atoms, which HF/cc-pCVTZ is not capable of describing properly.</p>
 </div>
 </div>
 <div class="section" id="x-ray-absorption-spectroscopy">
@@ -883,7 +929,9 @@ converged SCF energy = -401.511489489203  &lt;S^2&gt; = 0.79315028  2S+1 = 2.042
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF converged in 5 iterations.
 Total Energy: -75.9838703827 au
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                         Algebraic Diagrammatic Construction (ADC)                                         
                                        ===========================================                                        
                                                                                                                           
@@ -894,25 +942,43 @@ Total Energy: -75.9838703827 au
                                                                                                                           
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
+Niter n_ss  max_residual  time  Ritz values
+</pre></div>
+</div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/thomas/pkg/adcc/adcc/backends/__init__.py:48: UserWarning: Could not check host program psi4 minimal version, since __version__ tag not found. Proceeding anyway.
   &quot;&quot;.format(module)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
-Niter n_ss  max_residual  time  Ritz values
-  1     8        1.4139  291ms  [20.2703591  20.30081833 20.86977783 20.91121538 21.10647287 21.17210948]
-  2    16       0.05362  600ms  [19.72495595 19.80691971 20.50881003 20.51569995 20.52445863 20.72564039]
-  3    24      0.014469  700ms  [19.71673653 19.79707767 20.49577445 20.50503434 20.50804158 20.63850304]
-  4    32      0.001267  833ms  [19.7163907  19.79671165 20.49373728 20.5048402  20.50629326 20.62964464]
-  5    40    0.00011958   1.1s  [19.71637581 19.79669987 20.49353413 20.50482663 20.5061769  20.62883056]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.4139  150ms  [20.2703591  20.30081833 20.86977783 20.91121538 21.10647287 21.17210948]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16       0.05362  258ms  [19.72495595 19.80691971 20.50881003 20.51569995 20.52445863 20.72564039]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24      0.014469  279ms  [19.71673653 19.79707767 20.49577445 20.50503434 20.50804158 20.63850304]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32      0.001267  330ms  [19.7163907  19.79671165 20.49373728 20.5048402  20.50629326 20.62964464]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40    0.00011958  423ms  [19.71637581 19.79669987 20.49353413 20.50482663 20.5061769  20.62883056]
 === Restart ===
-  6    16    2.2907e-05  835ms  [19.7163753  19.79669916 20.49351327 20.5048247  20.50617017 20.62875659]
-  7    24    8.2765e-06  842ms  [19.71637527 19.79669907 20.49350809 20.50482387 20.50616886 20.62873498]
-  8    32    3.7389e-06   1.0s  [19.71637527 19.79669907 20.49350766 20.50482376 20.50616868 20.62872992]
-  9    40     5.189e-07  959ms  [19.71637527 19.79669907 20.49350744 20.50482375 20.50616863 20.62872822]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    16    2.2907e-05  366ms  [19.7163753  19.79669916 20.49351327 20.5048247  20.50617017 20.62875659]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    24    8.2765e-06  326ms  [19.71637527 19.79669907 20.49350809 20.50482387 20.50616886 20.62873498]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    32    3.7389e-06  365ms  [19.71637527 19.79669907 20.49350766 20.50482376 20.50616868 20.62872992]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    40     5.189e-07  378ms  [19.71637527 19.79669907 20.49350744 20.50482375 20.50616863 20.62872822]
 === Converged ===
     Number of matrix applies:    72
-    Total solver time:             7s 271ms
+    Total solver time:             2s 927ms
                                                                                                                           
                                                   ADC Summary of Results                                                  
                                                  ------------------------                                                 
@@ -1078,7 +1144,9 @@ plt.show()</p>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF converged in 7 iterations.
 Total Energy: -176.8261179747 au
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                         Algebraic Diagrammatic Construction (ADC)                                         
                                        ===========================================                                        
                                                                                                                           
@@ -1095,29 +1163,49 @@ Total Energy: -176.8261179747 au
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1    20        0.8829   3.8s  [10.90469041 11.0127478  11.12186879 11.13574581 11.15427206 11.22366101
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1    20        0.8829  769ms  [10.90469041 11.0127478  11.12186879 11.13574581 11.15427206 11.22366101
  11.28574919]
-  2    40       0.10942   8.1s  [10.57182281 10.67941692 10.72935948 10.75067863 10.81315185 10.81361514
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    40       0.10942   1.4s  [10.57182281 10.67941692 10.72935948 10.75067863 10.81315185 10.81361514
  10.84327132]
-  3    60     0.0061126  10.8s  [10.5578186  10.63999606 10.70185717 10.72113068 10.76319355 10.78079685
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    60     0.0061126   1.6s  [10.5578186  10.63999606 10.70185717 10.72113068 10.76319355 10.78079685
  10.81308698]
-  4    80    0.00093309  12.4s  [10.55663393 10.63712372 10.69959336 10.71942129 10.76026749 10.77786459
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    80    0.00093309   2.7s  [10.55663393 10.63712372 10.69959336 10.71942129 10.76026749 10.77786459
  10.81039397]
-  5   100    0.00016546  15.0s  [10.55654762 10.63677678 10.69916376 10.71927028 10.7598804  10.77734398
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5   100    0.00016546   2.3s  [10.55654762 10.63677678 10.69916376 10.71927028 10.7598804  10.77734398
  10.81003679]
 === Restart ===
-  6    40    2.6486e-05  11.6s  [10.55654338 10.63675306 10.69912635 10.7192592  10.75984691 10.77729448
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    40    2.6486e-05   2.0s  [10.55654338 10.63675306 10.69912635 10.7192592  10.75984691 10.77729448
  10.81000554]
-  7    60     7.338e-06   5.3s  [10.55654292 10.63675005 10.69911833 10.7192576  10.75983953 10.77728372
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    60     7.338e-06   1.7s  [10.55654292 10.63675005 10.69911833 10.7192576  10.75983953 10.77728372
  10.8099998 ]
-  8    80    1.5555e-06   7.4s  [10.55654289 10.63674972 10.69911703 10.7192574  10.75983832 10.7772821
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    80    1.5555e-06   2.0s  [10.55654289 10.63674972 10.69911703 10.7192574  10.75983832 10.7772821
  10.80999888]
-  9   100    2.7242e-07   9.4s  [10.55654289 10.63674966 10.69911688 10.71925738 10.75983816 10.77728188
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9   100    2.7242e-07   2.5s  [10.55654289 10.63674966 10.69911688 10.71925738 10.75983816 10.77728188
  10.80999868]
 === Converged ===
     Number of matrix applies:    180
-    Total solver time:            84s 156ms
-                                                                                                                          
+    Total solver time:            17s 169ms
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                                   ADC Summary of Results                                                  
                                                  ------------------------                                                 
                                                                                                                           
@@ -1140,7 +1228,9 @@ Niter n_ss  max_residual  time  Ritz values
                                                                                                                           
                                           End of ADC calculation. All went well!                                          
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                         Algebraic Diagrammatic Construction (ADC)                                         
                                        ===========================================                                        
                                                                                                                           
@@ -1149,21 +1239,41 @@ Niter n_ss  max_residual  time  Ritz values
                                CVS-ADC, Core Orbital Space  : 2                                                           
                                Convergence threshold        : 1.0e-06                                                     
                                                                                                                           
-Starting cvs-adc2x singlet Jacobi-Davidson ...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1    10       0.85256   1.1s  [11.01280909 11.12205933 11.22371389 11.390249   11.45654092]
-  2    20       0.11087   1.3s  [10.67938384 10.81323341 10.84332883 10.92877016 11.03783534]
-  3    30      0.011742   3.0s  [10.6400098  10.78094283 10.81315652 10.84981427 10.93968759]
-  4    40     0.0014955   2.1s  [10.63717455 10.77801325 10.81047808 10.84612961 10.93179114]
-  5    50    0.00024862   3.0s  [10.63684975 10.77746061 10.81012794 10.84552473 10.9305372 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1    10       0.85256  292ms  [11.01280909 11.12205933 11.22371389 11.390249   11.45654092]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    20       0.11087  399ms  [10.67938384 10.81323341 10.84332883 10.92877016 11.03783534]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    30      0.011742  504ms  [10.6400098  10.78094283 10.81315652 10.84981427 10.93968759]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    40     0.0014955  615ms  [10.63717455 10.77801325 10.81047808 10.84612961 10.93179114]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    50    0.00024862  678ms  [10.63684975 10.77746061 10.81012794 10.84552473 10.9305372 ]
 === Restart ===
-  6    20    5.7616e-05   2.5s  [10.63683124 10.77740797 10.81009763 10.84546    10.93037   ]
-  7    30    1.7775e-05   2.9s  [10.63682864 10.77739695 10.81009209 10.84543964 10.93030657]
-  8    40    4.0649e-06   2.6s  [10.63682832 10.77739529 10.81009121 10.84543596 10.93029214]
-  9    50    8.7476e-07   4.5s  [10.63682828 10.77739506 10.81009104 10.84543546 10.93028932]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    20    5.7616e-05  630ms  [10.63683124 10.77740797 10.81009763 10.84546    10.93037   ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    30    1.7775e-05  898ms  [10.63682864 10.77739695 10.81009209 10.84543964 10.93030657]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    40    4.0649e-06  643ms  [10.63682832 10.77739529 10.81009121 10.84543596 10.93029214]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    50    8.7476e-07  674ms  [10.63682828 10.77739506 10.81009104 10.84543546 10.93028932]
 === Converged ===
     Number of matrix applies:    90
-    Total solver time:            23s  99ms
+    Total solver time:             5s 378ms
                                                                                                                           
                                                   ADC Summary of Results                                                  
                                                  ------------------------                                                 
@@ -1193,22 +1303,44 @@ Niter n_ss  max_residual  time  Ritz values
                                CVS-ADC, Core Orbital Space  : 3                                                           
                                Convergence threshold        : 1.0e-06                                                     
                                                                                                                           
-Starting cvs-adc2x singlet Jacobi-Davidson ...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1    10       0.88541   1.3s  [10.90478799 11.13576069 11.15428282 11.28586213 11.34396398]
-  2    20      0.087366   3.2s  [10.57187965 10.72948628 10.75088347 10.81369634 10.8923098 ]
-  3    30     0.0061993   4.4s  [10.55787721 10.70194423 10.72121155 10.76324522 10.8325374 ]
-  4    40    0.00093723   5.3s  [10.55669814 10.69967972 10.71949949 10.76031106 10.82822081]
-  5    50    0.00016692   6.1s  [10.55660536 10.69925106 10.71934748 10.75992469 10.82738351]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1    10       0.88541  288ms  [10.90478799 11.13576069 11.15428282 11.28586213 11.34396398]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    20      0.087366  428ms  [10.57187965 10.72948628 10.75088347 10.81369634 10.8923098 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    30     0.0061993  524ms  [10.55787721 10.70194423 10.72121155 10.76324522 10.8325374 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    40    0.00093723  617ms  [10.55669814 10.69967972 10.71949949 10.76031106 10.82822081]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    50    0.00016692  703ms  [10.55660536 10.69925106 10.71934748 10.75992469 10.82738351]
 === Restart ===
-  6    20    2.6302e-05   4.6s  [10.55660066 10.69921311 10.71933589 10.75989102 10.82728657]
-  7    30    7.4781e-06   5.0s  [10.55660016 10.69920491 10.71933421 10.75988368 10.82726206]
-  8    40    1.2468e-06   5.8s  [10.55660013 10.6992036  10.71933401 10.75988248 10.82725672]
-  9    50    1.6311e-07   5.7s  [10.55660013 10.69920344 10.71933399 10.75988232 10.8272558 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    20    2.6302e-05  676ms  [10.55660066 10.69921311 10.71933589 10.75989102 10.82728657]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    30    7.4781e-06  535ms  [10.55660016 10.69920491 10.71933421 10.75988368 10.82726206]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    40    1.2468e-06  640ms  [10.55660013 10.6992036  10.71933401 10.75988248 10.82725672]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    50    1.6311e-07  686ms  [10.55660013 10.69920344 10.71933399 10.75988232 10.8272558 ]
 === Converged ===
     Number of matrix applies:    90
-    Total solver time:            41s 668ms
-                                                                                                                          
+    Total solver time:             5s 138ms
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                                   ADC Summary of Results                                                  
                                                  ------------------------                                                 
                                                                                                                           
@@ -1253,7 +1385,87 @@ Niter n_ss  max_residual  time  Ritz values
 <p>Comparison to experiment using aug-cc-pCVTZ/cc-pVTZ:</p>
 <p><img alt="X-ray processes considered" src="../_images/adc_vinyl_xas.svg" /></p>
 <p>Discuss chemical shifts.</p>
-<p>Now, lets look at various analysis tools</p>
+<p>Now, lets look at various analysis tools.</p>
+<p>Can study the amplitudes involved in adc calculations using the <code class="docutils literal notranslate"><span class="pre">state.describe_amplitudes</span></code> function, which takes as input <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> which controls minimum amplitude to be printed, and the format using <code class="docutils literal notranslate"><span class="pre">index_format</span></code>, which takes three different forms. Splitting the resulting returning string according to <code class="docutils literal notranslate"><span class="pre">state</span></code> and printing the results for the first two states, we obtain:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From </span><span class="se">\&#39;</span><span class="s1">hf</span><span class="se">\&#39;</span><span class="s1"> format, which yield MO number:&#39;</span><span class="p">)</span>
+<span class="n">des_amp</span>    <span class="o">=</span> <span class="n">adc_full</span><span class="o">.</span><span class="n">describe_amplitudes</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">index_format</span><span class="o">=</span><span class="s1">&#39;hf&#39;</span><span class="p">)</span>
+<span class="n">split_line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+<span class="n">tmp_amp</span>    <span class="o">=</span> <span class="n">des_amp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_line</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From </span><span class="se">\&#39;</span><span class="s1">adcc</span><span class="se">\&#39;</span><span class="s1"> format, which indexing as used in adcc:&#39;</span><span class="p">)</span>
+<span class="n">des_amp</span>    <span class="o">=</span> <span class="n">adc_full</span><span class="o">.</span><span class="n">describe_amplitudes</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">index_format</span><span class="o">=</span><span class="s1">&#39;adcc&#39;</span><span class="p">)</span>
+<span class="n">split_line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+<span class="n">tmp_amp</span>    <span class="o">=</span> <span class="n">des_amp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_line</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">()</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From </span><span class="se">\&#39;</span><span class="s1">homolumo</span><span class="se">\&#39;</span><span class="s1"> format, which using HOMO/LUMO/HOCO format:&#39;</span><span class="p">)</span>
+<span class="n">des_amp</span>    <span class="o">=</span> <span class="n">adc_full</span><span class="o">.</span><span class="n">describe_amplitudes</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">index_format</span><span class="o">=</span><span class="s1">&#39;homolumo&#39;</span><span class="p">)</span>
+<span class="n">split_line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+<span class="n">tmp_amp</span>    <span class="o">=</span> <span class="n">des_amp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_line</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tmp_amp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>From &#39;hf&#39; format, which yield MO number:
++---------------------------------------+
+| State   1 ,      10.63675 au          |
++---------------------------------------+
+|   1     -&gt;  12      a -&gt;a      -0.601 |
+|   1     -&gt;  22      a -&gt;a      +0.105 |
+|  11   1 -&gt;  12  12  ab-&gt;ab     +0.149 |
++---------------------------------------+
+| State   2 ,      10.69912 au          |
++---------------------------------------+
+|   2     -&gt;  13      a -&gt;a        -0.5 |
+|   2     -&gt;  15      a -&gt;a      +0.273 |
+|   2     -&gt;  14      a -&gt;a       -0.22 |
+
+From &#39;adcc&#39; format, which indexing as used in adcc:
++-------------------------------------------------------+
+| State   1 ,      10.63675 au,      289.4407 eV        |
++-------------------------------------------------------+
+| (o2  1)         -&gt; (v1  0)          a -&gt;a      -0.601 |
+| (o2  1)         -&gt; (v1 10)          a -&gt;a      +0.105 |
+| (o1  8) (o2  1) -&gt; (v1  0) (v1  0)  ab-&gt;ab     +0.149 |
++-------------------------------------------------------+
+| State   2 ,      10.69912 au,      291.1378 eV        |
++-------------------------------------------------------+
+| (o2  2)         -&gt; (v1  1)          a -&gt;a        -0.5 |
+| (o2  2)         -&gt; (v1  3)          a -&gt;a      +0.273 |
+| (o2  2)         -&gt; (v1  2)          a -&gt;a       -0.22 |
+
+From &#39;homolumo&#39; format, which using HOMO/LUMO/HOCO format:
++-------------------------------------------------------+
+| State   1 ,      10.63675 au,      289.4407 eV        |
++-------------------------------------------------------+
+| HOCO -1         -&gt; LUMO             a -&gt;a      -0.601 |
+| HOCO -1         -&gt; LUMO+10          a -&gt;a      +0.105 |
+| HOMO    HOCO -1 -&gt; LUMO    LUMO     ab-&gt;ab     +0.149 |
++-------------------------------------------------------+
+| State   2 ,      10.69912 au,      291.1378 eV        |
++-------------------------------------------------------+
+| HOCO            -&gt; LUMO +1          a -&gt;a        -0.5 |
+| HOCO            -&gt; LUMO +3          a -&gt;a      +0.273 |
+| HOCO            -&gt; LUMO +2          a -&gt;a       -0.22 |
+</pre></div>
+</div>
+</div>
+</div>
+<p>We see that</p>
+<ul class="simple">
+<li><p>The first two states corresponds to transitions from two different MOs, which here corresponds to CHF and CH2</p></li>
+<li><p>The transitions are dominated to two different virtuals</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Resolving core contributions using different eigenstates&#39;</span><span class="p">)</span>
@@ -1275,17 +1487,21 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Resolving core contributions using different eigenstates
 </pre></div>
 </div>
-<img alt="../_images/xray_28_1.png" src="../_images/xray_28_1.png" />
+<img alt="../_images/xray_30_1.png" src="../_images/xray_30_1.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MAYBE: the same using the full-space eigenvectors&#39;</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Could come from looking more into the eigenstates, or by just splitting the describe_amplitude results...&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MAYBE: the same using the full-space eigenvector
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MAYBE: the same using the full-space eigenvectors
+Could come from looking more into the eigenstates, or by just splitting the describe_amplitude results...
 </pre></div>
 </div>
 </div>
@@ -1323,7 +1539,7 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Polarization
 </pre></div>
 </div>
-<img alt="../_images/xray_30_1.png" src="../_images/xray_30_1.png" />
+<img alt="../_images/xray_32_1.png" src="../_images/xray_32_1.png" />
 </div>
 </div>
 <p>This can be done for CPP-DFT, taking the water calculation from above as an example.</p>
@@ -1353,7 +1569,7 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/xray_32_0.png" src="../_images/xray_32_0.png" />
+<img alt="../_images/xray_34_0.png" src="../_images/xray_34_0.png" />
 </div>
 </div>
 <p>And atomic:</p>
@@ -1376,30 +1592,26 @@ Niter n_ss  max_residual  time  Ritz values
         <span class="n">comp_Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">z_tmp</span><span class="p">[</span><span class="n">occ</span><span class="o">*</span><span class="n">nvirt</span> <span class="p">:</span> <span class="p">(</span><span class="n">occ</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">nvirt</span><span class="p">])))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">z_tmp</span><span class="p">[:])))</span>
         <span class="n">spec_comp</span><span class="p">[</span><span class="n">occ</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">comp_X</span><span class="o">*</span><span class="n">sX</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">comp_Y</span><span class="o">*</span><span class="n">sY</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">comp_Z</span><span class="o">*</span><span class="n">sZ</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">mo1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">spec_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1">#plt.plot(au2ev*freqs,sigma,linewidth=2,color=&#39;k&#39;)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">mo1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">yX</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">yY</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">yZ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;k-&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="c1">#plt.fill_between(eV*freqs,sigma-mo3,sigma-mo2-mo3,alpha=0.5)</span>
-<span class="c1">#plt.fill_between(eV*freqs,sigma-mo2-mo3,alpha=0.5)</span>
-<span class="c1">#plt.legend((&#39;Total&#39;,&#39;MO #3&#39;,&#39;MO #2&#39;,&#39;Rest&#39;))</span>
-<span class="c1">#plt.xlim((eV*min(freqs),eV*max(freqs))); plt.ylim((0,1.05*max(sigma))); plt.tight_layout()</span>
+<span class="n">mo1</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">spec_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">mo_rest</span> <span class="o">=</span> <span class="n">spec_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">spec_comp</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spec_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="n">mo_rest</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">spec_comp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+        
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">),</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">y1</span>    <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span> <span class="n">mo1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
+<span class="n">yrest</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span> <span class="n">mo_rest</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">yrest</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;k-&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">yrest</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">yrest</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">yrest</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s1">&#39;Total&#39;</span><span class="p">,</span><span class="s1">&#39;MO #1&#39;</span><span class="p">,</span><span class="s1">&#39;Rest&#39;</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;matplotlib.lines.Line2D at 0x7f7c7cbb4310&gt;]
-</pre></div>
-</div>
-<img alt="../_images/xray_34_1.png" src="../_images/xray_34_1.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mo_E</span>  <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-<span class="n">scf_E</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
-</pre></div>
-</div>
+<img alt="../_images/xray_36_0.png" src="../_images/xray_36_0.png" />
 </div>
 </div>
 <p>…which is of course only one atom…</p>
@@ -1486,11 +1698,11 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Using inbuilt functionalities, noticing the negative energies
 </pre></div>
 </div>
-<img alt="../_images/xray_40_1.png" src="../_images/xray_40_1.png" />
+<img alt="../_images/xray_41_1.png" src="../_images/xray_41_1.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Flipping the x-axis and focusing on the high-energy features:
 </pre></div>
 </div>
-<img alt="../_images/xray_40_3.png" src="../_images/xray_40_3.png" />
+<img alt="../_images/xray_41_3.png" src="../_images/xray_41_3.png" />
 </div>
 </div>
 <p>Using cc-pCVTZ and compared to experiment</p>
@@ -1513,14 +1725,14 @@ plt.show()</p>
 <li><p>DFT</p></li>
 </ol>
 <p>Energy from</p>
-<div class="amsmath math notranslate nohighlight" id="equation-91ae9478-a177-4a46-8296-b7028f860c5a">
-<span class="eqno">(1)<a class="headerlink" href="#equation-91ae9478-a177-4a46-8296-b7028f860c5a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-E = \epsilon_i - \epsilon_j
+<div class="amsmath math notranslate nohighlight" id="equation-4bc73bcf-298c-493d-b167-b7c158595cb5">
+<span class="eqno">(3)<a class="headerlink" href="#equation-4bc73bcf-298c-493d-b167-b7c158595cb5" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\Delta E = \epsilon_v - \epsilon_c
 \end{equation}\]</div>
 <p>and intensities from</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b4ef96ac-6ad3-496d-af89-94d49dcebbb2">
-<span class="eqno">(2)<a class="headerlink" href="#equation-b4ef96ac-6ad3-496d-af89-94d49dcebbb2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-f \propto | &lt; \psi_i | \mu | \psi_j &gt;|^2
+<div class="amsmath math notranslate nohighlight" id="equation-98fe6c28-6521-4158-b56f-0e9ab519a1ec">
+<span class="eqno">(4)<a class="headerlink" href="#equation-98fe6c28-6521-4158-b56f-0e9ab519a1ec" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| ^2
 \end{equation}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1562,7 +1774,7 @@ f \propto | &lt; \psi_i | \mu | \psi_j &gt;|^2
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Focusing on high-energy features
 </pre></div>
 </div>
-<img alt="../_images/xray_45_1.png" src="../_images/xray_45_1.png" />
+<img alt="../_images/xray_46_1.png" src="../_images/xray_46_1.png" />
 </div>
 </div>
 <p>using cc-pCVTZ and compared to experiment</p>

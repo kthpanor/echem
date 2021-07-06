@@ -1,1 +1,2 @@
-# Slater determinants
+Slater determinants
+===================
