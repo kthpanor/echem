@@ -1,0 +1,71 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 553, in async_execute
+    await self.async_execute_cell(
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/miniconda3/envs/vlxdev/lib/python3.9/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+max_iter = 50
+conv_thresh = 1e-4
+
+print("iter.  SCF energy    Delta_D")
+
+E = 0
+D = np.zeros((nbas,nbas))
+
+for iter in range(max_iter + 1):
+    J = np.einsum('ijkl,kl->ij', g, D)
+    K = np.einsum('ilkj,kl->ij', g, D)
+    F = h + 2*J - K
+    
+    # perform the SCF iteration steps
+    F_OAO = np.einsum('ki,kl,lj->ij', X, F, X)
+    epsilon, C_OAO = np.linalg.eigh(F_OAO)    
+    C = np.einsum("ik,kj->ij", X, C_OAO)
+    D_new = np.einsum('ik,jk->ij', C[:, :nocc], C[:, :nocc])
+    
+    # evaluate the energy
+    E = np.einsum('ij,ij->', h + F, D_) + V_nuc
+    
+    # compute convergence metric
+    Delta_D = np.linalg.norm(D_new - D)
+    
+    # print iteration results
+    print(f" {iter:>2d}  {E:12.5f}    {Delta_D:7.2e}")
+    
+    # update the density
+    D = D_new
+    
+    # check if convergence threshold is met
+    if Delta_D < conv_thresh:
+        print('SCF iterations converged!')
+        break
+    
+    if iter == max_iter:
+        raise RuntimeError('Maximum number of iterations exceeded!')
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+[0;32m<ipython-input-5-cf413a4ac019>[0m in [0;36m<module>[0;34m[0m
+[1;32m     19[0m [0;34m[0m[0m
+[1;32m     20[0m     [0;31m# evaluate the energy[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 21[0;31m     [0mE[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0meinsum[0m[0;34m([0m[0;34m'ij,ij->'[0m[0;34m,[0m [0mh[0m [0;34m+[0m [0mF[0m[0;34m,[0m [0mD_[0m[0;34m)[0m [0;34m+[0m [0mV_nuc[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     22[0m [0;34m[0m[0m
+[1;32m     23[0m     [0;31m# compute convergence metric[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mNameError[0m: name 'D_' is not defined
+NameError: name 'D_' is not defined
+
