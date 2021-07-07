@@ -20,52 +20,45 @@ nbclient.exceptions.CellExecutionError: An error occurred while executing the fo
 max_iter = 50
 conv_thresh = 1e-4
 
-print("iter.  SCF energy    Delta_D")
+# initial guess from core Hamiltonian
+C = get_MO_coeff(h)
 
-E = 0
-D = np.zeros((nbas,nbas))
+print("iter      SCF energy    Error norm")
 
-for iter in range(max_iter + 1):
+for iter in range(max_iter):
+    
+    D = np.einsum('ik,jk->ij', C[:, :nocc], C[:, :nocc])
+        
     J = np.einsum('ijkl,kl->ij', g, D)
     K = np.einsum('ilkj,kl->ij', g, D)
     F = h + 2*J - K
+    F_mats.append(F)
     
-    # perform the SCF iteration steps
-    F_OAO = np.einsum('ki,kl,lj->ij', X, F, X)
-    epsilon, C_OAO = np.linalg.eigh(F_OAO)    
-    C = np.einsum("ik,kj->ij", X, C_OAO)
-    D_new = np.einsum('ik,jk->ij', C[:, :nocc], C[:, :nocc])
-    
-    # evaluate the energy
-    E = np.einsum('ij,ij->', h + F, D_) + V_nuc
-    
+    E = np.einsum('ij,ij->', h + F, D) + V_nuc
+
     # compute convergence metric
-    Delta_D = np.linalg.norm(D_new - D)
-    
-    # print iteration results
-    print(f" {iter:>2d}  {E:12.5f}    {Delta_D:7.2e}")
-    
-    # update the density
-    D = D_new
-    
-    # check if convergence threshold is met
-    if Delta_D < conv_thresh:
+    F_MO = np.einsum('ki,kl,lj->ij', C, F, C)
+    e_vecs.append(np.reshape(F_MO[:nocc, nocc:], -1))
+    error = np.linalg.norm(e_vecs[-1])
+
+    print(f'{iter:>2d}  {E:16.8f}  {error:10.2e}')
+
+    if error < conv_thresh:
         print('SCF iterations converged!')
         break
     
-    if iter == max_iter:
-        raise RuntimeError('Maximum number of iterations exceeded!')
+    C = get_MO_coeff(F)
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m<ipython-input-5-cf413a4ac019>[0m in [0;36m<module>[0;34m[0m
-[1;32m     19[0m [0;34m[0m[0m
-[1;32m     20[0m     [0;31m# evaluate the energy[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 21[0;31m     [0mE[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0meinsum[0m[0;34m([0m[0;34m'ij,ij->'[0m[0;34m,[0m [0mh[0m [0;34m+[0m [0mF[0m[0;34m,[0m [0mD_[0m[0;34m)[0m [0;34m+[0m [0mV_nuc[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     22[0m [0;34m[0m[0m
-[1;32m     23[0m     [0;31m# compute convergence metric[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m<ipython-input-6-22ed73010366>[0m in [0;36m<module>[0;34m[0m
+[1;32m     14[0m     [0mK[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0meinsum[0m[0;34m([0m[0;34m'ilkj,kl->ij'[0m[0;34m,[0m [0mg[0m[0;34m,[0m [0mD[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     15[0m     [0mF[0m [0;34m=[0m [0mh[0m [0;34m+[0m [0;36m2[0m[0;34m*[0m[0mJ[0m [0;34m-[0m [0mK[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 16[0;31m     [0mF_mats[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mF[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     17[0m [0;34m[0m[0m
+[1;32m     18[0m     [0mE[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0meinsum[0m[0;34m([0m[0;34m'ij,ij->'[0m[0;34m,[0m [0mh[0m [0;34m+[0m [0mF[0m[0;34m,[0m [0mD[0m[0;34m)[0m [0;34m+[0m [0mV_nuc[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mNameError[0m: name 'D_' is not defined
-NameError: name 'D_' is not defined
+[0;31mNameError[0m: name 'F_mats' is not defined
+NameError: name 'F_mats' is not defined
 
