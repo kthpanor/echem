@@ -1,47 +1,49 @@
 Traceback (most recent call last):
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
-    executenb(
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 1112, in execute
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1087, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/util.py", line 74, in wrapped
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 74, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/util.py", line 53, in just_run
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 53, in just_run
     return loop.run_until_complete(coro)
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
     return future.result()
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 553, in async_execute
-    await self.async_execute_cell(
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 857, in async_execute_cell
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 541, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 832, in async_execute_cell
     self._check_raise_for_error(cell, exec_reply)
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 740, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-lrs_drv = vlx.LinearResponseSolver(ostream=silent_ostream)
-rsp_settings = {'frequencies': [0.0656]}
-method_settings = {} # Hartree-Fock is default
-lrs_drv.update_settings(rsp_settings, method_settings)
+mol_str = """
+C        0.67759997    0.00000000    0.00000000
+C       -0.67759997    0.00000000    0.00000000
+H        1.21655197    0.92414474    0.00000000
+H        1.21655197   -0.92414474    0.00000000
+H       -1.21655197   -0.92414474    0.00000000
+H       -1.21655197    0.92414474    0.00000000
+"""
+molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
+basis = vlx.MolecularBasis.read(molecule, "6-31g")
 
-lrs_out = lrs_drv.compute(molecule, basis, scf_drv.scf_tensors)
+scf_drv = vlx.ScfRestrictedDriver()
+scf_drv.compute(molecule, basis)
 
-alpha_xx = -lrs_out['response_functions'][('x', 'x', 0.0656)]
-alpha_yy = -lrs_out['response_functions'][('y', 'y', 0.0656)] 
-alpha_zz = -lrs_out['response_functions'][('z', 'z', 0.0656)]
-
-print(f"alpha_xx(w=0.0656): {alpha_xx : .6f}")
-print(f"alpha_yy(w=0.0656): {alpha_yy : .6f}")
-print(f"alpha_zz(w=0.0656): {alpha_zz : .6f}")
+orbital_energies = scf_drv.scf_tensors['E']
+C = scf_drv.scf_tensors['C'] # MO coefficients
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/var/folders/ky/5h8mb6gs32nbvf3w8cyqwrhm0000gn/T/ipykernel_72498/1069276001.py[0m in [0;36m<module>[0;34m[0m
-[0;32m----> 1[0;31m [0mlrs_drv[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mLinearResponseSolver[0m[0;34m([0m[0mostream[0m[0;34m=[0m[0msilent_ostream[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      2[0m [0mrsp_settings[0m [0;34m=[0m [0;34m{[0m[0;34m'frequencies'[0m[0;34m:[0m [0;34m[[0m[0;36m0.0656[0m[0;34m][0m[0;34m}[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      3[0m [0mmethod_settings[0m [0;34m=[0m [0;34m{[0m[0;34m}[0m [0;31m# Hartree-Fock is default[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m [0mlrs_drv[0m[0;34m.[0m[0mupdate_settings[0m[0;34m([0m[0mrsp_settings[0m[0;34m,[0m [0mmethod_settings[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      5[0m [0;34m[0m[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+[0;32m<ipython-input-2-1cc4c450b645>[0m in [0;36m<module>[0;34m[0m
+[1;32m     10[0m [0mbasis[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecularBasis[0m[0;34m.[0m[0mread[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m [0;34m"6-31g"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     11[0m [0;34m[0m[0m
+[0;32m---> 12[0;31m [0mscf_drv[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mScfRestrictedDriver[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     13[0m [0mscf_drv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m [0mbasis[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     14[0m [0;34m[0m[0m
 
-[0;31mNameError[0m: name 'silent_ostream' is not defined
-NameError: name 'silent_ostream' is not defined
+[0;31mTypeError[0m: __init__() missing 2 required positional arguments: 'comm' and 'ostream'
+TypeError: __init__() missing 2 required positional arguments: 'comm' and 'ostream'
 
