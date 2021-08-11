@@ -196,6 +196,137 @@ Finally, the derivative of the total energy is obtained by adding the trivial co
 #### DFT
 
 #### MP2
+In the case of M{\o}ller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
+```{math}
+:label: eq:energy_functional_MP
+\frac{dE}{d\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{d\mathbf{C}}{d\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{d\mathbf{T}}{d\xi} \, .
+```
+The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the t-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let's illustrate the procedure for the second order M{\o}ller--Plesset theory, MP2. At this level of theory, the total energy functional is written as:
+```{math}
+:label: eq:MP2_energy_fct
+E_0=E_\mathrm{HF}+E_\mathrm{MP2}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}-\frac{1}{4}\sum_{i,j,a,b}\braket{ij||ab}t_{ijab}, \label{eq:MP2_energy_fct}
+```
+where
+```{math}
+:label: eq:MP2_tamplitudes
+t_{ijab} = \frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j} \label{eq:MP2_tamplitudes}
+```
+are the MP2 t-amplitudes.
+
+The Lagrangian corresponding to this energy functional is:
+```{math}
+:label: eq:MP2_Lagrangian
+L(\mathbf{C}, \mathbf{T},\boldsymbol{\Lambda},\boldsymbol{\Omega},\mathbf{\tilde{T}})=E_\mathrm{0}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right)+\sum_{i,j,a,b}\tilde{t}_{ijab}f(t_{ijab})\,.
+```
+Here, $\tilde{T}=\{\tilde{t}_{ijab}\}$ are the amplitude response Lagrange multipliers and $f(t_{ijab})=0$ is the constraint. For MP2, this is:
+```{math}
+:label: eq:t_condition
+f(t_{ijab})=t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\,  .
+```
+
+The amplitude response Lagrange multipliers are determined by imposing the Lagrangian to be stationary with respect to the t-amplitudes.
+```{math}
+:label: eq:amplitude_rsp_general
+\frac{\partial L}{\partial \mathbf{T}}=0\,.
+```
+Replacing $L$ and $\mathbf{T}$ in the equation above with the corresponding MP2 expressions, we get:
+```{math}
+:label: eq:t_cond_explicit
+\frac{\partial L}{\partial t_{ijab}}&=\frac{\partial E_\mathrm{MP2}}{\partial t_{ijab}}+\sum_{k,l,c,d}\frac{\partial \tilde{t}_{klcd}f(t_{klcd})}{\partial t_{ijab}}\nonumber\\
+&=-\frac{1}{4}\sum_{k,l,c,d}\braket{kl||cd}\frac{\partial t_{klcd}}{\partial t_{ijab}}+\sum_{k,l,c,d}\tilde{t}_{klcd}\frac{\partial t_{klcd}}{\partial t_{ijab}}\left(\epsilon_c+\epsilon_d-\epsilon_k-\epsilon_l\right)\nonumber\\
+&=-\braket{ij||ab}+4\tilde{t}_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)\, , \label{eq:t_cond_explicit}
+```
+From Eqs. {eq}`eq:amplitude_rsp_general` and {eq}`eq:t_cond_explicit`, it follows that,
+```{math}
+:label: eq:ampl_rsp_multipliers
+\tilde{t}_{ijab} = \frac{1}{4}\frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j}=\frac{1}{4}t_{ijab}.
+```
+From here, we can follow the same procedure as we did for the SCF gradient. We first rewrite the Lagrangian in terms of one- and two-particle density matrices:
+```{math}
+:label: eq:L_DMs_MP
+L&=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\nonumber\\
+&+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})+\sum_{i,j,a,b}\tilde{t}_{ijab}\left[t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\right]\nonumber\\
+&=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\nonumber\\
+&+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})+\sum_{p,q}\gamma^\mathrm{A}_{pq}f_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma^\mathrm{A}_{pqrs}\braket{pq||rs}\,,
+```
+where we have written also the amplitude contribution in terms of one- and two-particle density matrices, $\gamma^\mathrm{A}_{pq}$ and $\Gamma^\mathrm{A}_{pqrs}$ respectively. Denoting $\gamma'=\gamma+\gamma^\mathrm{A}$ and $\Gamma'=\Gamma+\Gamma^\mathrm{A}$, the Lagrangian becomes:
+```{math}
+:label: eq:final_L_DMs_MP
+L=\sum_{p,q}\gamma'_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma'_{pqrs}\braket{pq||rs}+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})
+```
+To be able to obtain the gradient, we now must identify the density matrices and then solve the orbital response equations. The density matrices corresponding to the HF contribution are the same as in the previous section. There are additional contributions from the MP2 energy correction, as well as the amplitude response terms. The MP2 energy contribution can be easily identified from the last term of Eq. {eq}`eq:MP2_energy_fct` and gives rise to the following two-particle density matrix: 
+```{math}
+:label: eq:MP2_2pdm_oovv
+\Gamma_{ijab} = -\frac{1}{2} t_{ijab}\,. 
+```
+The amplitude response ($R^\mathrm{A}_\mathrm{MP2}$) contributions are also reasonably easy to identify:
+```{math}
+:label: eq:RA_explicit
+R^\mathrm{A}_\mathrm{MP2}&=\sum_{i,j,a,b}\tilde{t}_{ijab}\left[t_{ijab}(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j)-\braket{ij||ab}\right]\nonumber\\
+&=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\sum_{i,j,a,b}\tilde{t}_{ijab}\left[\sum_{c}\left(\epsilon_{a}\delta_{ac}+\epsilon_b\delta_{bc}\right)t_{ijab}-\sum_k\left(\epsilon_{i}\delta_{ik}+\epsilon_j\delta_{jk}\right)t_{ijab}\right]\nonumber\\
+&=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\sum_{i,j,a,b}\tilde{t}_{ijab}\left(\sum_c f_{ac}t_{ijcb}+\sum_c f_{bc}t_{ijac}-\sum_k f_{ik}t_{kjab}-\sum_k f_{jk}t_{ikab}\right)\nonumber \\
+\nonumber \\
+&\Downarrow \mathrm{renaming\,\, indices} \nonumber \\
+R^\mathrm{A}_\mathrm{MP2}&=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\sum_{a,b}f_{ab}\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)\nonumber\\
+&-\sum_{i,j}f_{ij}\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)\,,\label{eq:RA_explicit}
+```
+resulting in the following density matrices:
+```{math}
+:label: eq:gammaA_ij
+\gamma_{ij}^\mathrm{A}=-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)\, ,
+```
+```{math}
+:label: eq:gammaA_ab
+\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)\, ,
+```
+```{math}
+:label: eq:GammaA_ijab
+\Gamma_{ijab}^\mathrm{A}=-2\,\tilde{t}_{ijab} \, .
+```
+Combining all density matrices together and replacing the amplitude response Lagrange multipliers with the expression from Eq. {eq}`eq:ampl_rsp_multipliers`, we have:
+```{math}
+:label: eq:mp2_gamma_ij
+\gamma'_{ij}=\gamma_{ij}+\gamma_{ij}^\mathrm{A}=\delta_{ij}-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)=\delta_{ij}-\frac{1}{2}\sum_{k,a,b}t_{ikab}t_{jkab} \, , 
+```
+```{math}
+:label: eq:mp2_gamma_ab
+\gamma'_{ab}=\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)=\frac{1}{2}\sum_{i,j,c}t_{ijac}t_{ijbc}\, ,
+```
+```{math}
+:label: eq:mp2_Gamma_ijkl
+\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\, ,
+```
+```{math}
+:label: eq:mp2_Gamma_ijab
+\Gamma'_{ijab} = \Gamma_{ijab}+\Gamma_{ijab}^\mathrm{A}=-\frac{1}{2}t_{ijab}-2\,\tilde{t}_{ijab}=-t_{ijab} \, . 
+```
+Finally, to determine the $\lambda$ orbital response Lagrange multipliers we insert these density matrices into Eq. {eq}`eq:OrbRspEq`. The only non-zero block of $\lambda$ is the occupied-virtual block and the HF density matrices cancel out, so the orbital response equation is:
+```{math}
+:label: eq:lambda_mp2_ov
+&u=i,\, t=a \nonumber\\
+&2\lambda_{ia}(\epsilon_i-\epsilon_a)-2\sum_{p,q}(\gamma'_{pq}+\lambda_{pq})\braket{pa||qi}\delta_{i\epsilon_o}\nonumber+\sum_{p,q,r}\left(\Gamma'_{apqr}\braket{ip||qr}-\Gamma'_{ipqr}\braket{ap||qr}\right)=0\nonumber \\
+&{^{(1)}}\Leftrightarrow 2\lambda_{ia}(\epsilon_i-\epsilon_a)-2\sum_{j,k}\gamma^\mathrm{A}_{jk}\braket{ja||ki}-2\sum_{b,c}\gamma^\mathrm{A}_{bc}\braket{ba||ci}-2\sum_{j,b}\lambda_{jb}\left(\braket{ja||bi}+\braket{ba||ji}\right)\nonumber\\
+&+\sum_{b,j,k}\Gamma'_{abjk}\braket{ib||jk}-\sum_{j,b,c}\Gamma'_{ijbc}\braket{aj||bc}=0\nonumber \\
+&{^{(2)}}\Leftrightarrow
+\lambda_{ia}(\epsilon_i-\epsilon_a)-\sum_{j,b}\lambda_{jb}\left(\braket{ja||bi}+\braket{ba||ji}\right)=\sum_{j,k}\gamma^\mathrm{A}_{jk}\braket{ki||ja}-\sum_{b,c}\gamma^\mathrm{A}_{bc}\braket{ic||ba}\nonumber \\
+&-\frac{1}{2}\sum_{b,j,k}\Gamma'_{abjk}\braket{ib||jk}+\frac{1}{2}\sum_{j,b,c}\Gamma'_{ijbc}\braket{aj||bc}\nonumber \\
+&{^{(3)}}\Leftrightarrow \lambda_{ia}(\epsilon_i-\epsilon_a)+\sum_{j,b}\lambda_{jb}\left(\braket{ib||ja}-\braket{ij||ab}\right)= \nonumber \\ 
+&=\sum_{j,k}\gamma^{\mathrm{A}}_{jk}\braket{ki||ja}+\sum_{b,c}\gamma^\mathrm{A}_{bc}\braket{ic||ab}-\frac{1}{2}\sum_{b,j,k}\Gamma'_{jkab}\braket{jk||ib}-\frac{1}{2}\sum_{j,b,c}\Gamma'_{ijbc}\braket{ja||bc}
+```
+Once the $\lambda$ multipliers are determined using an iterative technique, such as the conjugate gradient algorithm, the different blocks of the $\omega$ multipliers can be computed using Eq. {eq}`eq:omega`. Explicitly,
+```{math}
+:label: eq:omega_mp2_oo
+\omega_{ij} = &-\delta_{ij}\epsilon_i - \gamma_{ij}^\mathrm{A}\epsilon_i - \sum_{k,l} \gamma_{kl}^\mathrm{A}\braket{ki||lj} - \sum_{k,a}\lambda_{ka}\left(\braket{ik||ja}+\braket{jk||ia}\right)\nonumber\\
+&-\sum_{ab}\gamma_{ab}^\mathrm{A}\braket{ia||jb}-\frac{1}{2}\sum_{k,a,b}\Gamma_{jkab}^\mathrm{A}\braket{ik||ab}\,,\\
+```
+```{math}
+:label: eq:omega_mp2_ov
+\omega_{ia} = -\lambda_{ia}\epsilon_i-\frac{1}{2}\sum_{j,k,c}\Gamma^\mathrm{A}_{jkac}\braket{jk||ic} \,,
+```
+```{math}
+:label: eq:omega_mp2_vv
+\omega_{ab} = -\gamma_{ab}^\mathrm{A}\epsilon_a-\frac{1}{2}\sum_{i,j,c}\Gamma^\mathrm{A}_{ijbc}\braket{ij||ac}\, .
+```
 
 ### Excited states
 
