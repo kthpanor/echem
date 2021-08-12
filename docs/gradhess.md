@@ -194,6 +194,7 @@ Using the expressions for the density matrices and the non-zero Lagrange multipl
 Finally, the derivative of the total energy is obtained by adding the trivial contribution from the nuclear repulsion energy term {cite}`Szabo2012`.
 
 #### DFT
+To be added...
 
 #### MP2
 In the case of M{\o}ller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
@@ -329,8 +330,92 @@ Once the $\lambda$ multipliers are determined using an iterative technique, such
 ```
 
 ### Excited states
+The derivation of excited state gradients follows the same procedure as illustrated above for the ground state:
+
+1. Identify the one- and two-particle density matrices that contribute to the energy,
+2. Construct the Lagrangian with appropriate constraints,
+3. If required by the theory level, determine the amplitude response Lagrange multipliers and construct the corresponding density matrices,
+4. Set up and solve the $\lambda$ orbital response equations,
+5. Determine the $\omega$ Lagrange multipliers,
+6. Determine the energy gradient.
 
 #### Tamm--Dancoff approximation
+<span style="color:red"> This has been written for ADC1 -- has to be re-written for TDA.</span>
+
+To illustrate this procedure, we will refer to ADC(1) (add link). Note that ADC(1) is equivalent to time-dependent Hartree-Fock (TDHF) in the Tamm--Dancoff approximation (TDA) (add link) and configuration interaction singles (CIS) (add link). 
+
+Besides the density matrices required for the HF reference state derived above (add link), we need to identify additional one- and two-particle density matrices for the excitation energy. We therefore  formally represent the excitation energy  $\mathbf{X}^\dagger\mathbf{M}\mathbf{X}$ in terms of one- and two- particle density matrices:
+```{math}
+:label: eq:excitation_energy_adc1
+\mathbf{X}_n^\dagger\mathbf{M}\mathbf{X}_n = \sum_{p,q}\gamma^{(1)}_{pq}f_{pq} + \frac{1}{4}\sum_{p,q,r,s}\Gamma^{(1)}_{pqrs}\braket{pq||rs}\, ,
+```
+where $\mathbf{M}=\mathbf{M}^{(0)}+\mathbf{M}^{(1)}$ is the ADC(1) matrix, $\mathbf{X}_n$ is the excitation vector corresponding to excited state $\ket{n}$, and the superscript $(1)$ indicates that we are referring to to the ADC(1) density matrices. 
+
+To identify the density matrices, we carry out explicitly the matrix-vector multiplication on the left hand side,
+```{math}
+:label: eq:adc1-indentify-dms
+\mathbf{X}_n^\dagger(\mathbf{M}^{(0)}+\mathbf{M}^{(1)})\mathbf{X}_n &= \sum_{i,a,j,b} x_{jb} \left[(\epsilon_a - \epsilon_i)\delta_{ab}\delta_{ij}-\braket{ja||ib}\right] x_{ia}\nonumber\\
+&=\sum_{i,a,j,b} \left(x_{jb}x_{ia}f_{ab}\delta_{ij} - x_{jb}x_{ia}f_{ij}\delta_{ab}-x_{jb}x_{ia}\braket{ja||ib}\right)\,, 
+```
+where we have used Eqs. {eq}`eq:adcmat_ph_ph_0` and {eq}`eq:adcmat_ph_ph_1` to express the ADC(1) matrix elements and used the fact that the Fock matrix of the underlying reference state is diagonal with orbital eigenvalues on the diagonal $f_{pq}=\epsilon_{p}\delta_{pq}$.
+
+From Eq. {eq}{eq:adc1-identify-dms} we identify the excitation energy density matrices:
+```{math}
+:label: eq:adc1_gamma_oo
+\gamma^{(1)}_{ij} = - \sum_{a}x_{ja}x_{ia}\,,\label{eq:adc1_gamma_oo}
+```
+```{math}
+:label: eq:adc1_gamma_vv
+\gamma^{(1)}_{ab} = \sum_{i} x_{ib}x_{ia}\,,\label{eq:adc1_gamma_vv}
+```
+```{math}
+:label: eq:adc1_Gamma_ovov
+\Gamma^{(1)}_{iajb} = -x_{ib}x_{ja}\, ,\label{eq:adc1_Gamma_ovov}
+```
+where the indices of the two-particle density matrix have been renamed. 
+
+To obtain the molecular gradient of the excited state $\ket{n}$, the density matrices of the ground state must also be included. For ADC(1), this is the HF reference state, so the density matrices for the excited state are:
+```{math}
+:label: eq:adc1_gamma_total_oo
+\gamma'_{ij} = \gamma_{ij}+ \gamma^{(1)}_{ij}= \delta_{ij} - \sum_{a}x_{ja}x_{ia}\,,
+```
+```{math}
+:label: eq:adc1_gamma_total_vv
+\gamma'_{ab} = \gamma^{(1)}_{ab} =\sum_{i} x_{ib}x_{ia}\,,
+```
+```{math}
+:label: eq:adc1_Gamma_total_ovov
+\Gamma'_{iajb} = \Gamma^{(1)}_{iajb} = -x_{ib}x_{ja}\, ,
+```
+```{math}
+:label: eq:adc1_Gamma_total_oooo
+\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\,.
+```
+Since, when written in terms of one- and two-particle, the excited state Lagrangian is virtually identical to the Lagrangians written for HF and MP2, we leave the exercise of plugging in the expressions of the DMs into Eq. {eq}`to add` to the reader. The orbital response equations are also straightforwad to derive by using the density matrices in Eqs. {eq}`eq:adc1_gamma_total_oo`-{eq}`eq:adc1_Gamma_total_oooo` in the general orbital response equations {eq}`eq:OrbRspEq` and {eq}`eq:omega`. We leave the step-by-step derivation to the reader, with a note that care should be given to the symmetry of the two-particle density matrix $\Gamma_{pqrs}$. Here, we provide the final expressions for $\lambda$ (to be determined iteratively):
+```{math}
+:label: eq:lambda_adc1_ov
+(\epsilon_i-\epsilon_a)\lambda_{ia} - \sum_{j,b}\lambda_{jb}(\braket{ji||ba}-{ja||ib}) &= \sum_{j,k}\gamma^{(1)}_{jk}\braket{ji||ka} - \sum_{b,c}\gamma^{(1)}_{bc}\braket{ib||ca} \nonumber\\
+&+ \sum_{j,k,b}\Gamma^{(1)}_{jakb}\braket{ij||kb} + \sum_{b,k,c}\Gamma_{ibkc}\braket{kc||ab}  \label{eq:lambda_adc1_ov}\,,
+```
+and $\omega$:
+```{math}
+:label: eq:omega_adc1_oo
+\omega_{ij} = &-(\delta_{ij} +\gamma^{(1)}_{ij})\epsilon_{i}-\sum_{k,l}\gamma^{(1)}_{kl}\braket{ki||lj}+\sum_{k,a}\lambda_{ka}\left(\braket{ki||ja}+\braket{kj||ia}\right) \nonumber \\
+&-\sum_{a,b}\gamma^{(1)}_{ab}\braket{ia||jb} - \sum_{a,k,b} \Gamma^{(1)}_{jakb}\braket{ia||kb}\label{eq:omega_adc1_oo} \,,
+```
+```{math}
+:label: eq:omega_adc1_ov
+\omega_{ia} = - \lambda_{ia}\epsilon_{i} + \sum_{k,b,j}\Gamma^{(1)}_{kajb}\braket{ik||jb}\label{eq:omega_adc1_ov} \,, 
+```
+```{math}
+:label: eq:omega_adc1_vv
+\omega_{ab} =-\gamma^{(1)}_{ab}\epsilon_a - \sum_{k,c,j}\Gamma^{(1)}_{kajc}\braket{kb||jc}\  \label{eq:omega_adc1_vv} \,.
+```
+Using the density matrices and Lagrange multipliers, the ADC(1) analytical gradient can now be determined from the partial derivative of the Lagrangian with respect to $\xi$.
+
+%%%%TO ADD: note about dipole moment, relaxed (lambda) and unrelaxed (gamma) one particle density matrices.
+%%%
 
 ## Hessians
 
+To add: HF analytical Hessian
