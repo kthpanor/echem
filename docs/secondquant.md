@@ -34,42 +34,42 @@ where $F(M, N)$ is the set of occupation number vectors with $M$ occupied spin-o
 ## Creation and annihilation operators
 Second quantization also introduces a very convenient way to manipulate states through creation and annihilation operators. As their name imply, those operators can be seen as creating and destroying electrons in specific spin-orbital. In terms of occupation vector manipulation, these actions are described
 
-- creation operator $a_p^\dagger$: 
+- creation operator $\hat{a}_p^\dagger$: 
 \begin{equation}
- a_p^\dagger | \mathbf{k} \rangle = \delta_{k_p, 0} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...1_p ...k_N \rangle 
+ \hat{a}_p^\dagger | \mathbf{k} \rangle = \delta_{k_p, 0} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...1_p ...k_N \rangle 
 \end{equation}
-- annihilation operator $a_p$: 
+- annihilation operator $\hat{a}_p$: 
 \begin{equation}
- a_p | \mathbf{k} \rangle = \delta_{k_p, 1} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...0_p ...k_N \rangle 
+ \hat{a}_p | \mathbf{k} \rangle = \delta_{k_p, 1} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...0_p ...k_N \rangle 
 \end{equation}
 
 
 The $\delta_{k_p, 0}$ ensures that the creation operator cannot add an electron to a state that is already populated while $\delta_{k_p, 1}$ prevents the destruction of a non-existing electron. The phase factor $\prod_{i = 1}^{p} (-1)^{k_p}$ ensures the antisymmetry of the wavefunction.  However, the main strength of this formulation is that the phase factor is a direct consequence of the anti-commutator relationship of the creation and annihilation operators: 
 
 \begin{eqnarray}
-a_p^\dagger a_q +  a_q a_p^\dagger &=& \delta_{p,q}  \ ,  \\ 
-a_p^\dagger a_q^\dagger +  a_q^\dagger a_p^\dagger &=& 0 \ ,  \\
-a_p a_q +  a_q a_p &=& 0 \ , 
+\hat{a}_p^\dagger \hat{a}_q +  \hat{a}_q \hat{a}_p^\dagger &=& \delta_{p,q}  \ ,  \\ 
+\hat{a}_p^\dagger \hat{a}_q^\dagger +  \hat{a}_q^\dagger \hat{a}_p^\dagger &=& 0 \ ,  \\
+\hat{a}_p \hat{a}_q +  \hat{a}_q \hat{a}_p &=& 0 \ , 
 \end{eqnarray}
 
 which are primary tools to manipulate occupation number vectors.
 
 Having defined those operators, it is easy to see that any arbitrary state can be simply formed by applying a string of creation operators on the vacuum state. 
 
-Similarly, the standard operators of quantum mechanics can be represented in second quantization using the creation and annihilation operators. Any operator $\hat{O}$ depending on the coordinates (both spatial and spin) $\mathbf{x}$ of a single electron can be expressed as a product of the integral of the operator in the chosen basis $O_{pq}= \int \psi_p^* (\mathbf{x}) \hat{O} (\mathbf{x}) \psi_q (\mathbf{x}) d\mathbf{x}$ and the excitation operator $a_p^\dagger a_q$:
+Similarly, the standard operators of quantum mechanics can be represented in second quantization using the creation and annihilation operators. Any operator $\hat{O}$ depending on the coordinates (both spatial and spin) $\mathbf{x}$ of a single electron can be expressed as a product of the integral of the operator in the chosen basis $O_{pq}= \int \psi_p^* (\mathbf{x}) \hat{O} (\mathbf{x}) \psi_q (\mathbf{x}) d\mathbf{x}$ and the excitation operator $\hat{a}_p^\dagger \hat{a}_q$:
 
 \begin{equation}
-\hat{O} = \sum_{pq} O_{pq} a_p^\dagger a_q
+\hat{O} = \sum_{pq} O_{pq} \hat{a}_p^\dagger \hat{a}_q
 \end{equation}
 
 A similar formula can be used for two-electron operators. For example, the Hamiltonian of a molecular system can be written as:
 
 \begin{equation}
-\hat H = \sum_{pq} h_{pq} a_p^\dagger a_q + \frac{1}{2} \sum_{pqrs} g_{pqrs} a_p^\dagger a_q a_r^\dagger a_s \ , 
+\hat H = \sum_{pq} h_{pq} \hat{a}_p^\dagger \hat{a}_q + \frac{1}{2} \sum_{pqrs} g_{pqrs} \hat{a}_p^\dagger \hat{a}_q \hat{a}_r^\dagger \hat{a}_s \ , 
 \end{equation}
 where $h_{pq}$ is the one-electron part of electronic Hamiltonian 
 \begin{equation}
- h_{pq} = \int \psi_p(\mathbf{x})^* \bigg \{ - \frac{1}{2} \nabla^2 - \sum_K \frac{Z_k}{|\mathbf{r} - \mathbf{R}_K |} \bigg \} \psi_q(\mathbf{x}) d \mathbf{x} \ , 
+ h_{pq} = \int \psi_p(\mathbf{x})^* \bigg \{ - \frac{1}{2} \hat{\nabla}^2 - \sum_K \frac{Z_k}{|\mathbf{r} - \mathbf{R}_K |} \bigg \} \psi_q(\mathbf{x}) d \mathbf{x} \ , 
 \end{equation}
 and $g_{pqrs}$ is the two-electron part of electronic Hamiltonian 
 \begin{equation}
@@ -79,3 +79,7 @@ g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathb
 At the end, second quantization is a completely equivalent way to represent quantum mechanics, but by using a unified description of operator and states and reducing all the complications of the antisymmetry to simple commutation rules between the creation and annihilation operators, it is often a significantly more straightforward and compact way to derive various wave function models than the conventional approach based on the direct application of Slater-Condon rules to individual Slater determinants. For example, derivation of working equations for coupled-cluster singles and doubles wave function in second quantization becomes a single lecture affair, compared to the conventional way, which is several days undertaking. Thus, the second quantization is a valuable mathematical tool for working with correlated wave functions.
 
 ## Spin
+
+```python
+
+```
