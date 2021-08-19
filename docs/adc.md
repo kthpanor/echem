@@ -12,7 +12,7 @@ where $\hbar$ is the reduced Planck constant, $\hat{a}_p$ and $\hat{a}_q^\dagger
 ---
 scale: 100%
 name: fig-propagator
-figclass: margin-caption
+align: left
 ---
 Illustration of the propagation of an excitation in a many-electron system (inspired from Ref. {cite}`mattuck1992`): (a) a particle-hole pair is created by photon absorption; (b) the pair propagates through the system; (c) the particle and hole interact (the interaction is marked by a wiggly line); (d) the particle interacts with another particle in the system, lifting it out of its place and creating a new particle-hole pair (excitation); (e) the particle interacts with the lifted-out particle and knocks it back into the hole (de-excitation); (f) the particle and hole recombine and emit a photon. (g) Illustration of the series expansion of the polarization propagator (adapted from {cite}`Wormit2009`).
 ```
@@ -31,7 +31,7 @@ As the name suggest, the intermediate state representation (ISR) approach consis
 ---
 scale: 100%
 name: fig-isr
-figclass: margin-caption
+align: left
 ---
 Illustration of (a) single excitations, (b) double excitations, (c) the structure of the ADC(2) matrix. The numbers in parenthesis indicate the highest order of perturbation theory used to describe each particular block.
 ```
@@ -99,7 +99,7 @@ One way to reach the space of core-excitations (and be able to compute, for exam
 ---
 scale: 100%
 name: fig-cvs
-figclass: margin-caption
+align: left
 ---
 Illustration of the (a) single excitations and (b) double excitations involved in the CVS approximation. (c) Schematic representation of the full ADC(2) matrix and (d) the size reduction achieved by the CVS approximation.
 ```
@@ -112,7 +112,7 @@ The core level binding energies of 1s electrons are element-specific, with very 
 ---
 scale: 100%
 name: fig-xas
-figclass: margin-caption
+align: left
 ---
 (a) Schematic potential and (b) schematic representation of the C K-edge X-ray absorption spectrum for the dichloroethylene molecule (adapted from Ref. {cite}`Stohr1992`, Fig. 4.2.).
 ```
