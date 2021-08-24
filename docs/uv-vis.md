@@ -1,5 +1,41 @@
-UV/vis absorption/emission
-==========================
+<!-- #region -->
+# UV/vis absorption/emission
+
+## Spectrum calculation
+
+### Absorption
+
+### Emission
+
+### Vibronic?
+
+
+
+## Spectrum analysis
+
+
+
+## General aspects
+
+### Comparison to experiment
+
+### Vibrations
+
+### Broadening
+
+
+## Large systems
+
+
+## Recommendations
+
+
+
+
+
+
+
+# Old
 
 - Polarization $\rightarrow$ cross-section
 - Connection to experiment - Beer-Lambert, 0-0/vertical/adiabatic transition, ...
@@ -13,18 +49,14 @@ UV/vis absorption/emission
 
 Here the overlap of the S<sub>0</sub> vibrational ground state and the third vibrational state of S<sub>i</sub> is such that this transition will contribute more to the intensity than, for instance, vibrational ground state to vibrational ground state. Calculating the different contributions to the different ground states (the Franck–Condon factors) thus yields a good first improvement of the theoretical spectra, featuring a smoother spectrum. If the PES of S<sub>0</sub> and S<sub>i</sub> are sufficiently close, the inclusion of only ground state to ground state may be sufficient, designated 0–0 in the figure. Experimentally, it may only be possible to resolve the 0–0 transition, or the wavelength corresponding to the maximum of absorption, $\lambda$<sub>max</sub> . The vertical transition energy thus gives only a rough estimate of the actual physical situation, but it is in most cases sufficiently accurate.
 
-Jablonski diagram
------------------
+## Jablonski diagram
 
-Franck--Condon approximation
-----------------------------
+## Franck--Condon approximation
 
-Herzberg--Teller approximation
-------------------------------
+## Herzberg--Teller approximation
 
-Vibronic resolution
--------------------
-
+## Vibronic resolution
+<!-- #endregion -->
 
 In this exercise we will consider the five lowest excited states of bi-thiophene molecule in vacuum and water and determine solvent induced changes of excited states using QM/MM methods. 
 
