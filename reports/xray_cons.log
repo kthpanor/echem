@@ -1,4 +1,15 @@
 Traceback (most recent call last):
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 609, in _async_poll_for_reply
+    msg = await ensure_async(self.kc.shell_channel.get_msg(timeout=new_timeout))
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 85, in ensure_async
+    result = await obj
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_client/asynchronous/channels.py", line 48, in get_msg
+    raise Empty
+_queue.Empty
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
   File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
     record_timing=False,
   File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1087, in execute
@@ -11,34 +22,18 @@ Traceback (most recent call last):
     return future.result()
   File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 541, in async_execute
     cell, index, execution_count=self.code_cells_executed + 1
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 832, in async_execute_cell
-    self._check_raise_for_error(cell, exec_reply)
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 740, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
-nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
-------------------
-mol = gto.Mole()
-mol.atom  = water; mol.basis = 'unc-6-31G'
-mol.build()
-
-# non-relativistic
-scf_nr  = scf.RHF(mol); scf_nr.kernel()
-adc_nr  = adcc.cvs_adc2(scf_nr,n_singlets=5,core_orbitals=1)
-
-# relativistic
-scf_rel = scf.RHF(mol).x2c1e(); scf_rel.kernel()
-adc_rel = adcc.cvs_adc2(scf_rel,n_singlets=5,core_orbitals=1)
-------------------
-
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m<ipython-input-4-d0bfce5e3d64>[0m in [0;36m<module>[0;34m[0m
-[1;32m      1[0m [0mmol[0m [0;34m=[0m [0mgto[0m[0;34m.[0m[0mMole[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0;32m----> 2[0;31m [0mmol[0m[0;34m.[0m[0matom[0m  [0;34m=[0m [0mwater[0m[0;34m;[0m [0mmol[0m[0;34m.[0m[0mbasis[0m [0;34m=[0m [0;34m'unc-6-31G'[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      3[0m [0mmol[0m[0;34m.[0m[0mbuild[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m [0;34m[0m[0m
-[1;32m      5[0m [0;31m# non-relativistic[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
-
-[0;31mNameError[0m: name 'water' is not defined
-NameError: name 'water' is not defined
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 816, in async_execute_cell
+    exec_reply = await self.task_poll_for_reply
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 633, in _async_poll_for_reply
+    await self._async_handle_timeout(timeout, cell)
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 684, in _async_handle_timeout
+    "Cell execution timed out", timeout, cell
+nbclient.exceptions.CellTimeoutError: A cell timed out while it was being executed, after 30 seconds.
+The message was: Cell execution timed out.
+Here is a preview of the cell contents:
+-------------------
+['# Create pyscf mol object', 'mol       = gto.Mole()', 'mol.atom  = water_xyz', "mol.basis = '6-31G'", 'mol.build()']
+...
+['    p_x = 1.0 - h_x', "    xc  = f'{h_x:} * HF + {p_x:} * PBE, PBE'", '    E_mo, E_delta = dft_delta(mol,xc)', '    hf_pbe[0].append(E_mo)', '    hf_pbe[1].append(E_delta)']
+-------------------
 

@@ -561,7 +561,7 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id11">
+    <a class="reference internal nav-link" href="#id12">
      Other approaches
     </a>
    </li>
@@ -588,7 +588,7 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id19">
+    <a class="reference internal nav-link" href="#id20">
      Other approaches
     </a>
    </li>
@@ -620,7 +620,7 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id21">
+    <a class="reference internal nav-link" href="#id22">
      Other approaches
     </a>
    </li>
@@ -639,13 +639,11 @@
                 
   <div class="section" id="spectrum-calculation">
 <h1>Spectrum calculation<a class="headerlink" href="#spectrum-calculation" title="Permalink to this headline">¶</a></h1>
-<p>This section focus on the calculation of XPS, XAS, XES, and RIXS, illustrating a number of different approaches. The used of approaches are selected by availability in <code class="docutils literal notranslate"><span class="pre">veloxchem</span></code>, <code class="docutils literal notranslate"><span class="pre">gator</span></code>, and <code class="docutils literal notranslate"><span class="pre">adcc</span></code>. Numerous other methods are available elsewhere.</p>
-<p><em>Loading needed modules and functionalities:</em></p>
+<p>This section focus on the calculation of XPS, XAS, XES, and RIXS, with focus on considering these spectroscopies with ADC and (TD)DFT. For a more general overview of the large number of methods available for considering these properties, see, <em>e.g.</em>, <span id="id1">[<a class="reference internal" href="refs.html#id107">ND18</a>]</span>.</p>
+<p><em>Loading modules and functions:</em></p>
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># loading modules etc</span>
-
-<span class="c1"># standard Python modules and functions</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -672,10 +670,10 @@
 </div>
 <div class="section" id="x-ray-photoemission-spectroscopy">
 <span id="sec-xray-calc-xps"></span><h2>X-ray photoemission spectroscopy<a class="headerlink" href="#x-ray-photoemission-spectroscopy" title="Permalink to this headline">¶</a></h2>
-<p>In XPS the photoemission of electrons is measured, yielding information on core-electron binding energies. Here we focus on the calculation of ionization potentials (IP:s), from which the isotropic photoemission spectrum is formed by giving each IP the same intensity and then broadening with an appropriate convolution function. It is possible to go beyond such a simple approach using Dyson orbitals, but it typically does not make much of a difference <span id="id1">[<a class="reference internal" href="refs.html#id21">VKC19</a>]</span>.</p>
+<p>In XPS the photoemission of electrons is measured, yielding information on core-electron binding energies. Here we focus on the calculation of ionization potentials (IP:s), from which the isotropic photoemission spectrum is formed by giving each IP the same intensity and then broadening with an appropriate convolution function. It is possible to go beyond such a simple approach using Dyson orbitals, but it typically does not make much of a difference <span id="id2">[<a class="reference internal" href="refs.html#id21">VKC19</a>]</span>.</p>
 <div class="section" id="ip-s-from-koopmans-theorem">
 <h3>IP:s from Koopmans’ theorem<a class="headerlink" href="#ip-s-from-koopmans-theorem" title="Permalink to this headline">¶</a></h3>
-<p>A simple model for calculating ionization potentials and electron affinities is from Koopmans’ theorem, where it is estimated from the MO energies. For water, we obtain a 1s IP of:</p>
+<p>A simple model for calculating ionization potentials and electron affinities is from Koopmans’ theorem, where they are estimated from the MO energies. For water, we obtain a 1s IP of:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -709,21 +707,21 @@
 </div>
 <div class="section" id="the-maximum-overlap-method">
 <h3>The maximum overlap method<a class="headerlink" href="#the-maximum-overlap-method" title="Permalink to this headline">¶</a></h3>
-<p>In order to converge a core-hole state, an approach which avoid the convergence to a lower-energy valence-hole state is needed. This can be done using several approaches, but the focus here will be on the maximum overlap method (MOM), with which a SCF optimization with the constraint of maximizing the overlap to some initial guess <span id="id2">[<a class="reference internal" href="refs.html#id22">BS71</a>, <a class="reference internal" href="refs.html#id23">GBG08</a>]</span>. The guess is typically taken as the converged wave function of the neutral (no core-hole) system, and new occupied orbitals at each iteration is taken such that they overlap most with the span of old occupied orbitals. Defining the overlap matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-71c4c80f-74db-41bd-beba-585ebf691d9a">
-<span class="eqno">(1)<a class="headerlink" href="#equation-71c4c80f-74db-41bd-beba-585ebf691d9a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>In order to converge a core-hole state, an approach which avoid the convergence to a lower-energy valence-hole state is needed. This can be done using several approaches, but the focus here will be on the maximum overlap method (MOM), with which a SCF optimization with the constraint of maximizing the overlap to some initial guess <span id="id3">[<a class="reference internal" href="refs.html#id22">BS71</a>, <a class="reference internal" href="refs.html#id23">GBG08</a>]</span>. The guess is typically taken as the converged wave function of the neutral (no core-hole) system, and new occupied orbitals at each iteration is taken such that they overlap most with the span of old occupied orbitals. Defining the overlap matrix as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-cce66bc4-d09d-4b60-bb2a-5bfbd3d70b61">
+<span class="eqno">(1)<a class="headerlink" href="#equation-cce66bc4-d09d-4b60-bb2a-5bfbd3d70b61" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \textbf{O} = 
-\left( \textbf{C} \right)^{\dagger} \textbf{SC}^{\textrm{new}}
+\left( \textbf{C}^{\textrm{old}} \right)^{\dagger} \textbf{SC}^{\textrm{new}},
 \end{equation}\]</div>
-<p>with <span class="math notranslate nohighlight">\(O_{ij}\)</span> being the overlap bewteen the <span class="math notranslate nohighlight">\(i\)</span>:th old and <span class="math notranslate nohighlight">\(j\)</span>:th new orbital. Projections of <span class="math notranslate nohighlight">\(j\)</span>:th new orbital onto the old space  is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aedba44c-40e4-4d0b-a436-8ee0dcba89ab">
-<span class="eqno">(2)<a class="headerlink" href="#equation-aedba44c-40e4-4d0b-a436-8ee0dcba89ab" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>with <span class="math notranslate nohighlight">\(O_{ij}\)</span> being the overlap between the <span class="math notranslate nohighlight">\(i\)</span>:th old and <span class="math notranslate nohighlight">\(j\)</span>:th new orbital, and <span class="math notranslate nohighlight">\(\textbf{C}\)</span> and <span class="math notranslate nohighlight">\(\textbf{S}\)</span> are the MO coefficient matrices and basis function overlap matrix, respectively. The projections of <span class="math notranslate nohighlight">\(j\)</span>:th new orbital onto the old space is then</p>
+<div class="amsmath math notranslate nohighlight" id="equation-ef7d92d9-c64a-458a-ba92-d249c65c14aa">
+<span class="eqno">(2)<a class="headerlink" href="#equation-ef7d92d9-c64a-458a-ba92-d249c65c14aa" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 p_j = \sum_i^n O_{ij} = 
 \sum_a^N (
 \sum_b^N (
 \sum_i^n C_{ib}^{old} )
 S_{bc} )
-C_{cj}^{old}
+C_{cj}^{old}.
 \end{equation}\]</div>
 <p>The occupied orbitals are then selected by largest <span class="math notranslate nohighlight">\(p_j\)</span> values.</p>
 <p>With this, a converged core-hole wave function is obtained with the following scheme:</p>
@@ -734,13 +732,13 @@ C_{cj}^{old}
 </ol>
 <p>This can then converge many unstable states, including core-ionized states and certain core-excited states. Some care should observed, though:</p>
 <ul class="simple">
-<li><p>If excited states are considered, check that the final state is reasonable close to what is to be investigated.</p></li>
+<li><p>If excited states are considered, check that the final state is reasonable close to what is investigated.</p></li>
 <li><p>Delocalized core orbitals need to be localized, for example by employing ECP:s.</p></li>
 <li><p>If post-HF methods are used, the ground state calculation can attempt to (partially) fill the core-hole, leading to a corrupt wave function which represents some intermediate between a core-hole/valence-hole state.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We currently use <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> for the calculations involving explicit core-holes, as VeloxChem presently lacks MOM.</p>
+<p>We currently use <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> for the calculations involving explicit core-holes, as <code class="docutils literal notranslate"><span class="pre">veloxchem</span></code> presently lacks MOM.</p>
 </div>
 </div>
 <div class="section" id="ip-s-from-delta-textrm-scf">
@@ -776,7 +774,10 @@ C_{cj}^{old}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.337153e-12  2S+1 = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3389294e-12  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
@@ -803,10 +804,10 @@ C_{cj}^{old}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.113048395549  E_corr = -0.129178012829711
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.1130483955489  E_corr = -0.129178012829715
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -56.1523709631034  E_corr = -0.0768920160169648
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -56.1523709631034  E_corr = -0.0768920160169649
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization potential: 543.16 eV
@@ -814,7 +815,7 @@ C_{cj}^{old}
 </div>
 </div>
 </div>
-<p>Alternatively, we can obtain estimates with KS-DFT:</p>
+<p>Alternatively, we can consider this with KS-DFT:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform unrestricted SCF calculation with a B3LYP</span>
@@ -855,17 +856,17 @@ C_{cj}^{old}
 </div>
 </div>
 </div>
-<p>MP2 and DFT currently brings us <em>away</em> from experiment, but we note that the basis set is small and ill-suited for core properties. Using a cc-pCVTZ basis we obtain:</p>
+<p>MP2 and DFT currently brings us <em>away</em> from experiment when comparing to HF, but we note that the basis set is small and ill-suited for core properties. Using a cc-pCVTZ basis we obtain:</p>
 <ul class="simple">
 <li><p>HF: 538.93 eV</p></li>
 <li><p>MP2: 540.26 eV</p></li>
 <li><p>B3LYP: 539.19 eV</p></li>
 </ul>
-<p><em>i.e.</em> closer to experiment for the correlated methods (note that scalar-relativistic effects will shift these results upwards by <span class="math notranslate nohighlight">\(\sim\)</span>0.37 eV).</p>
+<p>So closer to experiment for the correlated methods (note that scalar-relativistic effects will shift these results upwards by <span class="math notranslate nohighlight">\(\sim\)</span>0.37 eV).</p>
 </div>
 <div class="section" id="spectra-from-delta-textrm-scf">
 <h3>Spectra from <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span><a class="headerlink" href="#spectra-from-delta-textrm-scf" title="Permalink to this headline">¶</a></h3>
-<p>The X-ray photoemission spectrum can be formed by computing all relavant core-electron binding energies (IP:s), give each unique ionization equal intensity, and broaden over the result with a Lorentzian or Gaussian convolution function.</p>
+<p>The X-ray photoemission spectrum can be formed by computing all relavant core-electron binding energies (or IP:s), give each unique ionization equal intensity, and broaden over the result with an appropriate convolution function.</p>
 <p>We here consider ethyl trifluoroacetate( (CF<span class="math notranslate nohighlight">\(_3\)</span>-CO-O-CH<span class="math notranslate nohighlight">\(_2\)</span>-CH<span class="math notranslate nohighlight">\(_3\)</span>), also known as the <a class="reference external" href="https://doi.org/10.1016/j.elspec.2012.05.009">‘ESCA’ molecule</a>, which possess very illustrative shifts in XPS features (IP:s) of the carbon <span class="math notranslate nohighlight">\(K\)</span>-edge due to interactions with the very electronegative oxygen and fluorine atoms. We calculate the four carbon 1s IP:s with <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span>:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -913,7 +914,7 @@ C_{cj}^{old}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -594.32069026359  &lt;S^2&gt; = 1.6621939e-08  2S+1 = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -594.32069026359  &lt;S^2&gt; = 1.6621946e-08  2S+1 = 1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -583.365537674046  &lt;S^2&gt; = 0.76705671  2S+1 = 2.0169846
@@ -922,13 +923,13 @@ C_{cj}^{old}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF not converged.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF energy = -583.447978402791 after 50 cycles  &lt;S^2&gt; = 0.76804962  2S+1 = 2.0179689
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF energy = -583.447978382944 after 50 cycles  &lt;S^2&gt; = 0.76805739  2S+1 = 2.0179766
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -583.561134582533  &lt;S^2&gt; = 0.76454928  2S+1 = 2.0144967
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -583.615548638302  &lt;S^2&gt; = 0.75826809  2S+1 = 2.0082511
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -583.615548638303  &lt;S^2&gt; = 0.75826809  2S+1 = 2.0082511
 </pre></div>
 </div>
 </div>
@@ -937,20 +938,20 @@ C_{cj}^{old}
 <p class="admonition-title">Note</p>
 <p>There are some convergence issues for the above calculation, largely relating to the minimal basis set used. These issues disappear for more flexible basis set.</p>
 </div>
-<p>The choice of convolution function depends on the dominant broadening effect (lifetime of excited/ionized state, experimental resolution, Doppler effect, <em>etc</em>). We generally focus on Lorentzian broadening, which is the type which naturally comes out of damped response calculations.</p>
+<p>The choice of convolution function depends on the dominant broadening effect (lifetime of excited/ionized state, experimental resolution, Doppler effect, …). We generally focus on Lorentzian broadening, which is the type which naturally comes out of damped response calculations and which relates to the finite life-time of the excited/ionized state.</p>
 <p>Giving each ionization potential equal weight, Lorentzian and Gaussian broadening are performed as below, for which the full-width at half-max (FWHM) is equal to <span class="math notranslate nohighlight">\(\gamma \)</span> and <span class="math notranslate nohighlight">\( 2\sqrt{2\ln{2}} \sigma\)</span>, respectively. If better correspondence to experiment is sought, a Voigt profile can be constructed from the convolution of a Lorentzian and a Gaussian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lorentzian broadening function</span>
-<span class="c1"># called with [energies, intensities, start energy, end energy, energy step, broadening]</span>
+<span class="c1">#   called with [energies, intensities, start energy, end energy, energy step, gamma]</span>
 <span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
     <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
     <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
 
-<span class="c1"># Lorentzian broadening function</span>
-<span class="c1"># called with [energies, intensities, start energy, end energy, energy step, broadening]</span>
+<span class="c1"># Gaussian broadening function</span>
+<span class="c1">#   called with [energies, intensities, start energy, end energy, energy step, sigma]</span>
 <span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span> 
@@ -965,11 +966,11 @@ C_{cj}^{old}
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">222</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Gaussian, FWHM = 0.4 eV&#39;</span><span class="p">)</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))));</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">223</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Overlaid and peak max normalized&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">223</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Both, peak max normalized&#39;</span><span class="p">)</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))));</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">yi</span><span class="p">))</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">yi</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">224</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Overlaid and area normalized&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">224</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Both, area normalized&#39;</span><span class="p">)</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))));</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">yi</span><span class="p">))</span>
 <span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">yi</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -980,7 +981,7 @@ C_{cj}^{old}
 <img alt="../_images/xray_calc_13_0.png" src="../_images/xray_calc_13_0.png" />
 </div>
 </div>
-<p>For the comparison to <a class="reference external" href="https://doi.org/10.1016/j.elspec.2012.05.009">experiment</a> a cc-pVTZ basis set is selected, augmented with additional core-polarizing functions for the carbon atoms (i.e. cc-pCVTZ for carbons):</p>
+<p>For the comparison to <a class="reference external" href="https://doi.org/10.1016/j.elspec.2012.05.009">experiment</a> a cc-pVTZ basis set is selected, augmented with additional core-polarizing functions for the carbon atoms (i.e. cc-pCVTZ):</p>
 <div class="figure align-default" id="esca-xps">
 <img alt="../_images/esca_xps.svg" src="../_images/esca_xps.svg" /><p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Carbon 1s XPS of ESCA, comparing <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span> results to experiment. Theoretical spectrum shifted by 0.11 eV (to account for relativistic effects) and broadened by 0.3 eV.</span><a class="headerlink" href="#esca-xps" title="Permalink to this image">¶</a></p>
 </div>
@@ -1005,25 +1006,29 @@ C_{cj}^{old}
 <p>Above the spectrum we see two disctinct regions with different features and physical origins:</p>
 <ul class="simple">
 <li><p><strong>NEXAFS (near-edge X-ray absorption fine structure:</strong> the region in which transitions to bound states is probed (this region is also known as XANES, X-ray absorption near-edge structure).</p></li>
-<li><p><strong>EXAFS (extended X-ray absorption fine structure):</strong> which consists of transitions to continuum states, which is modulated by constructive or destructive interference between the emitted electron and the environment. This thus provide information on local chemical bonds.</p></li>
+<li><p><strong>EXAFS (extended X-ray absorption fine structure):</strong> which consists of transitions to continuum states, as modulated by constructive or destructive interference between the emitted electron and the environment. This thus provide information on local chemical bonds.</p></li>
 </ul>
 <p>Included is also the position of the IP, as well assignment of typical features (<span class="math notranslate nohighlight">\(\pi^*\)</span>, Rydberg, and <span class="math notranslate nohighlight">\(\sigma^*\)</span>). Transitions to <span class="math notranslate nohighlight">\(\pi^*\)</span> states are typically low in energy and very intense, and thus easy to identify. Rydberg states are typically weak and converge to the ionization potential. Finally, transitions to <span class="math notranslate nohighlight">\(\sigma^*\)</span> states can be found above the ionization potential.</p>
-<p>The total spectrum region can be referred to as <strong>XAFS (X-ray absorption fine structure)</strong>. For the remainder of this tutorial we will focus on NEXAFS, for which good starting points for modeling with ADC and TDDFT can be found in <span id="id3">[<a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id107">ND18</a>, <a class="reference internal" href="refs.html#id16">WHWD15</a>]</span>.</p>
+<p>The total spectrum is referred to as the <strong>XAFS (X-ray absorption fine structure)</strong> region. For the remainder of this tutorial we will focus on NEXAFS, for which good starting points for modeling with ADC and TDDFT can be found in <span id="id4">[<a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id107">ND18</a>, <a class="reference internal" href="refs.html#id16">WHWD15</a>]</span>.</p>
 <div class="section" id="decoupling-from-the-valence-continuum">
 <span id="sec-xray-calc-cvs"></span><h3>Decoupling from the valence continuum<a class="headerlink" href="#decoupling-from-the-valence-continuum" title="Permalink to this headline">¶</a></h3>
 <p>A complication that arise when considering core excitations is the embedding of the core-excited states into the continuum of valence-ionized states. This means that the targetted core-excited states cannot easily be resolved with, <em>e.g.</em>, a Davidson approach, as a large number of valence-excited/-ionized states need to be converged first. A number of approaches have been developed to remove this issue, including:</p>
 <ul class="simple">
-<li><p>The core-valence separation (CVS) approximation <span id="id4">[<a class="reference internal" href="refs.html#id19">CDS80a</a>, <a class="reference internal" href="refs.html#id5">VFE+19</a>, <a class="reference internal" href="refs.html#id16">WHWD15</a>]</span></p></li>
-<li><p>Restricted energy window, which is largely a different flavour of CVS <span id="id5">[<a class="reference internal" href="refs.html#id8">LvKKG12</a>]</span></p></li>
-<li><p>Using the complex polarization propagator (CPP), where the response at arbitrary frequencies is directly probed <span id="id6">[<a class="reference internal" href="refs.html#id6">EkstromNCAAgren06</a>]</span></p></li>
-<li><p>Real-time propagation of the electronic structure <span id="id7">[<a class="reference internal" href="refs.html#id8">LvKKG12</a>]</span></p></li>
+<li><p>The core-valence separation (CVS) approximation <span id="id5">[<a class="reference internal" href="refs.html#id19">CDS80a</a>, <a class="reference internal" href="refs.html#id5">VFE+19</a>, <a class="reference internal" href="refs.html#id16">WHWD15</a>]</span></p></li>
+<li><p>Restricted energy window (which is largely a different flavour of CVS) <span id="id6">[<a class="reference internal" href="refs.html#id8">LvKKG12</a>]</span></p></li>
+<li><p>Using the complex polarization propagator (CPP), where the response at arbitrary frequencies is directly probed <span id="id7">[<a class="reference internal" href="refs.html#id6">EkstromNCAAgren06</a>]</span></p></li>
+<li><p>Real-time propagation of the electronic structure <span id="id8">[<a class="reference internal" href="refs.html#id8">LvKKG12</a>]</span></p></li>
 <li><p>Methods which construct explicit excited states</p></li>
 </ul>
-<p>The focus in this tutorial is the use of the CVS approximation and the CPP approach, with which interior eigenstates and response at arbitrary frequencies can be address:</p>
-<div class="figure align-default" id="cvs-adc">
-<img alt="../_images/cvs_adc.svg" src="../_images/cvs_adc.svg" /><p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Global spectrum of water, using the 6-311G basis set. Results obtained with ADC(1), CVS-ADC(1), ADC(2), CVS-ADC(2), and CPP-DFT. CPP-DFT results obtained using the B3LYP exchange-correlation functional and a large <span class="math notranslate nohighlight">\(\gamma\)</span> of 1 eV. ADC results shown as bar spectra.</span><a class="headerlink" href="#cvs-adc" title="Permalink to this image">¶</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Within a damped response framework and using real-time propagation there can be spurious mixing with valene-ionized states, which will results in unphysical mixing to a discretized continuum. This is briefly dfiscussed <a class="reference internal" href="xray_cons.html#sec-xray-cons-spur-val"><span class="std std-ref">here</span></a>.</p>
 </div>
-<p>Here we see the global spectrum of water, using a rather limited basis set. Even so, ADC(1) requires more than 50 states to resolved the core-excitation region (situated at about 535 eV for water), and for ADC(2) 50 states brings us only to about 50 eV. With the CVS approximation we directly target the core-excitation region, but it should be noted that this also introduces a small error. However, this error has been shown to be relatively small (provided a reasonable basis set) and stable for AD <span id="id8">[<a class="reference internal" href="refs.html#id108">HF20</a>]</span>, and for TDHF and TDDFT it is all but negligible. Using CPP-DFT, this error is avoided all together (although CPP-ADC has been noted to be hard to converge for core-excited state <span id="id9">[<a class="reference internal" href="refs.html#id37">RRH+21</a>]</span>, so here CVS-CPP-ADC might instead be used - thus including this small error).</p>
+<p>The focus in this tutorial is the use of the CVS approximation and the CPP approach, with which interior eigenstates and response at arbitrary frequencies can be address, as illustrated in <a class="reference internal" href="#global-xray"><span class="std std-numref">Fig. 5</span></a>:</p>
+<div class="figure align-default" id="global-xray">
+<img alt="../_images/cvs_adc.svg" src="../_images/cvs_adc.svg" /><p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Global spectrum of water, using the 6-311G basis set. Results obtained with ADC(1), CVS-ADC(1), ADC(2), CVS-ADC(2), and CPP-DFT. CPP-DFT results obtained using the B3LYP exchange-correlation functional and a large <span class="math notranslate nohighlight">\(\gamma\)</span> of 1 eV. ADC results shown as bar spectra.</span><a class="headerlink" href="#global-xray" title="Permalink to this image">¶</a></p>
+</div>
+<p>Here we see the global spectrum of water, using a rather limited basis set. Even so, ADC(1) requires more than 50 states to resolved the core-excitation region (situated at about 535 eV for water), and for ADC(2) 50 states brings us only to about 50 eV. With the CVS approximation we directly target the core-excitation region, but it should be noted that this also introduces a small error. However, this error has been shown to be relatively small (provided a reasonable basis set) and stable for AD <span id="id9">[<a class="reference internal" href="refs.html#id108">HF20</a>]</span>, and for TDHF and TDDFT it is all but negligible. Using CPP-DFT, this error is avoided all together (although CPP-ADC has been noted to be hard to converge for core-excited state <span id="id10">[<a class="reference internal" href="refs.html#id37">RRH+21</a>]</span>, so here CVS-CPP-ADC might instead be used - thus including this small error).</p>
 </div>
 <div class="section" id="spectra-from-cvs-adc-eigenstates">
 <h3>Spectra from CVS-ADC eigenstates<a class="headerlink" href="#spectra-from-cvs-adc-eigenstates" title="Permalink to this headline">¶</a></h3>
@@ -1064,35 +1069,37 @@ Total Energy: -75.9838703758 au
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     8        1.4139  149ms  [20.27035892 20.30081816 20.86977772 20.91121522 21.10647259 21.17210946]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16       0.05362  273ms  [19.72495578 19.80691954 20.50880994 20.51569977 20.52445847 20.72564031]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.4139  525ms  [20.27035892 20.30081816 20.86977772 20.91121522 21.10647259 21.17210946]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24      0.014469  333ms  [19.71673636 19.7970775  20.49577427 20.50503424 20.5080414  20.63850295]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16       0.05362  993ms  [19.72495578 19.80691954 20.50880994 20.51569977 20.52445847 20.72564031]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32      0.001267  336ms  [19.71639053 19.79671148 20.49373711 20.5048401  20.50629308 20.62964455]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24      0.014469   1.8s  [19.71673636 19.7970775  20.49577427 20.50503424 20.5080414  20.63850295]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40    0.00011958  397ms  [19.71637564 19.7966997  20.49353395 20.50482654 20.50617672 20.62883047]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32      0.001267   1.6s  [19.71639053 19.79671148 20.49373711 20.5048401  20.50629308 20.62964455]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40    0.00011958   1.5s  [19.71637564 19.7966997  20.49353395 20.50482654 20.50617672 20.62883047]
 === Restart ===
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    16    2.2907e-05  412ms  [19.71637513 19.79669899 20.4935131  20.5048246  20.50616999 20.6287565 ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    16    2.2907e-05   1.1s  [19.71637513 19.79669899 20.4935131  20.5048246  20.50616999 20.6287565 ]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    24    8.2765e-06  327ms  [19.7163751  19.7966989  20.49350792 20.50482377 20.50616868 20.62873489]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    24    8.2765e-06   1.1s  [19.7163751  19.7966989  20.49350792 20.50482377 20.50616868 20.62873489]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    32    3.7389e-06  377ms  [19.7163751  19.7966989  20.49350748 20.50482367 20.5061685  20.62872983]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    32    3.7389e-06  655ms  [19.7163751  19.7966989  20.49350748 20.50482367 20.5061685  20.62872983]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    40     5.189e-07  435ms  [19.7163751  19.7966989  20.49350726 20.50482366 20.50616845 20.62872813]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    40     5.189e-07  429ms  [19.7163751  19.7966989  20.49350726 20.50482366 20.50616845 20.62872813]
 === Converged ===
     Number of matrix applies:    72
-    Total solver time:             3s  95ms
+    Total solver time:             9s 909ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1170,9 +1177,9 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 <div class="section" id="spectra-from-cpp-dft">
 <h3>Spectra from CPP-DFT<a class="headerlink" href="#spectra-from-cpp-dft" title="Permalink to this headline">¶</a></h3>
-<p>With the complex polarization propagator (CPP), also called the damped linear response function, the absorption and dispersion spectrum can be evaluated at arbitrary energies <span id="id10">[<a class="reference internal" href="refs.html#id7">NBJO01</a>]</span>. With this, the X-ray absorption spectrum can then be directly calculated. For this, we need to decide on which energy/frequency region to use, which can be estimated by, <em>e.g.</em></p>
+<p>With the complex polarization propagator (CPP), also called the damped linear response function, the absorption and dispersion spectrum can be evaluated at arbitrary energies <span id="id11">[<a class="reference internal" href="refs.html#id7">NBJO01</a>]</span>. With this, the X-ray absorption spectrum can then be directly calculated. For this, we need to decide on which energy/frequency region to use, which can be estimated by, <em>e.g.</em></p>
 <ul class="simple">
-<li><p>Screen extended energy regions with low step length. This could potentially be done using a smaller basis set.</p></li>
+<li><p>Screen extended energy regions with large step size. This could potentially be done using a smaller basis set.</p></li>
 <li><p>With a method lacking relaxation: start the region a few eV below the IP from Koopmans’ theorem. This will not work for methods capable of including relaxation, where IP:s from <span class="math notranslate nohighlight">\(\Delta\)</span>SCF could instead be considered as a first rough estimate (noting that it will work better or worse for different levels of, e.g., ADC theory).</p></li>
 </ul>
 <p>Choosing an energy region of 514-525 eV, using a step length of 0.1 eV and a damping factor of 0.3 eV, we calculate the CPP-DFT (with the B3LYP functional) water spectrum as:</p>
@@ -1214,7 +1221,7 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make figure with panels of 3:1 width</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> 
 
 <span class="c1"># Raw results for the full region</span>
@@ -1253,7 +1260,7 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Exchange above results to aug-cc-pCVTZ/cc-pVTZ.</p>
+<p>Change above results to aug-cc-pCVTZ/cc-pVTZ.</p>
 </div>
 <p>As can be seen, the absolute excitation energies are significantly of, with a shift of 14.5 eV required to yield an approximate alignment to experiment. Part of this shift is due to lack of relativistic effects (~0.37 eV), and a small discrepancy can be expected due to the use of a limited basis set, but the main part of the error is due to two different effects:</p>
 <ol class="simple">
@@ -1263,8 +1270,8 @@ Niter n_ss  max_residual  time  Ritz values
 <p>For B3LYP the final effect of these two errors results in too low transition energies, meaning that the SIE dominates. By changing the amount of HF exchange this balance will shift and the error eventually becomes positive.</p>
 <p>Nevertheless, the obtained CPP-DFT spectrum is in reasonable agreement with experiment once it has been shifted.</p>
 </div>
-<div class="section" id="id11">
-<h3>Other approaches<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>Other approaches<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>Alternative methods of considering XAS include, among others:</p>
 <ul class="simple">
 <li><p>STEX</p></li>
@@ -1284,16 +1291,16 @@ Niter n_ss  max_residual  time  Ritz values
 <p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Fluorescence and Auger electron yields as a function of atomic number for <em>K</em>-edge core-holes. Figure taken from wikipedia.org, as <a class="reference external" href="https://commons.wikimedia.org/wiki/File:Auger_xray_wiki_in_png_format.png">published</a> under CC BY-SA 4.0.</span><a class="headerlink" href="#auger-vs-fluorescent" title="Permalink to this image">¶</a></p>
 </div>
 <p>Auger decay thus dominates for light elements, which has impact on both our ability of obtaining well-resolved spectra for these elements, as well as the impact of X-ray damage on biological matter.</p>
-<p>In non-resonant XES we measure the fluorescent decay of core-ionized states, through which we probe the (element-specific) nature of the local chemical environment. For light elements the valence space is probed directly, but for heavier elements we obtain a number of different decay channels from the valence region and the outer core region. These lines vary considerably in energy, intensity, and information content <span id="id12">[<a class="reference internal" href="refs.html#id9">KLP+16</a>]</span>:</p>
+<p>In non-resonant XES we measure the fluorescent decay of core-ionized states, through which we probe the (element-specific) nature of the local chemical environment. For light elements the valence space is probed directly, but for heavier elements we obtain a number of different decay channels from the valence region and the outer core region. These lines vary considerably in energy, intensity, and information content <span id="id13">[<a class="reference internal" href="refs.html#id9">KLP+16</a>]</span>:</p>
 <ol class="simple">
 <li><p>The <span class="math notranslate nohighlight">\(2p \rightarrow 1s\)</span> (<span class="math notranslate nohighlight">\(K\alpha_1\)</span> and <span class="math notranslate nohighlight">\(K\alpha_2\)</span>) is the most intense (due to the large overlap) and of lowest energy, and is relatively insensitive to the valence region</p></li>
 <li><p>The <span class="math notranslate nohighlight">\(3p \rightarrow 1s\)</span> (<span class="math notranslate nohighlight">\(K\beta ' \)</span> and <span class="math notranslate nohighlight">\(K\beta_{1,3}\)</span>) is about an order of magnitude weaker and of higher energy, but more sensitive to the environment</p></li>
 <li><p>Transitions from the ligand MO:s (<span class="math notranslate nohighlight">\(K\beta '' \)</span> and <span class="math notranslate nohighlight">\(K\beta_{2,5}\)</span>), or valence-to-core (VtC), is the weakest, high-energy features which is most sensitive to the local environment</p></li>
 </ol>
-<p>This tutorial focus on spectra of light elements, as modelled by (TD)DFT and ADC. A good starting point for learning about such modeling can be found in <span id="id13">[<a class="reference internal" href="refs.html#id13">Bes21</a>, <a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id12">FD19</a>]</span>.</p>
+<p>This tutorial focus on spectra of light elements, as modelled by (TD)DFT and ADC. A good starting point for learning about such modeling can be found in <span id="id14">[<a class="reference internal" href="refs.html#id13">Bes21</a>, <a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id12">FD19</a>]</span>.</p>
 <div class="section" id="spectra-from-adc">
 <h3>Spectra from ADC<a class="headerlink" href="#spectra-from-adc" title="Permalink to this headline">¶</a></h3>
-<p>One approach for considering X-ray emission spectra is to converge the core-hole state and use this core-ionized system as the reference state for a normal excited state calculation <span id="id14">[<a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id12">FD19</a>]</span>. The core-decay transitions are then the first negative eigenstates of the systemn, such that a standard Davidson calculation can be run on top.</p>
+<p>One approach for considering X-ray emission spectra is to converge the core-hole state and use this core-ionized system as the reference state for a normal excited state calculation <span id="id15">[<a class="reference internal" href="refs.html#id17">BA10</a>, <a class="reference internal" href="refs.html#id12">FD19</a>]</span>. The core-decay transitions are then the first negative eigenstates of the system, such that a standard Davidson calculation can be run on top.</p>
 <p>Considering water with ADC(2), the oxygen X-ray emission spectrum is calculated as:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -1339,23 +1346,25 @@ Niter n_ss  max_residual  time  Ritz values
 Niter n_ss  max_residual  time  Ritz values
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8       0.77768   1.6s  [-19.29082067 -19.19940205 -18.96181907 -18.3637012 ]
-  2    16     0.0010764  159ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8       0.77768   1.7s  [-19.29082067 -19.19940205 -18.96181907 -18.3637012 ]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    4.4301e-07  182ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16     0.0010764  394ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    4.4301e-07  295ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             1s 995ms
+    Total solver time:             2s 449ms
 </pre></div>
 </div>
 </div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There will be convergence issues if including transitions from very different types, <em>e.g.</em> resolving transitions into the core and out to the unoccupied valence region simultaneously. As such, the number of resolved states should remain limited.</p>
+<p>There will be convergence issues if including transitions from very different types, <em>e.g.</em> resolving transitions into the core and out to the unoccupied valence region simultaneously. As such, the number of resolved states should remain limited to the number of potential decay channels.</p>
 </div>
-<p>The resuls can be printed as a table, and convoluted and plotted using built-in functionalities or a custom broadening. Note that the eigenvalues are negative, and a sign change is appropriate when constructing the spectra.</p>
+<p>The resuls can be printed as a table, and convoluted and plotted using built-in functionalities or a custom broadening. Note that the eigenvalues are negative, and a sign change is thus appropriate when constructing the spectra.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print information on eigenstates</span>
@@ -1390,11 +1399,11 @@ Niter n_ss  max_residual  time  Ritz values
 <img alt="../_images/xray_calc_27_1.png" src="../_images/xray_calc_27_1.png" />
 </div>
 </div>
-<p>Using cc-pCVTZ/cc-pVTZ and comparing to experiment <span id="id15">[<a class="reference internal" href="refs.html#id14">WBM+12</a>]</span>:</p>
+<p>Using cc-pCVTZ/cc-pVTZ and comparing to experiment <span id="id16">[<a class="reference internal" href="refs.html#id14">WBM+12</a>]</span>:</p>
 <div class="figure align-default" id="adc-water-xes">
 <img alt="../_images/adc_water_xes.svg" src="../_images/adc_water_xes.svg" /><p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">ADC(2) water X-ray emission spectrum, as compared to experiment. Theoretical spectra shifted by 0.37 eV (to account for relativistic effects) and broadened by 0.3 eV.</span><a class="headerlink" href="#adc-water-xes" title="Permalink to this image">¶</a></p>
 </div>
-<p>While the broadening between the different lines is noticably different, it is clear that the energy spacing and integrated intensities of the features are in good agreement with experiment. Note that the theoretical spectrum is obtained at the ADC(2) level of theory, which has been to be in better agreement than ADC(2)-x and ADC(3/2) for XES <span id="id16">[<a class="reference internal" href="refs.html#id12">FD19</a>]</span>.</p>
+<p>While the broadening between the different lines is noticably different, it is clear that the energy spacing and integrated intensities of the features are in good agreement with experiment. Note that the theoretical spectrum is obtained at the ADC(2) level of theory, which has been to be in better agreement than ADC(2)-x and ADC(3/2) for XES <span id="id17">[<a class="reference internal" href="refs.html#id12">FD19</a>]</span>.</p>
 </div>
 <div class="section" id="spectra-from-tddft">
 <h3>Spectra from TDDFT<a class="headerlink" href="#spectra-from-tddft" title="Permalink to this headline">¶</a></h3>
@@ -1406,17 +1415,17 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="section" id="spectra-from-ground-state-mo-s">
 <h3>Spectra from ground state MO:s<a class="headerlink" href="#spectra-from-ground-state-mo-s" title="Permalink to this headline">¶</a></h3>
 <p>While we have previously seen that Koopmans’ theorem is in significant disagreement with experimental ionization potentials (due to lack of relaxation), it has been noted that the <em>relative</em> position of the (valence) MO energies can still be quite reasonable. As such, a computationally very simple approach for modeling X-ray emission spectra has been used, in which transition energies are estimated from</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c95d9a37-192f-432b-b520-d945e522b444">
-<span class="eqno">(3)<a class="headerlink" href="#equation-c95d9a37-192f-432b-b520-d945e522b444" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-6d536191-3f88-42ff-b710-e73b3f1c7256">
+<span class="eqno">(3)<a class="headerlink" href="#equation-6d536191-3f88-42ff-b710-e73b3f1c7256" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \Delta E = \epsilon_v - \epsilon_c
 \end{equation}\]</div>
 <p><em>i.e.</em> the difference in ground state MO energies. The intensities are taken to be proportional to the dipole moment:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1a69b849-25d4-4c62-a57a-33d7b7e4c5f0">
-<span class="eqno">(4)<a class="headerlink" href="#equation-1a69b849-25d4-4c62-a57a-33d7b7e4c5f0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c3024242-5e53-48cb-8fe2-0f00edecb561">
+<span class="eqno">(4)<a class="headerlink" href="#equation-c3024242-5e53-48cb-8fe2-0f00edecb561" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| ^2
 \end{equation}\]</div>
 <p>This method is very attractive in its simplicity, requiring only a single ground state calculation and the construction of some transition dipole moments for a full spectrum calculation. However, the absolute energies are significantly off, and any differences in relaxation between the different channels will not be included.</p>
-<p>Nevertheless, this approach has been noted to yield good (relative) agreement to experimental measurements <span id="id17">[<a class="reference internal" href="refs.html#id13">Bes21</a>]</span>, and it is capable of considering even massive molecular systems.</p>
+<p>Nevertheless, this approach has been noted to yield good (relative) agreement to experimental measurements <span id="id18">[<a class="reference internal" href="refs.html#id13">Bes21</a>]</span>, and it is capable of considering even massive molecular systems.</p>
 <p>The calculation of an emission spectra requires the calculation of the ground state wave function and all relevant transition dipole moments:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1493,22 +1502,22 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy   Osc. str.   x-component   y-component   z-component
 492.969   0.00022      0.00000      -0.00000      -0.01478
-506.258   0.00238     -0.04878      -0.00000      -0.00000
+506.258   0.00238     -0.04878      -0.00000       0.00000
 510.953   0.00255      0.00000      -0.00000       0.05050
-512.708   0.00342      0.00000      -0.05848       0.00000
+512.708   0.00342     -0.00000       0.05848      -0.00000
 </pre></div>
 </div>
 <img alt="../_images/xray_calc_32_1.png" src="../_images/xray_calc_32_1.png" />
 </div>
 </div>
-<p>Using a cc-pCVTZ/cc-pVTZ basis set and comparing to experiment <span id="id18">[<a class="reference internal" href="refs.html#id14">WBM+12</a>]</span>:</p>
+<p>Using a cc-pCVTZ/cc-pVTZ basis set and comparing to experiment <span id="id19">[<a class="reference internal" href="refs.html#id14">WBM+12</a>]</span>:</p>
 <div class="figure align-default" id="overlap-water-xes">
 <img alt="../_images/overlap_water_xes.svg" src="../_images/overlap_water_xes.svg" /><p class="caption"><span class="caption-number">Fig. 10 </span><span class="caption-text">DFT (B3LYP) overlap X-ray emission spectrum of water, as compared to experiment. Theoretical spectra shifted to approximately align the high-energy feature, and broadened by 0.3 eV.</span><a class="headerlink" href="#overlap-water-xes" title="Permalink to this image">¶</a></p>
 </div>
 <p>The resulting spectrum is very much off in energy, but the relative agreement to experiment is quite impressive.</p>
 </div>
-<div class="section" id="id19">
-<h3>Other approaches<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id20">
+<h3>Other approaches<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <p>Alternative methods of considering XES include, among others:</p>
 <ul class="simple">
 <li><p>CC</p></li>
@@ -1521,7 +1530,7 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 <p>We here focus on the electronic part of the RIXS plane. Can also go close to the Rayleigh line, which probe local vibrational modes.</p>
 <div class="section" id="two-step-approach-with-adc">
 <h3>Two-step approach with ADC<a class="headerlink" href="#two-step-approach-with-adc" title="Permalink to this headline">¶</a></h3>
-<p>An approximate treatment of the RIXS plane can be achieved by considering it as a two-step process <span id="id20">[<a class="reference internal" href="refs.html#id15">FPB18</a>]</span>, with:</p>
+<p>An approximate treatment of the RIXS plane can be achieved by considering it as a two-step process <span id="id21">[<a class="reference internal" href="refs.html#id15">FPB18</a>]</span>, with:</p>
 <ol class="simple">
 <li><p>A core-excitation as modeled like a normal X-ray absorption spectrum</p></li>
 <li><p>A core-decay process from the core-hole system with an electron put in each relevant final state probed in (1), modeled as a (non-resonant) X-ray emission spectrum</p></li>
@@ -1569,7 +1578,7 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827211
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.983870382721
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/thomas/pkg/adcc/adcc/backends/__init__.py:48: UserWarning: Could not check host program psi4 minimal version, since __version__ tag not found. Proceeding anyway.
@@ -1580,16 +1589,16 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 Niter n_ss  max_residual  time  Ritz values
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.4139  417ms  [20.27035942 20.3008189  20.8697782  20.9112158  21.10647333]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.4139  512ms  [20.27035942 20.3008189  20.8697782  20.9112158  21.10647333]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16     0.0044639  221ms  [19.78378157 19.8674153  20.57300565 20.59644701 20.60924326]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16     0.0044639  393ms  [19.78378157 19.8674153  20.57300565 20.59644701 20.60924326]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    1.5704e-07  328ms  [19.78210828 19.86584957 20.57088813 20.59390382 20.6091548 ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    1.5704e-07  697ms  [19.78210828 19.86584957 20.57088813 20.59390382 20.6091548 ]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:           988.414ms
+    Total solver time:             1s 630ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------------------------------------------------------+
@@ -1614,14 +1623,16 @@ converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3398176e-12  2S+1 = 1
 Niter n_ss  max_residual  time  Ritz values
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.1162   4.1s  [-19.30598703 -19.24639115 -19.04163474 -18.91299623]
-  2    16     0.0057426  174ms  [-19.68670064 -19.40569989 -19.31526188 -19.13745803]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.1162   4.7s  [-19.30598703 -19.24639115 -19.04163474 -18.91299623]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    3.5025e-07  239ms  [-19.68756689 -19.40573191 -19.31550925 -19.13752409]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16     0.0057426  734ms  [-19.68670064 -19.40569989 -19.31526188 -19.13745803]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    3.5025e-07  225ms  [-19.68756689 -19.40573191 -19.31550925 -19.13752409]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             4s 542ms
+    Total solver time:             5s 693ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.1667062608725  &lt;S^2&gt; = 1.0169051  2S+1 = 2.2511376
@@ -1631,14 +1642,14 @@ Niter n_ss  max_residual  time  Ritz values
 Niter n_ss  max_residual  time  Ritz values
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.3615   4.2s  [-19.41097273 -19.23524202 -19.11652168 -18.75293561]
-  2    16     0.0048587  182ms  [-19.76425195 -19.39654323 -19.30096652 -19.13251275]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.3615   3.6s  [-19.41097273 -19.23524202 -19.11652168 -18.75293561]
+  2    16     0.0048587  136ms  [-19.76425195 -19.39654323 -19.30096652 -19.13251275]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    2.9966e-07  215ms  [-19.7649555  -19.39657484 -19.30100967 -19.13353542]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24    2.9966e-07  195ms  [-19.7649555  -19.39657484 -19.30100967 -19.13353542]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             4s 676ms
+    Total solver time:             3s 961ms
 </pre></div>
 </div>
 </div>
@@ -1724,8 +1735,8 @@ Niter n_ss  max_residual  time  Ritz values
 <p>Discuss briefly - could add illustration.</p>
 </div>
 </div>
-<div class="section" id="id21">
-<h3>Other approaches<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id22">
+<h3>Other approaches<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
 <p>Alternative methods of considering RIXS include, among others:</p>
 <ul class="simple">
 <li><p>…</p></li>
