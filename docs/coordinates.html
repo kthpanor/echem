@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,14 +37,11 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -52,10 +49,12 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Gradients and Hessians" href="gradhess.html" />
+    <link rel="next" title="Gradients and Hessians" href="gradients.html" />
     <link rel="prev" title="General aspects" href="pes-general.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -226,6 +225,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="hartree-fock.html">
+     Hartree–Fock theory
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="ci.html">
      Configuration interaction
     </a>
@@ -282,7 +286,7 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="gradhess.html">
+    <a class="reference internal" href="gradients.html">
      Gradients and Hessians
     </a>
    </li>
@@ -531,21 +535,21 @@ In the next section, we will see how these energy derivatives are used to perfor
 </ul>
 <div class="section" id="cartesian">
 <h2>Cartesian<a class="headerlink" href="#cartesian" title="Permalink to this headline">¶</a></h2>
-<p>There are multiple ways to define relative atomic positions. The simplest way is to use a Cartesian reference system and define each atomic position in terms of its <span class="math notranslate nohighlight">\((x,y,z)\)</span> coordinates. In this coordinate system it is very easy to determine the total energy and energy gradient, but this choice is not favourable for geometry optimization because the energy depends non-linearly on atomic Cartesian coordinates and these coordinates are strongly coupled to each other <span id="id1">[<a class="reference internal" href="refs.html#id118">Sch11</a>, <a class="reference internal" href="refs.html#id117">WS16</a>]</span>.</p>
+<p>There are multiple ways to define relative atomic positions. The simplest way is to use a Cartesian reference system and define each atomic position in terms of its <span class="math notranslate nohighlight">\((x,y,z)\)</span> coordinates. In this coordinate system it is very easy to determine the total energy and energy gradient, but this choice is not favourable for geometry optimization because the energy depends non-linearly on atomic Cartesian coordinates and these coordinates are strongly coupled to each other <span id="id1">[<a class="reference internal" href="refs.html#id120">Sch11</a>, <a class="reference internal" href="refs.html#id119">WS16</a>]</span>.</p>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/coordinates.svg"><img alt="../_images/coordinates.svg" height="245" src="../_images/coordinates.svg" width="510" /></a>
 </div>
 <p>A more favourable choice is to work with internal coordinates, such as bond lengths, valence angles and dihedrals (one example is the Z-matrix). Using internal coordinates poses, however, two problems: (1) the choice of coordinates is not unique (they are redundant) and (2) internal coordinates have to be transformed back into Cartesian coordinates to compute the energy and gradient. Several ways of handling these problems are discussed below.</p>
 <div class="section" id="redundant-coordinates">
 <h3>Redundant coordinates<a class="headerlink" href="#redundant-coordinates" title="Permalink to this headline">¶</a></h3>
-<p>One common choice of coordinates in molecular structure optimization are the Redundant internal coordinates (RIC) <span id="id2">[<a class="reference internal" href="refs.html#id119">PF92</a>]</span>.</p>
-<p>Given the set of internal coordinates <span class="math notranslate nohighlight">\(\mathbf{q}=(q_1,q_2,...,q_{n_q})\)</span>, we would like to relate displacements performed in these coordinates to displacements in the <span class="math notranslate nohighlight">\(n_x=3N\)</span> Cartesian coordinates <span class="math notranslate nohighlight">\(\mathbf{x}=(x_1,x_2,...,x_{n_x})\)</span> (to simplify, we denoted all Cartesian coordinates by <span class="math notranslate nohighlight">\(x\)</span>). For this purpose, we define a rectangular matrix B (called Wilson B-matrix)  <span id="id3">[<a class="reference internal" href="refs.html#id122">Nee09</a>]</span>:</p>
+<p>One common choice of coordinates in molecular structure optimization are the Redundant internal coordinates (RIC) <span id="id2">[<a class="reference internal" href="refs.html#id121">PF92</a>]</span>.</p>
+<p>Given the set of internal coordinates <span class="math notranslate nohighlight">\(\mathbf{q}=(q_1,q_2,...,q_{n_q})\)</span>, we would like to relate displacements performed in these coordinates to displacements in the <span class="math notranslate nohighlight">\(n_x=3N\)</span> Cartesian coordinates <span class="math notranslate nohighlight">\(\mathbf{x}=(x_1,x_2,...,x_{n_x})\)</span> (to simplify, we denoted all Cartesian coordinates by <span class="math notranslate nohighlight">\(x\)</span>). For this purpose, we define a rectangular matrix B (called Wilson B-matrix)  <span id="id3">[<a class="reference internal" href="refs.html#id124">Nee09</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-b-ij">
 <span class="eqno">(42)<a class="headerlink" href="#equation-eq-b-ij" title="Permalink to this equation">¶</a></span>\[    B_{ij} = \frac{\partial q_i}{\partial x_j}\,.\]</div>
 <p>To determine the changes in <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> as a result of changes performed in <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>, we basically need to obtain the inverse relation <span class="math notranslate nohighlight">\(\partial x_j/\partial q_i\)</span>. However, because <span class="math notranslate nohighlight">\(B\)</span> is rectangular and cannot be directly inverted, we first have to construct a square matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-g">
 <span class="eqno">(43)<a class="headerlink" href="#equation-eq-g" title="Permalink to this equation">¶</a></span>\[    \mathbf{G} = \mathbf{B}\mathbf{B}^\mathrm{T} \,.\]</div>
-<p>Additionally, the internal coordinates are redundant, meaning that the rows of <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> are linearly dependent. We therefore have to set up and solve an eigenvalue equation that will allow us to separate out the redundancies <span id="id4">[<a class="reference internal" href="refs.html#id119">PF92</a>]</span>:</p>
+<p>Additionally, the internal coordinates are redundant, meaning that the rows of <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> are linearly dependent. We therefore have to set up and solve an eigenvalue equation that will allow us to separate out the redundancies <span id="id4">[<a class="reference internal" href="refs.html#id121">PF92</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-g-eigenval">
 <span class="eqno">(44)<a class="headerlink" href="#equation-eq-g-eigenval" title="Permalink to this equation">¶</a></span>\[\begin{split}    \mathbf{G} 
     \begin{pmatrix}
@@ -575,10 +579,10 @@ In the next section, we will see how these energy derivatives are used to perfor
     \mathbf{U}^\mathrm{T}\\ 
     \mathbf{R}^\mathrm{T}
     \end{pmatrix}\, , \end{split}\]</div>
-<p>which, in turn, is used to determine the transformation between Cartesian and internal coordinates displacements <span id="id5">[<a class="reference internal" href="refs.html#id117">WS16</a>]</span>:</p>
+<p>which, in turn, is used to determine the transformation between Cartesian and internal coordinates displacements <span id="id5">[<a class="reference internal" href="refs.html#id119">WS16</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-displacement-q-to-x">
 <span class="eqno">(47)<a class="headerlink" href="#equation-eq-displacement-q-to-x" title="Permalink to this equation">¶</a></span>\[    \Delta\mathbf{x} = \mathbf{B}^\mathrm{T}\mathbf{G}^{-}\Delta\mathbf{q}\, . \]</div>
-<p>In a similar way, the gradient can be transformed from Cartesian to internal coordinates <span id="id6">[<a class="reference internal" href="refs.html#id122">Nee09</a>]</span>:</p>
+<p>In a similar way, the gradient can be transformed from Cartesian to internal coordinates <span id="id6">[<a class="reference internal" href="refs.html#id124">Nee09</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-gradient-x-to-q">
 <span class="eqno">(48)<a class="headerlink" href="#equation-eq-gradient-x-to-q" title="Permalink to this equation">¶</a></span>\[    \nabla E_q = \mathbf{G}^{-}\mathbf{B}\nabla E_x \, , \]</div>
 <p>where we have denoted the gradient in Cartesian coordinates by <span class="math notranslate nohighlight">\(\nabla E_x\)</span> and the gradient in internal coordinates by <span class="math notranslate nohighlight">\(\nabla E_q\)</span>.</p>
@@ -587,16 +591,16 @@ In the next section, we will see how these energy derivatives are used to perfor
 </div>
 <div class="section" id="delocalized-internal-coordinates">
 <h2>Delocalized internal coordinates<a class="headerlink" href="#delocalized-internal-coordinates" title="Permalink to this headline">¶</a></h2>
-<p>Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>. This is an expensive step, since the matrices involved in Eq. <a class="reference internal" href="#equation-eq-generalized-inverse">(46)</a> are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. <a class="reference internal" href="#equation-eq-non-redundant">(45)</a>. These new coordinates are actually linear combinations of primitives, and therefore are called “delocalized” internal coordinates (DLC) <span id="id7">[<a class="reference internal" href="refs.html#id120">BKP99</a>]</span>.</p>
-<p>Within this coordinate system, we define a new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix which now has a significantly smaller dimension (3<span class="math notranslate nohighlight">\(N\)</span>-6) compared to the <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix in primitive internal coordinates. The new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix is then used to reformulate the displacement and gradient transformations between the Cartesian and delocalized internal coordinate systems. For a detailed derivation of these transformations see Ref. <span id="id8">[<a class="reference internal" href="refs.html#id120">BKP99</a>]</span>.</p>
+<p>Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>. This is an expensive step, since the matrices involved in Eq. <a class="reference internal" href="#equation-eq-generalized-inverse">(46)</a> are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. <a class="reference internal" href="#equation-eq-non-redundant">(45)</a>. These new coordinates are actually linear combinations of primitives, and therefore are called “delocalized” internal coordinates (DLC) <span id="id7">[<a class="reference internal" href="refs.html#id122">BKP99</a>]</span>.</p>
+<p>Within this coordinate system, we define a new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix which now has a significantly smaller dimension (3<span class="math notranslate nohighlight">\(N\)</span>-6) compared to the <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix in primitive internal coordinates. The new <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix is then used to reformulate the displacement and gradient transformations between the Cartesian and delocalized internal coordinate systems. For a detailed derivation of these transformations see Ref. <span id="id8">[<a class="reference internal" href="refs.html#id122">BKP99</a>]</span>.</p>
 <div class="section" id="hybrid-delocalized-internal-coordinates">
 <h3>Hybrid delocalized internal coordinates<a class="headerlink" href="#hybrid-delocalized-internal-coordinates" title="Permalink to this headline">¶</a></h3>
-<p>The situation becomes a bit more complicated when the system we would like to optimize is composed of two ore more individual molecules. In this case, fictitious intermolecular bonds, angles, and dihedrals have to be included to define the relative positions between the separate components of the multi-molecular system <span id="id9">[<a class="reference internal" href="refs.html#id121">BTT00</a>, <a class="reference internal" href="refs.html#id117">WS16</a>]</span>. In an analogous way as for single molecules, hybrid delocalized internal coordinates (HDLC) can be obtained by including the intermolecular primitives in the transformation defined by Eq. <a class="reference internal" href="#equation-eq-non-redundant">(45)</a>. In this approach, the intra- and intermolecular degrees of freedom become mixed, i.e., a displacement in one intermolecular primitive will affects both the intramolecular and intermolecular structures <span id="id10">[<a class="reference internal" href="refs.html#id117">WS16</a>]</span>.</p>
+<p>The situation becomes a bit more complicated when the system we would like to optimize is composed of two ore more individual molecules. In this case, fictitious intermolecular bonds, angles, and dihedrals have to be included to define the relative positions between the separate components of the multi-molecular system <span id="id9">[<a class="reference internal" href="refs.html#id123">BTT00</a>, <a class="reference internal" href="refs.html#id119">WS16</a>]</span>. In an analogous way as for single molecules, hybrid delocalized internal coordinates (HDLC) can be obtained by including the intermolecular primitives in the transformation defined by Eq. <a class="reference internal" href="#equation-eq-non-redundant">(45)</a>. In this approach, the intra- and intermolecular degrees of freedom become mixed, i.e., a displacement in one intermolecular primitive will affects both the intramolecular and intermolecular structures <span id="id10">[<a class="reference internal" href="refs.html#id119">WS16</a>]</span>.</p>
 </div>
 </div>
 <div class="section" id="tranlation-rotaion-internal-coordinates">
 <h2>Tranlation–rotaion internal coordinates<a class="headerlink" href="#tranlation-rotaion-internal-coordinates" title="Permalink to this headline">¶</a></h2>
-<p>Another option is to treat the intra- and intermolecular coordinates separately, by introducing translation and rotation coordinates into the set of internal primitives. The resulting choice of coordinates are known as translation–rotation internal coordinates (TRIC) <span id="id11">[<a class="reference internal" href="refs.html#id117">WS16</a>]</span>. What this actually means is that, instead of adding the full set of Cartesian coordinates in the construction of primitive internal coordinates (HDLC), only six new internal coordinates are used for each molecule to describe its translation and rotation, essentially constraining the intermolecular orientations. This reduces the computational cost and represents a more intuitive way to define the relative orientation between molecules <span id="id12">[<a class="reference internal" href="refs.html#id117">WS16</a>]</span>.</p>
+<p>Another option is to treat the intra- and intermolecular coordinates separately, by introducing translation and rotation coordinates into the set of internal primitives. The resulting choice of coordinates are known as translation–rotation internal coordinates (TRIC) <span id="id11">[<a class="reference internal" href="refs.html#id119">WS16</a>]</span>. What this actually means is that, instead of adding the full set of Cartesian coordinates in the construction of primitive internal coordinates (HDLC), only six new internal coordinates are used for each molecule to describe its translation and rotation, essentially constraining the intermolecular orientations. This reduces the computational cost and represents a more intuitive way to define the relative orientation between molecules <span id="id12">[<a class="reference internal" href="refs.html#id119">WS16</a>]</span>.</p>
 </div>
 </div>
 
@@ -626,7 +630,7 @@ In the next section, we will see how these energy derivatives are used to perfor
         <div class='prev-next-bottom'>
             
     <a class='left-prev' id="prev-link" href="pes-general.html" title="previous page">General aspects</a>
-    <a class='right-next' id="next-link" href="gradhess.html" title="next page">Gradients and Hessians</a>
+    <a class='right-next' id="next-link" href="gradients.html" title="next page">Gradients and Hessians</a>
 
         </div>
         
