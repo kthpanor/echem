@@ -1,4 +1,4 @@
-# Gradients and Hessians
+# Gradients
 To add: general aspects about gradients and Hessians, numerical vs. analytical, related properties.
 
 ## Analytical Gradients
@@ -197,12 +197,12 @@ Finally, the derivative of the total energy is obtained by adding the trivial co
 To be added...
 
 #### MP2
-In the case of M{\o}ller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
+In the case of Møller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
 ```{math}
 :label: eq:energy_functional_MP
 \frac{dE}{d\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{d\mathbf{C}}{d\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{d\mathbf{T}}{d\xi} \, .
 ```
-The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the t-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let's illustrate the procedure for the second order M{\o}ller--Plesset theory, MP2. At this level of theory, the total energy functional is written as:
+The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the t-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let's illustrate the procedure for the second order Møller--Plesset theory, MP2. At this level of theory, the total energy functional is written as:
 ```{math}
 :label: eq:MP2_energy_fct
 E_0=E_\mathrm{HF}+E_\mathrm{MP2}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}-\frac{1}{4}\sum_{i,j,a,b}\braket{ij||ab}t_{ijab}, \label{eq:MP2_energy_fct}
@@ -416,6 +416,3 @@ Using the density matrices and Lagrange multipliers, the ADC(1) analytical gradi
 %%%%TO ADD: note about dipole moment, relaxed (lambda) and unrelaxed (gamma) one particle density matrices.
 %%%
 
-## Hessians
-
-To add: HF analytical Hessian
