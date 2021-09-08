@@ -197,7 +197,7 @@ Finally, the derivative of the total energy is obtained by adding the trivial co
 To be added...
 
 #### MP2
-In the case of Møller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
+In the case of M{\o}ller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
 ```{math}
 :label: eq:energy_functional_MP
 \frac{dE}{d\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{d\mathbf{C}}{d\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{d\mathbf{T}}{d\xi} \, .
