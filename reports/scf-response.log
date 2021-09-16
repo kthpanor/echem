@@ -1,47 +1,45 @@
 Traceback (most recent call last):
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
     executenb(
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 1112, in execute
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/client.py", line 1107, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/util.py", line 74, in wrapped
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/util.py", line 74, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/util.py", line 53, in just_run
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/util.py", line 53, in just_run
     return loop.run_until_complete(coro)
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
     return future.result()
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 553, in async_execute
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/client.py", line 553, in async_execute
     await self.async_execute_cell(
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 857, in async_execute_cell
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/client.py", line 852, in async_execute_cell
     self._check_raise_for_error(cell, exec_reply)
-  File "/opt/miniconda3/envs/vlxr02/lib/python3.9/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+  File "/opt/anaconda3/envs/vlxenv/lib/python3.8/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-lrs_drv = vlx.LinearResponseSolver(ostream=silent_ostream)
-rsp_settings = {'frequencies': [0.0656]}
-method_settings = {} # Hartree-Fock is default
-lrs_drv.update_settings(rsp_settings, method_settings)
+eigs, X = np.linalg.eig(np.matmul(np.linalg.inv(S2), E2))
+print(eigs)
 
-lrs_out = lrs_drv.compute(molecule, basis, scf_drv.scf_tensors)
+# the second smallest positive eigenvalue is the sigma-pi* transition
+eigs[np.argmin(np.where(eigs>10, eigs, 999))] = 999
+pos = np.argmin(np.where(eigs>10, eigs, 999))
 
-alpha_xx = -lrs_out['response_functions'][('x', 'x', 0.0656)]
-alpha_yy = -lrs_out['response_functions'][('y', 'y', 0.0656)] 
-alpha_zz = -lrs_out['response_functions'][('z', 'z', 0.0656)]
+Xf = X[:,pos]
+Xf =  Xf / np.sqrt(np.matmul(Xf.T,np.matmul(S2,Xf)))
 
-print(f"alpha_xx(w=0.0656): {alpha_xx : .6f}")
-print(f"alpha_yy(w=0.0656): {alpha_yy : .6f}")
-print(f"alpha_zz(w=0.0656): {alpha_zz : .6f}")
+print('Eigenvector position:', pos)
+print(f'sigma_u - pi* transition energy: {eigs[pos] : .4f} a.u. (or {eigs[pos] * au_to_ev : .1f} eV)')
+print(f'Xf norm under metric S[2] = {np.matmul(Xf.T,np.matmul(S2,Xf)) : .4f}')
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/var/folders/ky/5h8mb6gs32nbvf3w8cyqwrhm0000gn/T/ipykernel_72498/1069276001.py[0m in [0;36m<module>[0;34m[0m
-[0;32m----> 1[0;31m [0mlrs_drv[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mLinearResponseSolver[0m[0;34m([0m[0mostream[0m[0;34m=[0m[0msilent_ostream[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      2[0m [0mrsp_settings[0m [0;34m=[0m [0;34m{[0m[0;34m'frequencies'[0m[0;34m:[0m [0;34m[[0m[0;36m0.0656[0m[0;34m][0m[0;34m}[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      3[0m [0mmethod_settings[0m [0;34m=[0m [0;34m{[0m[0;34m}[0m [0;31m# Hartree-Fock is default[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m [0mlrs_drv[0m[0;34m.[0m[0mupdate_settings[0m[0;34m([0m[0mrsp_settings[0m[0;34m,[0m [0mmethod_settings[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      5[0m [0;34m[0m[0m
+[0;32m<ipython-input-15-7c253f92e8ee>[0m in [0;36m<module>[0;34m[0m
+[1;32m     10[0m [0;34m[0m[0m
+[1;32m     11[0m [0mprint[0m[0;34m([0m[0;34m'Eigenvector position:'[0m[0;34m,[0m [0mpos[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 12[0;31m [0mprint[0m[0;34m([0m[0;34mf'sigma_u - pi* transition energy: {eigs[pos] : .4f} a.u. (or {eigs[pos] * au_to_ev : .1f} eV)'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     13[0m [0mprint[0m[0;34m([0m[0;34mf'Xf norm under metric S[2] = {np.matmul(Xf.T,np.matmul(S2,Xf)) : .4f}'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mNameError[0m: name 'silent_ostream' is not defined
-NameError: name 'silent_ostream' is not defined
+[0;31mNameError[0m: name 'au_to_ev' is not defined
+NameError: name 'au_to_ev' is not defined
 
