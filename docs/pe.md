@@ -40,8 +40,5 @@ where $T_i^q(\mathbf{r})$ and $T_i^m(\mathbf{r}))$ electrostatic interaction ten
 
 ## Environment fragmentation
 
-## LoProp and embedding paramaters
-
 ## Local field factors and intensities
 
-## Exercises
