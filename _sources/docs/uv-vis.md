@@ -1,39 +1,4 @@
-<!-- #region -->
 # UV/vis absorption/emission
-
-## Spectrum calculation
-
-### Absorption
-
-### Emission
-
-### Vibronic?
-
-
-
-## Spectrum analysis
-
-
-
-## General aspects
-
-### Comparison to experiment
-
-### Vibrations
-
-### Broadening
-
-
-## Large systems
-
-
-## Recommendations
-
-
-
-
-
-
 
 # Old
 

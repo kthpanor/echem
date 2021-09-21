@@ -1,2 +1,0 @@
-Hartree--Fock theory
-====================
