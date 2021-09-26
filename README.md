@@ -1,7 +1,17 @@
-# Compiled page
+# Compiled homepage
 https://kthpanor.github.io/echem/docs/intro.html
 
+# Create a conda environment for the eChem book
+
+Using the echem.yml file (stored at the root of the echem directory) to create a conda environment `echem` will install all needed packages to compile the book.
+
+```
+conda env create -f echem.yml
+```
+
 # Some commands
+
+This more "manual" installation of specfic packages should no longer be needed.
 
 ```
 $ pip install -U jupyter-book
