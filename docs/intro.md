@@ -51,39 +51,29 @@ with user-friendly python interface and easy access to all important variables n
 and as a modern and very efficient code to perform large-scale calculations on high performance computers.
 
 ### VeloxChem
-x
 
-x
+VeloxChem{cite}`veloxchem` is a quantum chemistry program for the calculation of spectroscopic properties of molecular systems. It implements real and complex linear and nonlinear response theory at the level of Kohn--Sham density functional theory (DFT). The code is open source and may be downloaded from [https://veloxchem.org](https://veloxchem.org). Documentation and reference manual are available at [https://docs.veloxchem.org](https://docs.veloxchem.org).
 
-x
+VeloxChem is designed with a C++ layer of highly optimized code for modern hardware infrastructures and a high-level Python layer that allows for ease of development and experimentation. The C++ layer uses hybrid parallel techniques using OpenMP within a multi-core node and MPI across nodes.
 
-x
+```{image} ../img/code-structure.pdf
+:alt: Code structure of veloxchem.
+:align: center
+```
 
-x
-
-x
-
-x
-
-x
+VeloxChem can be run either via input and output files as is the usual case in an HPC environment with job scheduling, as well as interactively via the Jupyter notebook. It has been designed to provide both a platform for high-performance scientific computing, as well as a platform for interactive quantum chemistry.
 
 
 ### Gator
-x
 
-x
+Gator is an open source quantum chemistry software which uses real and complex propagators at the correlated level of wave function theory to provide molecular properties and spectra. Its current capabilities include the Møller--Plesset (MP) perturbation theory for the ground state and the algebraic diagrammatic construction (ADC) level of theory for excited states. Written in a Python/C++ layered fashion, Gator can be run either in command line via input and output files, as well as interactively via the Jupyter notebook. It has been designed to provide both a platform for high performance scientific computing, as well as a platform for interactive quantum chemistry. 
 
-x
+```{image} ../img/gator.pdf
+:alt: Overview of the Gator software capabilities and its connection to VeloxChem.
+:align: center
+```
 
-x
-
-x
-
-x
-
-x
-
-x
+As illustrated in the figure, Gator requires a Hartree--Fock reference state that can be provided from VeloxChem. It then uses this reference state to generate perturbative corrections (ground state) and construct the ADC matrix at a specified order of perturbation theory (excited states). The excited states and related transition properties (excitation energies, oscillator strengths, absorption cross-sections, etc.) are obtained by diagonalizing the ADC matrix.
 
 
 #### adcc
@@ -102,6 +92,10 @@ x
 x
 
 x
+
+### Multi-Psi
+
+MultiPsi is a quantum chemistry program designed for multireference calculations with a special focus on spectroscopy. It currently implements a general configuration interaction solver and a multiconfigurational self-consistent field (MCSCF) method. It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods.
 
 
 #### Respondo
@@ -123,24 +117,6 @@ x
 
 
 #### HPC-QC
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-
-### Multi-Psi
 x
 
 x
