@@ -1,6 +1,6 @@
 # UV/vis absorption/emission
 
-# Old
+## Old
 
 - Polarization $\rightarrow$ cross-section
 - Connection to experiment - Beer-Lambert, 0-0/vertical/adiabatic transition, ...
