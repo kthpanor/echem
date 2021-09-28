@@ -18,31 +18,30 @@ Traceback (most recent call last):
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
 import veloxchem as vlx
+import numpy as np
+import matplotlib.pyplot as plt
 
-h2o_xyz = """3
-water                                                                                                                          
-O    0.000000000000        0.000000000000        0.000000000000                         
-H    0.000000000000        0.740848095288        0.582094932012                         
-H    0.000000000000       -0.740848095288        0.582094932012
+mol_str = """
+Ne        0.00000000    0.00000000    0.00000000
 """
+molecule = vlx.Molecule.read_str(mol_str)
+basis = vlx.MolecularBasis.read(molecule, "cc-pVDZ")
 
-mol = vlx.Molecule.from_xyz_string(h2o_xyz)
+scf_drv = vlx.ScfRestrictedDriver()
+scf_drv.compute(molecule, basis)
 
-basis = vlx.MolecularBasis.read(mol, "cc-pvdz")
-
-scfdrv = vlx.ScfRestrictedDriver()
-scfdrv.compute(mol, basis)
+mol_orbs = scf_drv.mol_orbs
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mAttributeError[0m                            Traceback (most recent call last)
-[0;32m<ipython-input-1-7e910b51b8ea>[0m in [0;36m<module>[0;34m[0m
-[1;32m      8[0m """
-[1;32m      9[0m [0;34m[0m[0m
-[0;32m---> 10[0;31m [0mmol[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecule[0m[0;34m.[0m[0mfrom_xyz_string[0m[0;34m([0m[0mh2o_xyz[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     11[0m [0;34m[0m[0m
-[1;32m     12[0m [0mbasis[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecularBasis[0m[0;34m.[0m[0mread[0m[0;34m([0m[0mmol[0m[0;34m,[0m [0;34m"cc-pvdz"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+[0;32m<ipython-input-1-1da98029895c>[0m in [0;36m<module>[0;34m[0m
+[1;32m      9[0m [0mbasis[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecularBasis[0m[0;34m.[0m[0mread[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m [0;34m"cc-pVDZ"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     10[0m [0;34m[0m[0m
+[0;32m---> 11[0;31m [0mscf_drv[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mScfRestrictedDriver[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     12[0m [0mscf_drv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m [0mbasis[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     13[0m [0;34m[0m[0m
 
-[0;31mAttributeError[0m: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
-AttributeError: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
+[0;31mTypeError[0m: __init__() missing 2 required positional arguments: 'comm' and 'ostream'
+TypeError: __init__() missing 2 required positional arguments: 'comm' and 'ostream'
 

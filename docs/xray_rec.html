@@ -22,8 +22,8 @@
       
 
     
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,6 +37,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -44,7 +45,7 @@
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
@@ -83,7 +84,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -531,7 +532,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#precision-versus-accuracy">
@@ -627,200 +628,6 @@
 <h2>Relativistic effects<a class="headerlink" href="#relativistic-effects" title="Permalink to this headline">¶</a></h2>
 <p>If the <em>K</em>-edge is considered, only scalar relativistic effects are present in the transition, the inclusion of which can be done with X2C or Douglas-Kroll-Hess Hamiltonians. Alternatively, it is often sufficient to just add an absolute scalar shift in energy for a non-relativistic calculation (such a shift is likely needed anyway, as absolute energies are notoriously hard to reproduce). This absolute shift can be estimated by simple MO energy calculations, as <a class="reference internal" href="xray_aspects.html#sec-xray-topics-rel-ip"><span class="std std-ref">previously</span></a> shown.</p>
 <p>If <em>l&gt;0</em> is to be considered, spin-orbit splitting effects will potentially be substantial. The inclusion of these are currently beyond the scope of this tutorial.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-
-<span class="c1"># QC software suites and functionalities</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">gator</span>
-<span class="kn">import</span> <span class="nn">adcc</span>
-<span class="kn">from</span> <span class="nn">veloxchem.rsplinabscross</span> <span class="kn">import</span> <span class="n">LinearAbsorptionCrossSection</span>
-
-<span class="c1"># for vlx</span>
-<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-
-<span class="c1"># au to eV conversion factor</span>
-<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
-<span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
-<span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="c1"># Create veloxchem mol and basis objects</span>
-<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span> 
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span><span class="s1">&#39;6-31G&#39;</span><span class="p">)</span> 
-
-<span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
-
-<span class="c1"># Extract orbital energies</span>
-<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1s IP from the Koopmans theorem:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1s IP from the Koopmans theorem: -559.5
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span>       <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-
-<span class="c1"># Perform unrestricted SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-
-<span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span>  <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
-
-<span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
-<span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    
-<span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-
-<span class="c1"># IP from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ionization potential:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3362648e-12  2S+1 = 1
-converged SCF energy = -56.0754789470864  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
-Ionization potential: 541.73 eV
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_output_scroll docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">vlx</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Help on package veloxchem:
-
-NAME
-    veloxchem - # mpi4py
-
-PACKAGE CONTENTS
-    __main__
-    aodensitymatrix
-    aofockmatrix
-    blockdavidson
-    c2diis
-    c6solver
-    checkpoint
-    cppsolver
-    denguess
-    distributedarray
-    errorhandler
-    excitondriver
-    inputparser
-    linearsolver
-    loprop
-    lreigensolver
-    lrmatvecdriver
-    lrsolver
-    main
-    mointsdriver
-    molecularbasis
-    molecularorbitals
-    molecule
-    mp2driver
-    mpitask
-    outputstream
-    polembed
-    profiler
-    pulsedrsp
-    qqscheme
-    rspabsorption
-    rspc6
-    rspcdspec
-    rspcustomproperty
-    rspdriver
-    rsplinabscross
-    rsppolarizability
-    rspproperty
-    scfdriver
-    scfrestdriver
-    scfunrestdriver
-    signalhandler
-    slurminfo
-    subcommunicators
-    tdaexcidriver
-    veloxchemlib
-    visualizationdriver
-
-FUNCTIONS
-    ao_matrix_to_dalton(...) method of builtins.PyCapsule instance
-        ao_matrix_to_dalton(arg0: CDenseMatrix, arg1: veloxchem.veloxchemlib.MolecularBasis, arg2: veloxchem.veloxchemlib.Molecule) -&gt; CDenseMatrix
-    
-    ao_matrix_to_veloxchem(...) method of builtins.PyCapsule instance
-        ao_matrix_to_veloxchem(arg0: CDenseMatrix, arg1: veloxchem.veloxchemlib.MolecularBasis, arg2: veloxchem.veloxchemlib.Molecule) -&gt; CDenseMatrix
-    
-    bohr_in_angstroms(...) method of builtins.PyCapsule instance
-        bohr_in_angstroms() -&gt; float
-    
-    hartree_in_ev(...) method of builtins.PyCapsule instance
-        hartree_in_ev() -&gt; float
-    
-    mathconst_pi(...) method of builtins.PyCapsule instance
-        mathconst_pi() -&gt; float
-    
-    mpi_initialized(...) method of builtins.PyCapsule instance
-        mpi_initialized() -&gt; bool
-    
-    mpi_master(...) method of builtins.PyCapsule instance
-        mpi_master() -&gt; int
-
-DATA
-    module_path = &#39;/home/thomas/Notebook/anaconda/lib/python3.7/site-packa...
-    ncores = 4
-
-FILE
-    /home/thomas/Notebook/anaconda/lib/python3.7/site-packages/veloxchem/__init__.py
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 </div>
 
@@ -847,32 +654,12 @@ FILE
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="xray_large.html" title="previous page">Larger systems</a>
+    <a class='right-next' id="next-link" href="elecstruct-general.html" title="next page">General aspects</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="xray_large.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Larger systems</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="elecstruct-general.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">General aspects</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
