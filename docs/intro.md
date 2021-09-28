@@ -77,61 +77,13 @@ As illustrated in the figure, Gator requires a Hartree--Fock reference state tha
 
 
 #### adcc
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
+#### Respondo
+#### HPC-QC
 
 ### Multi-Psi
 
 MultiPsi is a quantum chemistry program designed for multireference calculations with a special focus on spectroscopy. It currently implements a general configuration interaction solver and a multiconfigurational self-consistent field (MCSCF) method. It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods.
 
-
-#### Respondo
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-
-#### HPC-QC
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
 
 
 ### VIAMD
