@@ -70,7 +70,7 @@ Multiple lists of references are possible but not yet propoerly implmented.
 
 # Random comments
 
-- Figures in png 300 dpi
+- Figures in png 300 dpi or svg
 
 - Change gromacs to openmm
 
