@@ -1,1 +1,0 @@
-# Kohn--Sham method
