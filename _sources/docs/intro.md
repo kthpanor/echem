@@ -56,7 +56,7 @@ VeloxChem{cite}`veloxchem` is a quantum chemistry program for the calculation of
 
 VeloxChem is designed with a C++ layer of highly optimized code for modern hardware infrastructures and a high-level Python layer that allows for ease of development and experimentation. The C++ layer uses hybrid parallel techniques using OpenMP within a multi-core node and MPI across nodes.
 
-```{image} ../img/code-structure.pdf
+```{image} ../img/code-structure.png
 :alt: Code structure of veloxchem.
 :align: center
 ```
@@ -68,7 +68,7 @@ VeloxChem can be run either via input and output files as is the usual case in a
 
 Gator is an open source quantum chemistry software which uses real and complex propagators at the correlated level of wave function theory to provide molecular properties and spectra. Its current capabilities include the Møller--Plesset (MP) perturbation theory for the ground state and the algebraic diagrammatic construction (ADC) level of theory for excited states. Written in a Python/C++ layered fashion, Gator can be run either in command line via input and output files, as well as interactively via the Jupyter notebook. It has been designed to provide both a platform for high performance scientific computing, as well as a platform for interactive quantum chemistry. 
 
-```{image} ../img/gator.pdf
+```{image} ../img/gator.png
 :alt: Overview of the Gator software capabilities and its connection to VeloxChem.
 :align: center
 ```
