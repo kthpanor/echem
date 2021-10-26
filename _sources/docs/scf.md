@@ -1,2 +1,0 @@
-Self-Consistent Field procedure
-===============================
