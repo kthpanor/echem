@@ -1,41 +1,6 @@
-<!-- #region -->
 # UV/vis absorption/emission
 
-## Spectrum calculation
-
-### Absorption
-
-### Emission
-
-### Vibronic?
-
-
-
-## Spectrum analysis
-
-
-
-## General aspects
-
-### Comparison to experiment
-
-### Vibrations
-
-### Broadening
-
-
-## Large systems
-
-
-## Recommendations
-
-
-
-
-
-
-
-# Old
+## Old
 
 - Polarization $\rightarrow$ cross-section
 - Connection to experiment - Beer-Lambert, 0-0/vertical/adiabatic transition, ...
