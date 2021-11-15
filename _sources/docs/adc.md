@@ -26,7 +26,7 @@ By truncating the series expansion of the polarization propagator to a desired o
 %%% %(\textcolor{red}{here I simplified a bit -- maybe too much?})
 
 ## Intermediate state representation
-As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_i\hat{a}_j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
+As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a<b, i<j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
 ```{figure} /img/adc/isr_adc_matrix.svg
 ---
 scale: 100%
@@ -38,28 +38,29 @@ Illustration of (a) single excitations, (b) double excitations, (c) the structur
 The intermediate states $\ket{\tilde{\psi}_I}$ are obtained by first applying $\hat{C}_I$ to the many-body ground state:
 ```{math}
 :label: eq:precursor
-\ket{\psi_I^{\#}}=\hat{C}_I\ket{0}-\ket{0}\bra{0}\hat{C}_I\ket{0} \, ,
+\ket{\psi_I^{0}}=\hat{C}_I\ket{0} \, , %%%-\ket{0}\bra{0}\hat{C}_I\ket{0} \, ,
 ```
-and then performing an orthonormalization {cite}`Wenzel2016`:
+and then performing a Gram--Schmidt orthogonalization procedure with respect to lower excitation classes (including the ground state)
+to obtain precursor states $\ket{\psi_I^{\#}}$, which can then be orthonormalized symmetrically according to {cite}`Wenzel2016`:
 ```{math}
 :label: eq:ISdefinition
-%%%\ket{\tilde{\psi}_I}=\sum_J\ket{\psi_J^{\#}}S_{IJ}^{-1/2}\, ,
+\ket{\tilde{\psi}_I}=\sum_J\ket{\psi_J^{\#}}S_{IJ}^{-1/2}\, ,
 ```
-where $S_{IJ}=\braket{\psi_I^{\#}|\psi_J^{\#}}$ are overlap integrals. 
+where $S_{IJ}=\braket{\psi_I^{\#}|\psi_J^{\#}}$ are overlap integrals of the precursor states.
 
-The ADC matrix elements are obtained as matrix elements of the shifted Hamiltonian in the basis of the intermediate states:
+The elements of the ADC matrix $\mathbf{M}$ are obtained as matrix elements of the shifted Hamiltonian in the basis of the intermediate states:
 ```{math}
 :label: eq:Mdef
-M_{IJ}=\bra{\tilde{\psi}_I}\hat{H}-E_0\ket{\tilde{\psi}_J}=\sum_{K,L}S_{IK}^{-1/2}\bra{ \psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}S_{JL}^{-1/2} \, ,
+M_{IJ}=\bra{\tilde{\psi}_I}\hat{H}-E_0\ket{\tilde{\psi}_J}=\sum_{K,L}S_{IK}^{-1/2}\bra{ \psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}S_{LJ}^{-1/2} \, ,
 ```
 where $E_0$ is the ground state energy.
 
 Having obtained an expression for the ADC matrix, we return to the series expansion of the polarization propagator. In the same way as the propagator is expanded in series, also the matrix elements can be written in terms of orders of perturbation {cite}`Wenzel2016`:
 ```{math}
 :label: eq:Mseries
-M_{IJ}^{(k+l+m)}=\sum_{K,L}\left(S_{IK}^{-1/2}\right)^{(k)}\left(\bra{\psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}\right)^{(l)}\left(S_{JL}^{-1/2}\right)^{(m)}\, ,
+M_{IJ}^{(k+l+m)}=\sum_{K,L}\left(S_{IK}^{-1/2}\right)^{(k)}\left(\bra{\psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}\right)^{(l)}\left(S_{LJ}^{-1/2}\right)^{(m)}\, ,
 ```
-where $k$ and $m$ are the orders of perturbation theory used for the overlap matrices $S_{IK}$ and $S_{JL}$, $l$ is the order used for the matrix elements of the shifted Hamiltonian, and the sum $k+l+m$ represents the order of the ADC matrix.
+where $k$ and $m$ are the orders of perturbation theory used for the overlap matrices $S_{IK}$ and $S_{JL}$, $l$ is the order used for the matrix elements of the shifted Hamiltonian, and the sum $k+l+m$ represents the order of the contribution to the ADC matrix $\mathbf{M}$.
 
 Using Eq. {eq}`eq:Mseries` in combination with specific classes of excitation operators and truncating the series at the desired order, various levels of ADC theory are obtained. One aspect to note is that the excitation classes needed to construct a specific ADC level are directly connected to the order of perturbation theory. This can be easily seen from {numref}`Fig. {number} <fig-propagator>`, where the zeroth and first order terms are related to single excitations (only one particle-hole pair is involved), while second order terms involve double excitations (two particle-hole pairs are involved). To illustrate this further, we list the explicit expressions for the ADC matrix elements up to second order {cite}`Wenzel2016, Wormit2009`:
 %%% %(\textcolor{red}{not completely convinced if to include -- all of -- these})
@@ -91,7 +92,7 @@ M_{ijab,klcd}^{(0)}=(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j)\delta_{ac}\del
 ```
 where $\delta_{pq}$ is the Kronecker delta.
 
-The structure of the ADC(2) matrix is depicted in {numref}`Fig. {number} <fig-isr>`c. In principle, the ADC(2) matrix contains all the possible single and double excitations which can be constructed for the system of interest (using a particular basis set). However, except for very small molecules, to include all these excitations would make the ADC matrix intractably large and impossible to diagonalize. In practice, therefore, only the lowest $n$ excited states are ever constructed, where $n$ is the number of states requested by the user. This means that the space of valence excitations is easily accessible, but makes the space of core excitations impossible to reach, except for molecules with very few electrons. An approach to overcome this problem will be discussed in more details in the next section.     
+The structure of the ADC(2) matrix is depicted in {numref}`Fig. {number} <fig-isr>`c. In principle, the ADC(2) matrix contains all the possible single and double excitations which can be constructed for the system of interest (using a particular basis set). However, except for very small molecules, to include all these excitations would make the ADC matrix intractably large and impossible to diagonalize. In practice, therefore, only the lowest $n$ excited states are ever constructed, where $n$ is the number of states requested by the user. This means that the space of valence excitations is easily accessible, but makes the space of core excitations impossible to reach, except for molecules with very few electrons. An approach to overcome this problem will be discussed in more detail in the next section.
 
 ## Core--valence separation
 One way to reach the space of core-excitations (and be able to compute, for example, X-ray absorption spectra), without having to deal with an intractably large ADC matrix is provided by the core--valence separation (CVS) approximation. CVS is obtained by decoupling the core and valence excitation spaces and is motivated by the large energy separation between them {cite}`cederbaum1980`. Essentially, it consists of applying only excitation operators that involve one core electron ({numref}`Fig. {number} <fig-cvs>`a and b). This translates into keeping only those blocks of the ADC matrix which include one core orbital ({numref}`Fig. {number} <fig-cvs>`c) and significantly reduces the size of the matrix to be diagonalized ({numref}`Fig. {number} <fig-cvs>`d). The error introduced by this approximation is very small and system-independent {cite}`Herbst2020`.
