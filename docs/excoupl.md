@@ -1,7 +1,7 @@
 Exciton coupling model
 ======================
 The exciton model is a practical approach for describing multichromophoric systems.
-By dividing the system into individual chromophores, the computational cost is significantly decreased. In the $ab$ $initio$ exciton model, the Hamiltonian takes the matrix form as in the Frenkel exciton model:
+By dividing the system into individual chromophores, the computational cost is significantly decreased. In the $ab$ $initio$ exciton model {cite}`Li2017`, the Hamiltonian takes the matrix form as in the Frenkel exciton model:
 
 ```{math}
 :label: eq:exciton_model_matrix
