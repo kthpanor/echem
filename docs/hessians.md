@@ -1,6 +1,6 @@
-# Hessians
+# Hessians and vibrational analysis
 
-## Second Energy Derivatives in Hartree--Fock
+## Second energy derivatives in Hartree--Fock
 
 In order to check whether a stationary point, i.e., a point on the potential energy surface with a vanishing gradient,
 is a local minimum or not, the second derivatives of the energy with respect to nuclear displacement need to be calculated.
@@ -83,13 +83,134 @@ in terms of the RHS $R_{ai}^{\chi}$, the CPHF coefficients $U_{ai}^{\xi}$, and p
 ```
 
 
-## Vibrational Frequencies and Normal Modes
+%## Vibrational frequencies and normal modes
+## Vibrational analysis
 
-_write about mass-weighing the Hessian, diagonalizing it, obtaining harmonic frequencies
-and Cartesian normal modes from it..._
+The following steps are carried out mostly by the geomeTRIC module {cite}`Wang2016`,
+hence they are described in less detail.
+For more details on the topic, the reader is referred to _Molecular Vibrations_
+by Wilson, Decius and Cross {cite}`Wilson1980`.
 
 
-### Infrared Intensities
+### Cartesian and mass-weighted Hessian
+
+The starting point for the vibrational analysis of molecules
+is the Hessian matrix in Cartesian coordinates, $\mathbf{H}^{\text{Cart}}$,
+calculated either numerically or analytically as described above.
+Generally, the elements of $\mathbf{H}^{\text{Cart}}$ are given by second derivatives of the energy $E$
+with respect to nuclear displacement,
+```{math}
+:label: eq:Hessian_matrix_elements
+  H_{ij}^{\text{Cart}} = \bigg( \frac{\mathrm{d}^2 E}{\mathrm{d} \xi_i \mathrm{d} \xi_j} \bigg)_0 \, .
+```
+Hence, $\mathbf{H}^{\text{Cart}}$ is a $3N \times 3N$ matrix (where $N$ is the number of atoms),
+and $\xi_1, \xi_2, \ldots, \xi_{3N}$ is used for the displacements
+of the Cartesian coordiates, $\Delta x_1, \Delta y_1, \Delta z_1, \ldots, \Delta z_N$.
+The '$0$' subscript of the parentheses refers to the equilibrium geometry of the atoms at which the derivatives are taken,
+and that the first derivatives vanish.
+
+As a first step, the Hessian is converted to _mass-weighted_ Cartesian coordinates (MWC),
+$q_1 = \sqrt{m_1} \xi_1 = \sqrt{m_1} \Delta x_1$, $q_2 = \sqrt{m_1} \xi_2 = \sqrt{m_1} \Delta y_1$,
+$\ldots$, $q_{3N} = \sqrt{m_N} \xi_{3N} = \sqrt{m_N} \Delta z_{N}$, where $m_i$ is the mass of atom $i$,
+such that $\mathbf{H}^{\text{MWC}}$ is given by
+```{math}
+:label: eq:Hessian_mwc
+  H_{ij}^{\text{MWC}} = \frac{H_{ij}^{\text{Cart}}}{\sqrt{m_i m_j}} = \bigg( \frac{\mathrm{d}^2 E}{\mathrm{d} q_i \mathrm{d} q_j} \bigg)_0 \, .
+```
+Diagonalizing this Hessian gives $3N$ eigenvalues are the fundamental frequencies of the molecule,
+which still include the translation and rotational modes. However, these should be close to zero.
+
+
+### Translating and rotating frame
+
+In order to remove translational and rotational degrees of freedom,
+one first determines the center of mass (COM) $\mathbf{R}^{\text{COM}}$ in the usual way,
+```{math}
+:label: eq:center_of_mass
+  \mathbf{R}^{\text{COM}} = \frac{\sum_{K} m_{K} \mathbf{R}_K}{\sum_{K} \mathbf{R}_K} \, ,
+```
+where the sum runs over all atoms $K$, and the origin is then shifted to the COM,
+$\mathbf{R}_{K}^{\text{COM}} = \mathbf{R}_K - \mathbf{R}^{\text{COM}}$.
+Subsequently, one determines the inertia tensor and diagonalizes it
+to obtain principal moments and axes of inertia.
+Next, one needs to find the transformation
+from mass-weighted Cartesian coordinates to a set of $3N$ coordinates,
+where the molecule's translation and rotation are separated out,
+leaving $3N - 6$ (or $3N-5$ for linear molecules) vibrational modes.
+
+While the three vectors of length $3N$ corresponding to translation are simply given by $\sqrt{m_i}$
+times the coordinate axis, the vectors corresponding to rotational motion of the atoms
+are obtained from the coordinates of the atoms with respect to the COM
+and the corresponding row of the matrix used to diagonalize the moment of inertia tensor.
+This corresponds to internal coordinates in the Eckart frame {cite}`Eckart1934`.
+In the next step, these vectors are normalized and a Gram--Schmidt orthogonalization
+is carried out to create $N_\text{vib} = 3N-6$ (or $3N-5$) remaining vectors,
+which are orthogonal to the five or six translational and rotational vectors.
+Thus, one obtains a transformation matrix $\mathbf{D}$ which allows for the transformation
+of the mass-weighted Cartesian coordinates $\mathbf{q}$ to internal coordinates
+$\mathbf{S} = \mathbf{Dq}$, where translation and rotation have been projected out.
+%Thus, one obtains a basis in which translation and rotation
+%is projected out of the (mass-weighted) Cartesian coordinates.
+
+
+### Hessian in internal coordinates and harmonic frequencies
+
+Now the Hessian $\mathbf{H}^\text{MWC}$, which is still given in mass-weighted Cartesian coordinates,
+is transformed the the internal coordinate system,
+```{math}
+:label: eq:Hessian_to_internal
+  \mathbf{H}^{\text{Int}} = \mathbf{D}^\dagger \mathbf{H}^\text{MWC} \mathbf{D} \, ,
+```
+yielding a representation in $N_\text{vib}$ internal coordinates from the full $3N$ Cartesian coordinates.
+The Hessian in internal coordinates $\mathbf{H}^{\text{Int}}$ is successively diagonalized,
+```{math}
+:label: eq:Hessian_internal_diagonalized
+  \mathbf{L}^\dagger \mathbf{H}^{\text{Int}} \mathbf{L} = \mathbf{\Lambda} \, ,
+```
+where $\mathbf{\Lambda}$ is the diagonal matrix of $N_{\text{vib}}$ eigenvalues $\lambda_i$
+which are related to the harmonic vibrational frequencies $\nu_i$
+and $\mathbf{L}$ is the transformation matrix composed of the eigenvectors.
+
+Finally, the eigenvalues $\lambda_i = 4 \pi^2 \nu_i^2$ can be converted from frequencies $\nu_i$
+to wavenumbers $\tilde{\nu}_i$ in reciprocal centimeters by using the relationship
+$\nu_i = c \tilde{\nu}_i$, where $c$ is the speed of light.
+The wavenumbers are thus obtained from
+```{math}
+:label: eq:vibrations_wavenumbers
+  \tilde{\nu}_i = \sqrt{\frac{\lambda_i}{4\pi^2 c^2}} \, ,
+```
+and successively appropriate conversion factors are applied to obtain the wavenumbers in cm$^{-1}$.
+
+
+### Cartesian displacements, reduced masses, and force constants
+
+The Cartesian normal modes $\mathbf{l}^{\text{Cart}}$ are obtained by combining Eqs. {eq}`eq:Hessian_to_internal`
+and {eq}`eq:Hessian_internal_diagonalized` together with a diagonal matrix $\mathbf{M}$
+defined by $M_{ii} = \frac{1}{\sqrt{m_i}}$ to undo the mass-weighting,
+$\mathbf{l}^{\text{Cart}} = \mathbf{M D L}$, with the individual elements of this matrix being given by
+```{math}
+  l_{ij}^{\text{Cart}} = \sum_{k=1}^{3N} \frac{D_{ik} L_{kj}}{\sqrt{m_i}} \, .
+```
+The (normalized) column vectors of $\mathbf{l}^{\text{Cart}}$ correspond to the normal-mode displacements in Cartesian coordinates,
+which are used for the calculation of spectroscopic properties as described below.
+
+From the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, the reduced mass $\mu_i$ of vibration $i$
+can be calculated as
+```{math}
+:label: eq:reduced_masses
+  \mu_i = \frac{1}{\sum_{k=1}^{3N} \big( l_{ki}^{\text{Cart}} \big)^2} \, ,
+```
+and from those the corresponding force constants $k_i$ are calculated as
+```{math}
+:label: eq:force_constants
+  k_i = 4 \pi^2 \tilde{\nu}_i^2 \mu_i \, ,
+```
+since $\tilde{\nu}_i = \frac{1}{2 \pi} \sqrt{\frac{k_i}{\mu_i}}$.
+The force constants are then converted from atomic units to milli-dyne per ångström.
+
+
+
+### Infrared intensities
 
 In order to calculate intensities in the infrared (IR) spectrum,
 the nuclear derivative of the electric dipole moment $\boldsymbol{\mu} = (\mu_x, \mu_y, \mu_z)$ is needed,
@@ -107,8 +228,8 @@ and the one-particle density matrix $\mathbf{P}$,
 :label: eq:electric_dipole_moment
   \mu_{\text{e}} = \sum_{\kappa \lambda} P_{\lambda \kappa} \mu_{\kappa \lambda} \, .
 ```
-
-While the derivative of the nuclear contribution $\mu_{\text{n}}$ is trivial,
+The nuclear gradient of the dipole moment can again be calculated either numerically or analytically.
+While the analytic derivative of the nuclear contribution $\mu_{\text{n}}$ is trivial,
 the derivative of the electronic part {eq}`eq:electric_dipole_moment` is given by
 ```{math}
 :label: eq:electronic_dipole_derivative
@@ -117,32 +238,13 @@ the derivative of the electronic part {eq}`eq:electric_dipole_moment` is given b
 ```
 where the perturbed density from Eq. {eq}`eq:perturbed_density` and the derivatives of the dipole integrals are needed.
 
+The IR transition dipole moment is then calculated by taking the dot product of the dipole moment gradient {eq}`eq:electronic_dipole_derivative`
+with the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, and the IR intensity as the square norm of corresponding transition moment.
+The intensities are successively converted to the unit of km mol$^{-1}$.
+Raman intensities are calculated in an analogous manner, except that the nuclear derivative
+of the electric-dipole polarizability $\boldsymbol{\alpha}$ is needed.
 
 
 
 
 
-%If we work in AO basis:
-%```{math}
-%:label: eq:Lagrangian_in_ao
-%\frac{\partial L}{\partial \xi}&=\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{p,q}\omega_{pq}\frac{\partial S_{pq}}{\partial \xi}\\
-%&=\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{\mu\nu}\sum_{p,q}\omega_{pq}C_{\mu p}S^\xi_{\mu\nu}C_{\nu q}\\
-%&=\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{\mu\nu}\omega_{\mu\nu}S^\xi_{\mu\nu}\\
-%```
-%and take the derivative:
-%```{math}
-%:label: eq:second_order_energy_derivative
-%\frac{\mathrm{d}^2E}{\mathrm{d}\chi\mathrm{d}\xi}&=\frac{\mathrm{d}}{\mathrm{d}\chi}\frac{\partial L}{\partial \xi}=\frac{\mathrm{d}}{\mathrm{d}\chi}\left(\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{\mu\nu}\omega_{\mu\nu}S^\xi_{\mu\nu}\right)\\
-%&=\frac{\mathrm{d}}{\mathrm{d}\chi}\frac{\partial E_\mathrm{HF}}{\partial \xi} + \sum_{\mu\nu}\frac{\mathrm{d}}{\mathrm{d}\chi}\left(\omega_{\mu\nu}S^\xi_{\mu\nu}\right)\\
-%&=\frac{\mathrm{d}}{\mathrm{d}\chi}\frac{\partial E_\mathrm{HF}}{\partial \xi} + \sum_{\mu\nu}\left(\frac{\mathrm{d}\omega_{\mu\nu}}{\mathrm{d}\chi}S^\xi_{\mu\nu}+\omega_{\mu\nu}\frac{\mathrm{d}}{\mathrm{d}\chi}S^\xi_{\mu\nu}\right)\\
-%&=\frac{\mathrm{d}}{\mathrm{d}\chi}\frac{\partial E_\mathrm{HF}}{\partial \xi} + \sum_{\mu\nu}\left(\frac{\mathrm{d}\omega_{\mu\nu}}{\mathrm{d}\chi}S^\xi_{\mu\nu}+\omega_{\mu\nu}S^{\xi\chi}_{\mu\nu}\right)\\
-%```
-%By plugging in the expression for the partial derivative of the HF energy in AO basis, we get:
-%```{math}
-%:label: eq:second_order_explicit
-%\frac{\mathrm{d}^2E}{\mathrm{d}\chi\mathrm{d}\xi}&=\frac{\mathrm{d}}{\mathrm{d}\chi}\left( \sum_{\mu \nu} P_{\mu \nu} h_{\mu \nu}^{\xi} + \frac12 \sum_{\mu \nu \lambda \sigma} P_{\mu \nu} P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi} + \frac{\partial V_{nn}}{\partial \xi}\right) + \sum_{\mu\nu}\left(\frac{\mathrm{d}\omega_{\mu\nu}}{\mathrm{d}\chi}S^\xi_{\mu\nu}+\omega_{\mu\nu}S^{\xi\chi}_{\mu\nu}\right)\\
-%&= \sum_{\mu \nu} \left( \frac{\mathrm{d}P_{\mu \nu}}{\mathrm{d}\chi}  h_{\mu \nu}^{\xi} + P_{\mu \nu}h_{\mu\nu}^{\xi\chi}  \right) + \frac12 \sum_{\mu \nu \lambda \sigma} \left( \frac{\mathrm{d}P_{\mu \nu}}{\mathrm{d}\chi}  P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi} + P_{\mu \nu}\frac{\mathrm{d}P_{\lambda \sigma}}{\mathrm{d}\chi}   \langle \mu \lambda || \nu \sigma \rangle^{\xi}+P_{\mu \nu}P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi\chi} \right) \\
-%&+ \frac{\partial^2 V_{nn}}{\partial \xi\partial \chi} + \sum_{\mu\nu}\left(\frac{\mathrm{d}\omega_{\mu\nu}}{\mathrm{d}\chi}S^\xi_{\mu\nu}+\omega_{\mu\nu}S^{\xi\chi}_{\mu\nu}\right)\\
-%&= \sum_{\mu \nu} \left( \frac{\mathrm{d}P_{\mu \nu}}{\mathrm{d}\chi}  h_{\mu \nu}^{\xi} + P_{\mu \nu}h_{\mu\nu}^{\xi\chi}  \right) + \frac12 \sum_{\mu\nu\lambda\sigma}P_{\mu \nu}P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi\chi} + \sum_{\mu \nu \lambda \sigma} \frac{\mathrm{d}P_{\mu \nu}}{\mathrm{d}\chi}  P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi} +\frac{\partial^2 V_{nn}}{\partial \xi\partial \chi}\\
-%&+ \sum_{\mu\nu}\left(\frac{\mathrm{d}\omega_{\mu\nu}}{\mathrm{d}\chi}S^\xi_{\mu\nu}+\omega_{\mu\nu}S^{\xi\chi}_{\mu\nu}\right)
-%```
