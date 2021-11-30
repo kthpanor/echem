@@ -1,4 +1,5 @@
-# Hessians and vibrational analysis
+(hessians:label)=
+# Hessians
 
 ## Second energy derivatives in Hartree--Fock
 

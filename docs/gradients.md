@@ -4,17 +4,18 @@ To add: general aspects about gradients and Hessians, numerical vs. analytical, 
 ## Analytical Gradients
 To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.
 
-To determine the energy gradient, we first need to identify the non-variational components of the energy functional. In the case of DFT (and HF), these are the MO coefficients ($\mathbf{C}$), which exhibit an implicit dependence on the nuclear coordinates when atom-centred basis functions such as Gaussian or Slater-type orbitals are used. Considering this implicit dependence, the total energy derivative with respect to a particular nuclear coordinate $\xi$ is obtained via the chain rule {cite}`Rehn2015,Levchenko2005`:
+To determine the energy gradient, we first need to identify the non-variational components of the energy functional. In the case of self-consistent field (SCF)
+methods, i.e., HF and Kohn--Sham DFT, these are the MO coefficients ($\mathbf{C}$), which exhibit an implicit dependence on the nuclear coordinates when atom-centred basis functions such as Gaussian or Slater-type orbitals are used. Considering this implicit dependence, the total energy derivative with respect to a particular nuclear coordinate $\xi$ is obtained via the chain rule {cite}`Rehn2015,Levchenko2005`:
 %
 ```{math}
 :label: eq:energy_functional_general
-\frac{dE}{d\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{d\mathbf{C}}{d\xi} \, .
+\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi} \, .
 ```
 %
 Here, $\mathbf{C}$ is the molecular orbital matrix which transforms from a set of atomic orbitals $\{\phi_\mu\}$ to a set of molecular orbitals $\{\psi_p\}$ via $\psi_p=\sum_\mu C_{\mu p}\phi_\mu$. The first term, $\partial E/\partial\xi$, is the Hellman--Feynman contribution which describes the explicit dependence of the energy on the nuclear coordinate $\xi$ through the nuclear-electron and nuclear-nuclear interaction terms of the Hamiltonian {cite}`Levchenko2005_thesis, Helgaker1988_analytical`. The second term stems from the implicit dependence of the energy on $\xi$ due to the fact that the molecular orbitals are expanded in a finite atomic-centred basis set {cite}`Helgaker1988_analytical` 
 %This term would vanish if a basis set independent on atomic positions, for example a plane wave basis, were used.
 
-It may seem at first surprising that the derivative ${\partial E}/{\partial\mathbf{C}}$ has to be computed. If the MO coefficients are obtained variationally for a specified molecular geometry, how is it that this derivative is not zero? The key to this conundrum lies in the phrase "for a specified molecular geometry". Since the DFT energy and density are constructed using a constrained LCAO parametrization, if we perform a nuclear displacement, the "old" MO coefficients no longer correspond to the minimum energy and must be re-optimized. Thus the partial derivative with respect to the MO coefficients, as well as the derivative of the MO coefficients with respect to $\xi$ are required. The explicit computation of the latter is complicated, but can be avoided by making use of a new functional, the Lagrangian, for which the partial derivative $\partial L / \partial \mathbf{C}$ is zero and constrained to the DFT/HF configuration space by construction {cite}`Levchenko2005, Helgaker2014`:
+It may seem at first surprising that the derivative ${\partial E}/{\partial\mathbf{C}}$ has to be computed. If the MO coefficients are obtained variationally for a specified molecular geometry, how is it that this derivative is not zero? The key to this conundrum lies in the phrase "for a specified molecular geometry". Since the DFT energy and density are constructed using a constrained LCAO parametrization, if we perform a nuclear displacement, the "old" MO coefficients no longer correspond to the minimum energy and must be re-optimized. Thus the partial derivative with respect to the MO coefficients, as well as the derivative of the MO coefficients with respect to $\xi$ are required. The explicit computation of the latter is complicated, but can be avoided by making use of a new functional, the Lagrangian, for which the partial derivative $\partial L / \partial \mathbf{C}$ is zero and constrained to the HF/DFT configuration space by construction {cite}`Levchenko2005, Helgaker2014`:
 %ensuring that we re still in the H  Thus, the derivative
 %Thus, even though the local points of the PES are variational with respect to the MO coefficients, the "global" energy functional is not. We must therefore, include the partial derivative with respect to the MO coefficients, as well as the derivative of the MO coefficients with respect to $\xi$, which is quite complicated to compute. However, we can avoid explicitly computing $\mathrm{d}\mathbf{C}/\mathrm{d}\xi$ by using a trick. The idea is to create a new functional, the Lagrangian ($L$), which is by construction equivalent to the energy functional, but for which the partial derivative $\partial L / \partial \mathbf{C}$ is zero \cite{Levchenko2005, Helgaker2014}:
 %
@@ -23,17 +24,17 @@ It may seem at first surprising that the derivative ${\partial E}/{\partial\math
 L(\mathbf{C},\boldsymbol{\Lambda})=E(\mathbf{C})+\boldsymbol{\Lambda}f_c(\mathbf{C}) \, ,
 ```
 %
-where $\boldsymbol{\Lambda}$ are a set of undetermined Lagrange multipliers and $f_c(\mathbf{C})=0$ define the constraints for the non-variational parameters $\mathbf{C}$. These constraints ensure that we are moving only in the DFT/HF configuration space, rather than in the infinite space of all orthogonally equivalent combinations of orbital bases {cite}`Helgaker1988_analytical`.
+where $\boldsymbol{\Lambda}$ are a set of undetermined Lagrange multipliers and $f_c(\mathbf{C})=0$ define the constraints for the non-variational parameters $\mathbf{C}$. These constraints ensure that we are moving only in the HF/DFT configuration space, rather than in the infinite space of all orthogonally equivalent combinations of orbital bases {cite}`Helgaker1988_analytical`.
 %From Helgaker and Jorgensen:"At each geometry we have a set of AOs  from  which an infinite set of orthogonally equivalent orbital bases can be constructed. As the geometry changes we must pick out exactly one of these orbital bases at each geometry X. In this way an orthogonal  orbital connection is established. (A connection is called orthogonal if it  preserves orthonormality between the orbitals.) We further  require that the connection is continuous and differentiable. One may also wish to impose an additional requirement on the connection, namely that it  is translationally and rotationally  invariant. This may seem to be a trivial requirement. However, a connection is conveniently defined  in terms of atomic Cartesian displacements rather  than in terms of a set of nonredundant internal  coordinates. This implies that each  molecular geometry  may be described  in an infinite number of translationally and rotationally  equivalent ways"
 
 By using the Lagrangian, we have shifted the difficult problem of computing ${\mathrm{d} \mathbf{C}}/{\mathrm{d}\xi}$ to the much simpler problem of determining the unknown Lagrange multipliers which satisfy $\partial L / \partial \mathbf{C}=0$. Equations for these are derived by imposing that the explicit form of $\partial L / \partial \mathbf{C}$ is zero {cite}`Helgaker2014`. Once the Lagrange multipliers have been obtained, the total derivative of the energy functional with respect to the nuclear coordinate $\xi$ can be computed as:
 \begin{equation}
-\frac{dE}{d\xi}=\frac{\partial L}{\partial\xi}\, .
+\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial L}{\partial\xi}\, .
 \end{equation}
 
 ### Ground state
 #### Hartree--Fock
-As an example, we will derive in the following the analytical expression for the Hartree-Fock energy gradient. The DFT gradient can be derived in a similar way, replacing the exact exchange integrals with the corresponding exchange--correlation functional contributions. The exchange-correlation functional contribution to the DFT energy and its molecular gradient is evaluated via numerical integration. Thus, the molecular gradient includes grid point weight contributions, which arise from the explicit dependence of the grid partitioning function on the molecular geometry. Neglecting these contributions to the molecular gradient leads to the breakdown of rotation--translation invariance of the molecular gradient. Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can be safely neglected.  
+As an example, we will derive in the following the analytical expression for the Hartree--Fock energy gradient. The DFT gradient can be derived in a similar way, replacing the exact exchange integrals with the corresponding exchange--correlation functional contributions. The exchange-correlation functional contribution to the DFT energy and its molecular gradient is evaluated via numerical integration. Thus, the molecular gradient includes grid point weight contributions, which arise from the explicit dependence of the grid partitioning function on the molecular geometry. Neglecting these contributions to the molecular gradient leads to the breakdown of rotation--translation invariance of the molecular gradient. Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can be safely neglected.  
 
 We are interested to compute the derivative of the electronic energy of the ground state $\ket{0}$, described at the HF level of theory, with respect to a nuclear coordinate $\xi$. 
 
@@ -65,24 +66,25 @@ E_\mathrm{HF}=\sum_{p,q}f_{pq}\gamma_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\br
 With this definition, Eq. {eq}`eq:partial_L` becomes:
 ```{math}
 :label: eq:partial_L_final
-\frac{\partial L}{\partial \xi}&=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) f^\xi_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^\xi+\sum_{p,q}\omega_{pq}S^\xi_{pq}\nonumber\\
-&=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) h^\xi_{pq}+\sum_{p,q}(\lambda_{pq}+\gamma_{pq})\sum_{i}\braket{pi||qi}^\xi+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^\xi+\sum_{p,q}\omega_{pq}S^\xi_{pq}\,,
+\frac{\partial L}{\partial \xi}&=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) f^{(\xi)}_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^{(\xi)}+\sum_{p,q}\omega_{pq}S^{(\xi)}_{pq}\nonumber\\
+&=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) h^{(\xi)}_{pq}+\sum_{p,q}(\lambda_{pq}+\gamma_{pq})\sum_{i}\braket{pi||qi}^{(\xi)}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^{(\xi)}+\sum_{p,q}\omega_{pq}S^{(\xi)}_{pq}\,,
 ```
-where $h_{pq}$ represents a matrix element of the core-Hamiltonian operator. The superscript $\xi$ indicates a partial derivative with respect to variable $\xi$, explicitly {cite}`Levchenko2005`:
+where $h_{pq}$ represents a matrix element of the core-Hamiltonian operator. The superscript $(\xi)$ indicates a partial derivative with respect to variable $\xi$,
+i.e., with fixed MO coefficients $\mathbf{C}$. Explicitly, they are given by {cite}`Levchenko2005`:
 ```{math}
 :label: eq:hpq
-h_{pq}^{\xi}&=\frac{\partial h_{pq}}{\partial \xi}=\sum_{\mu,\nu}C_{\mu p}h^{\xi}_{\mu\nu}C_{\nu q}\, ,\\
+h_{pq}^{(\xi)}&=\frac{\partial h_{pq}}{\partial \xi}=\sum_{\mu,\nu}C_{\mu p}h^{\xi}_{\mu\nu}C_{\nu q}\, ,\\
 h^{\xi}_{\mu\nu}&=\bra{\phi_\mu}\frac{\partial \hat{h}}{\partial \xi}\ket{\phi_\nu}+\bra{\frac{\partial\phi_\mu}{\partial \xi}}\hat{h}\ket{\phi_\nu}+\bra{\phi_\mu}\hat{h}\ket{\frac{\partial\phi_\nu}{\partial\xi}}\, ,\\
 ```
 ```{math}
 :label: eq:braket_pqrs
-\braket{pq||rs}^{\xi}&=\frac{\partial \braket{pq||rs}}{\partial\xi}=\sum_{\mu,\nu,\theta,\sigma}C_{\mu p}C_{\nu q}\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}C_{\theta r}C_{\sigma s}\, ,\\
+\braket{pq||rs}^{(\xi)}&=\frac{\partial \braket{pq||rs}}{\partial\xi}=\sum_{\mu,\nu,\theta,\sigma}C_{\mu p}C_{\nu q}\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}C_{\theta r}C_{\sigma s}\, ,\\
 \braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}&=\braket{\frac{\partial\phi_{\mu}}{\partial\xi}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}+\braket{\phi_{\mu}\frac{\partial\phi_{\nu}}{\partial\xi}||\phi_{\theta}\phi_{\sigma}}+\braket{\phi_{\mu}\phi_{\nu}||\frac{\partial\phi_{\theta}}{\partial\xi}\phi_{\sigma}}\nonumber\\
 &+\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\frac{\partial\phi_{\sigma}}{\partial \xi}}\,\\
 ```
 ```{math}
 :label: eq:Spq
-S_{pq}^\xi &=\frac{\partial S_{pq}}{\partial\xi}=\sum_{\mu,\nu}C_{\mu p}S_{\mu\nu}^\xi C_{\nu q}\, ,\\
+S_{pq}^{(\xi)} &=\frac{\partial S_{pq}}{\partial\xi}=\sum_{\mu,\nu}C_{\mu p}S_{\mu\nu}^\xi C_{\nu q}\, ,\\
 S_{\mu\nu}^\xi &=\braket{\frac{\partial\phi_\mu}{\partial\xi}|\phi_\nu}+\braket{\phi_\mu|\frac{\partial\phi_\nu}{\partial\xi}} \,.
 ```
 
@@ -153,29 +155,29 @@ By using the conditions $f_{pq}=\epsilon_p\delta_{pq}$ and $S_{pq}=\delta_{pq}$,
 ```
 where we have used $\gamma_{pq}=\gamma_{qp}$, $\braket{pu||qt}=\braket{qt||pu}$, $\Gamma_{pqrs}=\Gamma_{qpsr}=\Gamma_{srpq}$ (real orbitals), and we have imposed that $\lambda_{pq}=\lambda_{qp}$, and $\omega_{pq}=\omega_{qp}$ (symmetric representation). Some of the indices have been renamed.
 
-To obtain equations for the orbital response Lagrange multipliers, we first have to decouple $\{\lambda\}$ from $\{\omega\}$ by taking the difference
+To obtain equations for the orbital response Lagrange multipliers, we first have to decouple $\boldsymbol{\Lambda}$ from $\boldsymbol{\Omega}$ by taking the difference
 ```{math}
 :label: eq:decouple
 \sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}-\sum_{\mu}C_{\mu t}\frac{\partial L}{\partial C_{\mu u}}&=2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)\nonumber\\&+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
 &+\,\,\,\,\sum_{p,q,r}\left(\Gamma_{tpqr}\braket{up||qr}-\Gamma_{upqr}\braket{tp||qr}\right).
 ```
-The system of equations for $\{\lambda\}$ is then obtained by choosing $u$ and $t$ from different orbital spaces in the following equation,
+The system of equations for $\boldsymbol{\Lambda}$ is then obtained by choosing $u$ and $t$ from different orbital spaces in the following equation,
 ```{math}
 :label: eq:OrbRspEq
 &2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
 &+\sum_{p,q,r}\left(\Gamma_{tpqr}\braket{up||qr}-\Gamma_{upqr}\braket{tp||qr}\right)=0\,.
 ```
-Once $\{\lambda\}$ is determined, $\{\omega\}$ can be calculated in a similar way, using the following equation
+Once $\boldsymbol{\Lambda}$ is determined, $\boldsymbol{\Omega}$ can be calculated in a similar way, using the following equation
 ```{math}
 :label: eq:omega
 2\left(\gamma_{ut}+\lambda_{ut}\right)\epsilon_u+2\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0
 ```
-If we explicitly write the equations for different blocks of $\{\lambda\}$, we find that they are all zero. This simplifies the equation for $\{\omega\}$ to:
+If we explicitly write the equations for different blocks of $\boldsymbol{\Lambda}$, we find that they are all zero. This simplifies the equation for $\boldsymbol{\Omega}$ to:
 ```{math}
 :label: eq:omega_HF
 2\gamma_{ut}\epsilon_u+2\sum_{p,q}\gamma_{pq}\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0
 ```
-The only non-zero block of $\{\omega\}$ is the occupied-occupied block:
+The only non-zero block of $\boldsymbol{\Omega}$ is the occupied-occupied block:
 ```{math}
 :label: eq:omega_hf_oo
 &u=i,\, t=j \nonumber\\
@@ -185,24 +187,26 @@ The only non-zero block of $\{\omega\}$ is the occupied-occupied block:
 &\Leftrightarrow
 \omega_{ij}=-\epsilon_i\delta_{ij},
 ```
-Using the expressions for the density matrices and the non-zero Lagrange multipliers, we get the following expression for the electronic energy derivative:
+Using the expressions for the density matrices and the non-zero Lagrange multipliers, we get the following expression for the electronic HF energy derivative:
 ```{math}
 :label: eq:HF_grad_final
-\frac{\mathrm{d}E}{\mathrm{d}\xi}&=\sum_{i,j}\delta_{ij} h^\xi_{ij}+\sum_{i,j}\delta_{ij}\sum_{k}\braket{ik||jk}^\xi-\frac{1}{2}\sum_{i,j,k,l}\delta_{ik}\delta_{jl}\braket{ij||kl}^\xi-\sum_{i,j}\epsilon_{i}\delta_{ij}S^\xi_{ij}\nonumber \\
-&=\sum_{i}h^\xi_{ii}+\frac{1}{2}\sum_{i,j}\braket{ij||ij}^\xi-\sum_{i}\epsilon_{i}S^\xi_{ii}
+\frac{\mathrm{d}E_{\text{HF}}}{\mathrm{d}\xi}&=\sum_{i,j}\delta_{ij} h^{(\xi)}_{ij}+\sum_{i,j}\delta_{ij}\sum_{k}\braket{ik||jk}^{(\xi)} - \frac{1}{2}\sum_{i,j,k,l}\delta_{ik}\delta_{jl}\braket{ij||kl}^{(\xi)}-\sum_{i,j}\epsilon_{i}\delta_{ij}S^{(\xi)}_{ij}\nonumber \\
+&=\sum_{i}h^{(\xi)}_{ii}+\frac{1}{2}\sum_{i,j}\braket{ij||ij}^{(\xi)}-\sum_{i}\epsilon_{i}S^{(\xi)}_{ii}
 ```
-Finally, the derivative of the total energy is obtained by adding the trivial contribution from the nuclear repulsion energy term {cite}`Szabo2012`.
+Finally, the derivative of the total energy is obtained by adding the trivial contribution from the nuclear repulsion energy term {cite}`Szabo2012`,
+$\frac{\mathrm{d} V_{nn}}{\mathrm{d} \xi}$.
 
 #### DFT
 To be added...
 
 #### MP2
-In the case of Møller--Plesset theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient. These are the so-called t-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response. 
+In the case of Møller--Plesset (MP) perturbation theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient.
+These are the so-called $t$-amplitudes $\mathbf{T}$, so the corresponding term which has to be determined is called amplitude response.
 ```{math}
 :label: eq:energy_functional_MP
-\frac{dE}{d\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{d\mathbf{C}}{d\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{d\mathbf{T}}{d\xi} \, .
+\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{\mathrm{d}\mathbf{T}}{\mathrm{d}\xi} \, .
 ```
-The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the t-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let's illustrate the procedure for the second order Møller--Plesset theory, MP2. At this level of theory, the total energy functional is written as:
+The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the $t$-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let's illustrate the procedure for the second order Møller--Plesset theory, MP2. At this level of theory, the total energy functional is written as:
 ```{math}
 :label: eq:MP2_energy_fct
 E_0=E_\mathrm{HF}+E_\mathrm{MP2}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}-\frac{1}{4}\sum_{i,j,a,b}\braket{ij||ab}t_{ijab}, \label{eq:MP2_energy_fct}
@@ -212,20 +216,20 @@ where
 :label: eq:MP2_tamplitudes
 t_{ijab} = \frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j} \label{eq:MP2_tamplitudes}
 ```
-are the MP2 t-amplitudes.
+are the MP2 $t$-amplitudes.
 
 The Lagrangian corresponding to this energy functional is:
 ```{math}
 :label: eq:MP2_Lagrangian
 L(\mathbf{C}, \mathbf{T},\boldsymbol{\Lambda},\boldsymbol{\Omega},\mathbf{\tilde{T}})=E_\mathrm{0}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right)+\sum_{i,j,a,b}\tilde{t}_{ijab}f(t_{ijab})\,.
 ```
-Here, $\tilde{T}=\{\tilde{t}_{ijab}\}$ are the amplitude response Lagrange multipliers and $f(t_{ijab})=0$ is the constraint. For MP2, this is:
+Here, $\tilde{\mathbf{T}}=\{\tilde{t}_{ijab}\}$ are the amplitude response Lagrange multipliers and $f(t_{ijab})=0$ is the constraint. For MP2, this is:
 ```{math}
 :label: eq:t_condition
 f(t_{ijab})=t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\,  .
 ```
 
-The amplitude response Lagrange multipliers are determined by imposing the Lagrangian to be stationary with respect to the t-amplitudes.
+The amplitude response Lagrange multipliers are determined by imposing the Lagrangian to be stationary with respect to the $t$-amplitudes.
 ```{math}
 :label: eq:amplitude_rsp_general
 \frac{\partial L}{\partial \mathbf{T}}=0\,.
@@ -340,26 +344,35 @@ The derivation of excited state gradients follows the same procedure as illustra
 6. Determine the energy gradient.
 
 #### Tamm--Dancoff approximation
-<span style="color:red"> This has been written for ADC1 -- has to be re-written for TDA.</span>
+<span style="color:red"> This has been written for ADC(1) -- has to be re-written for TDA. (Or should we call it CIS?)</span>
 
-To illustrate this procedure, we will refer to ADC(1) (add link). Note that ADC(1) is equivalent to time-dependent Hartree-Fock (TDHF) in the Tamm--Dancoff approximation (TDA) (add link) and configuration interaction singles (CIS) (add link). 
+To illustrate this procedure, we will take linear-response time-dependent Hartree--Fock (TDHF) theory within the Tamm-Dancoff approximation (TDA) {cite}`Dreuw2005`
+as an example, which is equivalent to the configuration interaction singles (CIS) method {cite}`Foresman1992`.
+Note that for excitation energies and excited-state properties, TDHF/TDA and CIS also yield the same results as the ADC(1) scheme {cite}`Dreuw2015`.
+%%%To illustrate this procedure, we will refer to ADC(1) (add link). Note that ADC(1) is equivalent to time-dependent Hartree-Fock (TDHF) in the Tamm--Dancoff approximation (TDA) (add link) and configuration interaction singles (CIS) (add link). 
 
-Besides the density matrices required for the HF reference state derived above (add link), we need to identify additional one- and two-particle density matrices for the excitation energy. We therefore  formally represent the excitation energy  $\mathbf{X}^\dagger\mathbf{M}\mathbf{X}$ in terms of one- and two- particle density matrices:
+Besides the density matrices required for the HF reference state derived above (add link), we need to identify additional one- and two-particle density matrices for the excitation energy.
+We therefore formally represent the excitation energy $\mathbf{X}^\dagger\mathbf{M}\mathbf{X}$ in terms of one- and two- particle density matrices:
 ```{math}
 :label: eq:excitation_energy_adc1
 \mathbf{X}_n^\dagger\mathbf{M}\mathbf{X}_n = \sum_{p,q}\gamma^{(1)}_{pq}f_{pq} + \frac{1}{4}\sum_{p,q,r,s}\Gamma^{(1)}_{pqrs}\braket{pq||rs}\, ,
 ```
-where $\mathbf{M}=\mathbf{M}^{(0)}+\mathbf{M}^{(1)}$ is the ADC(1) matrix, $\mathbf{X}_n$ is the excitation vector corresponding to excited state $\ket{n}$, and the superscript $(1)$ indicates that we are referring to to the ADC(1) density matrices. 
+where $\mathbf{M}$ is the TDA or CIS matrix, which can be decomposed into a zeroth- and first-order part, $\mathbf{M}=\mathbf{M}^{(0)}+\mathbf{M}^{(1)}$,
+where $\mathbf{M}^{(0)}$ contains Fock-matrix elements and $\mathbf{M}^{(1)}$ the two-electron integrals,
+$\mathbf{X}_n$ is the excitation vector corresponding to excited state $\ket{n}$, and the superscript $(1)$ indicates that we are referring to
+the TDA or ADC(1) density matrices, which are correct through first order in perturbation theory.
 
 To identify the density matrices, we carry out explicitly the matrix-vector multiplication on the left hand side,
 ```{math}
-:label: eq:adc1-indentify-dms
+:label: eq:adc1_identify_dms
 \mathbf{X}_n^\dagger(\mathbf{M}^{(0)}+\mathbf{M}^{(1)})\mathbf{X}_n &= \sum_{i,a,j,b} x_{jb} \left[(\epsilon_a - \epsilon_i)\delta_{ab}\delta_{ij}-\braket{ja||ib}\right] x_{ia}\nonumber\\
 &=\sum_{i,a,j,b} \left(x_{jb}x_{ia}f_{ab}\delta_{ij} - x_{jb}x_{ia}f_{ij}\delta_{ab}-x_{jb}x_{ia}\braket{ja||ib}\right)\,, 
 ```
-where we have used Eqs. {eq}`eq:adcmat_ph_ph_0` and {eq}`eq:adcmat_ph_ph_1` to express the ADC(1) matrix elements and used the fact that the Fock matrix of the underlying reference state is diagonal with orbital eigenvalues on the diagonal $f_{pq}=\epsilon_{p}\delta_{pq}$.
+where we have used Eqs. {eq}`eq:adcmat_ph_ph_0` and {eq}`eq:adcmat_ph_ph_1` to express the ADC(1) matrix elements,
+which correspond to the ones for TDA, and used the fact that the Fock matrix of the underlying reference state is diagonal
+with orbital eigenvalues on the diagonal, $f_{pq}=\epsilon_{p}\delta_{pq}$.
 
-From Eq. {eq}{eq:adc1-identify-dms} we identify the excitation energy density matrices:
+From Eq. {eq}`eq:adc1_identify_dms` we identify the excited-state density matrices:
 ```{math}
 :label: eq:adc1_gamma_oo
 \gamma^{(1)}_{ij} = - \sum_{a}x_{ja}x_{ia}\,,\label{eq:adc1_gamma_oo}
