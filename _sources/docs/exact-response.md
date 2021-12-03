@@ -218,7 +218,6 @@ This equation governs the time-evolution of the wave function with inclusion of 
        {\omega_{n0} + \omega + i\gamma_{n0}} \right] .
 \end{equation*}
 
-(polarizability:label)=
 ### Polarizability
 
 The polarizability $\alpha_{\alpha\beta}(-\omega; \omega)$ is obtained from the linear response function by letting $\hat{\Omega} = \hat{\mu}_\alpha$ and $\hat{V}^\omega = - \hat{\mu}_\beta$. If we assume a set of common damping parameters ($\gamma_{n0} = \gamma$), the formula for the polarizability takes the form

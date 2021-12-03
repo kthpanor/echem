@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,15 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -83,7 +83,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -286,8 +286,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="gradhess.html">
-     Gradients and Hessians
+    <a class="reference internal" href="gradients.html">
+     Gradients
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="hessians.html">
+     Hessians
     </a>
    </li>
    <li class="toctree-l2">
@@ -363,6 +368,33 @@
  </span>
 </p>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="localprop.html">
+   Localized properties
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="esp.html">
+     ESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="resp.html">
+     RESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="loprop.html">
+     LoProp charges and polarizabilities
+    </a>
+   </li>
+  </ul>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="pe.html">
    Polarizable embedding
@@ -499,7 +531,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#relaxation">
@@ -609,22 +641,22 @@
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="c1"># QC software suites and functionalities</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="k">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">gator</span>
 <span class="kn">import</span> <span class="nn">adcc</span>
-<span class="kn">from</span> <span class="nn">veloxchem.rsplinabscross</span> <span class="k">import</span> <span class="n">LinearAbsorptionCrossSection</span>
+<span class="kn">from</span> <span class="nn">veloxchem.rsplinabscross</span> <span class="kn">import</span> <span class="n">LinearAbsorptionCrossSection</span>
 
 <span class="c1"># for vlx</span>
 <span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
 <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
 
 <span class="c1"># au to eV conversion factor</span>
@@ -719,16 +751,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9890271783203  &lt;S^2&gt; = 8.9110941e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.1707263747173  &lt;S^2&gt; = 0.76785153  2S+1 = 2.0177726
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -100.169768736219  &lt;S^2&gt; = 4.3698378e-13  2S+1 = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9890271783204  &lt;S^2&gt; = 8.9093177e-12  2S+1 = 1
+converged SCF energy = -56.1707263747173  &lt;S^2&gt; = 0.76785153  2S+1 = 2.0177726
+converged SCF energy = -100.169768736219  &lt;S^2&gt; = 4.3254289e-13  2S+1 = 1
 </pre></div>
 </div>
 </div>
@@ -889,34 +914,16 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -40.1824898255901  &lt;S^2&gt; = 1.2867929e-11  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -29.4958396253172  &lt;S^2&gt; = 0.78164491  2S+1 = 2.0313984
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.1650803806072  &lt;S^2&gt; = 4.4915183e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -41.2658591428905  &lt;S^2&gt; = 0.77538402  2S+1 = 2.0252249
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9890271783204  &lt;S^2&gt; = 8.9102059e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.1707263747172  &lt;S^2&gt; = 0.76785148  2S+1 = 2.0177725
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -99.9883680524569  &lt;S^2&gt; = 1.8305357e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -74.5169382026287  &lt;S^2&gt; = 0.76048532  2S+1 = 2.010458
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -128.47753647693  &lt;S^2&gt; = -4.4408921e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -96.5451008872392  &lt;S^2&gt; = 0.7558045  2S+1 = 2.0057961
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -40.18248982559  &lt;S^2&gt; = 1.2869705e-11  2S+1 = 1
+converged SCF energy = -29.4958396253172  &lt;S^2&gt; = 0.78164491  2S+1 = 2.0313984
+converged SCF energy = -56.1650803806071  &lt;S^2&gt; = 4.4888537e-12  2S+1 = 1
+converged SCF energy = -41.2658591428905  &lt;S^2&gt; = 0.77538402  2S+1 = 2.0252249
+converged SCF energy = -75.9890271783204  &lt;S^2&gt; = 8.9110941e-12  2S+1 = 1
+converged SCF energy = -56.1707263747174  &lt;S^2&gt; = 0.76785148  2S+1 = 2.0177725
+converged SCF energy = -99.9883680524569  &lt;S^2&gt; = 1.8252067e-12  2S+1 = 1
+converged SCF energy = -74.5169382026287  &lt;S^2&gt; = 0.76048532  2S+1 = 2.010458
+converged SCF energy = -128.47753647693  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
+converged SCF energy = -96.5451008872392  &lt;S^2&gt; = 0.7558045  2S+1 = 2.0057961
 </pre></div>
 </div>
 </div>
@@ -992,139 +999,87 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9890271783229
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/thomas/pkg/adcc/adcc/backends/__init__.py:48: UserWarning: Could not check host program psi4 minimal version, since __version__ tag not found. Proceeding anyway.
+  &quot;&quot;.format(module)
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc1 singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     4       0.10573   14ms  [20.3034032  20.40318715]
-  2     8      0.029309   25ms  [20.24463705 20.27156463]
-  3    12    0.00022724   37ms  [20.24396663 20.26536094]
+  1     4       0.10573  119ms  [20.3034032  20.40318715]
+  2     8      0.029309  159ms  [20.24463705 20.27156463]
+  3    12    0.00022724   97ms  [20.24396663 20.26536094]
 === Converged ===
     Number of matrix applies:    12
-    Total solver time:           79.870ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2 singlet Jacobi-Davidson ...
+    Total solver time:           381.164ms
+Starting cvs-adc2 singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     4        2.7182  190ms  [20.32021518 20.4183277 ]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8        0.2748  126ms  [19.73738238 19.85025332]
-  3    12     0.0065501  175ms  [19.72453857 19.80831836]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    16     0.0011148  181ms  [19.72393684 19.80695317]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    20    0.00012468  217ms  [19.72387817 19.80675888]
+  1     4        2.7182  194ms  [20.32021518 20.4183277 ]
+  2     8        0.2748  233ms  [19.73738238 19.85025332]
+  3    12     0.0065501  128ms  [19.72453857 19.80831836]
+  4    16     0.0011148  166ms  [19.72393684 19.80695317]
+  5    20    0.00012468  162ms  [19.72387817 19.80675888]
 === Converged ===
     Number of matrix applies:    20
-    Total solver time:           903.425ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
+    Total solver time:           898.095ms
+Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     4        2.7182  152ms  [20.32021518 20.4183277 ]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8       0.50135  170ms  [19.67341669 19.7822023 ]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    12      0.032376  221ms  [19.62437736 19.70883848]
-  4    16     0.0026694  238ms  [19.62134632 19.70354934]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    20    0.00062428  250ms  [19.62092748 19.70273541]
+  1     4        2.7182  141ms  [20.32021518 20.4183277 ]
+  2     8       0.50135  138ms  [19.67341669 19.7822023 ]
+  3    12      0.032376  188ms  [19.62437736 19.70883848]
+  4    16     0.0026694  171ms  [19.62134632 19.70354934]
+  5    20    0.00062428  188ms  [19.62092748 19.70273541]
 === Restart ===
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6     8    0.00018444  298ms  [19.6209144  19.70260657]
+  6     8    0.00018444  164ms  [19.6209144  19.70260657]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             1s 342ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc3 singlet Jacobi-Davidson ...
+    Total solver time:           997.782ms
+Starting cvs-adc3 singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     4        2.0529   77ms  [20.29273463 20.3910156 ]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8       0.39616  228ms  [19.82796592 19.91387878]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    12       0.02035  231ms  [19.78931938 19.85480006]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    16     0.0052039  283ms  [19.7861078  19.84949286]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    20     0.0005282  279ms  [19.78568304 19.84840683]
+  1     4        2.0529   69ms  [20.29273463 20.3910156 ]
+  2     8       0.39616  135ms  [19.82796592 19.91387878]
+  3    12       0.02035  170ms  [19.78931938 19.85480006]
+  4    16     0.0052039  223ms  [19.7861078  19.84949286]
+  5    20     0.0005282  290ms  [19.78568304 19.84840683]
 === Restart ===
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6     8    9.7241e-05  277ms  [19.78567193 19.84830223]
+  6     8    9.7241e-05  200ms  [19.78567193 19.84830223]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             1s 387ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9890271783204  &lt;S^2&gt; = 8.905765e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.1707263747173  &lt;S^2&gt; = 0.76785148  2S+1 = 2.0177725
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting adc1  Jacobi-Davidson ...
+    Total solver time:             1s  95ms
+converged SCF energy = -75.9890271783204  &lt;S^2&gt; = 8.9102059e-12  2S+1 = 1
+converged SCF energy = -56.1707263747173  &lt;S^2&gt; = 0.76785148  2S+1 = 2.0177725
+Starting adc1  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
   1     4      0.049483   14ms  [-19.11819684 -19.02644396]
-  2     8    1.3051e-05   25ms  [-19.11905858 -19.02755065]
+  2     8    1.3051e-05   22ms  [-19.11905858 -19.02755065]
 === Converged ===
     Number of matrix applies:    8
-    Total solver time:           41.517ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting adc2  Jacobi-Davidson ...
+    Total solver time:           37.120ms
+Starting adc2  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     4         7.266   1.2s  [-19.07633391 -18.98282659]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8      0.028336  218ms  [-19.39301518 -19.31945214]
-  3    12    1.5342e-05  194ms  [-19.39371908 -19.32028065]
+  1     4         7.266   1.0s  [-19.07633391 -18.98282659]
+  2     8      0.028336  142ms  [-19.39301518 -19.31945214]
+  3    12    1.5342e-05  196ms  [-19.39371908 -19.32028065]
 === Converged ===
     Number of matrix applies:    12
-    Total solver time:             1s 645ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting adc2x  Jacobi-Davidson ...
+    Total solver time:             1s 355ms
+Starting adc2x  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     4         7.266   1.5s  [-19.07633391 -18.98282659]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8         1.092  232ms  [-19.42248597 -19.35490846]
-  3    12     0.0059957  266ms  [-19.45381273 -19.38228049]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    16    9.3044e-05  255ms  [-19.45398823 -19.38248508]
+  1     4         7.266   1.1s  [-19.07633391 -18.98282659]
+  2     8         1.092  153ms  [-19.42248597 -19.35490846]
+  3    12     0.0059957  217ms  [-19.45381273 -19.38228049]
+  4    16    9.3044e-05  283ms  [-19.45398823 -19.38248508]
 === Converged ===
     Number of matrix applies:    16
-    Total solver time:             2s 265ms
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting adc3  Jacobi-Davidson ...
+    Total solver time:             1s 756ms
+Starting adc3  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     4        6.9216  183ms  [-19.07639784 -18.98297488]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2     8       0.88049  307ms  [-19.34067965 -19.26610519]
-  3    12     0.0050128  273ms  [-19.36657392 -19.28949172]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    16     9.241e-05  306ms  [-19.36671855 -19.28965944]
+  1     4        6.9216  135ms  [-19.07639784 -18.98297488]
+  2     8       0.88049  232ms  [-19.34067965 -19.26610519]
+  3    12     0.0050128  230ms  [-19.36657392 -19.28949172]
+  4    16     9.241e-05  307ms  [-19.36671855 -19.28965944]
 === Converged ===
     Number of matrix applies:    16
-    Total solver time:             1s  78ms
+    Total solver time:           912.013ms
 </pre></div>
 </div>
 </div>
@@ -1242,179 +1197,47 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -2.85516042615488  &lt;S^2&gt; = 1.3322676e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -2.85525300822691  &lt;S^2&gt; = 1.110223e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -1.99426876611128  &lt;S^2&gt; = 0.75  2S+1 = 2
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -1.99436899680469  &lt;S^2&gt; = 0.75  2S+1 = 2
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -2.85516042615488  &lt;S^2&gt; = -4.4408921e-16  2S+1 = 1
+converged SCF energy = -2.85525300824149  &lt;S^2&gt; = -4.4408921e-16  2S+1 = 1
+converged SCF energy = -1.99426876611128  &lt;S^2&gt; = 0.75  2S+1 = 2
+converged SCF energy = -1.99436899681535  &lt;S^2&gt; = 0.75  2S+1 = 2
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.x2c.sfx2c1e.sfx2c1e.&lt;locals&gt;.SFX2C1E_SCF&#39;&gt;
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -14.5695044397229  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -14.5720013914555  &lt;S^2&gt; = -2.220446e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -10.0436351801509  &lt;S^2&gt; = 0.75848247  2S+1 = 2.0084646
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -10.0457383213543  &lt;S^2&gt; = 0.75849935  2S+1 = 2.0084814
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -37.5910403939196  &lt;S^2&gt; = -2.220446e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -37.6059227998345  &lt;S^2&gt; = 2.6645353e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -26.6597884405474  &lt;S^2&gt; = 0.75752228  2S+1 = 2.0075082
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -26.671134300774  &lt;S^2&gt; = 0.75754084  2S+1 = 2.0075267
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -74.658565893707  &lt;S^2&gt; = -5.3290705e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -74.7104111450784  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -54.587706038367  &lt;S^2&gt; = 0.75669834  2S+1 = 2.0066872
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -54.6258998929679  &lt;S^2&gt; = 0.75671779  2S+1 = 2.0067065
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -128.47753647693  &lt;S^2&gt; = -2.6645353e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -128.613589398693  &lt;S^2&gt; = 4.4408921e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -96.5451008872393  &lt;S^2&gt; = 0.7558045  2S+1 = 2.0057961
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -96.6441723559853  &lt;S^2&gt; = 0.75582486  2S+1 = 2.0058164
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -199.599964527342  &lt;S^2&gt; = -3.5527137e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -199.904947912667  &lt;S^2&gt; = -2.6645353e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -151.501422326007  &lt;S^2&gt; = 0.753335  2S+1 = 2.0033322
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -151.726389870158  &lt;S^2&gt; = 0.75336228  2S+1 = 2.0033595
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -288.775708191847  &lt;S^2&gt; = 2.6645353e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -289.376057842852  &lt;S^2&gt; = -3.5527137e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -220.965058272559  &lt;S^2&gt; = 0.75256466  2S+1 = 2.002563
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -221.408704675141  &lt;S^2&gt; = 0.75259131  2S+1 = 2.0025896
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -397.401239622075  &lt;S^2&gt; = 2.6645353e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -398.478834595186  &lt;S^2&gt; = 1.7763568e-15  2S+1 = 1
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="mi">57</span><span class="n">c2bbbe59a6</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span>     <span class="n">ion_nr</span>  <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">29</span>     <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">ion_nr</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">30</span>     <span class="n">ion_nr</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">31</span>     <span class="c1"># Perform relativistic core-hole calculation (can use the same gues wave function)</span>
-<span class="g g-Whitespace">     </span><span class="mi">32</span>     <span class="n">ion_rel</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">x2c1e</span><span class="p">()</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/lib/misc.py</span> in <span class="ni">aliased_fn</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">596</span>     <span class="n">fname</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
-<span class="g g-Whitespace">    </span><span class="mi">597</span>     <span class="k">def</span> <span class="nf">aliased_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">598</span>         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">599</span> 
-<span class="g g-Whitespace">    </span><span class="mi">600</span>     <span class="k">if</span> <span class="n">alias_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/scf/hf.py</span> in <span class="ni">scf</span><span class="nt">(self, dm0, **kwargs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1640</span>             <span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e_tot</span><span class="p">,</span> \
-<span class="g g-Whitespace">   </span><span class="mi">1641</span>                     <span class="bp">self</span><span class="o">.</span><span class="n">mo_energy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mo_occ</span> <span class="o">=</span> \
-<span class="ne">-&gt; </span><span class="mi">1642</span>                     <span class="n">kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_tol_grad</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1643</span>                            <span class="n">dm0</span><span class="o">=</span><span class="n">dm0</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1644</span>                            <span class="n">conv_check</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conv_check</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/scf/hf.py</span> in <span class="ni">kernel</span><span class="nt">(mf, conv_tol, conv_tol_grad, dump_chk, dm0, callback, conv_check, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>         <span class="n">fock</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">get_fock</span><span class="p">(</span><span class="n">h1e</span><span class="p">,</span> <span class="n">s1e</span><span class="p">,</span> <span class="n">vhf</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">cycle</span><span class="p">,</span> <span class="n">mf_diis</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">172</span>         <span class="n">mo_energy</span><span class="p">,</span> <span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="n">s1e</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">173</span>         <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">get_occ</span><span class="p">(</span><span class="n">mo_energy</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">174</span>         <span class="n">dm</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">make_rdm1</span><span class="p">(</span><span class="n">mo_coeff</span><span class="p">,</span> <span class="n">mo_occ</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">175</span>         <span class="c1"># attach mo_coeff and mo_occ to dm to improve DFT get_veff efficiency</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/scf/addons.py</span> in <span class="ni">get_occ</span><span class="nt">(mo_energy, mo_coeff)</span>
-<span class="g g-Whitespace">    </span><span class="mi">253</span>         <span class="n">nocc_a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">setocc</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="g g-Whitespace">    </span><span class="mi">254</span>         <span class="n">nocc_b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">setocc</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="ne">--&gt; </span><span class="mi">255</span>         <span class="n">s_a</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">,</span> <span class="p">(</span><span class="n">coef_occ_a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">get_ovlp</span><span class="p">(),</span> <span class="n">mo_coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="g g-Whitespace">    </span><span class="mi">256</span>         <span class="n">s_b</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">,</span> <span class="p">(</span><span class="n">coef_occ_b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mf</span><span class="o">.</span><span class="n">get_ovlp</span><span class="p">(),</span> <span class="n">mo_coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="g g-Whitespace">    </span><span class="mi">257</span>         <span class="c1">#choose a subset of mo_coeff, which maximizes &lt;old|now&gt;</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/scf/hf.py</span> in <span class="ni">get_ovlp</span><span class="nt">(self, mol)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1496</span>     <span class="k">def</span> <span class="nf">get_ovlp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">1497</span>         <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mol</span>
-<span class="ne">-&gt; </span><span class="mi">1498</span>         <span class="k">return</span> <span class="n">get_ovlp</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1499</span> 
-<span class="g g-Whitespace">   </span><span class="mi">1500</span>     <span class="n">get_fock</span> <span class="o">=</span> <span class="n">get_fock</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/scf/hf.py</span> in <span class="ni">get_ovlp</span><span class="nt">(mol)</span>
-<span class="g g-Whitespace">    </span><span class="mi">328</span>     <span class="sd">&#39;&#39;&#39;Overlap matrix</span>
-<span class="g g-Whitespace">    </span><span class="mi">329</span><span class="sd">     &#39;&#39;&#39;</span>
-<span class="ne">--&gt; </span><span class="mi">330</span>     <span class="k">return</span> <span class="n">mol</span><span class="o">.</span><span class="n">intor_symmetric</span><span class="p">(</span><span class="s1">&#39;int1e_ovlp&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">331</span> 
-<span class="g g-Whitespace">    </span><span class="mi">332</span> 
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/gto/mole.py</span> in <span class="ni">intor_symmetric</span><span class="nt">(self, intor, comp)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3290</span>          <span class="p">[</span> <span class="mf">0.00000000</span><span class="o">+</span><span class="mf">0.j</span> <span class="o">-</span><span class="mf">0.67146312</span><span class="o">+</span><span class="mf">0.j</span>  <span class="mf">0.00000000</span><span class="o">+</span><span class="mf">0.j</span> <span class="o">-</span><span class="mf">1.69771092</span><span class="o">+</span><span class="mf">0.j</span><span class="p">]]</span>
-<span class="g g-Whitespace">   </span><span class="mi">3291</span>         <span class="s1">&#39;&#39;&#39;</span>
-<span class="ne">-&gt; </span><span class="mi">3292</span><span class="s1">         return self.intor(intor, comp, 1, aosym=&#39;s4&#39;)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3293</span><span class="s1"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">3294</span><span class="s1">     def intor_asymmetric(self, intor, comp=None):</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/gto/mole.py</span> in <span class="ni">intor</span><span class="nt">(self, intor, comp, hermi, aosym, out, shls_slice)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3252</span><span class="s1">         else:</span>
-<span class="g g-Whitespace">   </span><span class="mi">3253</span><span class="s1">             bas = self._bas</span>
-<span class="ne">-&gt; </span><span class="mi">3254</span><span class="s1">         return moleintor.getints(intor, self._atm, bas, self._env,</span>
-<span class="g g-Whitespace">   </span><span class="mi">3255</span><span class="s1">                                  shls_slice, comp, hermi, aosym, out=out)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3256</span><span class="s1"> </span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/gto/moleintor.py</span> in <span class="ni">getints</span><span class="nt">(intor_name, atm, bas, env, shls_slice, comp, hermi, aosym, ao_loc, cintopt, out)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span><span class="s1">         intor_name.startswith(&#39;ECP&#39;) or</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span><span class="s1">         intor_name.startswith(&#39;int2c2e&#39;)):</span>
-<span class="ne">--&gt; </span><span class="mi">230</span><span class="s1">         return getints2c(intor_name, atm, bas, env, shls_slice, comp,</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span><span class="s1">                          hermi, ao_loc, cintopt, out)</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span><span class="s1">     elif intor_name.startswith(&#39;int2e&#39;) or intor_name.startswith(&#39;int4c1e&#39;):</span>
-
-<span class="nn">~/.local/lib/python3.8/site-packages/pyscf/gto/moleintor.py</span> in <span class="ni">getints2c</span><span class="nt">(intor_name, atm, bas, env, shls_slice, comp, hermi, ao_loc, cintopt, out)</span>
-<span class="g g-Whitespace">    </span><span class="mi">468</span><span class="s1"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">469</span><span class="s1">         fn = getattr(libcgto, drv_name)</span>
-<span class="ne">--&gt; </span><span class="mi">470</span><span class="s1">         fn(getattr(libcgto, intor_name), mat.ctypes.data_as(ctypes.c_void_p),</span>
-<span class="g g-Whitespace">    </span><span class="mi">471</span><span class="s1">            ctypes.c_int(comp), ctypes.c_int(hermi),</span>
-<span class="g g-Whitespace">    </span><span class="mi">472</span><span class="s1">            (ctypes.c_int*4)(*(shls_slice[:4])),</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -14.5695044397229  &lt;S^2&gt; = 4.4408921e-16  2S+1 = 1
+converged SCF energy = -14.5720013914685  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
+converged SCF energy = -10.0436351801509  &lt;S^2&gt; = 0.75848247  2S+1 = 2.0084646
+converged SCF energy = -10.0457383213629  &lt;S^2&gt; = 0.75849935  2S+1 = 2.0084814
+converged SCF energy = -37.5910403939196  &lt;S^2&gt; = -4.8849813e-15  2S+1 = 1
+converged SCF energy = -37.6059227997881  &lt;S^2&gt; = -3.9968029e-15  2S+1 = 1
+converged SCF energy = -26.6597884405479  &lt;S^2&gt; = 0.7575222  2S+1 = 2.0075081
+converged SCF energy = -26.67113430078  &lt;S^2&gt; = 0.75754084  2S+1 = 2.0075267
+converged SCF energy = -74.6585658937069  &lt;S^2&gt; = 1.7763568e-15  2S+1 = 1
+converged SCF energy = -74.7104111450883  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
+converged SCF energy = -54.587706038367  &lt;S^2&gt; = 0.75669834  2S+1 = 2.0066872
+converged SCF energy = -54.6258998929871  &lt;S^2&gt; = 0.75671779  2S+1 = 2.0067065
+converged SCF energy = -128.47753647693  &lt;S^2&gt; = 2.6645353e-15  2S+1 = 1
+converged SCF energy = -128.613589398714  &lt;S^2&gt; = 4.4408921e-15  2S+1 = 1
+converged SCF energy = -96.5451008872393  &lt;S^2&gt; = 0.7558045  2S+1 = 2.0057961
+converged SCF energy = -96.6441723559882  &lt;S^2&gt; = 0.75582486  2S+1 = 2.0058164
+converged SCF energy = -199.599964527342  &lt;S^2&gt; = 2.6645353e-15  2S+1 = 1
+converged SCF energy = -199.904947912578  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
+converged SCF energy = -151.501422326007  &lt;S^2&gt; = 0.753335  2S+1 = 2.0033322
+converged SCF energy = -151.72638987011  &lt;S^2&gt; = 0.75336228  2S+1 = 2.0033595
+converged SCF energy = -288.775708191847  &lt;S^2&gt; = -4.4408921e-15  2S+1 = 1
+converged SCF energy = -289.376057842894  &lt;S^2&gt; = -1.7763568e-15  2S+1 = 1
+converged SCF energy = -220.965058272559  &lt;S^2&gt; = 0.75256466  2S+1 = 2.002563
+converged SCF energy = -221.408704675211  &lt;S^2&gt; = 0.75259131  2S+1 = 2.0025896
+converged SCF energy = -397.401239622076  &lt;S^2&gt; = 3.5527137e-15  2S+1 = 1
+converged SCF energy = -398.478834595137  &lt;S^2&gt; = 1.2434498e-14  2S+1 = 1
+converged SCF energy = -306.489178848092  &lt;S^2&gt; = 0.75216294  2S+1 = 2.0021618
+converged SCF energy = -307.287378477724  &lt;S^2&gt; = 0.75218987  2S+1 = 2.0021887
+converged SCF energy = -526.785000596125  &lt;S^2&gt; = 3.5527137e-15  2S+1 = 1
+converged SCF energy = -528.588246003932  &lt;S^2&gt; = -3.5527137e-15  2S+1 = 1
+converged SCF energy = -409.377255361393  &lt;S^2&gt; = 0.75189828  2S+1 = 2.0018974
+converged SCF energy = -410.716766221899  &lt;S^2&gt; = 0.75192587  2S+1 = 2.0019249
 </pre></div>
 </div>
 </div>
@@ -1730,8 +1553,8 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="section" id="self-interaction-error-in-dft">
 <span id="sec-xray-topics-sie"></span><h2>Self-interaction error in DFT<a class="headerlink" href="#self-interaction-error-in-dft" title="Permalink to this headline">¶</a></h2>
 <p>For a single-electron systems the following equality should hold for the two-electron terms:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fe45712d-d6ac-408e-bfc2-5d83a77ff9ef">
-<span class="eqno">(5)<a class="headerlink" href="#equation-fe45712d-d6ac-408e-bfc2-5d83a77ff9ef" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-0a684164-e868-4677-9103-ec7bf16dbfca">
+<span class="eqno">(5)<a class="headerlink" href="#equation-0a684164-e868-4677-9103-ec7bf16dbfca" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 J[\rho] + E_{xc} [\rho] = 0.0
 \end{equation}\]</div>
 <p>This cancellation is preserved within HF theory, but for any approximate functionals in KS-DFT the equality will no longer hold, resulting in the potentially significant errors due to spurious self-interactions. Reformulated, the Coulomb self-repulsion of each electron included in the Coulomb operator is exactly canceled by the nonlocal exchange self-attraction in Hartree-Fock, but this is no longer the case when the exchange operator is replaced by an approximate exchange functional.</p>
@@ -1774,13 +1597,13 @@ J[\rho] + E_{xc} [\rho] = 0.0
     <span class="k">else</span><span class="p">:</span>          <span class="n">s_x</span> <span class="o">=</span> <span class="mf">0.08</span> 
     <span class="n">b_x</span>      <span class="o">=</span> <span class="mf">1.00</span> <span class="o">-</span> <span class="n">h_x</span> <span class="o">-</span> <span class="n">s_x</span>
     <span class="n">v_e</span><span class="p">,</span> <span class="n">v_l</span> <span class="o">=</span> <span class="mf">0.19</span><span class="p">,</span> <span class="mf">0.81</span>
-    <span class="n">xc</span>       <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{h_x:}</span><span class="s1"> * HF + </span><span class="si">{s_x:}</span><span class="s1"> * Slater + </span><span class="si">{b_x:}</span><span class="s1"> * B88, </span><span class="si">{v_l:}</span><span class="s1"> * LYP + </span><span class="si">{v_e:}</span><span class="s1"> * VWN&#39;</span>
+    <span class="n">xc</span>       <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">h_x</span><span class="si">:}</span><span class="s1"> * HF + </span><span class="si">{</span><span class="n">s_x</span><span class="si">:}</span><span class="s1"> * Slater + </span><span class="si">{</span><span class="n">b_x</span><span class="si">:}</span><span class="s1"> * B88, </span><span class="si">{</span><span class="n">v_l</span><span class="si">:}</span><span class="s1"> * LYP + </span><span class="si">{</span><span class="n">v_e</span><span class="si">:}</span><span class="s1"> * VWN&#39;</span>
     <span class="n">E_mo</span><span class="p">,</span> <span class="n">E_delta</span> <span class="o">=</span> <span class="n">dft_delta</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span><span class="n">xc</span><span class="p">)</span>
     <span class="n">hf_blyp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E_mo</span><span class="p">)</span>
     <span class="n">hf_blyp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E_delta</span><span class="p">)</span>
     <span class="c1"># PBEx</span>
     <span class="n">p_x</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">h_x</span>
-    <span class="n">xc</span>  <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{h_x:}</span><span class="s1"> * HF + </span><span class="si">{p_x:}</span><span class="s1"> * PBE, PBE&#39;</span>
+    <span class="n">xc</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">h_x</span><span class="si">:}</span><span class="s1"> * HF + </span><span class="si">{</span><span class="n">p_x</span><span class="si">:}</span><span class="s1"> * PBE, PBE&#39;</span>
     <span class="n">E_mo</span><span class="p">,</span> <span class="n">E_delta</span> <span class="o">=</span> <span class="n">dft_delta</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span><span class="n">xc</span><span class="p">)</span>
     <span class="n">hf_pbe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E_mo</span><span class="p">)</span>
     <span class="n">hf_pbe</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E_delta</span><span class="p">)</span>
@@ -2157,32 +1980,12 @@ Niter n_ss  max_residual  time  Ritz values
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="xray_analysis.html" title="previous page">Spectrum analysis</a>
+    <a class='right-next' id="next-link" href="xray_large.html" title="next page">Larger systems</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="xray_analysis.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Spectrum analysis</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="xray_large.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Larger systems</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>

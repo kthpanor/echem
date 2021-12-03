@@ -211,9 +211,9 @@ The force constants are then converted from atomic units to milli-dyne per ångs
 
 
 
-### Spectral intensities
+### Infrared intensities
 
-In order to calculate intensities in the [infrared (IR) spectrum](sec:ir-tutorial),
+In order to calculate intensities in the infrared (IR) spectrum,
 the nuclear derivative of the electric dipole moment $\boldsymbol{\mu} = (\mu_x, \mu_y, \mu_z)$ is needed,
 where each component $\mu$ can be decomposed into an electronic and a nuclear contribution, $\mu = \mu_{\text{e}} + \mu_{\text{n}}$.
 The nuclear part of the dipole moment $\mu_{\text{n}}$ is simply given by the classical expression
@@ -242,8 +242,8 @@ where the perturbed density from Eq. {eq}`eq:perturbed_density` and the derivati
 The IR transition dipole moment is then calculated by taking the dot product of the dipole moment gradient {eq}`eq:electronic_dipole_derivative`
 with the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, and the IR intensity as the square norm of corresponding transition moment.
 The intensities are successively converted to the unit of km mol$^{-1}$.
-Vibrational [Raman intensities](sec:raman-tutorial) are calculated in an analogous manner, except that the nuclear derivative
-of the electric-dipole [polarizability](polarizability:label) $\boldsymbol{\alpha}$ is needed.
+Raman intensities are calculated in an analogous manner, except that the nuclear derivative
+of the electric-dipole polarizability $\boldsymbol{\alpha}$ is needed.
 
 
 
