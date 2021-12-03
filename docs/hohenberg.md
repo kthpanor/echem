@@ -131,15 +131,15 @@ $$
 F[n(\mathbf{r})] + V[n(\mathbf{r})] \geq E_0
 $$
 
-This implies a variational principle with respect to $N$-representable densities and the minimum condition for the energy functional $E[\rho(\mathbf{r})]$ can be written in terms of the variation of a Lagrangian that preserves the number of electrons
+This implies a variational principle with respect to $N$-representable densities and the minimization condition for the energy functional can be written in terms of the variation of a Lagrangian that preserves the number of electrons
 
 \begin{equation*}
-\delta \Big[ E[\rho(\mathbf{r})] + \mu \Big( N - \int n(\mathbf{r}) \, d^3\mathbf{r} \Big) \Big] = 0 
+\delta \Big[ E[n(\mathbf{r})] + \mu \Big( N - \int n(\mathbf{r}) \, d^3\mathbf{r} \Big) \Big] = 0 
 \end{equation*}
 
 where the Lagrange multiplier $\mu$ is the chemical potential of the molecular system, *i.e.*, $\mu = dE/dN$. This stationary condition can alternatively be written
 
 \begin{equation*}
-\mu = v(\mathbf{r}) + \frac{\delta F[\rho(\mathbf{r})]}{\delta \rho(\mathbf{r})} 
+\mu = v(\mathbf{r}) + \frac{\delta F[n(\mathbf{r})]}{\delta n(\mathbf{r})} 
 \end{equation*}
 
