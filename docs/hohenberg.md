@@ -125,7 +125,7 @@ $$
 F[n_0(\mathbf{r})] + V[n_0(\mathbf{r})] = E_0
 $$
 
-and, for $N$-reprentable densities, it was shown that
+and, for $N$-representable densities, it was shown that
 
 $$
 F[n(\mathbf{r})] + V[n(\mathbf{r})] \geq E_0
