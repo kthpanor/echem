@@ -19,7 +19,7 @@ n(\mathbf{r}) = \sum_{i} | \psi_i(\mathbf{r})|^2
 Underlying this idea, there is a representation of the electronic ground state in terms of a Slater determinant known as the Kohn–Sham reference state
 
 \begin{equation*}
-\Psi_s = \frac{1}{\sqrt{N!}} \det \big[\psi_1 \psi_2\cdots\psi_N\big]
+| \Psi_s \rangle = \frac{1}{\sqrt{N!}} \det \big[\psi_1 \psi_2\cdots\psi_N\big]
 \end{equation*}
 
 which ensures that the density is [$N$-representable](N-representability).
@@ -108,7 +108,7 @@ Functionals of this group explicitly incorporate a fraction of the exact Hartree
 
 ### Range separated exchange-correlation functionals
 
-Functionals of this group explicitly partition the XC contribution to the energy functional into short- and long-range parts. Typically, the same partitioning is also applied to the classical Coulomb term to ensure correct asymptotic behavior of $(J[n(\mathbf{r})] + E_{xc}[n(\mathbf{r})])$. The functionals of this type are frequently employed in studies of excited states and optical properties of molecules in connection with time-dependent DFT methods. Among these functionals, the CAM-B3LYP XC functional {cite}`funcamb3lyp` is the most popular one, and frequently provides a valued alternative to \textit{ab initio} methods in studies of molecular systems with charge-transfer character.  
+Functionals of this group explicitly partition the XC contribution to the energy functional into short- and long-range parts. Typically, the same partitioning is also applied to the classical Coulomb term to ensure correct asymptotic behavior of $(J[n(\mathbf{r})] + E_{xc}[n(\mathbf{r})])$. The functionals of this type are frequently employed in studies of excited states and optical properties of molecules in connection with time-dependent DFT methods. Among these functionals, the CAM-B3LYP XC functional {cite}`funcamb3lyp` is the most popular one, and frequently provides a valued alternative to *ab initio* methods in studies of molecular systems with charge-transfer character.  
 
 ### Known deficiencies 
 
