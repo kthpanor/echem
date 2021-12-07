@@ -20,15 +20,15 @@ with
 %
 \hat{U} = \sum_{i<j}\frac{e^2}{4\pi\varepsilon_0 |\mathbf{r}_i -\mathbf{r}_j|} ; \qquad
 %
-\hat{V} = \sum_i \hat{v}(\mathbf{r}_i)
+\hat{V} = \sum_i \hat{v}(i)
 \end{equation*}
 
 
-For an isolated system, the latter reduces to the electron–nuclear attraction operator
+For an isolated system, the latter reduces to the electron–nuclear attraction operator with a coordinate representation
 
 $$
-\hat{v}(\mathbf{r}_i) = - \sum_K \frac{Z_K e^2}{4\pi\varepsilon_0 
-|\mathbf{r}_i - \mathbf{R}_K|}
+v(\mathbf{r}) = - \sum_K \frac{Z_K e^2}{4\pi\varepsilon_0 
+|\mathbf{r} - \mathbf{R}_K|}
 $$
 
 where $Z_K$ is the proton number of atom $K$ in the system.
@@ -71,7 +71,7 @@ where
 
 $$
 V[n_0(\mathbf{r})] =
-\int \hat{v}(\mathbf{r}) n_0(\mathbf{r}) \, d^3\mathbf{r}
+\int v(\mathbf{r}) n_0(\mathbf{r}) \, d^3\mathbf{r}
 $$
 
 and the Hohenberg–Kohn functional is introduced as the sum of kinetic and electron repulsion energies
@@ -100,9 +100,10 @@ The HK functional is universal in the sense that it does not depend on the syste
 
 We recognize this relation as the variational principle in wave function theory. Any practical application of this relation in density functional theory is, however, severely hampered by the fact that it is prohibitively difficult to ensure that density variations remain $v$-representable. 
 
+(N-representability)=
 ## $N$-representability
 
-The Hohenberg--Kohn theorems provide a theoretical foundation of DFT. Still, they do not give a recipe for the practical implementation of a computational scheme due to the strict requirement of $v$-representability of densities. Fortunately, the theory can be reformulated on the grounds of the Hohenberg--Kohn theorems but for the wider class of so-called $N$-representable densities.
+The Hohenberg–Kohn theorems provide a theoretical foundation of DFT. Still, they do not give a recipe for the practical implementation of a computational scheme due to the strict requirement of $v$-representability of densities. Fortunately, the theory can be reformulated on the grounds of the Hohenberg–Kohn theorems but for the wider class of so-called $N$-representable densities.
 
 ```{note}
 An electron density is $N$-representable if it can be obtained from some anti-symmetric wave function. Such a density satisfies the following conditions 
