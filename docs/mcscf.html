@@ -314,6 +314,11 @@
      Kernel integration
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="dft_scf.html">
+     SCF optimization
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -664,7 +669,7 @@
 </div>
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_61600</span><span class="o">/</span><span class="mf">137424336.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_8495</span><span class="o">/</span><span class="mf">137424336.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -5810,51 +5815,51 @@ Total MCSCF time: 00:00:00
 <div class="section" id="theory">
 <h3>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h3>
 <p>The MCSCF wavefunction contains both CI and orbital parameters and can be written as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9bdc50f7-c1bc-468f-9b64-88ff4e4e973d">
-<span class="eqno">(44)<a class="headerlink" href="#equation-9bdc50f7-c1bc-468f-9b64-88ff4e4e973d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-366939a6-64ec-436e-8927-6ed203108e54">
+<span class="eqno">(44)<a class="headerlink" href="#equation-366939a6-64ec-436e-8927-6ed203108e54" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_{MCSCF} \rangle = e^{-\hat{\kappa}} (\sum_I c_I | \mathbf{I} \rangle)
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\hat{\kappa}\)</span> the orbital rotation operator</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d1e0842b-4a5d-4ba0-a862-da588c3c2b7f">
-<span class="eqno">(45)<a class="headerlink" href="#equation-d1e0842b-4a5d-4ba0-a862-da588c3c2b7f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5b70241a-84b4-414d-a03f-411ba511b46e">
+<span class="eqno">(45)<a class="headerlink" href="#equation-5b70241a-84b4-414d-a03f-411ba511b46e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \hat{\kappa} = \sum_{p&lt;q} \kappa_{pq} (\hat{E}_{pq} - \hat{E}_{qp})
 \end{equation}\]</div>
 <p>It is often simpler to treat the optimization as two separate problems, an optimization of the CI coefficient followed by an optimization of the orbitals. Doing so means neglecting the coupling between the two occuring in the Hessian (<span class="math notranslate nohighlight">\(\frac{\partial^2 E}{\partial c_I \partial \kappa_{pq}}\)</span>), and the method is thus “first order”.</p>
 <p>The CI optimization can be done following the standard CI techniques seen in a previous chapter. However, the orbital optimization needs more inspection. The general expression of the orbital derivative is:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d3e9d160-43ff-4333-817c-a18a3ed9d57f">
-<span class="eqno">(46)<a class="headerlink" href="#equation-d3e9d160-43ff-4333-817c-a18a3ed9d57f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-e335d4bd-1e40-4e83-93ce-7967762afc16">
+<span class="eqno">(46)<a class="headerlink" href="#equation-e335d4bd-1e40-4e83-93ce-7967762afc16" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \frac{\partial E}{\partial \kappa_{pq}} = 2 (F_{pq} - F_{qp})
 \end{equation}\]</div>
 <p>with</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1107517d-d25a-47b9-85cb-a73ae79f07e6">
-<span class="eqno">(47)<a class="headerlink" href="#equation-1107517d-d25a-47b9-85cb-a73ae79f07e6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-4dc5a521-b69b-404e-ad43-541b51bbea45">
+<span class="eqno">(47)<a class="headerlink" href="#equation-4dc5a521-b69b-404e-ad43-541b51bbea45" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{pq} = \sum_r D_{pr} h_{rq} + 2\sum_{rst} \Gamma_{prst}(rq|st)
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(D\)</span> and <span class="math notranslate nohighlight">\(\Gamma\)</span> the one and two-particle density matrices.
 For a Hartree-Fock wavefunction, the one-particle density is diagonal with an occupation number of 2 for all occupied orbitals and <span class="math notranslate nohighlight">\(\Gamma_{pqrs} = D_{pq}D_{rs} - \frac{1}{2} D_{pr}D_{qs}\)</span> , and the equation then simplifies to the usual Fock matrix:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-dca7cb60-fcdf-4f54-a1e6-da53aac01548">
-<span class="eqno">(48)<a class="headerlink" href="#equation-dca7cb60-fcdf-4f54-a1e6-da53aac01548" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-32642443-2de4-4d00-86a7-30a2296fba1a">
+<span class="eqno">(48)<a class="headerlink" href="#equation-32642443-2de4-4d00-86a7-30a2296fba1a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{pq}^{\mathrm{HF}} = 2h_{pq} + 2\sum_{s} 2(pq|ss) - (ps|qs)
 \end{equation}\]</div>
 <p>The MCSCF matrix is more complicated, and we can see two cases depending on if <span class="math notranslate nohighlight">\(p\)</span> is inactive or active:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-15e0b3b5-55d8-405c-912b-31af5aa3ca95">
-<span class="eqno">(49)<a class="headerlink" href="#equation-15e0b3b5-55d8-405c-912b-31af5aa3ca95" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-d0a10c04-8b90-42d0-9fc6-63ce5fe65f0f">
+<span class="eqno">(49)<a class="headerlink" href="#equation-d0a10c04-8b90-42d0-9fc6-63ce5fe65f0f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{iq} = 2h_{iq} + 2\sum_j 2(iq|jj) - (ij|qj) + \sum_tu D_{tu} [2 (iq|tu) − (it|qu)]
 \end{equation}\]</div>
 <p>and</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8e7e33d5-bdf0-4bf4-bd5d-5959251f8543">
-<span class="eqno">(50)<a class="headerlink" href="#equation-8e7e33d5-bdf0-4bf4-bd5d-5959251f8543" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-cbf16a94-11a3-40fc-a366-e4203ff937c4">
+<span class="eqno">(50)<a class="headerlink" href="#equation-cbf16a94-11a3-40fc-a366-e4203ff937c4" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{tq} = \sum_u D_{tu} [h_{uq} + \sum_j 2(uq|jj) - (uj|qj)] + 2\sum_{uvw} \Gamma_{tuvw}(uq|vw)
 \end{equation}\]</div>
 <p>where we have used the indices <span class="math notranslate nohighlight">\(i, j\)</span> for inactive orbitals, <span class="math notranslate nohighlight">\(t,u, v, w\)</span> for active and <span class="math notranslate nohighlight">\(a,b\)</span> for virtual. The matrices <span class="math notranslate nohighlight">\(D_{tu}\)</span> and <span class="math notranslate nohighlight">\(\Gamma_{tuvw}\)</span> are the active one and two-particle density matrices computed by the CI code.</p>
 <p>By defining the inactive Fock matrix <span class="math notranslate nohighlight">\(F^\mathrm{I}_{pq} = h_{pq} + \sum_j 2(pq|jj) - (pj|qj)\)</span>, we can simply these expressions somewhat</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0aaf9589-8acd-4904-a620-fb1659f489fe">
-<span class="eqno">(51)<a class="headerlink" href="#equation-0aaf9589-8acd-4904-a620-fb1659f489fe" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5190b3dd-f0c3-4625-b4d3-8aaad52685ad">
+<span class="eqno">(51)<a class="headerlink" href="#equation-5190b3dd-f0c3-4625-b4d3-8aaad52685ad" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{iq} = 2F^\mathrm{I}_{iq} + \sum_{tu} D_{tu} [2 (iq|tu) − (it|qu)]
 \end{equation}\]</div>
 <p>and</p>
-<div class="amsmath math notranslate nohighlight" id="equation-97e3fd64-d27b-4b16-bd5e-5842b762c163">
-<span class="eqno">(52)<a class="headerlink" href="#equation-97e3fd64-d27b-4b16-bd5e-5842b762c163" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-684458a1-0703-4952-8a95-a77a83664e94">
+<span class="eqno">(52)<a class="headerlink" href="#equation-684458a1-0703-4952-8a95-a77a83664e94" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F_{tq} = \sum_u D_{tu} F^\mathrm{I}_{uq} + 2\sum_{uvw} \Gamma_{tuvw}(uq|vw)
 \end{equation}\]</div>
 <p>Since this matrix are analogous to the HF Fock matrix, it is usually called the effective Fock matrix.</p>

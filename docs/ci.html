@@ -314,6 +314,11 @@
      Kernel integration
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="dft_scf.html">
+     SCF optimization
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -661,30 +666,30 @@
 <div class="section" id="general-theory">
 <h2>General theory<a class="headerlink" href="#general-theory" title="Permalink to this headline">¶</a></h2>
 <p>One of the conceptually (but not computationally) simplest way to solve the Schrödinger equation is to simply expand our many-body wavefunction on a n-electron basis set (not to be confused with the 1-electron basis functions used to expand orbitals):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-935da1a3-4ecc-450d-af73-28b7a740d3fd">
-<span class="eqno">(21)<a class="headerlink" href="#equation-935da1a3-4ecc-450d-af73-28b7a740d3fd" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-38267b10-51ad-4f33-ac30-81c3f66da01f">
+<span class="eqno">(21)<a class="headerlink" href="#equation-38267b10-51ad-4f33-ac30-81c3f66da01f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_{CI} \rangle = \sum_k c_k | \mathbf{k} \rangle 
 \end{equation}\]</div>
 <p>with energy:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-82d53334-c979-4759-89b3-a9b0df2dad43">
-<span class="eqno">(22)<a class="headerlink" href="#equation-82d53334-c979-4759-89b3-a9b0df2dad43" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-7fb7365c-3830-4d9e-9618-8f57a0e11d49">
+<span class="eqno">(22)<a class="headerlink" href="#equation-7fb7365c-3830-4d9e-9618-8f57a0e11d49" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{CIene}
 E = \frac{\langle \Psi_{CI} | \hat{H} | \Psi_{CI} \rangle}{\langle \Psi_{CI} | \Psi_{CI} \rangle} 
 \end{equation}\]</div>
 <p>We will discuss in the next section the choice of the basis, but in all cases, as the size of this basis set increases, the solution converges to the exact solution of the Schrödinger equation.</p>
 <p>There is a redundancy in the parameters <span class="math notranslate nohighlight">\(c_k\)</span> as multiplying them all by a constant does not change the energy. We thus add the constraint that the wavefunction should be normalised <span class="math notranslate nohighlight">\(\langle \Psi_{CI} | \Psi_{CI} \rangle = \sum_k c_k^2 = 1\)</span>. To minimize the wavefunction subject to this constraint, we write a Lagrangian:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0625923f-74e6-4f2d-a643-355fe561df55">
-<span class="eqno">(23)<a class="headerlink" href="#equation-0625923f-74e6-4f2d-a643-355fe561df55" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-503747e7-110c-4668-8c1a-dafe29a81f31">
+<span class="eqno">(23)<a class="headerlink" href="#equation-503747e7-110c-4668-8c1a-dafe29a81f31" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 L = E - \epsilon(\sum_k c_k^2 -1)
 \end{equation}\]</div>
 <p>To define our minimisation we set the gradient of our Lagrangian to 0 and obtain:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ec69abed-2a21-4e9e-a092-7e164146e87d">
-<span class="eqno">(24)<a class="headerlink" href="#equation-ec69abed-2a21-4e9e-a092-7e164146e87d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-188125c8-f2e5-4dc6-8c30-96d8e88f783d">
+<span class="eqno">(24)<a class="headerlink" href="#equation-188125c8-f2e5-4dc6-8c30-96d8e88f783d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \frac{dL}{d c_k} =  \sum_i \langle \mathbf{i} | \hat{H} | \mathbf{k} \rangle c_i - \epsilon c_k + cc.= 0
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(cc.\)</span> the complex conjugate of the expression. This can finally be recast in the familiar form:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4e8ad5aa-f7ac-4669-bd15-cc407854279c">
-<span class="eqno">(25)<a class="headerlink" href="#equation-4e8ad5aa-f7ac-4669-bd15-cc407854279c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-425cfdfd-f3f3-42cc-af65-39cb122608e6">
+<span class="eqno">(25)<a class="headerlink" href="#equation-425cfdfd-f3f3-42cc-af65-39cb122608e6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{H} \mathbf{c} = \epsilon \mathbf{c}
 \end{equation}\]</div>
 <p>showing that minimising the wavefunction \ref{CIene} is equivalent to diagonalising the Hamiltonian matrix in our chosen basis, with the eigenvalues being the energies of all possible states in the system. The ground state simply corresponds to the lowest eigenvalue.</p>
@@ -726,7 +731,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </div>
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_61575</span><span class="o">/</span><span class="mf">1671414690.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_8468</span><span class="o">/</span><span class="mf">1671414690.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1117,19 +1122,19 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 <h2>Direct CI<a class="headerlink" href="#direct-ci" title="Permalink to this headline">¶</a></h2>
 <p>As we saw, the number of SD <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}\)</span> grows extremely rapidly with the size of the system. The Hamiltonian matrix grows even faster, with size <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}^2\)</span>. For example, for a singlet with 6 electron in 6 orbitals, the number of SD is 210, growing to 31 878 for 10 electron in 10 orbitals and 82 824 885 for 16 in 16. At this scale, the Hamiltonian matrix would take nearly 7000 TB of storage on a computer. Most of the matrix elements are zero, but even using sparse storage, the memory footprint is enormous.</p>
 <p>Fortunately, we are rarely if ever interested in the entire list of excited states, usually only the ground state and/or a couple of excited states. In this case, one can replace the diagonalisation of the Hamiltonian by an iterative process where we progressively optimise a couple of states. In this case, we do not need to store the entire Hamiltonian matrix, but we only need to know its effect on a vector, the so-called <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ee09818f-070e-4cdd-9cf8-b9d91279256f">
-<span class="eqno">(26)<a class="headerlink" href="#equation-ee09818f-070e-4cdd-9cf8-b9d91279256f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-d597c057-fccb-4b2f-91ac-0722726ee5ac">
+<span class="eqno">(26)<a class="headerlink" href="#equation-d597c057-fccb-4b2f-91ac-0722726ee5ac" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{\sigma} = \mathbf{H} \mathbf{c}
 \end{equation}\]</div>
 <p>In order to solve <span class="math notranslate nohighlight">\( \mathbf{H} \mathbf{c} = \epsilon \mathbf{c} \)</span>, we can use a method similar to the conjugate gradient optimisation, which in this context is called the Davidson method. At each iteration, a new trial vector is constructed according to:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-7b7ef430-ba8c-4350-b793-39da3a0caaaa">
-<span class="eqno">(27)<a class="headerlink" href="#equation-7b7ef430-ba8c-4350-b793-39da3a0caaaa" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-dc0a679d-2e1c-49be-861a-5cb6e35b9e80">
+<span class="eqno">(27)<a class="headerlink" href="#equation-dc0a679d-2e1c-49be-861a-5cb6e35b9e80" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{cidav}
 \mathbf{c_{\mathrm{dav}}} = (\mathbf{H_0} - \epsilon)^{-1} \mathbf{r}
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{H_0}\)</span> the preconditioner, typically the diagonal of the Hamiltonian and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> the residual vector defined as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-34837bb1-15da-4be2-9df1-c9f4e6596745">
-<span class="eqno">(28)<a class="headerlink" href="#equation-34837bb1-15da-4be2-9df1-c9f4e6596745" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-3189505b-582c-4dc7-8a81-5a3e12a8b9cc">
+<span class="eqno">(28)<a class="headerlink" href="#equation-3189505b-582c-4dc7-8a81-5a3e12a8b9cc" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{r} = (\mathbf{H} - \epsilon) \mathbf{c} = \mathbf{\sigma} - \epsilon \mathbf{c}
 \end{equation}\]</div>
 <p>To compute the improved CI vector, one typically creates and diagonalise a small Hamiltonian matrix in the basis of <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{c_{\mathrm{dav}}}\)</span>, sometimes including also the vectors at previous iterations to improve convergence.</p>
@@ -1936,18 +1941,18 @@ Twice the energy of 1 water molecule -152.2375077759351
 </div>
 <p>The calculation for the dimer found the energy to be higher than twice the monomer, and not equal as one would expect. This systematic failure of truncated CI is called size consistency error. In general, the truncated CI energy of two molecules far apart from each other is not the same as the sum of the truncated CI energy of each molecule.</p>
 <p>To understand this, let’s assume a molecule <span class="math notranslate nohighlight">\(A\)</span> whose CI expansion consists only of 2 SD, the HF reference and a SD generated by exciting 2 electrons from orbitals <span class="math notranslate nohighlight">\(i, j\)</span> to <span class="math notranslate nohighlight">\(a, b\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e94c5a46-a2e2-47f2-b79c-064b5afc332e">
-<span class="eqno">(29)<a class="headerlink" href="#equation-e94c5a46-a2e2-47f2-b79c-064b5afc332e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-17542785-8544-49c9-a9c6-948359253d35">
+<span class="eqno">(29)<a class="headerlink" href="#equation-17542785-8544-49c9-a9c6-948359253d35" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_A \rangle = c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle
 \end{equation}\]</div>
 <p>Now let’s assume a second molecule <span class="math notranslate nohighlight">\(B\)</span> with also 2 SD, the second one being generated from a <span class="math notranslate nohighlight">\(klcd\)</span> excitation from the reference:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-359f768d-e09e-4a82-a2cc-a88db69ae658">
-<span class="eqno">(30)<a class="headerlink" href="#equation-359f768d-e09e-4a82-a2cc-a88db69ae658" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-ae53ed94-0b58-43eb-98cc-321f5354cd01">
+<span class="eqno">(30)<a class="headerlink" href="#equation-ae53ed94-0b58-43eb-98cc-321f5354cd01" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_B \rangle = c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle
 \end{equation}\]</div>
 <p>In a correct calculation, since the two systems are far apart, they should be independent, and thus, their combined wavefunction can be expressed as a product of their individual ones:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-61aa5d89-3476-4e9c-a7bd-067f5fdbc132">
-<span class="eqno">(31)<a class="headerlink" href="#equation-61aa5d89-3476-4e9c-a7bd-067f5fdbc132" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-5b1e0aa0-6c75-4954-945b-435444ceafed">
+<span class="eqno">(31)<a class="headerlink" href="#equation-5b1e0aa0-6c75-4954-945b-435444ceafed" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 | \Psi_{AB} \rangle &amp;= | \Psi_A \Psi B \rangle \\
                     &amp;= (c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle)(c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle) \\
                     &amp;= c_0 c'_0 | ... ij...kl ...\rangle + c_{0}c'_{klcd} | ... ij...cd ...\rangle + c_{ijab}c'_{0} | ... ab...kl ...\rangle + c_{ijab}c'_{klcd} | ... ab...cd ...\rangle   \\
