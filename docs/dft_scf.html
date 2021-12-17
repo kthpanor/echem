@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCF optimization &#8212; Computational Chemistry from  Laptop to HPC</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -55,7 +55,10 @@
     <link rel="next" title="General aspects" href="pes-general.html" />
     <link rel="prev" title="Kernel integration" href="kernel_integration.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
     
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -94,7 +97,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Tutorials and workflows
  </span>
@@ -212,7 +215,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Electronic structure theory
  </span>
@@ -320,7 +323,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Potential energy surfaces
  </span>
@@ -401,7 +404,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Properties
  </span>
@@ -440,7 +443,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Environment
  </span>
@@ -479,7 +482,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Visualization
  </span>
@@ -496,7 +499,7 @@
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   References
  </span>
@@ -606,6 +609,44 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setting-up-the-system">
+   Setting up the system
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reference-calculation">
+   Reference calculation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#construction-of-molecular-grid">
+   Construction of molecular grid
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#numerical-integration-of-the-xc-kernel">
+   Numerical integration of the XC kernel
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scf-procedure">
+   SCF procedure
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#self-interaction-error">
+   Self-interaction error
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -616,6 +657,426 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="scf-optimization">
 <h1>SCF optimization<a class="headerlink" href="#scf-optimization" title="Permalink to this headline">¶</a></h1>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="setting-up-the-system">
+<h2>Setting up the system<a class="headerlink" href="#setting-up-the-system" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">O    0.000000000000        0.000000000000        0.000000000000</span>
+<span class="s2">H    0.000000000000        0.740848095288        0.582094932012</span>
+<span class="s2">H    0.000000000000       -0.740848095288        0.582094932012</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;6-31g&#39;</span><span class="p">)</span>
+
+<span class="n">nbas</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_electrons</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of contracted basis functions:&#39;</span><span class="p">,</span> <span class="n">nbas</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of doubly occupied molecular orbitals:&#39;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span> <span class="si">:</span><span class="s1"> 14.12f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 13
+Number of doubly occupied molecular orbitals: 5
+Nuclear repulsion energy (in a.u.):  9.343638157670
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="reference-calculation">
+<h2>Reference calculation<a class="headerlink" href="#reference-calculation" title="Permalink to this headline">¶</a></h2>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;slater&#39;</span><span class="p">,</span> <span class="s1">&#39;grid_level&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+
+<span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Kohn-Sham                                            
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                   Exchange-Correlation Functional : SLATER                                                               
+                   Molecular Grid Level            : 4                                                                    
+                                                                                                                          
+* Info * Nuclear repulsion energy: 9.3436381577 a.u.                                                                      
+                                                                                                                          
+* Info * Molecular grid with 35884 points generated in 0.00 sec.                                                          
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983338616414 a.u. Time: 0.02 sec.                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. |    Kohn-Sham Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -75.150048543941    0.0000000000      0.07684455      0.01397212      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -75.149120620126    0.0009279238      0.12795976      0.02402629      0.04901510                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -75.150580989550   -0.0014603694      0.00073574      0.00015078      0.02962419                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -75.150581061056   -0.0000000715      0.00012978      0.00002856      0.00029238                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -75.150581063103   -0.0000000020      0.00000260      0.00000057      0.00005365                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -75.150581063104   -0.0000000000      0.00000056      0.00000010      0.00000082                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * SCF tensors written to file: scf.tensors.h5                                                                      
+                                                                                                                          
+               *** SCF converged in 6 iterations. Time: 0.08 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Kohn-Sham:                                                                                 
+               --------------------------                                                                                 
+               Total Energy                       :      -75.1505810631 a.u.                                              
+               Electronic Energy                  :      -84.4942192208 a.u.                                              
+               Nuclear Repulsion Energy           :        9.3436381577 a.u.                                              
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000005601 a.u.                                              
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:  -18.51511 a.u.                                                                    
+               (   1 O   1s  :    -0.99)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.87529 a.u.                                                                    
+               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.45) (   1 O   3s  :    -0.44)                              
+               (   1 O   1p0 :    -0.17) (   2 H   1s  :    -0.16) (   3 H   1s  :    -0.16)                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.42759 a.u.                                                                    
+               (   1 O   1p-1:    -0.52) (   1 O   2p-1:    -0.23) (   2 H   1s  :    -0.26)                              
+               (   2 H   2s  :    -0.16) (   3 H   1s  :     0.26) (   3 H   2s  :     0.16)                              
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.24182 a.u.                                                                    
+               (   1 O   2s  :    -0.21) (   1 O   3s  :    -0.40) (   1 O   1p0 :     0.54)                              
+               (   1 O   2p0 :     0.38)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.0 Energy:   -0.17875 a.u.                                                                    
+               (   1 O   1p+1:     0.64) (   1 O   2p+1:     0.52)                                                        
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.07527 a.u.                                                                    
+               (   1 O   2s  :    -0.16) (   1 O   3s  :    -1.10) (   1 O   1p0 :    -0.30)                              
+               (   1 O   2p0 :    -0.43) (   2 H   2s  :     0.95) (   3 H   2s  :     0.95)                              
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.16545 a.u.                                                                    
+               (   1 O   1p-1:    -0.43) (   1 O   2p-1:    -0.74) (   2 H   2s  :     1.31)                              
+               (   3 H   2s  :    -1.31)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.82813 a.u.                                                                    
+               (   1 O   1p-1:     0.15) (   1 O   2p-1:     0.63) (   2 H   1s  :    -0.98)                              
+               (   2 H   2s  :     0.60) (   3 H   1s  :     0.98) (   3 H   2s  :    -0.60)                              
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.87488 a.u.                                                                    
+               (   1 O   1p+1:     0.96) (   1 O   2p+1:    -1.03)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.0 Energy:    0.88179 a.u.                                                                    
+               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.93) (   1 O   2p0 :     0.85)                              
+               (   2 H   1s  :     0.44) (   2 H   2s  :    -0.51) (   3 H   1s  :     0.44)                              
+               (   3 H   2s  :    -0.51)                                                                                  
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="construction-of-molecular-grid">
+<h2>Construction of molecular grid<a class="headerlink" href="#construction-of-molecular-grid" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">GridDriver</span><span class="p">()</span>
+
+<span class="n">grid_drv</span><span class="o">.</span><span class="n">set_level</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># default level in VeloxChem</span>
+
+<span class="n">mol_grid</span> <span class="o">=</span> <span class="n">grid_drv</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">mol_grid</span><span class="o">.</span><span class="n">w_to_numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="numerical-integration-of-the-xc-kernel">
+<h2>Numerical integration of the XC kernel<a class="headerlink" href="#numerical-integration-of-the-xc-kernel" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">den_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">()</span>
+<span class="n">xctype</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">xcfun</span><span class="o">.</span><span class="n">lda</span> <span class="c1"># generate densities but no gradients of densities</span>
+
+<span class="k">def</span> <span class="nf">LDA_exchange</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+    
+    <span class="n">F_xc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbas</span><span class="p">,</span><span class="n">nbas</span><span class="p">))</span>
+
+    <span class="n">den_array_format</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
+    <span class="n">den_cpp_format</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">AODensityMatrix</span><span class="p">(</span><span class="n">den_array_format</span><span class="p">,</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">denmat</span><span class="o">.</span><span class="n">rest</span><span class="p">)</span>
+    <span class="n">den_grid</span> <span class="o">=</span> <span class="n">den_drv</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">den_cpp_format</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="p">,</span> <span class="n">xctype</span><span class="p">)</span>
+    <span class="n">den_alpha</span> <span class="o">=</span> <span class="n">den_grid</span><span class="o">.</span><span class="n">density_aa_to_numpy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">den_beta</span>  <span class="o">=</span> <span class="n">den_grid</span><span class="o">.</span><span class="n">density_bb_to_numpy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">n</span> <span class="o">=</span> <span class="n">den_alpha</span> <span class="o">+</span> <span class="n">den_beta</span> <span class="c1"># density on the molecular grid</span>
+    
+    <span class="n">v_xc</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">E_xc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">v_xc</span><span class="p">)</span>
+    
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbas</span><span class="p">,</span><span class="n">nbas</span><span class="p">))</span> <span class="c1"># auxiliary density matrix for orbital pairs</span>
+    
+    <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbas</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">beta</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">nbas</span><span class="p">):</span>
+
+            <span class="n">D</span><span class="p">[</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+            <span class="n">den_array_format</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
+            <span class="n">den_cpp_format</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">AODensityMatrix</span><span class="p">(</span><span class="n">den_array_format</span><span class="p">,</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">denmat</span><span class="o">.</span><span class="n">rest</span><span class="p">)</span>
+            <span class="n">den_grid</span> <span class="o">=</span> <span class="n">den_drv</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">den_cpp_format</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="p">,</span> <span class="n">xctype</span><span class="p">)</span>
+            <span class="n">den_ao_pair</span> <span class="o">=</span> <span class="n">den_grid</span><span class="o">.</span><span class="n">density_aa_to_numpy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">F_xc</span><span class="p">[</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">v_xc</span> <span class="o">*</span> <span class="n">den_ao_pair</span><span class="p">)</span>
+            <span class="n">F_xc</span><span class="p">[</span><span class="n">beta</span><span class="p">,</span><span class="n">alpha</span><span class="p">]</span> <span class="o">=</span> <span class="n">F_xc</span><span class="p">[</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">]</span>
+        
+            <span class="n">D</span><span class="p">[</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">F_xc</span><span class="p">,</span> <span class="n">E_xc</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="scf-procedure">
+<h2>SCF procedure<a class="headerlink" href="#scf-procedure" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-5</span>
+
+<span class="n">e_vecs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">F_mats</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># initial guess from core Hamiltonian</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter       SCF energy   LDA exchange   Exact exchange   Error norm&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+    
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ik,jk-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+        
+    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijkl,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span>      <span class="c1"># no exact exchange in the Fock matrix</span>
+    
+    <span class="n">F_xc</span><span class="p">,</span> <span class="n">E_xc</span> <span class="o">=</span> <span class="n">LDA_exchange</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">+=</span> <span class="n">F_xc</span>        <span class="c1"># add LDA exchange</span>
+    
+    <span class="n">F_mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+    <span class="n">E</span> <span class="o">+=</span> <span class="n">E_xc</span>
+
+    <span class="c1"># determine exact exchange for comparison</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ilkj,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">E_exact_exchange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;&#39;</span><span class="p">,</span> <span class="o">-</span><span class="n">K</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+
+    <span class="c1"># compute convergence metric</span>
+    <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ki,kl,lj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+    <span class="n">e_vecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">F_MO</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,</span> <span class="n">nocc</span><span class="p">:],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s1">&gt;2d</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s1">18.8f</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">E_xc</span><span class="si">:</span><span class="s1">14.8f</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">E_exact_exchange</span><span class="si">:</span><span class="s1">16.8f</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s1">12.2e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SCF iterations converged!&#39;</span><span class="p">)</span>
+        <span class="k">break</span>
+        
+    <span class="n">F</span> <span class="o">=</span> <span class="n">get_DIIS_fock</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
+    
+    <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter       SCF energy   LDA exchange   Exact exchange   Error norm
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0       -68.60921388   -10.70568929     -11.74379335     1.85e+00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 1       -67.48094965    -6.48294784      -7.34508108     2.00e+00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 2       -75.10057850    -8.01556849      -8.84948129     2.01e-01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 3       -75.12005286    -8.27392057      -9.10818173     2.09e-01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 4       -75.09064441    -7.89842455      -8.72130626     2.84e-01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 5       -75.14072670    -8.02050281      -8.84622111     1.17e-01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 6       -75.15041056    -8.11935984      -8.94783220     1.52e-02
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 7       -75.15055003    -8.11250834      -8.94067169     6.63e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 8       -75.15047023    -8.09812126      -8.92581752     1.24e-02
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 9       -75.15046267    -8.09780863      -8.92549481     1.28e-02
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10       -75.15058034    -8.10664095      -8.93460362     9.98e-04
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11       -75.15058086    -8.10707584      -8.93505921     5.17e-04
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12       -75.15058106    -8.10746465      -8.93546072     2.65e-05
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>13       -75.15058106    -8.10742762      -8.93542234     2.03e-05
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14       -75.15058106    -8.10744265      -8.93543782     8.19e-07
+SCF iterations converged!
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="self-interaction-error">
+<h2>Self-interaction error<a class="headerlink" href="#self-interaction-error" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">F_xc_ii</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">J_ii</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">K_ii</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">g_iiii</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
+
+    <span class="n">F_xc_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;a,b,ab-&gt;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">F_xc</span><span class="p">))</span>
+    <span class="n">K_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;a,b,ab-&gt;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">K</span><span class="p">))</span>
+    <span class="n">g_iiii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;a,b,c,d,abcd-&gt;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">g</span><span class="p">))</span> 
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">K_ii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Exact exchange&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">F_xc_ii</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Slater exchange&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">g_iiii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$(\phi_i\phi_i | \phi_i\phi_i)$&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Molecular orbital&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (a.u.)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dft_scf_14_0.png" src="../_images/dft_scf_14_0.png" />
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -641,31 +1102,22 @@
               </div>
               
         
-            
-
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="kernel_integration.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Kernel integration</p>
-            </div>
-        </a>
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="kernel_integration.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Kernel integration</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="pes-general.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">General aspects</p>
     </div>
-     <div id="next">
-        <a class="right-next" href="pes-general.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">General aspects</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
         
         </div>
@@ -686,8 +1138,7 @@
       </div>
     </div>
   
-  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
-  
   </body>
 </html>
