@@ -1,29 +1,38 @@
 # Hohenberg–Kohn theorems
 
-To illustrate the basic idea of DFT, let us consider an isolated molecular system consisting of $A$ nuclei and $N$ electrons. The anti-symmetric $N$-electron wave function describing the electronic ground state of this system, $\Psi_0(\mathbf{r}_1, \mathbf{r}_2,.., \mathbf{r}_N) $, depends on the spatial coordinates of the electrons, $\{\mathbf{r}_i\}$, and it is a solution to the time-independent Schrödinger equation
+To illustrate the basic idea of DFT, let us consider an isolated molecular system with $N$ electrons. The anti-symmetric $N$-electron wave function describing the electronic ground state of this system, $\Psi_0(\mathbf{r}_1, \mathbf{r}_2,.., \mathbf{r}_N) $, depends on the spatial coordinates of the electrons, $\{\mathbf{r}_i\}$, and it is a solution to the time-independent Schrödinger equation
 
 \begin{equation*}
 \label{eq:sch}
 \hat{H} \Psi_0 = E_0 \Psi_0 
 \end{equation*}
 
-where $E_0$ is the associated electronic energy and $\hat{H}$ is the electronic Hamiltonian
+where $E_0$ is the associated electronic energy and $\hat{H}$ is the electronic Hamiltonian that is composed of the kinetic energy, electron–electron repulsion, and external potential operators
 
 \begin{equation*}
-\hat{H} = - \frac{\hbar^2}{2 m_\mathrm{e}}
-\sum_i \nabla_i^2 + 
-\sum_{i<j}\frac{e^2}{4\pi\varepsilon_0 |\mathbf{r}_i -\mathbf{r}_j|} + 
-\sum_i \hat{v}(\mathbf{r}_i)
+\hat{H} = \hat{T} + \hat{U} + \hat{V}
 \end{equation*}
 
-The Hamiltonian is composed of the kinetic energy, electron–electron repulsion, and external potential operators. For an isolated system, the latter reduces to the electron–nuclear attraction operator
+with
 
 \begin{equation*}
-\hat{v}(\mathbf{r}_i) = - \sum_K \frac{Z_K e^2}{4\pi\varepsilon_0 
-|\mathbf{r}_i - \mathbf{R}_K|}  
+\hat{T} =  - \frac{\hbar^2}{2 m_\mathrm{e}} \sum_i \nabla_i^2 ; \qquad
+%
+\hat{U} = \sum_{i<j}\frac{e^2}{4\pi\varepsilon_0 |\mathbf{r}_i -\mathbf{r}_j|} ; \qquad
+%
+\hat{V} = \sum_i \hat{v}(i)
 \end{equation*}
+
+
+For an isolated system, the latter reduces to the electron–nuclear attraction operator with a coordinate representation
+
+$$
+v(\mathbf{r}) = - \sum_K \frac{Z_K e^2}{4\pi\varepsilon_0 
+|\mathbf{r} - \mathbf{R}_K|}
+$$
 
 where $Z_K$ is the proton number of atom $K$ in the system.
+
 
 Solving the Schrödinger equation for molecular systems is, however, a non-trivial task and requires the introduction of approximations to the $N$-electron wave function. In contrast, the focus in DFT is set on the one-electron density
 
@@ -42,7 +51,7 @@ The first attempts to describe ground states of atoms in terms of electron densi
 An electron density is $v$-representable if it is associated with a ground-state solution to the Schrödinger equation.
 ```
 
-Considering all possible variations in the external potential (system variations), we understand that there is a infinite number of $v$-representable densities associated with $N$-electron systems. We refer to a general density in this set as $n(\mathbf{r})$.
+Considering all possible variations in the external potential (system variations), we understand that there is an infinite number of $v$-representable densities associated with $N$-electron systems. We refer to a general density in this set as $\tilde{n}_0(\mathbf{r})$.
 
 ## HK theorem I
 
@@ -50,7 +59,7 @@ Considering all possible variations in the external potential (system variations
 
 In other words, there is a unique one-to-one mapping between a ground-state wave function and its one-electron density, and the knowledge of $n_0(\mathbf{r})$ is sufficient to determine the ground-state energy (and other ground-state properties) of the molecular system.
 
-This allows for the separation of the evaluation of the energy into separate the energy functional into two terms
+This allows for the separation of the energy into separate the energy functional into two terms {cite}`Hohenberg1964`
 
 $$
 E_0 =
@@ -61,73 +70,77 @@ $$
 where
 
 $$
-V[n(\mathbf{r})] =
-\int \hat{v}(\mathbf{r}) n(\mathbf{r}) \, d^3\mathbf{r}
+V[n_0(\mathbf{r})] =
+\int v(\mathbf{r}) n_0(\mathbf{r}) \, d^3\mathbf{r}
 $$
 
 and the Hohenberg–Kohn functional is introduced as the sum of kinetic and electron repulsion energies
 
 $$
-F_\mathrm{HK}[n(\mathbf{r})] = T[n(\mathbf{r})] + U[n(\mathbf{r})]
+F_\mathrm{HK}[n_0(\mathbf{r})] = T[n_0(\mathbf{r})] + U[n_0(\mathbf{r})]
 $$ 
 
-We note that the HK functional is universal in the sense that it does not depend on the system under study as such dependencies are isolated to the external potential.
+The HK functional is universal in the sense that it does not depend on the system under study as such dependencies are isolated to the external potential, and it is left undefined for densities that are not $v$-representable.
 
 ## HK theorem II
 
-> For a $v$-representable trial density $n(\mathbf{r})$ fulfilling
+> From the $v$-representable trial densities $\tilde{n}_0(\mathbf{r})$ fulfilling
 >
 > \begin{equation*}
-\int n(\mathbf{r}) \, d^3\mathbf{r} = N ;
+\int \tilde{n}_0(\mathbf{r}) \, d^3\mathbf{r} = N ;
 \qquad
-n(\mathbf{r}) \geq 0
+\tilde{n}_0(\mathbf{r}) \geq 0
 \end{equation*}
 >
-> the ground state energy $E_0$ of a molecular system is fulfills and can be detemined from the relation
+> the ground state energy $E_0$ of a molecular system can be detemined from the relation
 >
 > \begin{equation*}
- E_0 \leq E[n(\mathbf{r})]
+ E_0 \leq E[\tilde{n}_0(\mathbf{r})]
 \end{equation*}
 
-We recognize this relation as the variational principle in wave function theory. Any practical application of this relation is, however, severely hampered by the fact that the analytical form of the universal HK potential is unknown. Thus, all DFT methods are forced to employ one or another approximate form of it. 
+We recognize this relation as the variational principle in wave function theory. Any practical application of this relation in density functional theory is, however, severely hampered by the fact that it is prohibitively difficult to ensure that density variations remain $v$-representable. 
 
+(N-representability)=
 ## $N$-representability
 
-The Hohenberg--Kohn theorems provide a theoretical foundation of DFT. Still, they do not give a recipe for the practical implementation of a DFT computational scheme due to the strict requirement of $v$-representability of electron density.  Fortunately, DFT can be reformulated on the grounds of the Hohenberg--Kohn theorems for so-called $N$-representable electron densities.
+The Hohenberg–Kohn theorems provide a theoretical foundation of DFT. Still, they do not give a recipe for the practical implementation of a computational scheme due to the strict requirement of $v$-representability of densities. Fortunately, the theory can be reformulated on the grounds of the Hohenberg–Kohn theorems but for the wider class of so-called $N$-representable densities.
 
 ```{note}
-An $N$-representable density is one that satisfies the following conditions 
+An electron density is $N$-representable if it can be obtained from some anti-symmetric wave function. Such a density satisfies the following conditions 
 \begin{equation*}
 \int n(\mathbf{r}) \, d^3\mathbf{r} = N ; \quad  
 n(\mathbf{r}) \geq 0; \quad 
-\int | \nabla n(\mathbf{r})^{1/2}  |^{2} \, d^3\mathbf{r}  \leq \infty
+\int \left| \nabla n(\mathbf{r})^{1/2}  \right|^{2} \, d^3\mathbf{r}  \leq \infty
 \end{equation*}
 ```
 
-Employing the minimum energy principle, Levy proved that the universal potential for $N$-representable electron densities could be defined as a constrained search {cite}`Levy1979`
+For a given $N$-representable density, Levy demonstrated that there exist a universal variational functional that delivers the associated sum of kinetic and repulsion energies. This functional can be determined by means of a constrained search over the set of wave functions that yield this density {cite}`Levy1979`
 
-\begin{equation}
-F[\rho(\mathbf{r})] = \min_{\Psi \to \rho(\mathbf{r})}  \langle \Psi | \hat T +\hat V_{ee}| \Psi \rangle 
-\end{equation}
-where $\hat T$ and $\hat V_{ee}$ are the kinetic energy and the electron-electron interaction operators from the Schr{\"o}dinger equation. The functional $F[\rho(\mathbf{r})]$ searches all wave functions $\Psi$ corresponding to the input electron density $\rho(\mathbf{r})$ and leads to minimum of  $\langle \Psi | \hat T +\hat V_{ee}| \Psi \rangle$. Therefore, in the case of $v$-representable electron density, Levy's constrained search allows one to determine the exact universal potential
-\begin{equation}
-F_\mathrm{HK}[\rho(\mathbf{r})] = F[\rho(\mathbf{r})] \ .
-\end{equation}
-The Levy constrained allows one to formulate the variational principle for a $N$-representable electron density 
-\begin{equation}
-E[\rho(\mathbf{r})] = \min_{\rho(\mathbf{r})} (F[\rho(\mathbf{r})] + \int v(\mathbf{r}) \tilde{\rho}(\mathbf{r}) d\mathbf{r}) \ .
-\end{equation}
-This equation allows to determine the ground state energy of molecular system from the minimum of energy functional $E[\rho(\mathbf{r})]$ 
-and provides recipe for obtaining associated $\rho(\mathbf{r})$ via constrained optimization. Introducing a constrain for electron density 
-\begin{equation}
-\int \rho(\mathbf{r}) d \mathbf{r} = N
-\end{equation}
-the minimum condition for energy functional $E[\rho(\mathbf{r})]$ can be written as 
-\begin{equation}
-\delta \{ E[\rho(\mathbf{r})] - \mu \int \rho(\mathbf{r}) d \mathbf{r}\} = 0 \ .     
-\end{equation}
-Thus, the stationary condition for energy functional $E[\rho(\mathbf{r})]$ can be rewritten as an Euler equation 
-\begin{equation}
-\mu = v(\mathbf{r}) + \frac{\delta F[\rho(\mathbf{r})]}{\delta \rho(\mathbf{r})} \ , 
-\end{equation}
-where the Lagrangian multiplier $\mu$ can be interpreted as a chemical potential of the molecular system i.e. $\mu = dE/dN$. 
+\begin{equation*}
+F[n(\mathbf{r})] = \min_{\Psi \to n(\mathbf{r})} \langle \Psi | \hat{T} +\hat{U}| \Psi \rangle 
+\end{equation*}
+
+When applied to $v$-representable densities, it was shown that $F$ becomes equal to the HK functional such that
+
+$$
+F[n_0(\mathbf{r})] + V[n_0(\mathbf{r})] = E_0
+$$
+
+and, for $N$-representable densities, it was shown that
+
+$$
+F[n(\mathbf{r})] + V[n(\mathbf{r})] \geq E_0
+$$
+
+This implies a variational principle with respect to $N$-representable densities and the minimization condition for the energy functional can be written in terms of the variation of a Lagrangian that preserves the number of electrons
+
+\begin{equation*}
+\delta \Big[ E[n(\mathbf{r})] + \mu \Big( N - \int n(\mathbf{r}) \, d^3\mathbf{r} \Big) \Big] = 0 
+\end{equation*}
+
+where the Lagrange multiplier $\mu$ is the chemical potential of the molecular system, *i.e.*, $\mu = dE/dN$. This stationary condition can alternatively be written
+
+\begin{equation*}
+\mu = v(\mathbf{r}) + \frac{\delta F[n(\mathbf{r})]}{\delta n(\mathbf{r})} 
+\end{equation*}
+

@@ -10,4 +10,6 @@ Introduction to the concepts of Hartree-Fock theory and an implementation of the
 A presentation and implementation of full and truncated configuration interaction methods.
 - [Møller--Plesset](mp2) <br>
 A description and implementation of second order Møller-Plesset perturbation theory.
+- [Multiconfigurational methods](mcscf) <br>
+A description of dynamic vs static/strong correlation, and a presentation and implementation of multiconfigurational self-consistent field.
 
