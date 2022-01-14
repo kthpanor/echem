@@ -1,15 +1,18 @@
 (hessians:label)=
-# Hessians
-
-## Second energy derivatives in Hartree--Fock
+# Hessians and vibrations
 
 In order to check whether a stationary point, i.e., a point on the potential energy surface with a vanishing gradient,
 is a local minimum or not, the second derivatives of the energy with respect to nuclear displacement need to be calculated.
 This matrix of all possible second derivatives is usually referred to as the **Hessian matrix**.
-The Hessian can successively be diagonalized to obtain harmonic force constants, vibrational frequencies, and normal modes.
+The Hessian can successively be diagonalized to obtain harmonic force constants, __vibrational frequencies__, and __normal modes__.
 Second derivatives of the energy can, of course, be calculated numerically (based on either the numerical or analytical gradient,
 which has the same advantages and disadvantages as in the case of the gradient itself), or analytically.
-In the following, we will describe how the analytical Hessian is calculated at the level of Hartree--Fock (HF) theory.
+In the following, we will describe how the analytical Hessian is calculated at the level of Hartree--Fock (HF) theory,
+which leads to the _coupled-perturbed_ HF equations.
+Successively, it is explained how a vibrational analysis is carried out based on the Hessian matrix
+calculated at an arbitrary level of theory.
+
+## Second energy derivatives in Hartree--Fock
 
 
 The analytic gradient of the HF energy $E_{\text{HF}}$ with respect to a nuclear coordinate $\xi$, which was given in MO basis in the previous section,
@@ -33,23 +36,56 @@ Straightforward differentiation of the above equation {eq}`eq:HF_gradient_in_ao`
   &+ \sum_{\mu \nu} \frac{\mathrm{d} P_{\mu \nu}}{\mathrm{d} \chi} h_{\mu \nu}^{\xi} + \sum_{\mu \nu \lambda \sigma} \frac{\mathrm{d} P_{\mu \nu}}{\mathrm{d} \chi} P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi} + \sum_{\mu \nu} \frac{\mathrm{d} \omega_{\mu \nu}}{\mathrm{d} \chi} S_{\mu \nu}^{\xi}
 ```
 
-Now, calculation of the perturbed MO coefficients $C_{\mu p}^{\chi}$ can no longer be avoided {cite}`Pople1979`.
+Now, the calculation of the perturbed density, which boils down to the calculation
+of the perturbed MO coefficients $C_{\mu p}^{\chi}$, can no longer be avoided {cite}`Pople1979`.
 
 ## Coupled-Perturbed Hartree--Fock
 
-The perturbed MO coefficients $C_{\mu p}^{\chi}$ are expanded in the basis of the unperturbed ones {cite}`Pople1979`,
+The starting point are the HF equations in their basis-set form,
+```{math}
+  \sum_{\nu} F_{\mu \nu} (\mathbf{C}) C_{\nu i} = \varepsilon_i \sum_{\nu} S_{\mu \nu} C_{\nu i} \, ,
+```
+which can be differentiated and rearranged, such that one obtains {cite}`Neese2009`
+```{math}
+:label: eq:derivative_hf_equations
+  \sum_{\nu} \Big( \frac{\mathrm{d} F_{\mu \nu} (\mathbf{C})}{\mathrm{d} \chi} C_{\nu i}
+  + ( F_{\mu \nu} (\mathbf{C}) - \varepsilon_i S_{\mu \nu} ) \frac{\mathrm{d} C_{\nu i}}{\mathrm{d} \chi} \Big)
+  = \frac{\mathrm{d} \varepsilon_i}{\mathrm{d} \chi} \sum_{\nu} S_{\mu \nu} C_{\nu i}
+  + \varepsilon_i \sum_{\nu} \frac{\mathrm{d} S_{\mu \nu}}{\mathrm{d} \chi} C_{\nu i} \, .
+```
+
+Next, an ansatz for the perturbed MO coefficients $C_{\mu p}^{\chi} = \frac{\mathrm{d} C_{\mu p}}{\mathrm{d} \chi}$ needs to be made.
+Since the unperturbed MOs span the same space as the AOs, but form an orthonormal set,
+the perturbed MOs coefficients are expanded in the basis of the unperturbed ones {cite}`Pople1979`,
 ```{math}
 :label: eq:perturbed_mo_coefficients
   C_{\mu p}^{\chi} &= \sum_{q} C_{\mu q} U_{q p}^{\chi} \, , \\
 ```
-where the matrix $\mathbf{U}^\chi$ contains the unknown expansion coefficients. It can be shown that the occupied-occupied block of $\mathbf{U}^\chi$
+where the matrix $\mathbf{U}^\chi$ contains the unknown expansion coefficients.
+By taking the derivative of the orthonormality condition $\mathbf{C}^\text{T} \mathbf{SC} = \mathbf{1}$,
+or in subscript notation {cite}`Neese2009`,
+```{math}
+  \sum_{\mu \nu} C_{\mu p} S_{\mu \nu} C_{\nu q} = \delta_{pq} \, ,
+```
+it can be shown that the occupied-occupied block of $\mathbf{U}^\chi$
 is proportional to the partial derivative of the overlap matrix,
 \begin{equation}
-  U_{ij}^{\chi} = - \frac12 S_{ij}^{(\chi)} \, ,
+  U_{ij}^{\chi} = - \frac12 S_{ij}^{(\chi)} \, .
 \end{equation}
-the virtual-virtual block is zero, $U_{ab}^\chi = 0$, and only the occupied-virtual block $U_{ai}^\chi$ needs to be determined.
 
-The $U_{ai}^{\chi}$ are the solution of the **coupled-perturbed Hartree--Fock** (CPHF) equations, which can be written as {cite}`Deglmann2002`
+The virtual-virtual block is zero, $U_{ab}^\chi = 0$, and only the occupied-virtual block $U_{ai}^\chi$ needs to be determined.
+The derivative of the Fock matrix $F_{\mu \nu}^{\chi} = \frac{\mathrm{d} F_{\mu \nu} (\mathbf{C})}{\mathrm{d} \chi}$ is given by
+```{math}
+:label: eq:derivative_fock_matrix
+  F_{\mu \nu}^{\chi} = h_{\mu \nu}^{\chi}
+  + \sum_{\kappa \lambda} P_{\kappa \lambda} \langle \mu \kappa || \nu \lambda \rangle^{\chi}
+  + \sum_{qi} \sum_{\kappa \lambda} (U_{qi}^{\chi} C_{\kappa q} C_{\lambda i}
+  + U_{qi}^{\chi} C_{\kappa i} C_{\lambda q} ) \langle \mu \kappa || \nu \lambda \rangle \, ,
+```
+where it can be seen that the derivative of the Fock matrix also depends on the unknowns $\mathbf{U}^{\chi}$.
+The **coupled-perturbed Hartree--Fock** (CPHF) equations are obtained by multiplying Eq. {eq}`eq:derivative_hf_equations`
+from the left by $C_{\mu a}$ and summing over all $\mu$ {cite}`Neese2009`.
+The CPHF equations, whose solution yields the $U_{ai}^{\chi}$, can be written as {cite}`Deglmann2002`
 \begin{align}
   (\varepsilon_i - \varepsilon_a) U_{ai}^{\chi} - 2 G_{ai}[U_{bj}^{\chi}] = R_{ai}^{\chi} \, ,
 \end{align}
@@ -79,9 +115,13 @@ As an alternative to Eq. {eq}`eq:HF_Hessian_Pople`, the second derivatives of th
 in terms of the RHS $R_{ai}^{\chi}$, the CPHF coefficients $U_{ai}^{\xi}$, and partial derivatives of the Fock and overlap matrices as {cite}`Deglmann2002`
 ```{math}
 :label: eq:HF_Hessian_Furche
-  \frac{\mathrm{d}^2 E_{\text{HF}}}{\mathrm{d} \chi \mathrm{d} \xi} &= \sum_{\mu \nu} P_{\mu \nu} h_{\mu \nu}^{\chi \xi} + \frac12 \sum_{\mu \nu \lambda \sigma} P_{\mu \nu} P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi \chi} + \sum_{\mu \nu} \omega_{\mu \nu} S_{\mu \nu}^{\chi \xi} + \frac{\mathrm{d}^2 V_{nn}}{\mathrm{d} \chi \mathrm{d} \xi} \\
-  &+ 2 \sum_{ia} R_{ai}^{\chi} U_{ai}^{\xi} - \sum_{ij} \Big( F_{ij}^{(\chi)} S_{ij}^{(\xi)} + F_{ij}^{(\xi)} S_{ij}^{(\chi)} - 2 \varepsilon_i S_{ij}^{(\chi)} S_{ij}^{(\xi)} - 2 G_{ij}[S_{kl}^{(\chi)}] S_{ij}^{(\xi)} \Big) 
+  \frac{\mathrm{d}^2 E_{\text{HF}}}{\mathrm{d} \chi \mathrm{d} \xi} &= \sum_{\mu \nu} P_{\mu \nu} h_{\mu \nu}^{\chi \xi}
+	+ \frac12 \sum_{\mu \nu \lambda \sigma} P_{\mu \nu} P_{\lambda \sigma} \langle \mu \lambda || \nu \sigma \rangle^{\xi \chi}
+	+ \sum_{\mu \nu} \omega_{\mu \nu} S_{\mu \nu}^{\chi \xi} + \frac{\mathrm{d}^2 V_{nn}}{\mathrm{d} \chi \mathrm{d} \xi} \\
+  &+ 2 \sum_{ia} R_{ai}^{\chi} U_{ai}^{\xi} - \sum_{ij} \Big( F_{ij}^{(\chi)} S_{ij}^{(\xi)} + F_{ij}^{(\xi)} S_{ij}^{(\chi)}
+	- 2 \varepsilon_i S_{ij}^{(\chi)} S_{ij}^{(\xi)} - 2 G_{ij}[S_{kl}^{(\chi)}] S_{ij}^{(\xi)} \Big) \, ,
 ```
+where the explicit construction of the perturbed $\mathbf{P}$ and $\boldsymbol{\omega}$ matrices is avoided.
 
 
 %## Vibrational frequencies and normal modes
@@ -139,11 +179,11 @@ from mass-weighted Cartesian coordinates to a set of $3N$ coordinates,
 where the molecule's translation and rotation are separated out,
 leaving $3N - 6$ (or $3N-5$ for linear molecules) vibrational modes.
 
+This is achieved by applying the so-called Eckart conditions {cite}`Eckart1934`.
 While the three vectors of length $3N$ corresponding to translation are simply given by $\sqrt{m_i}$
 times the coordinate axis, the vectors corresponding to rotational motion of the atoms
 are obtained from the coordinates of the atoms with respect to the COM
 and the corresponding row of the matrix used to diagonalize the moment of inertia tensor.
-This corresponds to internal coordinates in the Eckart frame {cite}`Eckart1934`.
 In the next step, these vectors are normalized and a Gram--Schmidt orthogonalization
 is carried out to create $N_\text{vib} = 3N-6$ (or $3N-5$) remaining vectors,
 which are orthogonal to the five or six translational and rotational vectors.
@@ -210,10 +250,10 @@ since $\tilde{\nu}_i = \frac{1}{2 \pi} \sqrt{\frac{k_i}{\mu_i}}$.
 The force constants are then converted from atomic units to milli-dyne per ångström.
 
 
+(dipole_mom_gradient:label)=
+### Spectral intensities
 
-### Infrared intensities
-
-In order to calculate intensities in the infrared (IR) spectrum,
+In order to calculate intensities in the [infrared (IR) spectrum](sec:ir-tutorial),
 the nuclear derivative of the electric dipole moment $\boldsymbol{\mu} = (\mu_x, \mu_y, \mu_z)$ is needed,
 where each component $\mu$ can be decomposed into an electronic and a nuclear contribution, $\mu = \mu_{\text{e}} + \mu_{\text{n}}$.
 The nuclear part of the dipole moment $\mu_{\text{n}}$ is simply given by the classical expression
@@ -242,8 +282,8 @@ where the perturbed density from Eq. {eq}`eq:perturbed_density` and the derivati
 The IR transition dipole moment is then calculated by taking the dot product of the dipole moment gradient {eq}`eq:electronic_dipole_derivative`
 with the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, and the IR intensity as the square norm of corresponding transition moment.
 The intensities are successively converted to the unit of km mol$^{-1}$.
-Raman intensities are calculated in an analogous manner, except that the nuclear derivative
-of the electric-dipole polarizability $\boldsymbol{\alpha}$ is needed.
+Vibrational [Raman intensities](sec:raman-tutorial) are calculated in an analogous manner, except that the nuclear derivative
+of the electric-dipole [polarizability](polarizability:label) $\boldsymbol{\alpha}$ is needed.
 
 
 
