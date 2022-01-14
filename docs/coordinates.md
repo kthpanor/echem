@@ -33,7 +33,7 @@ To determine the changes in $\mathbf{x}$ as a result of changes performed in $\m
 Additionally, the internal coordinates are redundant, meaning that the rows of $\mathbf{G}$ are linearly dependent. We therefore have to set up and solve an eigenvalue equation that will allow us to separate out the redundancies {cite}`Pulay1992`:
 %
 ```{math}
-	:label: eq:G_eigenval
+	:label: G_eigenval
     \mathbf{G} 
     \begin{pmatrix}
     \mathbf{U} & \mathbf{R}
@@ -54,7 +54,7 @@ This equation has $n=3N-6$ (or $3N-5$ for linear molecules) non-zero eigenvalues
     \mathbf{s} = \mathbf{U}^\mathrm{T} \mathbf{q} \,. 
 ```
 %
-The eigenvalue equation, Eq. {eq}`eq:G_eigenval`, can be used to define a generalized inverse matrix $\mathbf{G}^{-}$:
+The eigenvalue equation, Eq. {eq}`G_eigenval`, can be used to define a generalized inverse matrix $\mathbf{G}^{-}$:
 %
 ```{math}
 :label: eq:generalized_inverse
@@ -89,6 +89,13 @@ In a similar way, the gradient can be transformed from Cartesian to internal coo
 where we have denoted the gradient in Cartesian coordinates by $\nabla E_x$ and the gradient in internal coordinates by $\nabla E_q$. 
 
 With Eqs.{eq}`eq:displacement_q_to_x` and {eq}`eq:gradient_x_to_q` we can now transform a displacement in internal coordinates to a displacement in Cartesian coordinates, compute the energy gradient, and transform the gradient back to internal coordinates.
+
+In the case of the Hessian matrix, the transformation to internal coordinates requires the second order derivatives of $q_i$ with respect to the Cartesian coordinates $x_j$, $x_k$:
+```{math}
+:label: eq:Bp_ij
+    B^{(2)}_{ijk} = \frac{\partial^2 q_i}{\partial x_j\partial x_k}\,.
+```
+
 
 ## Delocalized internal coordinates
 Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix $\mathbf{G}$. This is an expensive step, since the matrices involved in Eq. {eq}`eq:generalized_inverse` are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. {eq}`eq:non-redundant`. These new coordinates are actually linear combinations of primitives, and therefore are called "delocalized" internal coordinates (DLC) {cite}`Baker1999`.

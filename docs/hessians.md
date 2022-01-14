@@ -250,7 +250,7 @@ since $\tilde{\nu}_i = \frac{1}{2 \pi} \sqrt{\frac{k_i}{\mu_i}}$.
 The force constants are then converted from atomic units to milli-dyne per ångström.
 
 
-
+(dipole_mom_gradient:label)=
 ### Spectral intensities
 
 In order to calculate intensities in the [infrared (IR) spectrum](sec:ir-tutorial),
