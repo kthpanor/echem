@@ -83,10 +83,10 @@ In a similar way, the gradient can be transformed from Cartesian to internal coo
 
 ```{math}
 :label: eq:gradient_x_to_q
-    \nabla E_q = \mathbf{G}^{-}\mathbf{B}\nabla E_x \, , 
+    \mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x \, , 
 ```
 
-where we have denoted the gradient in Cartesian coordinates by $\nabla E_x$ and the gradient in internal coordinates by $\nabla E_q$. 
+where we have denoted the gradient in Cartesian coordinates by $\mathbf{g}_x$ and the gradient in internal coordinates by $\mathbf{g}_q$. 
 
 With Eqs.{eq}`eq:displacement_q_to_x` and {eq}`eq:gradient_x_to_q` we can now transform a displacement in internal coordinates to a displacement in Cartesian coordinates, compute the energy gradient, and transform the gradient back to internal coordinates.
 
@@ -94,6 +94,13 @@ In the case of the Hessian matrix, the transformation to internal coordinates re
 ```{math}
 :label: eq:Bp_ij
     B^{(2)}_{ijk} = \frac{\partial^2 q_i}{\partial x_j\partial x_k}\,.
+```
+
+These derivatives, together with $\mathbf{G}^{-}$, the Wilson $\mathbf{B}$ matrix and gradient are then used to trasform the Hessian from Cartesian ($\mathbf{H}_x$) to internal ($\mathbf{H}_q$) coordinates:
+
+```{math}
+:label: eq:Hessian_int
+    \mathbf{H}_q = \mathbf{G}^{-} \mathbf{B} \left[ \mathbf{H}_x - \mathbf{g}_q \mathbf{B}^{(2)}\right]\mathbf{B}^\mathrm{T} \mathbf{G}^{-\mathrm{T}}\,.
 ```
 
 
