@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,11 +37,14 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -49,13 +52,11 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Running a simulation" href="md_run.html" />
-    <link rel="prev" title="Force fields" href="md_ffs.html" />
+    <link rel="prev" title="Force field parameterization" href="md_ffs.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -346,7 +347,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="hessians.html">
-     Hessians
+     Hessians and vibrations
     </a>
    </li>
    <li class="toctree-l2">
@@ -378,7 +379,7 @@
   <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="md_ffs.html">
-     Force fields
+     Force field parameterization
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -768,7 +769,7 @@
 <p>These two equations, together with the expression for the acceleration found in Equation \eqref{eq:acceleration} make up the Euler method. For each step, the acceleration is obtained from Equation \eqref{eq:acceleration}, then the velocities are calculated with Equation \eqref{eq:eulerv} and finally a new set of coordinates with Equation \eqref{eq:eulerr} before the process is repeated, step by step. This is an extremely simple method, with a local truncation error in order of <span class="math notranslate nohighlight">\(\Delta t^2\)</span> for each step and a global error of first order for the trajectory as a whole. This can be seen from the fact that a trajectory of length <span class="math notranslate nohighlight">\(T\)</span> requires <span class="math notranslate nohighlight">\(M = T / \Delta t\)</span> steps. For each step, an error of order <span class="math notranslate nohighlight">\(\Delta t^2\)</span> is added, leading to a total error of <span class="math notranslate nohighlight">\(T/ \Delta t \hspace{1mm} \mathcal{O}(\Delta t^2) = \mathcal{O}(\Delta t)\)</span>, i.e.\ first order. A simple example of integration using the Euler method is shown in Figure \ref{fig:euler}.</p>
 <div class="figure align-default" id="fig-euler">
 <a class="reference internal image-reference" href="../_images/MD_euler_even.svg"><img alt="../_images/MD_euler_even.svg" src="../_images/MD_euler_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-euler" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 41 </span><span class="caption-text">Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-euler" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="verlet-integration">
@@ -788,7 +789,7 @@
 <p>Neglecting higher order terms and using the acceleration from Equation \eqref{eq:acceleration}, this expression makes up the Verlet algorithm, with a local truncation error in the order of <span class="math notranslate nohighlight">\(\Delta t^4\)</span>. The global error, however, is of second order,[cite jensen2006] due to the presence of two previous coordinates in the expression. Figure \ref{fig:verlet} shows the improvement over the Euler method.</p>
 <div class="figure align-default" id="fig-md-verlet-even">
 <a class="reference internal image-reference" href="../_images/MD_verlet_even.svg"><img alt="../_images/MD_verlet_even.svg" src="../_images/MD_verlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 42 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="velocity-verlet">
@@ -825,7 +826,7 @@
 <p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in Figure \ref{fig:vverlet}, where the total error of the velocity Verlet algorithm is comparable to that of the Verlet algorithm in Figure \ref{fig:verlet}.</p>
 <div class="figure align-default" id="fig-md-vverlet-even">
 <a class="reference internal image-reference" href="../_images/MD_vverlet_even.svg"><img alt="../_images/MD_vverlet_even.svg" src="../_images/MD_vverlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 27 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 43 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -856,7 +857,7 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="md_ffs.html" title="previous page">Force fields</a>
+    <a class='left-prev' id="prev-link" href="md_ffs.html" title="previous page">Force field parameterization</a>
     <a class='right-next' id="next-link" href="md_run.html" title="next page">Running a simulation</a>
 
         </div>
