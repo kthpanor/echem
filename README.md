@@ -41,31 +41,46 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 Multiple lists of references are possible but not yet propoerly implmented.
 
 # Distribution of labour
-0. MD, Getting started intro
+0. Intro
+	-  IB, description of adcc and geomeTRIC;
+	-  AD, description of Respondo;
+	-  XL, description of HPC-QC;
 
 1. Tutorials and Workflows: 
-    - TF re-structure Xray
-    - TF, add first version of UV/vis
-    - IB, add vibrational spectroscopies
+    -  TF, working on UV/vis and part of MD;
+    -  PN, Optical Activity and Dichroism;
+    -  IB, MH finish first draft of Vibrational spectroscopies, fix output and add Raman example;
+	-  ZR/OV, add EPR to Magnetic resonances;
+	-  X-ray spectroscopies: complete!
 
 2. Electronic Structure Theory:
-    -  Hartree—Fock theory: (MD proof read)
-    -  Density functional theory: PN will move Ch. 5 from overleaf here; will include also a jupyter notebook example for Slater exchange;
-    -  Wave-function theory: MD is main responsible and will set up this section (Ch. 6 overleaf) and add “Second quantization”;
+    -  Hartree—Fock theory: first draft completed;
+	-  Configuration Interaction: first draft completed;
+	-  M{\o}ller-Plesset: first draft completed;
+	-  Multiconfiguration methods: first draft completed;
+    -  Density functional theory: PN will add an example of SCF optimization and illustrate the Self-interaction error;
 
-3. Potential Energy Surfaces: IB is responsible for this section; will contact ML and MA to ask if they wish/can contribute to the respective subsections;
-    -  Molecular structure optimization: IB (lacks examples)
-    -  Transition-state theory: AD (Ch. 14 overleaf)
-    -  Conical intersections: AD (Ch. 15 overleaf)
+3. Potential Energy Surfaces:
+	-  Choice of coordinates: IB will add a notebook example of changing between cartesian and internal coordinates; 
+	-  Gradients, Hessians and vibrations: MH will finish first draft;  
+    -  Molecular structure optimization: IB will add notebook examples for geometry optimization (XTB, HF, TDHF);
+    -  Transition-state theory: AD (Ch. 14 overleaf);
+    -  Conical intersections: AD (Ch. 15 overleaf);
 
 4. Molecular dynamics: ML & PN (Ch. 7 overleaf)
+	-  YM, IB: potentially add a section on interpolated dynamics, excited state dynamics;
 
 5. Properties:
-    - Response theory: (OV proof read)
-    - Algebraic diagrammatic construction: IB (lacks example)
-    - Exciton coupling model: XL (Ch. 11 overleaf)
+    - Response theory: MD may add a numerical example for response theory of CI states;
+    - Algebraic diagrammatic construction: AD, IB, will add notebook examples for ADC (explicit construction of an ADC matrix, XAS of substituted ethenes?); XL will add a description related to HPC-QC / Large scale calculations;
+    - Exciton coupling model: XL will add a notebook example;
 
-6. Environment: OV will take main responsibility for this section and will move Ch. 12 from overleaf here, as well as add material on loprop.
+6. Environment:
+	-  Localized properties: PN will prepare a first draft;
+	-  Polarizable embedding:
+
+7. Visualization:
+	- Transition densities, NTOs: TF will prepare a first draft.
 
 
 # Random comments
