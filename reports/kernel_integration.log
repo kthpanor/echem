@@ -1,46 +1,68 @@
 Traceback (most recent call last):
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
     record_timing=False,
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1087, in execute
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 1093, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 74, in wrapped
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 84, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 53, in just_run
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 62, in just_run
     return loop.run_until_complete(coro)
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+  File "/opt/anaconda3/envs/echem/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
     return future.result()
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 541, in async_execute
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 560, in async_execute
     cell, index, execution_count=self.code_cells_executed + 1
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 832, in async_execute_cell
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 854, in async_execute_cell
     self._check_raise_for_error(cell, exec_reply)
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 740, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 756, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# define a molecular system
-h2o_xyz = """3
-water
-O    0.000000000000        0.000000000000        0.000000000000
-H    0.000000000000        0.740848095288        0.582094932012
-H    0.000000000000       -0.740848095288        0.582094932012
-"""
-molecule = vlx.Molecule.from_xyz_string(h2o_xyz)
+basis = vlx.MolecularBasis.read(molecule, "def2-svpd")
+scf_drv.compute(molecule, basis) # perform an SCF optimization
 
-# determine the method
-scf_drv = vlx.ScfRestrictedDriver()
-method_settings = {'xcfun': 'b3lyp', 'grid_level': 4}
-scf_drv.update_settings({}, method_settings)
+den_drv = vlx.veloxchemlib.DensityGridDriver()
+
+den_mats = scf_drv.scf_tensors['D'] # tuple of (alpha, beta) spin densities
+den_array_format = np.array([den_mats[0], den_mats[1]])
+den_cpp_format = vlx.veloxchemlib.AODensityMatrix(den_array_format, vlx.veloxchemlib.denmat.rest)
+
+xctype = vlx.veloxchemlib.xcfun.lda # generate densities but no gradients of densities
+    
+n_grid_points = []
+n_elec = []
+
+for grid_level in range(1,7):
+
+    grid_drv.set_level(grid_level) # available grid levels are between 1-6
+
+    # generate grid points and weights for molecule
+    mol_grid = grid_drv.generate(molecule)
+    weights = mol_grid.w_to_numpy()
+    n_grid_points.append(mol_grid.number_of_points())
+
+    # generate density on grid
+    den_grid = den_drv.generate(den_cpp_format, molecule, basis, mol_grid, xctype)
+    den_alpha = den_grid.density_aa_to_numpy(0)
+    den_beta  = den_grid.density_bb_to_numpy(0)
+
+    n_elec.append(np.dot(weights, den_alpha) + np.dot(weights, den_beta))
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mAttributeError[0m                            Traceback (most recent call last)
-[0;32m<ipython-input-2-6a6fba44e62a>[0m in [0;36m<module>[0;34m[0m
-[1;32m      6[0m [0mH[0m    [0;36m0.000000000000[0m       [0;34m-[0m[0;36m0.740848095288[0m        [0;36m0.582094932012[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      7[0m """
-[0;32m----> 8[0;31m [0mmolecule[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecule[0m[0;34m.[0m[0mfrom_xyz_string[0m[0;34m([0m[0mh2o_xyz[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      9[0m [0;34m[0m[0m
-[1;32m     10[0m [0;31m# determine the method[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+[0;32m/var/folders/yn/sjrk11nj0zs5nb8wzbytm0j00000gn/T/ipykernel_3716/2326663189.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      2[0m [0mscf_drv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m [0mbasis[0m[0;34m)[0m [0;31m# perform an SCF optimization[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      3[0m [0;34m[0m[0m
+[0;32m----> 4[0;31m [0mden_drv[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mveloxchemlib[0m[0;34m.[0m[0mDensityGridDriver[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      5[0m [0;34m[0m[0m
+[1;32m      6[0m [0mden_mats[0m [0;34m=[0m [0mscf_drv[0m[0;34m.[0m[0mscf_tensors[0m[0;34m[[0m[0;34m'D'[0m[0;34m][0m [0;31m# tuple of (alpha, beta) spin densities[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mAttributeError[0m: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
-AttributeError: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
+[0;31mTypeError[0m: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. veloxchem.veloxchemlib.DensityGridDriver(comm: object)
+
+Invoked with: 
+TypeError: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. veloxchem.veloxchemlib.DensityGridDriver(comm: object)
+
+Invoked with: 
 
