@@ -119,4 +119,4 @@ align: left
 ```
 In the case of core-excitations, electron--electron correlation and the presence of the core-hole influence the excitation energies and transition probabilities. These relaxation effects are present also in the case of valence-excitations, but they are more pronounced in the case of core-excitations. The is due the presence of a localized core-hole which leads to a strong net attraction of the electron density towards the probed atom. In addition, the interaction with the excited electron creates a small repulsive polarisation effect in the valence region. Both these two counteracting effects need to be accounted for in order to accurately model XAS. At the ADC level of theory, this is achieved by including at least doubly excited configurations in the construction of the ADC matrix. 
 
-## Large-scale calculations
+## HPC-QC implementation
