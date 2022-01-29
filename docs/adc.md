@@ -120,3 +120,18 @@ align: left
 In the case of core-excitations, electron--electron correlation and the presence of the core-hole influence the excitation energies and transition probabilities. These relaxation effects are present also in the case of valence-excitations, but they are more pronounced in the case of core-excitations. The is due the presence of a localized core-hole which leads to a strong net attraction of the electron density towards the probed atom. In addition, the interaction with the excited electron creates a small repulsive polarisation effect in the valence region. Both these two counteracting effects need to be accounted for in order to accurately model XAS. At the ADC level of theory, this is achieved by including at least doubly excited configurations in the construction of the ADC matrix. 
 
 ## HPC-QC implementation
+
+To enable large-scale ADC(2) calculations on HPC systems, some considerations need to be taken into account in the implementation. Conventionally, the molecular orbital (MO) integrals, which are essentially tensors with four dimensions, are computed by integral transformation on a single compute node (or workstation). This is unfortunately not practical on HPC clusters, since a cluster node usually has moderate amount of memory which is not enough to store an object with $N^4$ elements (here $N$ is the number of orbitals). Therefore, the MO integral needs to be stored in a distributed way; in other words, each node need to store a portion of the four-dimensional MO integral. It is then natural to distribute the computation of MO integral as well, such that each node only computes part of the integral that needs to be stored locally. This leads to the so-called Fock matrix-driver integral transformation approach {cite}`Hohenstein2015, gator`, where MO integrals are expressed in terms of Fock-like matrices
+```{math}
+:label: eq:mo-ints-from-fock
+\langle ij || kl \rangle = \sum_{\gamma \delta}^{N} \left [ C_{\gamma k} F_{\gamma \delta}^{ij} C_{\delta l} - C_{\gamma l} F_{\gamma \delta}^{ij} C_{\delta k} \right ]
+```
+where
+```{math}
+:label: eq:fock-from-dens
+F_{\gamma \delta}^{ij} = \sum_{\alpha \beta}^{N} D_{\alpha \beta}^{ij} (\alpha \gamma|\delta \beta)
+```
+```{math}
+:label: eq:dens-from-mo
+D_{\alpha \beta}^{ij} = C_{\alpha i} C_{\alpha j}
+```
