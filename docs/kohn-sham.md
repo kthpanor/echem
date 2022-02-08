@@ -90,9 +90,18 @@ align: center
 Jacob's ladder of density functionals.
 ```
 
+(lda)=
 ### Local density approximation (LDA)
 
 Functionals of this group depend solely on $n(\mathbf{r})$. In general, they provide a quite poor description of electron-electron interactions in regions of rapidly varying density, like the bonding regions in molecules. Nevertheless, until the late 1980s, almost all DFT calculations of the electronic structure of molecules were carried out using such functionals due to a lack of alternatives. Within LDA, the combination of the Dirac exchange {cite}`fundirac` and the Vosko-Wilk-Nussair correlation {cite}`funvwn` functionals provides the most accurate results in a wide range of applications and it has become recognized as the *de facto* standard LDA functional.
+
+In the LDA, the exchange–correlation potential takes the form
+
+$$
+v_\mathrm{xc}(\mathbf{r}) =
+\varepsilon_\mathrm{xc}(n(\mathbf{r})) + n(\mathbf{r})
+\frac{\partial \varepsilon_\mathrm{xc}}{\partial n}
+$$
 
 ### Generalized gradient approximation (GGA)
 
