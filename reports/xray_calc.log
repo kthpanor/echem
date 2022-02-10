@@ -1,0 +1,95 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 1117, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 78, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 57, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/miniconda3/envs/echem/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+    return future.result()
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 559, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 862, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 765, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Perform unrestricted SCF calculation with a B3LYP
+scf_gs    = scf.UKS(mol)
+scf_gs.xc = 'b3lyp'
+scf_gs.kernel()
+
+# Copy molecular orbitals
+mo0  = copy.deepcopy(scf_gs.mo_coeff)
+occ0 = copy.deepcopy(scf_gs.mo_occ)
+
+# Create 1s core-hole by setting alpha_0 population to zero
+occ0[0][0] = 0.0
+    
+# Perform unrestricted SCF calculation with MOM constraint
+scf_ion    = scf.UKS(mol)
+scf_ion.xc = 'b3lyp'
+scf.addons.mom_occ(scf_ion, mo0, occ0)
+scf_ion.kernel()
+
+# IP from energy difference
+print('Ionization potential:',np.around(au2ev*(scf_ion.energy_tot() - scf_gs.energy_tot()),2),'eV')
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+[0;32m/var/folders/ky/5h8mb6gs32nbvf3w8cyqwrhm0000gn/T/ipykernel_90964/2834561283.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      2[0m [0mscf_gs[0m    [0;34m=[0m [0mscf[0m[0;34m.[0m[0mUKS[0m[0;34m([0m[0mmol[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      3[0m [0mscf_gs[0m[0;34m.[0m[0mxc[0m [0;34m=[0m [0;34m'b3lyp'[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 4[0;31m [0mscf_gs[0m[0;34m.[0m[0mkernel[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      5[0m [0;34m[0m[0m
+[1;32m      6[0m [0;31m# Copy molecular orbitals[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/misc.py[0m in [0;36maliased_fn[0;34m(self, *args, **kwargs)[0m
+[1;32m    582[0m     [0mfname[0m [0;34m=[0m [0mfn[0m[0;34m.[0m[0m__name__[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    583[0m     [0;32mdef[0m [0maliased_fn[0m[0;34m([0m[0mself[0m[0;34m,[0m [0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwargs[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 584[0;31m         [0;32mreturn[0m [0mgetattr[0m[0;34m([0m[0mself[0m[0;34m,[0m [0mfname[0m[0;34m)[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwargs[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m    585[0m [0;34m[0m[0m
+[1;32m    586[0m     [0;32mif[0m [0malias_name[0m [0;32mis[0m [0;32mnot[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/scf/hf.py[0m in [0;36mscf[0;34m(self, dm0, **kwargs)[0m
+[1;32m   1521[0m                 kernel(self, self.conv_tol, self.conv_tol_grad,
+[1;32m   1522[0m                        [0mdm0[0m[0;34m=[0m[0mdm0[0m[0;34m,[0m [0mcallback[0m[0;34m=[0m[0mself[0m[0;34m.[0m[0mcallback[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1523[0;31m                        conv_check=self.conv_check, **kwargs)
+[0m[1;32m   1524[0m [0;34m[0m[0m
+[1;32m   1525[0m         [0mlogger[0m[0;34m.[0m[0mtimer[0m[0;34m([0m[0mself[0m[0;34m,[0m [0;34m'SCF'[0m[0;34m,[0m [0;34m*[0m[0mcput0[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/scf/hf.py[0m in [0;36mkernel[0;34m(mf, conv_tol, conv_tol_grad, dump_chk, dm0, callback, conv_check, **kwargs)[0m
+[1;32m    142[0m         [0mmf_diis[0m [0;34m=[0m [0;32mNone[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    143[0m [0;34m[0m[0m
+[0;32m--> 144[0;31m     [0mvhf[0m [0;34m=[0m [0mmf[0m[0;34m.[0m[0mget_veff[0m[0;34m([0m[0mmol[0m[0;34m,[0m [0mdm[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m    145[0m     [0me_tot[0m [0;34m=[0m [0mmf[0m[0;34m.[0m[0menergy_tot[0m[0;34m([0m[0mdm[0m[0;34m,[0m [0mh1e[0m[0;34m,[0m [0mvhf[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    146[0m     [0mlogger[0m[0;34m.[0m[0minfo[0m[0;34m([0m[0mmf[0m[0;34m,[0m [0;34m'init E= %.15g'[0m[0;34m,[0m [0me_tot[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/dft/uks.py[0m in [0;36mget_veff[0;34m(ks, mol, dm, dm_last, vhf_last, hermi)[0m
+[1;32m     60[0m     [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     61[0m         [0mmax_memory[0m [0;34m=[0m [0mks[0m[0;34m.[0m[0mmax_memory[0m [0;34m-[0m [0mlib[0m[0;34m.[0m[0mcurrent_memory[0m[0;34m([0m[0;34m)[0m[0;34m[[0m[0;36m0[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 62[0;31m         [0mn[0m[0;34m,[0m [0mexc[0m[0;34m,[0m [0mvxc[0m [0;34m=[0m [0mni[0m[0;34m.[0m[0mnr_uks[0m[0;34m([0m[0mmol[0m[0;34m,[0m [0mks[0m[0;34m.[0m[0mgrids[0m[0;34m,[0m [0mks[0m[0;34m.[0m[0mxc[0m[0;34m,[0m [0mdm[0m[0;34m,[0m [0mmax_memory[0m[0;34m=[0m[0mmax_memory[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     63[0m         [0;32mif[0m [0mks[0m[0;34m.[0m[0mnlc[0m [0;34m!=[0m [0;34m''[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     64[0m             [0;32massert[0m[0;34m([0m[0;34m'VV10'[0m [0;32min[0m [0mks[0m[0;34m.[0m[0mnlc[0m[0;34m.[0m[0mupper[0m[0;34m([0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/dft/numint.py[0m in [0;36mnr_uks[0;34m(ni, mol, grids, xc_code, dms, relativity, hermi, max_memory, verbose)[0m
+[1;32m    913[0m     [0;34m>>[0m[0;34m>[0m [0mnelec[0m[0;34m,[0m [0mexc[0m[0;34m,[0m [0mvxc[0m [0;34m=[0m [0mni[0m[0;34m.[0m[0mnr_uks[0m[0;34m([0m[0mmol[0m[0;34m,[0m [0mgrids[0m[0;34m,[0m [0;34m'lda,vwn'[0m[0;34m,[0m [0mdm[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    914[0m     '''
+[0;32m--> 915[0;31m     [0mxctype[0m [0;34m=[0m [0mni[0m[0;34m.[0m[0m_xc_type[0m[0;34m([0m[0mxc_code[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m    916[0m     [0;32mif[0m [0mxctype[0m [0;34m==[0m [0;34m'NLC'[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    917[0m         [0mdms_sf[0m [0;34m=[0m [0mdms[0m[0;34m[[0m[0;36m0[0m[0;34m][0m [0;34m+[0m [0mdms[0m[0;34m[[0m[0;36m1[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/dft/numint.py[0m in [0;36m_xc_type[0;34m(self, xc_code)[0m
+[1;32m   1952[0m [0;34m[0m[0m
+[1;32m   1953[0m     [0;32mdef[0m [0m_xc_type[0m[0;34m([0m[0mself[0m[0;34m,[0m [0mxc_code[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1954[0;31m         [0;32mreturn[0m [0mself[0m[0;34m.[0m[0mlibxc[0m[0;34m.[0m[0mxc_type[0m[0;34m([0m[0mxc_code[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1955[0m [0;34m[0m[0m
+[1;32m   1956[0m     [0;32mdef[0m [0mrsh_and_hybrid_coeff[0m[0;34m([0m[0mself[0m[0;34m,[0m [0mxc_code[0m[0;34m,[0m [0mspin[0m[0;34m=[0m[0;36m0[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mAttributeError[0m: module 'pyscf.dft.xc' has no attribute 'xc_type'
+AttributeError: module 'pyscf.dft.xc' has no attribute 'xc_type'
+

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SCF optimization &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>SCF optimization of a closed-shell state &#8212; Computational Chemistry from  Laptop to HPC</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
   <link rel="stylesheet"
@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
 
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -42,6 +42,8 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -49,17 +51,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="General aspects" href="pes-general.html" />
     <link rel="prev" title="Kernel integration" href="kernel_integration.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
+    <meta name="docsearch:language" content="en" />
     
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -75,10 +73,6 @@
     
         <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
-      
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
       
       <img src="../_static/logo.png" class="logo" alt="logo">
       
@@ -318,7 +312,7 @@
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     SCF optimization
+     SCF optimization of a closed-shell state
     </a>
    </li>
   </ul>
@@ -352,7 +346,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="hessians.html">
-     Hessians
+     Hessians and vibrations
     </a>
    </li>
    <li class="toctree-l2">
@@ -384,7 +378,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="md_ffs.html">
-     Force fields
+     Force field parameterization
     </a>
    </li>
    <li class="toctree-l2">
@@ -626,13 +620,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#construction-of-molecular-grid">
-   Construction of molecular grid
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#numerical-integration-of-the-xc-kernel">
-   Numerical integration of the XC kernel
+  <a class="reference internal nav-link" href="#xc-contribution-to-fock-matrix">
+   XC contribution to Fock matrix
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -641,8 +630,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#self-interaction-error">
-   Self-interaction error
+  <a class="reference internal nav-link" href="#self-interaction-errors">
+   Self-interaction errors
   </a>
  </li>
 </ul>
@@ -656,8 +645,42 @@
         
               <div>
                 
-  <div class="section" id="scf-optimization">
-<h1>SCF optimization<a class="headerlink" href="#scf-optimization" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="scf-optimization-of-a-closed-shell-state">
+<h1>SCF optimization of a closed-shell state<a class="headerlink" href="#scf-optimization-of-a-closed-shell-state" title="Permalink to this headline">¶</a></h1>
+<p>The derivation of the <a class="reference internal" href="kohn-sham.html#kohn-sham-equation"><span class="std std-ref">Kohn–Sham equation</span></a> follows closely the Hartree–Fock counterpart and the orbitals that minimize the DFT energy under the contraint of being orthogonal are eigenfuctions to the Kohn–Sham operator that closely resembles the <a class="reference internal" href="hartree-fock.html#lagrangian"><span class="std std-ref">Fock operator</span></a> from Hartree–Fock theory. The Kohn–Sham operator takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{f} = \hat{h} + \hat{v}_\mathrm{xc} + \sum_{j=1}^N \big( \hat{J}_j + c_x^\mathrm{HF} \hat{K}_j \big)
+\]</div>
+<p>where we note that the exchange term in the Fock operator has been at least partially replaced by the exchange–correlation potential</p>
+<div class="math notranslate nohighlight">
+\[
+v_\mathrm{xc}(\mathbf{r}) = \frac{\delta E_\mathrm{xc}}{\delta n(\mathbf{r})}
+\]</div>
+<p>For <em>pure</em> functionals, <span class="math notranslate nohighlight">\(c_x^\mathrm{HF} = 0\)</span> whereas for <em>hybrid</em> functionals, we have <span class="math notranslate nohighlight">\(0 \le c_x^\mathrm{HF} \le 1\)</span>.</p>
+<p>So an existing module for the <a class="reference internal" href="hartree-fock.html#scf-procedure"><span class="std std-ref">SCF optimization of a Hartree–Fock</span></a> state is made capable to optimize a Kohn–Sham state by modifying the Fock operator accordingly. Let us do just that under the assumption that the exchange–correlation functional merely includes <a class="reference external" href="https://en.wikipedia.org/wiki/Local-density_approximation#Exchange_functional">Slater exchange</a></p>
+<div class="math notranslate nohighlight">
+\[
+\varepsilon_\mathrm{xc}(n(\mathbf{r})) =
+-\frac{3}{4} \Big(\frac{3}{\pi}\Big)^{1/3} \big[n(\mathbf{r})\big]^{1/3}
+\]</div>
+<p>In the LDA, we have</p>
+<div class="math notranslate nohighlight">
+\[
+v_\mathrm{xc}(\mathbf{r}) =
+\varepsilon_\mathrm{xc}(n(\mathbf{r})) + n(\mathbf{r})
+\frac{\partial \varepsilon_\mathrm{xc}}{\partial n}
+\]</div>
+<p>and, in our particular case, we get</p>
+<div class="math notranslate nohighlight">
+\[
+v_\mathrm{xc}(\mathbf{r}) = \frac{4}{3} \varepsilon_\mathrm{xc}(n(\mathbf{r}))
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
+\]</div>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -701,184 +724,45 @@ Nuclear repulsion energy (in a.u.):  9.343638157971
 </div>
 <div class="section" id="reference-calculation">
 <h2>Reference calculation<a class="headerlink" href="#reference-calculation" title="Permalink to this headline">¶</a></h2>
-<div class="cell tag_output_scroll docutils container">
+<p>Let us first perform an reference calculation using the restricted closed-shell SCF driver in VeloxChem.</p>
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;slater&#39;</span><span class="p">,</span> <span class="s1">&#39;grid_level&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
 
-<span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Final DFT energy: </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s1"> 12.8f</span><span class="si">}</span><span class="s1"> Hartree&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                            Self Consistent Field Driver Setup                                            
-                                           ====================================                                           
-                                                                                                                          
-                   Wave Function Model             : Spin-Restricted Kohn-Sham                                            
-                   Initial Guess Model             : Superposition of Atomic Densities                                    
-                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
-                   Max. Number of Iterations       : 50                                                                   
-                   Max. Number of Error Vectors    : 10                                                                   
-                   Convergence Threshold           : 1.0e-06                                                              
-                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
-                   ERI Screening Mode              : Dynamic                                                              
-                   ERI Screening Threshold         : 1.0e-12                                                              
-                   Linear Dependence Threshold     : 1.0e-06                                                              
-                   Exchange-Correlation Functional : SLATER                                                               
-                   Molecular Grid Level            : 4                                                                    
-                                                                                                                          
-* Info * Nuclear repulsion energy: 9.3436381580 a.u.                                                                      
-                                                                                                                          
-* Info * Molecular grid with 35884 points generated in 0.00 sec.                                                          
-                                                                                                                          
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.983338616412 a.u. Time: 0.06 sec.                                  
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               Iter. |    Kohn-Sham Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
-               --------------------------------------------------------------------------------------------               
-                  1       -75.150048543934    0.0000000000      0.07684455      0.01397212      0.00000000                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -75.149120620119    0.0009279238      0.12795976      0.02402629      0.04901510                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -75.150580989543   -0.0014603694      0.00073574      0.00015078      0.02962419                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -75.150581061049   -0.0000000715      0.00012978      0.00002856      0.00029238                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -75.150581063096   -0.0000000020      0.00000260      0.00000057      0.00005365                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -75.150581063097   -0.0000000000      0.00000056      0.00000010      0.00000082                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-* Info * SCF tensors written to file: scf.tensors.h5                                                                      
-                                                                                                                          
-               *** SCF converged in 6 iterations. Time: 0.23 sec.                                                         
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Kohn-Sham:                                                                                 
-               --------------------------                                                                                 
-               Total Energy                       :      -75.1505810631 a.u.                                              
-               Electronic Energy                  :      -84.4942192211 a.u.                                              
-               Nuclear Repulsion Energy           :        9.3436381580 a.u.                                              
-               ------------------------------------                                                                       
-               Gradient Norm                      :        0.0000005601 a.u.                                              
-                                                                                                                          
-                                                                                                                          
-               Ground State Information                                                                                   
-               ------------------------                                                                                   
-               Charge of Molecule            :  0.0                                                                       
-               Multiplicity (2S+1)           :  1.0                                                                       
-               Magnetic Quantum Number (M_S) :  0.0                                                                       
-                                                                                                                          
-                                                                                                                          
-                                                 Spin Restricted Orbitals                                                 
-                                                 ------------------------                                                 
-                                                                                                                          
-               Molecular Orbital No.   1:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:  -18.51511 a.u.                                                                    
-               (   1 O   1s  :    -0.99)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   2:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.87529 a.u.                                                                    
-               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.45) (   1 O   3s  :    -0.44)                              
-               (   1 O   1p0 :    -0.17) (   2 H   1s  :    -0.16) (   3 H   1s  :    -0.16)                              
-                                                                                                                          
-               Molecular Orbital No.   3:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.42759 a.u.                                                                    
-               (   1 O   1p-1:    -0.52) (   1 O   2p-1:    -0.23) (   2 H   1s  :    -0.26)                              
-               (   2 H   2s  :    -0.16) (   3 H   1s  :     0.26) (   3 H   2s  :     0.16)                              
-                                                                                                                          
-               Molecular Orbital No.   4:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.24182 a.u.                                                                    
-               (   1 O   2s  :    -0.21) (   1 O   3s  :    -0.40) (   1 O   1p0 :     0.54)                              
-               (   1 O   2p0 :     0.38)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   5:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.17875 a.u.                                                                    
-               (   1 O   1p+1:    -0.64) (   1 O   2p+1:    -0.52)                                                        
-                                                                                                                          
-               Molecular Orbital No.   6:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.07527 a.u.                                                                    
-               (   1 O   2s  :    -0.16) (   1 O   3s  :    -1.10) (   1 O   1p0 :    -0.30)                              
-               (   1 O   2p0 :    -0.43) (   2 H   2s  :     0.95) (   3 H   2s  :     0.95)                              
-                                                                                                                          
-               Molecular Orbital No.   7:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.16545 a.u.                                                                    
-               (   1 O   1p-1:     0.43) (   1 O   2p-1:     0.74) (   2 H   2s  :    -1.31)                              
-               (   3 H   2s  :     1.31)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   8:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.82813 a.u.                                                                    
-               (   1 O   1p-1:     0.15) (   1 O   2p-1:     0.63) (   2 H   1s  :    -0.98)                              
-               (   2 H   2s  :     0.60) (   3 H   1s  :     0.98) (   3 H   2s  :    -0.60)                              
-                                                                                                                          
-               Molecular Orbital No.   9:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.87488 a.u.                                                                    
-               (   1 O   1p+1:     0.96) (   1 O   2p+1:    -1.03)                                                        
-                                                                                                                          
-               Molecular Orbital No.  10:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.88179 a.u.                                                                    
-               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.93) (   1 O   2p0 :     0.85)                              
-               (   2 H   1s  :     0.44) (   2 H   2s  :    -0.51) (   3 H   1s  :     0.44)                              
-               (   3 H   2s  :    -0.51)                                                                                  
-                                                                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final DFT energy: -75.15058106 Hartree
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="section" id="construction-of-molecular-grid">
-<h2>Construction of molecular grid<a class="headerlink" href="#construction-of-molecular-grid" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xc-contribution-to-fock-matrix">
+<h2>XC contribution to Fock matrix<a class="headerlink" href="#xc-contribution-to-fock-matrix" title="Permalink to this headline">¶</a></h2>
+<p>The contrbutions from <span class="math notranslate nohighlight">\(\hat{v}_\mathrm{xc}\)</span> to the Fock operator in the AO matrix representation will be obtained by means of numerical integration.</p>
+<div class="math notranslate nohighlight">
+\[
+F^\mathrm{xc}_{\alpha\beta} = 
+( \phi_\alpha | \hat{v}_\mathrm{xc} | \phi_\beta ) \approx
+\sum_{i=1}^P
+w_i \,
+v_\mathrm{xc}(\mathbf{r}_i) \,
+\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)
+\]</div>
+<p>We start by defining a molecular grid with grid points and weights. The number of grid points, <span class="math notranslate nohighlight">\(P\)</span>, will depend on the chosen grid level accuracy. The default level in VeloxChem is equal to 4.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">GridDriver</span><span class="p">()</span>
@@ -891,9 +775,13 @@ Nuclear repulsion energy (in a.u.):  9.343638157971
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="numerical-integration-of-the-xc-kernel">
-<h2>Numerical integration of the XC kernel<a class="headerlink" href="#numerical-integration-of-the-xc-kernel" title="Permalink to this headline">¶</a></h2>
+<p>In order to carry out the numerical integration, we need the values of the total density, <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>, as well as pairs of atomic orbitals on the grid points, <span class="math notranslate nohighlight">\(\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)\)</span>.</p>
+<p>VeloxChem provides the class <code class="docutils literal notranslate"><span class="pre">DensityGridDriver</span></code> and method <code class="docutils literal notranslate"><span class="pre">generate</span></code> to determine the values of densities (as represented by AO density matrices) on the grid points. That gives direct access to <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>.</p>
+<p>To get hold of <span class="math notranslate nohighlight">\(\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)\)</span>, we construct an auxiliary density matrix</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\gamma\delta} = \delta_{\gamma\alpha} \delta_{\delta\beta}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">den_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">()</span>
@@ -911,10 +799,11 @@ Nuclear repulsion energy (in a.u.):  9.343638157971
     
     <span class="n">n</span> <span class="o">=</span> <span class="n">den_alpha</span> <span class="o">+</span> <span class="n">den_beta</span> <span class="c1"># density on the molecular grid</span>
     
+    <span class="n">e_xc</span> <span class="o">=</span> <span class="o">-</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">E_xc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">e_xc</span><span class="p">)</span>
+    
     <span class="n">v_xc</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
-    
-    <span class="n">E_xc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">v_xc</span><span class="p">)</span>
-    
+        
     <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbas</span><span class="p">,</span><span class="n">nbas</span><span class="p">))</span> <span class="c1"># auxiliary density matrix for orbital pairs</span>
     
     <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbas</span><span class="p">):</span>
@@ -939,7 +828,7 @@ Nuclear repulsion energy (in a.u.):  9.343638157971
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">yn</span><span class="o">/</span><span class="n">sjrk11nj0zs5nb8wzbytm0j00000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_3423</span><span class="o">/</span><span class="mf">3886331158.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_1652</span><span class="o">/</span><span class="mf">958914433.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">den_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">()</span>
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">xctype</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">xcfun</span><span class="o">.</span><span class="n">lda</span> <span class="c1"># generate densities but no gradients of densities</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> 
@@ -957,7 +846,8 @@ Nuclear repulsion energy (in a.u.):  9.343638157971
 </div>
 <div class="section" id="scf-procedure">
 <h2>SCF procedure<a class="headerlink" href="#scf-procedure" title="Permalink to this headline">¶</a></h2>
-<div class="cell docutils container">
+<p>Let us merely modify the Fock matrix in the existing module for the <a class="reference internal" href="hartree-fock.html#scf-procedure"><span class="std std-ref">SCF optimization of a Hartree–Fock</span></a> state and instead converge the Kohn–Sham state.</p>
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-5</span>
@@ -1030,15 +920,33 @@ SCF iterations converged!
 </div>
 </div>
 </div>
+<p>We note that the final SCF energy equals the one above as obtained in the reference calculation. It is also seen that the LDA exchange energy is some 0.83 Hartree higher than the corresponding exact Hartree–Fock exchange energy.</p>
 </div>
-<div class="section" id="self-interaction-error">
-<h2>Self-interaction error<a class="headerlink" href="#self-interaction-error" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="self-interaction-errors">
+<h2>Self-interaction errors<a class="headerlink" href="#self-interaction-errors" title="Permalink to this headline">¶</a></h2>
+<p>In Hartee–Fock, the exchange energy equals</p>
+<div class="math notranslate nohighlight">
+\[
+E_{\mathrm{x}}^\mathrm{HF} = - \sum_{i=1}^{N/2} K_{ii}
+; \qquad
+K_{ii} = \sum_{j=1}^{N/2}
+( \phi_i \phi_j | \phi_j \phi_i )
+\]</div>
+<p>The term in <span class="math notranslate nohighlight">\(K_{ii}\)</span> with <span class="math notranslate nohighlight">\(j = i\)</span> cancels the self-interaction in the classical Coulomb electron repulsion energy. In DFT, with an approximate form of the exchange–correlation energy functional, this cancelation is no longer guaranteed.</p>
+<p>In our case, the DFT exchange energy equals</p>
+<div class="math notranslate nohighlight">
+\[
+E_{\mathrm{x}}^\mathrm{LDA} = 2 \times
+\sum_{i=1}^{N/2} ( \phi_i | \hat{\varepsilon}_\mathrm{xc} | \phi_i ) = 
+\frac{3}{2} \sum_{i=1}^{N/2} ( \phi_i | \hat{v}_\mathrm{xc} | \phi_i ) =
+\frac{3}{2} \sum_{i=1}^{N/2} F^\mathrm{xc}_{ii}
+\]</div>
+<p>where the factor of 2 stems from the double occupancy of orbitals.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">F_xc_ii</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">J_ii</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">K_ii</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">g_iiii</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1048,22 +956,70 @@ SCF iterations converged!
     <span class="n">K_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;a,b,ab-&gt;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">K</span><span class="p">))</span>
     <span class="n">g_iiii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;a,b,c,d,abcd-&gt;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">g</span><span class="p">))</span> 
 
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">K_ii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Exact exchange&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">F_xc_ii</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Slater exchange&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">g_iiii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$(\phi_i\phi_i | \phi_i\phi_i)$&#39;</span><span class="p">)</span>
+<span class="n">LDA_x_ii</span> <span class="o">=</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">F_xc_ii</span><span class="p">)</span>
+<span class="n">HF_x_ii</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">K_ii</span><span class="p">)</span>
+<span class="n">g_iiii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g_iiii</span><span class="p">)</span>
+    
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">xticks</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Molecular orbital&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (a.u.)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">HF_x_ii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Exact exchange&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">LDA_x_ii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;LDA exchange&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="o">-</span><span class="n">g_iiii</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$-(\phi_i\phi_i | \phi_i\phi_i)$&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Molecular orbital&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (Hartree)&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dft_scf_14_0.png" src="../_images/dft_scf_14_0.png" />
+<img alt="../_images/dft_scf_16_0.png" src="../_images/dft_scf_16_0.png" />
+</div>
+</div>
+<p>First, we note that the self-interaction energy (SIE) in terms of the integral <span class="math notranslate nohighlight">\((\phi_i\phi_i|\phi_i\phi_i)\)</span> represents a dominant part of the exchange energy. The percentage contributions exceed 60% for orbitals and it reaches 97% for the core <span class="math notranslate nohighlight">\(1s\)</span>-orbital.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SIE percentage part of exchange energy&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="o">-</span><span class="n">g_iiii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">HF_x_ii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="si">:</span><span class="s1"> 6.1f</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SIE percentage part of exchange energy
+0   97.0%
+1   64.2%
+2   73.3%
+3   77.5%
+4   76.6%
+</pre></div>
+</div>
+</div>
+</div>
+<p>Second, we note that the LDA exchange energy is closely equal to the exact Hartree–Fock exchange energy for the outer valence orbitals but substantially less so for the core and inner valence orbitals. For the core <span class="math notranslate nohighlight">\(1s\)</span>-orbital, the two results differ by some 0.66 Hartree.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comparison of LDA and HF exchange energies&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">LDA_x_ii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">HF_x_ii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="si">:</span><span class="s1"> 6.1f</span><span class="si">}</span><span class="s1">% </span><span class="si">{</span><span class="n">LDA_x_ii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">HF_x_ii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="si">:</span><span class="s1"> 6.2f</span><span class="si">}</span><span class="s1"> a.u.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Comparison of LDA and HF exchange energies
+0   86.4%   0.66 a.u.
+1   87.9%   0.14 a.u.
+2   99.9%   0.00 a.u.
+3   98.5%   0.01 a.u.
+4   99.5%   0.01 a.u.
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -1092,27 +1048,36 @@ SCF iterations converged!
               </div>
               
         
-            <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="kernel_integration.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Kernel integration</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="pes-general.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">General aspects</p>
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="kernel_integration.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">Kernel integration</p>
+            </div>
+        </a>
     </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+     <div id="next">
+        <a class="right-next" href="pes-general.html" title="next page">
+            <div class="prevnext-info">
+                <p class="prevnext-label">next</p>
+                <p class="prevnext-title">General aspects</p>
+            </div>
+            <i class="prevnext-label fas fa-angle-right"></i>
+        </a>
+     </div>
+
 </div>
         
         </div>
     </div>
-    <footer class="footer">
+    <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         
@@ -1128,7 +1093,8 @@ SCF iterations converged!
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
+  
   </body>
 </html>

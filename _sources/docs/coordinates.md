@@ -103,6 +103,22 @@ These derivatives, together with $\mathbf{G}^{-}$, the Wilson $\mathbf{B}$ matri
     \mathbf{H}_q = \mathbf{G}^{-} \mathbf{B} \left[ \mathbf{H}_x - \mathbf{g}_q \mathbf{B}^{(2)}\right]\mathbf{B}^\mathrm{T} \mathbf{G}^{-\mathrm{T}}\,.
 ```
 
+After these transformations are carried out, further transformations to related internal coordinates, for example to use $1/R$ instead of the $R$ (bond length), are easy to implement, as illustrated below for the gradient. Given the gradient in terms of $R$:
+
+```{math}
+:label: eq:grad_R
+    g(R) = \frac{\mathrm{d} E}{\mathrm{d}R},
+```
+
+the transformation to $u=1/R$ is a simple change of variables:
+
+```{math}
+:label: eq:grad_Rinv
+    g(u) = \frac{\mathrm{d} E}{\mathrm{d}u}=\frac{\mathrm{d} E}{\mathrm{d}R}\frac{\mathrm{d} R}{\mathrm{d}u} = \frac{\mathrm{d} E}{\mathrm{d}R}\frac{\mathrm{d} u^{-1}}{\mathrm{d}u} =  -u^{-2}\,g(R) =  -R^{2} \,g(R)\,.
+```
+
+The transformation of the Hessian can be carried out similarly.
+
 
 ## Delocalized internal coordinates
 Geometry optimizations using internal coordinates require, as we have seen above, to find the generalized inverse matrix $\mathbf{G}$. This is an expensive step, since the matrices involved in Eq. {eq}`eq:generalized_inverse` are constructed in terms of the primitive internal coordinates which are very numerous. One idea to reduce this computational cost is to use the non-redundant coordinates defined in Eq. {eq}`eq:non-redundant`. These new coordinates are actually linear combinations of primitives, and therefore are called "delocalized" internal coordinates (DLC) {cite}`Baker1999`.
