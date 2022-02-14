@@ -76,9 +76,14 @@ Gator is an open source quantum chemistry software which uses real and complex p
 As illustrated in the figure, Gator requires a Hartree--Fock reference state that can be provided from VeloxChem. It then uses this reference state to generate perturbative corrections (ground state) and construct the ADC matrix at a specified order of perturbation theory (excited states). The excited states and related transition properties (excitation energies, oscillator strengths, absorption cross-sections, etc.) are obtained by diagonalizing the ADC matrix.
 
 
-#### adcc
+#### Adcc
+
+[Adc-connect](https://adc-connect.org), or adcc for short, is a Python-based module of Gator which enables interactive ADC calculations via the jupyter notebook. Adcc can also be used as a stand-alone code, taking the SCF referece state from veloxchem, pycf or psi4. The code capabilities include UV-vis, X-ray absorption and X-ray emission calculations at variuos ADC orders, up to ADC(3). Various excited state properties are available, including transition dipole moments, transition amplitudes, excited state dipole moments, and excited state gradients (to be included in the next release).
+
 #### Respondo
 #### HPC-QC
+
+The HPC-QC module of Gator focuses on large-scale correlated calculations on HPC clusters. Based on Fock matrix-driven integrals transformation, the HPC-QC module enables MP2 and ADC(2) calculations in a fully distributed and parallel manner that makes efficient use of both the computational power and the aggregated memory on HPC systems. As such, ADC(2) calculations can be carried out efficiently on cluster nodes with only moderate amounts of memory. The HPC-QC module is written in pure Python.
 
 ### Multi-Psi
 
@@ -126,22 +131,7 @@ x
 
 
 ### geomeTRIC
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
+[geomeTRIC](https://github.com/leeping/geomeTRIC) is a geometry optimization python-based software which makes ues of the translation-rotation internal coordinates (TRIC) system. Other coordinate systems, such as deloclaized internal coordinates (DLC), are also available. geomeTRIC requires an external software (such as veloxchem, or Gator) to provide the energy, gradient, and possibly Hessian, which are then used to carry out ground or excited state geometry optimizations, as well as transition state searches and vibrational analysis. Veloxchem includes optimization enegines which call geomeTRIC to perform structure relaxations in the ground or excited state. Additionally, analytical Hessians (or numerical Hessians based on the analytical gradient) are provided to geomeTRIC to determine vibrational frequencies and normal modes.
 
 ### PyFrame
 

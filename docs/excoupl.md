@@ -91,3 +91,5 @@ The coupling between two CT states is
 :label: eq:exciton_model_ct_ct_coupling
 V^{A \to B,B \to A}_{LE-CT} = 2(h_Al_B|h_Bl_A) - c_{HF}(h_Ah_B|l_Bl_A) + (1-c_{HF})(h_Al_B|f_{xc}|h_Bl_A) .
 ```
+
+The expressions for couplings that involve more than two chromophore monomers are documented in the literature {cite}`Li2017`.
