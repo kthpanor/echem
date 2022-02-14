@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,15 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -83,7 +83,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -312,7 +312,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="dft_scf.html">
-     SCF optimization
+     SCF optimization of a closed-shell state
     </a>
    </li>
   </ul>
@@ -364,6 +364,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tst.html">
    Transition-state theory
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="impes.html">
+   Potential Energy Surfaces by Interpolation
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -590,7 +595,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#subsystems-and-states">
@@ -618,7 +623,7 @@
 <p>The exciton model is a practical approach for describing multichromophoric systems.
 By dividing the system into individual chromophores, the computational cost is significantly decreased. In the <span class="math notranslate nohighlight">\(ab\)</span> <span class="math notranslate nohighlight">\(initio\)</span> exciton model <span id="id1">[<a class="reference internal" href="refs.html#id33">LPL+17</a>]</span>, the Hamiltonian takes the matrix form as in the Frenkel exciton model:</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-matrix">
-<span class="eqno">(196)<a class="headerlink" href="#equation-eq-exciton-model-matrix" title="Permalink to this equation">¶</a></span>\[\mathbf{H} = \sum_I^N E_I |\psi_I \rangle \langle \psi_I | +
+<span class="eqno">(209)<a class="headerlink" href="#equation-eq-exciton-model-matrix" title="Permalink to this equation">¶</a></span>\[\mathbf{H} = \sum_I^N E_I |\psi_I \rangle \langle \psi_I | +
 \sum_{J \neq I}^N V_{IJ} |\psi_I \rangle \langle \psi_J |,\]</div>
 <p>where <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(J\)</span> denote the diabatic excited states and <span class="math notranslate nohighlight">\(N\)</span> is the total number of states in the system. A diabatic excited state may involve one or more chromophores.</p>
 <div class="section" id="subsystems-and-states">
@@ -632,40 +637,40 @@ By dividing the system into individual chromophores, the computational cost is s
 </ul>
 <p>The ground state wave function of the system can therefore be constructed as an antisymmetrized product (Slater determinant) of the orbitals of the isolated monomers. Based on the ground state wave function and the above approximations, we can construct two types of diabatic excited states, the locally excited (LE) states and the charge-transfer (CT) excited states. The wave function for a LE state on monomer <span class="math notranslate nohighlight">\(A\)</span> can be expressed as:</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-le-state">
-<span class="eqno">(197)<a class="headerlink" href="#equation-eq-exciton-model-le-state" title="Permalink to this equation">¶</a></span>\[|\psi_{LE}^{A} \rangle = \sum_{i,a \in A} c_{ia}^{A} |\psi_{ia} \rangle = \frac{1}{\sqrt{2}} \sum_{i,a \in A} c_{ia}^A (\{\bar{a}^\dagger \bar{i}\} + \{a^\dagger i\}) |\psi_0 \rangle,\]</div>
+<span class="eqno">(210)<a class="headerlink" href="#equation-eq-exciton-model-le-state" title="Permalink to this equation">¶</a></span>\[|\psi_{LE}^{A} \rangle = \sum_{i,a \in A} c_{ia}^{A} |\psi_{ia} \rangle = \frac{1}{\sqrt{2}} \sum_{i,a \in A} c_{ia}^A (\{\bar{a}^\dagger \bar{i}\} + \{a^\dagger i\}) |\psi_0 \rangle,\]</div>
 <p>where <span class="math notranslate nohighlight">\(c_{ia}^A\)</span> is the CI coefficient of the <span class="math notranslate nohighlight">\(i \to a\)</span> transition within monomer <span class="math notranslate nohighlight">\(A\)</span>. In practice <span class="math notranslate nohighlight">\(c_{ia}^A\)</span> can be obtained from time-dependent density functional theory calculation with the Tamm<span class="math notranslate nohighlight">\(-\)</span>Dancoff approximation. Similarly, the wave function for a CT state between monomers <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> can be expressed as:</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-ct-state">
-<span class="eqno">(198)<a class="headerlink" href="#equation-eq-exciton-model-ct-state" title="Permalink to this equation">¶</a></span>\[|\psi_{CT}^{A \to B} \rangle = |\psi_{h_A l_B} \rangle = \frac{1}{\sqrt{2}} (\{\bar{l_B}^\dagger \bar{h_A}\} + \{l_B^\dagger h_A\}) |\psi_0 \rangle,\]</div>
+<span class="eqno">(211)<a class="headerlink" href="#equation-eq-exciton-model-ct-state" title="Permalink to this equation">¶</a></span>\[|\psi_{CT}^{A \to B} \rangle = |\psi_{h_A l_B} \rangle = \frac{1}{\sqrt{2}} (\{\bar{l_B}^\dagger \bar{h_A}\} + \{l_B^\dagger h_A\}) |\psi_0 \rangle,\]</div>
 <p>where <span class="math notranslate nohighlight">\(h_A\)</span> denotes the occupied orbital on <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(l_B\)</span> denotes the virtual orbital on <span class="math notranslate nohighlight">\(B\)</span>.</p>
 </div>
 <div class="section" id="energies-and-couplings">
 <h2>Energies and couplings<a class="headerlink" href="#energies-and-couplings" title="Permalink to this headline">¶</a></h2>
 <p>The excitation energy of the <span class="math notranslate nohighlight">\(n\)</span>th LE state is expressed as</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-le-energy">
-<span class="eqno">(199)<a class="headerlink" href="#equation-eq-exciton-model-le-energy" title="Permalink to this equation">¶</a></span>\[\begin{split}E^{A(n)}_{LE} = \sum_{i,a \in A} \sum_{j,b \in A} c_{ia}^A c_{jb}^A &amp; [ \delta_{ij}f_{ab} - \delta_{ab}f_{ij} + 2(ia|jb) - c_{HF}(ij|ab) \\
+<span class="eqno">(212)<a class="headerlink" href="#equation-eq-exciton-model-le-energy" title="Permalink to this equation">¶</a></span>\[\begin{split}E^{A(n)}_{LE} = \sum_{i,a \in A} \sum_{j,b \in A} c_{ia}^A c_{jb}^A &amp; [ \delta_{ij}f_{ab} - \delta_{ab}f_{ij} + 2(ia|jb) - c_{HF}(ij|ab) \\
 &amp; + (1-c_{HF})(ia|f_{xc}|jb) ] ,\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(c_{HF}\)</span> is the coefficient of Hartree<span class="math notranslate nohighlight">\(-\)</span>Fock exchange, <span class="math notranslate nohighlight">\(f_{xc}\)</span> is the exchange-correlation functional, and <span class="math notranslate nohighlight">\(f_{ij}\)</span> and <span class="math notranslate nohighlight">\(f_{ab}\)</span> are Fock matrix elements.</p>
 <p>Similarly, the excitation energy of a CT state can be expressed as</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-ct-energy">
-<span class="eqno">(200)<a class="headerlink" href="#equation-eq-exciton-model-ct-energy" title="Permalink to this equation">¶</a></span>\[\begin{split}E^{A \to B}_{CT} = &amp; f_{l_Bl_B} - f_{h_Ah_A} + 2(h_Al_B|h_Al_B) - c_{HF}(h_Ah_A|l_Bl_B) \\
+<span class="eqno">(213)<a class="headerlink" href="#equation-eq-exciton-model-ct-energy" title="Permalink to this equation">¶</a></span>\[\begin{split}E^{A \to B}_{CT} = &amp; f_{l_Bl_B} - f_{h_Ah_A} + 2(h_Al_B|h_Al_B) - c_{HF}(h_Ah_A|l_Bl_B) \\
 &amp; + (1-c_{HF})(h_Al_B|f_{xc}|h_Al_B) .\end{split}\]</div>
 <p>Note that this expression expects that the exchange-correlation functional has correct asymptotic behavior.</p>
 <p>We can further write down the expression for the coupling between two LE states on different monomers</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-le-le-coupling">
-<span class="eqno">(201)<a class="headerlink" href="#equation-eq-exciton-model-le-le-coupling" title="Permalink to this equation">¶</a></span>\[V^{A(m),B(n)}_{LE-LE} = \sum_{i,a \in A} \sum_{j,b \in B} c_{ia}^A c_{jb}^B \left[ 2(ia|jb) - c_{HF}(ij|ab) + (1-c_{HF})(ia|f_{xc}|jb) \right] ,\]</div>
+<span class="eqno">(214)<a class="headerlink" href="#equation-eq-exciton-model-le-le-coupling" title="Permalink to this equation">¶</a></span>\[V^{A(m),B(n)}_{LE-LE} = \sum_{i,a \in A} \sum_{j,b \in B} c_{ia}^A c_{jb}^B \left[ 2(ia|jb) - c_{HF}(ij|ab) + (1-c_{HF})(ia|f_{xc}|jb) \right] ,\]</div>
 <p>where only two-electron contributions survive.</p>
 <p>The coupling between LE state and CT state can be expressed as</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-le-ctab-coupling">
-<span class="eqno">(202)<a class="headerlink" href="#equation-eq-exciton-model-le-ctab-coupling" title="Permalink to this equation">¶</a></span>\[\begin{split}V^{A(n),A \to B}_{LE-CT} = \sum_{i,a \in A} c_{ia}^A &amp; [ \delta_{ih_A}f_{al_B} + 2(ia|h_Al_B) - c_{HF}(ih_A|al_B) \\
+<span class="eqno">(215)<a class="headerlink" href="#equation-eq-exciton-model-le-ctab-coupling" title="Permalink to this equation">¶</a></span>\[\begin{split}V^{A(n),A \to B}_{LE-CT} = \sum_{i,a \in A} c_{ia}^A &amp; [ \delta_{ih_A}f_{al_B} + 2(ia|h_Al_B) - c_{HF}(ih_A|al_B) \\
 &amp; + (1-c_{HF})(ia|f_{xc}|h_Al_B) ] ,\end{split}\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-le-ctba-coupling">
-<span class="eqno">(203)<a class="headerlink" href="#equation-eq-exciton-model-le-ctba-coupling" title="Permalink to this equation">¶</a></span>\[\begin{split}V^{A(n),B \to A}_{LE-CT} = \sum_{i,a \in A} c_{ia}^A &amp; [ -\delta_{al_A}f_{ih_B} + 2(ia|h_Bl_A) - c_{HF}(ih_B|al_A) \\
+<span class="eqno">(216)<a class="headerlink" href="#equation-eq-exciton-model-le-ctba-coupling" title="Permalink to this equation">¶</a></span>\[\begin{split}V^{A(n),B \to A}_{LE-CT} = \sum_{i,a \in A} c_{ia}^A &amp; [ -\delta_{al_A}f_{ih_B} + 2(ia|h_Bl_A) - c_{HF}(ih_B|al_A) \\
 &amp; + (1-c_{HF})(ia|f_{xc}|h_Bl_A) ] ,\end{split}\]</div>
 <p>where the leading contribution comes from one-electron terms (Fock matrix elements).</p>
 <p>The coupling between two CT states is</p>
 <div class="math notranslate nohighlight" id="equation-eq-exciton-model-ct-ct-coupling">
-<span class="eqno">(204)<a class="headerlink" href="#equation-eq-exciton-model-ct-ct-coupling" title="Permalink to this equation">¶</a></span>\[V^{A \to B,B \to A}_{LE-CT} = 2(h_Al_B|h_Bl_A) - c_{HF}(h_Ah_B|l_Bl_A) + (1-c_{HF})(h_Al_B|f_{xc}|h_Bl_A) .\]</div>
+<span class="eqno">(217)<a class="headerlink" href="#equation-eq-exciton-model-ct-ct-coupling" title="Permalink to this equation">¶</a></span>\[V^{A \to B,B \to A}_{LE-CT} = 2(h_Al_B|h_Bl_A) - c_{HF}(h_Ah_B|l_Bl_A) + (1-c_{HF})(h_Al_B|f_{xc}|h_Bl_A) .\]</div>
 <p>The expressions for couplings that involve more than two chromophore monomers are documented in the literature <span id="id2">[<a class="reference internal" href="refs.html#id33">LPL+17</a>]</span>.</p>
 </div>
 </div>
@@ -693,32 +698,12 @@ By dividing the system into individual chromophores, the computational cost is s
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="adc.html" title="previous page">Algebraic diagrammatic construction</a>
+    <a class='right-next' id="next-link" href="localprop.html" title="next page">Localized properties</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="adc.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Algebraic diagrammatic construction</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="localprop.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Localized properties</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>

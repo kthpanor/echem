@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e8f53015daec13862f6db5e763c41738.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,15 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -83,7 +83,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -607,7 +607,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#setting-up-the-system">
@@ -630,8 +630,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#self-interaction-errors">
-   Self-interaction errors
+  <a class="reference internal nav-link" href="#self-interaction-error">
+   Self-interaction error
   </a>
  </li>
 </ul>
@@ -716,7 +716,7 @@ n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 13
 Number of doubly occupied molecular orbitals: 5
-Nuclear repulsion energy (in a.u.):  9.343638157971
+Nuclear repulsion energy (in a.u.):  9.343638157670
 </pre></div>
 </div>
 </div>
@@ -775,13 +775,14 @@ v_\mathrm{xc}(\mathbf{r}_i) \,
 </div>
 </div>
 </div>
-<p>In order to carry out the numerical integration, we need the values of the total density, <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>, as well as pairs of atomic orbitals on the grid points, <span class="math notranslate nohighlight">\(\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)\)</span>.</p>
-<p>VeloxChem provides the class <code class="docutils literal notranslate"><span class="pre">DensityGridDriver</span></code> and method <code class="docutils literal notranslate"><span class="pre">generate</span></code> to determine the values of densities (as represented by AO density matrices) on the grid points. That gives direct access to <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>.</p>
+<p>In order to carry out the numerical integration, we need the values of the total density, <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>, as well as pairs of atomic orbitals, <span class="math notranslate nohighlight">\(\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)\)</span>, on the grid points.</p>
+<p>VeloxChem provides the class <code class="docutils literal notranslate"><span class="pre">DensityGridDriver</span></code> and the method <code class="docutils literal notranslate"><span class="pre">generate</span></code> to determine the values of densities (as represented by AO density matrices) on the grid points. This gives immediate access to <span class="math notranslate nohighlight">\(n(\mathbf{r}_i)\)</span>.</p>
 <p>To get hold of <span class="math notranslate nohighlight">\(\phi_\alpha^\ast(\mathbf{r}_i)\phi_\beta(\mathbf{r}_i)\)</span>, we construct an auxiliary density matrix</p>
 <div class="math notranslate nohighlight">
 \[
 D_{\gamma\delta} = \delta_{\gamma\alpha} \delta_{\delta\beta}
 \]</div>
+<p>and employ the same routine.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">den_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">()</span>
@@ -822,23 +823,6 @@ D_{\gamma\delta} = \delta_{\gamma\alpha} \delta_{\delta\beta}
             <span class="n">D</span><span class="p">[</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="k">return</span> <span class="n">F_xc</span><span class="p">,</span> <span class="n">E_xc</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">ky</span><span class="o">/</span><span class="mi">5</span><span class="n">h8mb6gs32nbvf3w8cyqwrhm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_1652</span><span class="o">/</span><span class="mf">958914433.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">den_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">xctype</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">xcfun</span><span class="o">.</span><span class="n">lda</span> <span class="c1"># generate densities but no gradients of densities</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> 
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="k">def</span> <span class="nf">LDA_exchange</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> 
-
-<span class="ne">TypeError</span>: __init__(): incompatible constructor arguments. The following argument types are supported:
-<span class="g g-Whitespace">    </span><span class="mi">1</span><span class="o">.</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span>
-
-<span class="n">Invoked</span> <span class="k">with</span><span class="p">:</span> 
 </pre></div>
 </div>
 </div>
@@ -898,32 +882,176 @@ D_{\gamma\delta} = \delta_{\gamma\alpha} \delta_{\delta\beta}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter       SCF energy   LDA exchange   Exact exchange   Error norm
- 0       -68.60921388   -10.70568929     -11.74379335     1.85e+00
- 1       -67.48094965    -6.48294784      -7.34508108     2.00e+00
- 2       -75.10283697    -8.03366719      -8.86801294     1.87e-01
- 3       -75.14729779    -8.15815720      -8.98803063     6.36e-02
- 4       -75.13892156    -8.01130749      -8.83652050     1.27e-01
- 5       -75.14877372    -8.06927101      -8.89605657     5.02e-02
- 6       -75.14920062    -8.14072992      -8.96977185     4.42e-02
- 7       -75.15050409    -8.11548922      -8.94368272     1.06e-02
- 8       -75.14892211    -8.07079177      -8.89766809     4.83e-02
- 9       -75.15057687    -8.10553377      -8.93346700     2.39e-03
-10       -75.15057363    -8.10998055      -8.93805576     3.26e-03
-11       -75.15058081    -8.10789639      -8.93590526     5.73e-04
-12       -75.15058062    -8.10688179      -8.93485829     7.66e-04
-13       -75.15058103    -8.10729049      -8.93528096     2.03e-04
-14       -75.15058105    -8.10734789      -8.93534010     1.23e-04
-15       -75.15058106    -8.10747819      -8.93547448     4.51e-05
-16       -75.15058106    -8.10745054      -8.93544597     9.60e-06
-SCF iterations converged!
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="mi">1</span><span class="n">d3425787234</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">17</span>     <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span>      <span class="c1"># no exact exchange in the Fock matrix</span>
+<span class="g g-Whitespace">     </span><span class="mi">18</span> 
+<span class="ne">---&gt; </span><span class="mi">19</span>     <span class="n">F_xc</span><span class="p">,</span> <span class="n">E_xc</span> <span class="o">=</span> <span class="n">LDA_exchange</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">F</span> <span class="o">+=</span> <span class="n">F_xc</span>        <span class="c1"># add LDA exchange</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> 
+
+<span class="nn">&lt;ipython-input-7-294ce529dbb3&gt;</span> in <span class="ni">LDA_exchange</span><span class="nt">(D)</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span>     <span class="n">den_array_format</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">D</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="n">den_cpp_format</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">AODensityMatrix</span><span class="p">(</span><span class="n">den_array_format</span><span class="p">,</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">denmat</span><span class="o">.</span><span class="n">rest</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">10</span>     <span class="n">den_grid</span> <span class="o">=</span> <span class="n">den_drv</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">den_cpp_format</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_grid</span><span class="p">,</span> <span class="n">xctype</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span>     <span class="n">den_alpha</span> <span class="o">=</span> <span class="n">den_grid</span><span class="o">.</span><span class="n">density_aa_to_numpy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="n">den_beta</span>  <span class="o">=</span> <span class="n">den_grid</span><span class="o">.</span><span class="n">density_bb_to_numpy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="ne">TypeError</span>: generate(): incompatible function arguments. The following argument types are supported:
+<span class="g g-Whitespace">    </span><span class="mi">1</span><span class="o">.</span> <span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span><span class="p">,</span> <span class="n">aoDensityMatrix</span><span class="p">:</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">AODensityMatrix</span><span class="p">,</span> <span class="n">molecule</span><span class="p">:</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">Molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">:</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="p">,</span> <span class="n">molecularGrid</span><span class="p">:</span> <span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">MolecularGrid</span><span class="p">,</span> <span class="n">xcFunctionalType</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CDensityGrid</span>
+
+<span class="n">Invoked</span> <span class="k">with</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">DensityGridDriver</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fad836da458</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">AODensityMatrix</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fad83988ab0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">Molecule</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fad836de650</span><span class="o">&gt;</span><span class="p">,</span> 
+<span class="p">[</span><span class="n">CMolecularBasis</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f7ac90</span><span class="p">]</span>
+<span class="ne">_label</span>: 6-31G
+<span class="ne">_maxAngularMomentum</span>: 1
+<span class="ne">_atomicBasisSets</span>: 
+<span class="n">_atomicBasisSets</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CAtomBasis</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2bd06f0</span><span class="p">]</span>
+<span class="ne">_idElemental</span>: 8
+<span class="ne">_maxAngularMomentum</span>: 1
+<span class="ne">_basisFunctions</span>: 
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f85bc0</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 0
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">5484</span><span class="mf">.67</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">825</span><span class="mf">.235</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">188</span><span class="mf">.047</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> 
+<span class="mi">52</span><span class="mf">.9645</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> 
+<span class="mi">16</span><span class="mf">.8976</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> 
+<span class="mi">5</span><span class="mf">.79964</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.831724</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">1</span><span class="mf">.53082</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">2</span><span class="mf">.47715</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> 
+<span class="mi">3</span><span class="mf">.25628</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> 
+<span class="mi">2</span><span class="mf">.79289</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.954938</span>
+
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f85bf8</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 0
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">15</span><span class="mf">.5396</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">3</span><span class="mf">.59993</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">1</span><span class="mf">.01376</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="ne">-</span><span class="mi">0</span><span class="mf">.617934</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="ne">-</span><span class="mi">0</span><span class="mf">.275721</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.814208</span>
+
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f85c30</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 1
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">15</span><span class="mf">.5396</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">3</span><span class="mf">.59993</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">1</span><span class="mf">.01376</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">3</span><span class="mf">.11694</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">2</span><span class="mf">.40144</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">1</span><span class="mf">.05436</span>
+
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f85c68</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 0
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.270006</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.266956</span>
+
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2f85ca0</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 1
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.270006</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.277432</span>
+
+
+<span class="n">_atomicBasisSets</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CAtomBasis</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2bd0710</span><span class="p">]</span>
+<span class="ne">_idElemental</span>: 1
+<span class="ne">_maxAngularMomentum</span>: 0
+<span class="ne">_basisFunctions</span>: 
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2e8cda0</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 0
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">18</span><span class="mf">.7311</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">2</span><span class="mf">.82539</span>
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.640122</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.214935</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.364571</span>
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.415051</span>
+
+<span class="n">_basisFunctions</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+
+<span class="p">[</span><span class="n">CBasisFunction</span> <span class="p">(</span><span class="n">Object</span><span class="p">):</span><span class="mh">0x2e8cdd8</span><span class="p">]</span>
+<span class="ne">_angularMomentum</span>: 0
+<span class="ne">_exponents</span>: 
+<span class="n">_exponents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.161278</span>
+<span class="ne">_normFactors</span>: 
+<span class="n">_normFactors</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+<span class="mi">0</span><span class="mf">.181381</span>
+
+
+<span class="p">,</span> <span class="o">&lt;</span><span class="n">veloxchem</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">MolecularGrid</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fad836d7260</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">xcfun</span><span class="o">.</span><span class="n">lda</span><span class="p">:</span> <span class="mi">0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>We note that the final SCF energy equals the one above as obtained in the reference calculation. It is also seen that the LDA exchange energy is some 0.83 Hartree higher than the corresponding exact Hartree–Fock exchange energy.</p>
 </div>
-<div class="section" id="self-interaction-errors">
-<h2>Self-interaction errors<a class="headerlink" href="#self-interaction-errors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="self-interaction-error">
+<h2>Self-interaction error<a class="headerlink" href="#self-interaction-error" title="Permalink to this headline">¶</a></h2>
 <p>In Hartee–Fock, the exchange energy equals</p>
 <div class="math notranslate nohighlight">
 \[
@@ -982,7 +1110,7 @@ E_{\mathrm{x}}^\mathrm{LDA} = 2 \times
 <img alt="../_images/dft_scf_16_0.png" src="../_images/dft_scf_16_0.png" />
 </div>
 </div>
-<p>First, we note that the self-interaction energy (SIE) in terms of the integral <span class="math notranslate nohighlight">\((\phi_i\phi_i|\phi_i\phi_i)\)</span> represents a dominant part of the exchange energy. The percentage contributions exceed 60% for orbitals and it reaches 97% for the core <span class="math notranslate nohighlight">\(1s\)</span>-orbital.</p>
+<p>First, we note that the self-interaction energy (SIE) in terms of the integral <span class="math notranslate nohighlight">\((\phi_i\phi_i|\phi_i\phi_i)\)</span> represents a dominant part of the exchange energy. The percentage contributions exceed 60% for all orbitals and it reaches 97% for the core <span class="math notranslate nohighlight">\(1s\)</span>-orbital.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SIE percentage part of exchange energy&#39;</span><span class="p">)</span>
@@ -1048,32 +1176,12 @@ E_{\mathrm{x}}^\mathrm{LDA} = 2 \times
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="kernel_integration.html" title="previous page">Kernel integration</a>
+    <a class='right-next' id="next-link" href="pes-general.html" title="next page">General aspects</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="kernel_integration.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Kernel integration</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="pes-general.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">General aspects</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
