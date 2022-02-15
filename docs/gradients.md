@@ -1,6 +1,48 @@
 # Gradients
 To add: general aspects about gradients and Hessians, numerical vs. analytical, related properties.
 
+In order to perform a geometry optimization and find a minimum energy structure or a transition state,
+one needs to calculate the derivative of the energy $E$ with respect to the **nuclear coordinates**.
+This is usually referred to as the *molecular gradient* and it needs to vanish at any stationary geometry.
+The second derivatives of the energy with respect to nuclear displacement (the molecular **Hessian**) can be used to characterize
+the stationary structure, i.e., to confirm whether a true minimum or a transition state has been found.
+But not only molecular gradients and Hessians can be calculated as derivatives of the energy,
+also other properties such as permanent and induced (dipole) moments, polarizabilities, and magnetizabilites
+when taking the derivative with respect to external **electromagnetic field**, or NMR and EPR parameters
+when additionally **nuclear magnetic moments** are involved {cite}`jensen2006`.
+
+The energy derivatives themselves can either be calculated **numerically** by using finite differences
+or **analytically**. The former is usually simple to implement, but suffers from difficulties
+in numerical accuracy and computational efficiency.
+For the latter, considerable programming effort is requiered, but it has the advantages of greater speed, precision, and convenience.
+
+## Numerical Gradients
+
+The simplest method to calculate the derivative of the energy $E(\chi)$ with respect to some parameter $\chi$ is to use finite difference approximations.
+Choosing a small change $\chi_0$ in $\chi$, a two-point estimation is given by
+```{math}
+:label: eq:divided_difference
+\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, ,
+```
+which is known as a first-order **divided difference** and its error to the true derivative is approximately proportional to $\chi_0$.
+Another two-point formula is the **symmetric difference quotient** given by
+```{math}
+:label: eq:symmetric_difference_quotient
+\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi - \chi_0)}{2\chi_0} \, ,
+```
+where it can be shown that the first-order error cancels, so it is approximately proportional to $\chi_0^2$,
+which means that for small $\chi_0$ this is a more accurate approximation to the true derivative
+and it is commonly used in numerical derivative codes.
+However, in both cases two calculations of the energy $E(\chi)$ need to be performed in order to obtain
+the derivative with respect to one variable $\chi$.
+
+There are also higher-order methods for approximating the first derivative, such as the five-point method given by
+```{math}
+:label: eq:five_point_method
+\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi - 2 \chi_0) - 8 E(\chi - \chi_0) + 8 E(\chi + \chi_0) - E(\chi + 2 \chi_0)}{12\chi_0} \, ,
+```
+where the error is approximately proportional to $\chi_0^4$. This expression is usually only employed for debugging of the analytical derivative expressions.
+
 ## Analytical Gradients
 To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.
 
@@ -210,7 +252,7 @@ The DFT gradient can be derived in a similar way, replacing the exact exchange i
 The exchange-correlation functional contribution to the DFT energy and its molecular gradient is evaluated via numerical integration.
 Thus, the molecular gradient includes grid point weight contributions, which arise from the explicit dependence of the grid partitioning function on the molecular geometry.
 Neglecting these contributions to the molecular gradient leads to the breakdown of rotation--translation invariance of the molecular gradient.
-Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can be safely neglected.
+Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can safely be neglected.
 
 #### MP2
 In the case of Møller--Plesset (MP) perturbation theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient.
@@ -473,7 +515,7 @@ and the magnetic dipole moment with respect to an external magnetic field.
 Second derivatives with respect to the external field give the electric polarizability and magnetizability, respectively.
 Properties that can be calculated as first derivatives of the energy are referred to as __first-order properties__.
 
-For exact energies $E$ and wave functions $\ket{\Psi}$, the **Hellmann--Feynman theorem** holds {cite}`jensen2006`,
+For exact wave functions $\ket{\Psi}$ and energies $E = \langle \Psi | \hat{H} | \Psi \rangle$, the **Hellmann--Feynman theorem** holds {cite}`jensen2006`,
 ```{math}
 :label: eq:hellmann_feynman
   \frac{\mathrm{d} E}{\mathrm{d} \chi} = \frac{\mathrm{d}}{\mathrm{d} \chi} \langle \Psi | \hat{H} | \Psi \rangle
@@ -481,6 +523,7 @@ For exact energies $E$ and wave functions $\ket{\Psi}$, the **Hellmann--Feynman 
 ```
 stating that derivative of the energy with respect to an external perturbation $\chi$ is identical
 to the expectation value of the perturbed Hamiltonian with the unperturbed wave function.
+The above derivative is to be taken at zero perturbation strength, $\chi = 0$.
 If the basis functions do not depend on the perturbation, Eq. {eq}`eq:hellmann_feynman`
 also holds for fully variational methods like the SCF and MCSCF schemes.
 
@@ -496,5 +539,21 @@ in the Lagrange expression followed by differentiation,
 ```
 
 The determination of the Lagrange multipliers $\boldsymbol{\Lambda}$ and $\mathbf{\tilde{T}}$ is identical to the procedures described above.
-Taking all terms of Eq. {eq}`eq:dipmom_derivative` is referred to as the _orbital-relaxed_ dipole moment,
-whereas neglecting the terms involving $\boldsymbol{\Lambda}$ yields so-called _orbital-unrelaxed_ dipole moments.
+The dipole moment as a derivative of the energy can then be calculated as
+```{math}
+:label: eq:dipmom_explicit
+  \boldsymbol{\mu} = \sum_{pq} ( \gamma_{pq}' + \lambda_{pq} ) \mu_{qp} \, ,
+```
+where $\boldsymbol{\gamma}' = \boldsymbol{\gamma} + \boldsymbol{\gamma}^{\text{A}}$ is the __unrelaxed__ one-particle density matrix,
+including contributions from the amplitude response, $\boldsymbol{\gamma}' + \boldsymbol{\Lambda}$
+is referred to as the __relaxed density matrix__, and $\mu_{qp}$ are elements of the dipole operator in the MO basis.
+Taking all terms of Eq. {eq}`eq:dipmom_explicit` is referred to as the _orbital-relaxed_ dipole moment,
+whereas neglecting $\boldsymbol{\Lambda}$ yields so-called _orbital-unrelaxed_ dipole moments.
+
+Another approach to one-electron properties such as dipole moments is to set out from the expectation value
+of the corresponding operator with the wave function, such as $\boldsymbol{\mu} = \langle \Psi | \hat{\mu} | \Psi \rangle$,
+see Eq. {eq}`eq:hellmann_feynman`.
+Depending on the wave-function model, this approach can be equivalent to the orbital-unrelaxed approach,
+such as in configuration interaction, but in particular for schemes based on perturbation theory,
+all three different approaches to dipole moments differ {cite}`Hodecker2019`.
+
