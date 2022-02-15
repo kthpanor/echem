@@ -51,79 +51,106 @@ Multiple lists of references are possible but not yet propoerly implmented.
 1. Tutorials and Workflows: 
     -  UV/vis
     		- TF
-		- To improve (not using water?)
+            - To improve (not using water?)
     -  Catalysis?
-		- Missing
+            - Missing
     -  Optical activity
     		- PN
-		- To finish
+            - To finish
     -  Vibrational
     		- IB, MH
-		- To finish
+            - To finish
     -  Magnetic
-    		-  ZR, OV
-		- Missing
+    		- ZR, OV
+            - Missing
     -  X-ray
     		- TF
-		- To finish (larger systems)
+            - To finish (larger systems)
     -  TF, working on UV/vis and part of MD
 
 2. Electronic Structure Theory:
     - General aspects
     		- PN, MD
-		- To finish (spin)
+            - To finish (spin)
     - Wavefunction
 	- General
-		- PN, MD
-		- To finish
+            - PN, MD
+            - To finish
 	- Hartree—Fock theory
-		- PN
-		- To review
+            - PN
+            - To review
 	- CI
-		- MD
-		- To review
+            - MD
+            - To review
 	- MP
-		- MD?
-		- To review
+            - MD?
+            - To review
 	- MR methods
-		- MD
-		- To review
+            - MD
+            - To review
     - DFT
-    	- PN
+            - PN
 	- To finish?
 
 3. Potential Energy Surfaces:
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
-    - General aspects			IB, MH		To finish
-    - Molecular structure optimization	IB, MH		To finish
-    - Transition-state theory		AD 		Missing (Ch. 14 overleaf)
-    - Interpolation			IB, YM		To finish
-    - Conical intersections		AD		Missing (Ch. 15 overleaf)
-    - Molecular dynamics		TF, PN		To finish
+    - General aspects
+            - IB, MH
+            - To finish
+    - Molecular structure optimization
+            - IB, MH
+            - To finish
+    - Transition-state theory
+            - AD
+            - Missing (Ch. 14 overleaf)
+    - Interpolation
+            - IB, YM
+            - To finish
+    - Conical intersections
+            - AD
+            - Missing (Ch. 15 overleaf)
+    - Molecular dynamics
+            - TF, PN
+            - To finish
 
 4. Properties:
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
     - Response theory
-	- Exact states			PN		To finish
-	- CI states			MD		Missing
-	- SCF states			PN		To review?
-    - ADC				AD, IB		To finish
-    - Exciton coupling model		XL		To finish
+	- Exact states
+            - PN
+            - To finish
+	- CI states
+            - MD
+            - Missing
+	- SCF states
+            - PN
+            - To review?
+    - ADC
+            - AD, IB
+            - To finish
+    - Exciton coupling model
+            - XL
+            - To finish
 
 5. Environment:
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
-	-  Localized properties		PN		Missing
-	-  Polarizable embedding	?		To finish
+	-  Localized properties
+            - PN
+            - Missing
+	-  Polarizable embedding
+            - To finish
 
 6. Visualization:
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
-	- Molecular orbitals		?		To finish
-	- Densities			PN		To organize?
-	- Transition densities, NTOs	TF		Missing
+	- Molecular orbitals
+            - To finish
+	- Densities
+            - PN
+            - To organize?
+	- Transition densities, NTOs
+            - TF
+            - Missing
+- Course
+    - MD
+    - Include exercises? In every major section?
+- Draft
+    - TF
 
 
 # Random comments
