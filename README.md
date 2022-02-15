@@ -50,8 +50,8 @@ Multiple lists of references are possible but not yet propoerly implmented.
 
 1. Tutorials and Workflows: 
     -  UV/vis
-    	- TF
-	- To improve (not using water?)
+    	TF
+	To improve (not using water?)
     -  Catalysis?
 	- Missing
     -  Optical activity
