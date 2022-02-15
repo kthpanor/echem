@@ -49,27 +49,48 @@ Multiple lists of references are possible but not yet propoerly implmented.
 	-  To improve: description of multipsi (MD)
 
 1. Tutorials and Workflows: 
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
-    -  UV/vis				TF		To improve (not using water?)
-    -  Catalysis			?		Missing
-    -  Optical activity			PN		To finish
-    -  Vibrational			IB, MH		To finish
-    -  Magnetic				ZR, OV		Missing
-    -  X-ray				TF		To finish (larger systems)
-    -  TF, working on UV/vis and part of MD;
+    -  UV/vis
+    	- TF
+	- To improve (not using water?)
+    -  Catalysis?
+	- Missing
+    -  Optical activity
+    	- PN
+	- To finish
+    -  Vibrational
+    	- IB, MH
+	- To finish
+    -  Magnetic
+    	-  ZR, OV
+	- Missing
+    -  X-ray
+    	- TF
+	- To finish (larger systems)
+    -  TF, working on UV/vis and part of MD
 
 2. Electronic Structure Theory:
-	Section				Responsible	Status	
-#-----------------------------------------------------------------------
-    - General aspects			PN, MD		To finish (spin)
+    - General aspects
+    	- PN, MD
+	- To finish (spin)
     - Wavefunction
-	- General			PN, MD		To finish
-	- Hartree—Fock theory		PN		To review
-	- CI				MD		To review
-	- MP				MD?		To review
-	- MR methods			MD		To review
-    - DFT				PN		To finish?
+	- General
+		- PN, MD
+		- To finish
+	- Hartree—Fock theory
+		- PN
+		- To review
+	- CI
+		- MD
+		- To review
+	- MP
+		- MD?
+		- To review
+	- MR methods
+		- MD
+		- To review
+    - DFT
+    	- PN
+	- To finish?
 
 3. Potential Energy Surfaces:
 	Section				Responsible	Status	
