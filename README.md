@@ -50,28 +50,28 @@ Multiple lists of references are possible but not yet propoerly implmented.
 
 1. Tutorials and Workflows: 
     -  UV/vis
-    	TF
-	To improve (not using water?)
+    		- TF
+		- To improve (not using water?)
     -  Catalysis?
-	- Missing
+		- Missing
     -  Optical activity
-    	- PN
-	- To finish
+    		- PN
+		- To finish
     -  Vibrational
-    	- IB, MH
-	- To finish
+    		- IB, MH
+		- To finish
     -  Magnetic
-    	-  ZR, OV
-	- Missing
+    		-  ZR, OV
+		- Missing
     -  X-ray
-    	- TF
-	- To finish (larger systems)
+    		- TF
+		- To finish (larger systems)
     -  TF, working on UV/vis and part of MD
 
 2. Electronic Structure Theory:
     - General aspects
-    	- PN, MD
-	- To finish (spin)
+    		- PN, MD
+		- To finish (spin)
     - Wavefunction
 	- General
 		- PN, MD
