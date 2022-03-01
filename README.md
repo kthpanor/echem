@@ -1,3 +1,4 @@
+<!-- #region -->
 # Compiled homepage
 https://kthpanor.github.io/echem/docs/intro.html
 
@@ -38,34 +39,84 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 {cite}`Wang2016, Schlegel2011`
 ```
 
-Multiple lists of references are possible but not yet propoerly implmented.
+Multiple lists of references are possible but not yet properly implmented.
+
+
+# Course plans:
+
+1. To do
+    - Come up with suitable exercises for your section(s)
+        - Place exercises at end of subchapters/individual pages
+        - PN wants to try that we have solutions just after exercises, for now
+    - MD+TF: continue planning course
+    - Standardize our Notebooks - see `standards.md`
+    - Integrate visualization tools in respective sections
+        - Need to get it to run better... Maybe use static images
+
+2. General aspects
+    - Number of participants (10-15)
+    - Expecting participants to install software before
+    - Exercises partially run at HPC resources?
+    - Worth 1.5 points
+
+3. Schedule: 2/5 - 4/5
+    - 2/4: Introduction and theory
+        - 9:00-11:00 Introduction, questionnaire, installation
+        - 11:00-12:00 + 13:00-14:00 Hartree-Fock example
+        - 14:00-15:00 MP2 exercise
+        - 15:00-15:30 Wrap-up
+    - 3/4: Theory day
+        - 9:00-10:00 Open questions, potential presentations
+        - 10:00-12:00 Go over notebooks
+        - 13:00-15:00 Exercises
+        - 15:00-15:30 Wrap-up
+    - 5/4: Tutorial day
+        - 9:00-10:00 Open questions, potential presentations
+        - 10:00-12:00 Go over notebooks
+        - 13:00-15:00 Exercises
+        - 15:00-15:30 Wrap-up, end questionnaire
+        
+4. Blocks and main responsible
+    - Theory
+        - DFT (PN+ZR)
+        - MCSCF (MD)
+        - Structure optimization (IEB+YMR)
+        - Force field parameterization and interpolated PES (IEB+YMR)
+        - TDSCF (TF) [discuss with PN]
+        - ADC (MH)
+    - Tutorials
+        - UV/vis (MD+TF)
+        - IR/Raman (IEB+MH)
+        - CD (PN)
+        - X-ray (MD+TF)
 
 # Status:
 0. Intro
 	-  Missing: description of Respondo (AD)
-	-  Missing: VIAMD? Gromacs or openmm?
-	-  Missing? how to install to run self, yml
-	-  Missing? description of structure of echem
+	-  Missing: MD module
+    -  Missing: Nice main figure (IEB)
+	-  Missing?: Description of structure of echem
 	-  To improve: description of multipsi (MD)
+	-  To improve: Installation (TF)
 
 1. Tutorials and Workflows: 
     -  UV/vis
-    		- TF
-            - To improve (not using water?)
+    	- TF
+        - To improve (not using water?)
     -  Catalysis?
-            - Missing
+         - Missing
     -  Optical activity
-    		- PN
-            - To finish
+         - PN
+         - To finish
     -  Vibrational
-    		- IB, MH
-            - To finish
+    	 - IB, MH
+         - To finish
     -  Magnetic
-    		- ZR, OV
-            - Missing
+    	 - ZR, OV
+         - Missing
     -  X-ray
-    		- TF
-            - To finish (larger systems)
+    	 - TF
+         - To finish (larger systems)
     -  TF, working on UV/vis and part of MD
 
 2. Electronic Structure Theory:
@@ -132,26 +183,21 @@ Multiple lists of references are possible but not yet propoerly implmented.
 
 5. Environment:
 	-  Localized properties
-            - PN
-            - Missing
+        - PN
+        - Missing
 	-  Polarizable embedding
-            - To finish
+        - To finish
 
 6. Visualization:
 	- Molecular orbitals
-            - To finish
+        - To finish
 	- Densities
-            - PN
-            - To organize?
+        - PN
+        - To organize?
 	- Transition densities, NTOs
-            - TF
-            - Missing
-- Course
-    - MD
-    - Include exercises? In every major section?
-- Draft
-    - TF
-
+        - TF
+        - Missing
+<!-- #endregion -->
 
 # Random comments
 
