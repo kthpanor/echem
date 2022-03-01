@@ -52,6 +52,7 @@ Multiple lists of references are possible but not yet properly implmented.
     - Standardize our Notebooks - see `standards.md`
     - Integrate visualization tools in respective sections
         - Need to get it to run better... Maybe use static images
+    - Send out e-mail to potential participants (TF+MD)
 
 2. General aspects
     - Number of participants (10-15)
@@ -60,17 +61,17 @@ Multiple lists of references are possible but not yet properly implmented.
     - Worth 1.5 points
 
 3. Schedule: 2/5 - 4/5
-    - 2/4: Introduction and theory
+    - 2/5: Introduction and theory
         - 9:00-11:00 Introduction, questionnaire, installation
         - 11:00-12:00 + 13:00-14:00 Hartree-Fock example
         - 14:00-15:00 MP2 exercise
         - 15:00-15:30 Wrap-up
-    - 3/4: Theory day
-        - 9:00-10:00 Open questions, potential presentations
-        - 10:00-12:00 Go over notebooks
-        - 13:00-15:00 Exercises
-        - 15:00-15:30 Wrap-up
-    - 5/4: Tutorial day
+    - 3/5: Theory day
+        - 11:00-12:00 Open questions, potential presentations
+        - 12:00-14:00 Go over notebooks
+        - 14:00-16:00 Exercises
+        - 16:00-16:30 Wrap-up
+    - 4/5: Tutorial day
         - 9:00-10:00 Open questions, potential presentations
         - 10:00-12:00 Go over notebooks
         - 13:00-15:00 Exercises
