@@ -25,6 +25,12 @@ Choosing a small change $\chi_0$ in $\chi$, a two-point estimation is given by
 \frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, ,
 ```
 which is known as a first-order **divided difference** and its error to the true derivative is approximately proportional to $\chi_0$.
+The true derivative of $E$ at $\chi$ is given by the limit
+```{math}
+:label: eq:true_derivative
+\frac{\mathrm{d} E}{\mathrm{d} \chi} = \lim_{\chi_0 \to 0} \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, .
+```
+
 Another two-point formula is the **symmetric difference quotient** given by
 ```{math}
 :label: eq:symmetric_difference_quotient
@@ -36,12 +42,14 @@ and it is commonly used in numerical derivative codes.
 However, in both cases two calculations of the energy $E(\chi)$ need to be performed in order to obtain
 the derivative with respect to one variable $\chi$.
 
-There are also higher-order methods for approximating the first derivative, such as the five-point method given by
+There are also higher-order methods for approximating the first derivative, such as the "five-point method" given by
 ```{math}
 :label: eq:five_point_method
 \frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi - 2 \chi_0) - 8 E(\chi - \chi_0) + 8 E(\chi + \chi_0) - E(\chi + 2 \chi_0)}{12\chi_0} \, ,
 ```
-where the error is approximately proportional to $\chi_0^4$. This expression is usually only employed for debugging of the analytical derivative expressions.
+where the error is approximately proportional to $\chi_0^4$ and it hence gives a very accurate approximation to the gradient.
+However, since four individual energy calculations need to be performed for each perturbation,
+this expression is usually only employed for debugging of the analytical derivative expressions.
 
 ## Analytical Gradients
 To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.
@@ -401,15 +409,18 @@ The derivation of excited state gradients follows the same procedure as illustra
 5. Determine the $\omega$ Lagrange multipliers,
 6. Determine the energy gradient.
 
-#### Tamm--Dancoff approximation
+(cis:label)=
+#### Configuration interaction singles
 %%<span style="color:red"> This has been written for ADC(1) -- has to be re-written for TDA. (Or should we call it CIS?)</span>
 
-To illustrate this procedure, we will take linear-response time-dependent Hartree--Fock (TDHF) theory within the Tamm-Dancoff approximation (TDA) {cite}`Dreuw2005`
-as an example, which is equivalent to the configuration interaction singles (CIS) method {cite}`Foresman1992`.
-Note that for excitation energies and excited-state properties, TDHF/TDA and CIS also yield the same results as the ADC(1) scheme {cite}`Dreuw2015`.
-%%%To illustrate this procedure, we will refer to ADC(1) (add link). Note that ADC(1) is equivalent to time-dependent Hartree-Fock (TDHF) in the Tamm--Dancoff approximation (TDA) (add link) and configuration interaction singles (CIS) (add link). 
+To illustrate this procedure, we will take the configuration interaction singles (CIS) method {cite}`Foresman1992`
+as an example, which is equivalent to linear-response time-dependent Hartree--Fock (TDHF) theory within the Tamm-Dancoff approximation (TDA) {cite}`Dreuw2005`.
+Note that for excitation energies and excited-state properties, CIS also yields the same results as the ADC(1) scheme {cite}`Dreuw2015`.
+Furthermore, excited-state gradients of linear-response time-dependent density functional theory (TDDFT) within the TDA {cite}`hirata99`
+can be derived in a completely analogous way, only the additional exchange-correlation terms need to be taken into account {cite}`Furche2002`.
+%%%To illustrate this procedure, we will refer to ADC(1) (add link). Note that ADC(1) is equivalent to time-dependent Hartree-Fock (TDHF) in the Tamm--Dancoff approximation (TDA) (add link) and configuration interaction singles (CIS) (add link).
 
-In the TDA or CIS scheme, a Hermitian eigenvalue equation of the following form is solved,
+In the CIS scheme, a Hermitian eigenvalue equation of the following form is solved,
 ```{math}
 :label: eq:cis_eigenvalue_eq
   \mathbf{AX}_n = \omega_n \mathbf{X}_n \, ,
@@ -458,7 +469,7 @@ From Eq. {eq}`eq:adc1_identify_dms` we identify the excited-state density matrix
 where the indices of the vectors in the two-particle density matrix have been renamed.
 
 To obtain the molecular gradient of the excited state ${n}$, the density matrices of the ground state must also be included.
-For TDA, this is the HF reference state, so the density matrices for the excited state are:
+For CIS, this is the HF reference state, so the density matrices for the excited state are:
 ```{math}
 :label: eq:adc1_gamma_total_oo
 \gamma'_{ij} = \gamma_{ij}+ \gamma^{(n)}_{ij}= \delta_{ij} - \sum_{a}x_{ja}x_{ia}\,,
