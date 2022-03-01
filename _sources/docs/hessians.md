@@ -39,7 +39,7 @@ Straightforward differentiation of the above equation {eq}`eq:HF_gradient_in_ao`
 Now, the calculation of the perturbed density, which boils down to the calculation
 of the perturbed MO coefficients $C_{\mu p}^{\chi}$, can no longer be avoided {cite}`Pople1979`.
 
-## Coupled-Perturbed Hartree--Fock
+## Coupled-perturbed Hartree--Fock
 
 The starting point are the HF equations in their basis-set form,
 ```{math}
@@ -73,7 +73,7 @@ is proportional to the partial derivative of the overlap matrix,
   U_{ij}^{\chi} = - \frac12 S_{ij}^{(\chi)} \, .
 \end{equation}
 
-The virtual-virtual block is zero, $U_{ab}^\chi = 0$, and only the occupied-virtual block $U_{ai}^\chi$ needs to be determined.
+The virtual-virtual block is not required, and hence only the occupied-virtual block $U_{ai}^\chi$ needs to be determined.
 The derivative of the Fock matrix $F_{\mu \nu}^{\chi} = \frac{\mathrm{d} F_{\mu \nu} (\mathbf{C})}{\mathrm{d} \chi}$ is given by
 ```{math}
 :label: eq:derivative_fock_matrix
@@ -253,39 +253,76 @@ The force constants are then converted from atomic units to milli-dyne per ångs
 (dipole_mom_gradient:label)=
 ### Spectral intensities
 
-In order to calculate intensities in the [infrared (IR) spectrum](sec:ir-tutorial),
-the nuclear derivative of the electric dipole moment $\boldsymbol{\mu} = (\mu_x, \mu_y, \mu_z)$ is needed,
-where each component $\mu$ can be decomposed into an electronic and a nuclear contribution, $\mu = \mu_{\text{e}} + \mu_{\text{n}}$.
+***IR intensities***
+
+In order to calculate **intensities** in the [infrared (IR) spectrum](sec:ir-tutorial),
+one needs to know how the electric dipole moment $\boldsymbol{\mu} = (\mu_x, \mu_y, \mu_z)$ changes along a normal mode.
+This means that nuclear derivatives of $\boldsymbol{\mu}$ have to be calculated, where each component $\mu$
+can be decomposed into an electronic and a nuclear contribution, $\mu = \mu_{\text{e}} + \mu_{\text{n}}$.
 The nuclear part of the dipole moment $\mu_{\text{n}}$ is simply given by the classical expression
 ```{math}
   \mu_{\text{n}} = \sum_{K} Z_K R_K
 ```
 with the charge $Z_K$ and Cartesian coordinate $R_K$ of nucleus $K$.
-The electronic part $\mu_{\text{e}}$ is calculed quantum-mechanically from the dipole moment integrals in AO basis,
-$\mu_{\kappa \lambda} = \langle \phi_\kappa | q r | \phi_\lambda \rangle$,
-where $q$ is the electron's charge and $r$ one of its coordinates, $r \in \{ x,y,z \}$,
+The electronic part $\mu_{\text{e}}$ is calculed quantum-mechanically from the dipole moment integrals in AO basis, $\mu_{\kappa \lambda}$,
 and the one-particle density matrix $\mathbf{P}$,
+%$\mu_{\kappa \lambda} = \langle \phi_\kappa | q r | \phi_\lambda \rangle$,
+%where in this case $q = -e$ is the electron's charge and $r$ one of its coordinates, $r \in \{ x,y,z \}$,
 ```{math}
 :label: eq:electric_dipole_moment
   \mu_{\text{e}} = \sum_{\kappa \lambda} P_{\lambda \kappa} \mu_{\kappa \lambda} \, .
 ```
-The nuclear gradient of the dipole moment can again be calculated either numerically or analytically.
+The **nuclear gradient** of the dipole moment can again be calculated either numerically or analytically.
 While the analytic derivative of the nuclear contribution $\mu_{\text{n}}$ is trivial,
-the derivative of the electronic part {eq}`eq:electric_dipole_moment` is given by
+the derivative of the electronic part $\mu_{\text{e}}$ is given by
 ```{math}
 :label: eq:electronic_dipole_derivative
   \frac{\mathrm{d} \mu_{\text{e}}}{\mathrm{d} \chi} = \sum_{\kappa \lambda} \frac{\mathrm{d} P_{\lambda \kappa}}{\mathrm{d} \chi} \mu_{\kappa \lambda}
 	+ \sum_{\kappa \lambda} P_{\lambda \kappa} \frac{\mathrm{d} \mu_{\kappa \lambda}}{\mathrm{d} \chi} \, ,
 ```
+%[Eq. {eq}`eq:electric_dipole_moment`] is given by
 where the perturbed density from Eq. {eq}`eq:perturbed_density` and the derivatives of the dipole integrals are needed.
 
 The IR transition dipole moment is then calculated by taking the dot product of the dipole moment gradient {eq}`eq:electronic_dipole_derivative`
-with the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, and the IR intensity as the square norm of corresponding transition moment.
+with the Cartesian normal modes $\mathbf{l}^{\text{Cart}}$, and the **IR intensity** as the square norm of corresponding transition moment.
 The intensities are successively converted to the unit of km mol$^{-1}$.
-Vibrational [Raman intensities](sec:raman-tutorial) are calculated in an analogous manner, except that the nuclear derivative
-of the electric-dipole [polarizability](polarizability:label) $\boldsymbol{\alpha}$ is needed.
+For this, one has to multiply multiply the intensities, which are initially given in atomic unites times atomic mass units,
+with the Avogadro number, the conversion factor between the electron mass in atomic mass units, bohrs in kilometers,
+the fine structure constant squared, and with $\pi/3$.
 
 
+***Raman intensities*** 
+
+Intensities in the vibrational [Raman spectrum](sec:raman-tutorial) are calculated in an analogous manner, except that the nuclear derivative
+of the electric-dipole [polarizability](polarizability:label) $\boldsymbol{\alpha}(\omega)$ along normal mode $Q_k$ is needed.
+Since the polarizability is already a second-order (or linear-response) property, this is more involved than IR intensities.
+However, it turns that out the analytical nuclear gradient of the polarizability can be calculated in manner analogous
+to the gradients of the TDHF or TDDFT schemes {cite}`Rappoport2007`, which is similar to what has been discussed in the previous section for [CIS](cis:label).
+
+For randomly oriented molecules and linearly polarized incident light, the Raman differenial cross-section is calculated in practice as {cite}`Guthmuller2019`
+```{math}
+  \frac{\mathrm{d} \sigma_k}{\mathrm{d} \Omega} = \frac{\hbar \omega_{\text{L}} \omega_{\text{S}}^3}{32 \pi^2 \epsilon_0^2 c^4 \omega_k} \frac{S_{k}}{45} \, ,
+```
+where $\omega_{\text{L}}$ is the frequency of the incident radiation, $\omega_{\text{S}}$ is the angular frequency of the scattered light,
+$\omega_k$ is the angular frequency of vibrational mode $Q_k$, and $S_k$ is the Raman activity of the mode, defined as {cite}`Guthmuller2019`
+```{math}
+  S_k = 45 \bar{\alpha}_k^2 + 7 \bar{\gamma}_k^2 \, ,
+```
+where $\bar{\alpha}_k^2$ and $\bar{\gamma}_k^2$ are Raman rotational invariants {cite}`Guthmuller2019`,
+```{math}
+  \bar{\alpha}_k^2 &= \frac19 \bigg( \frac{\mathrm{d} \alpha_{xx}}{\mathrm{d} Q_k} + \frac{\mathrm{d} \alpha_{yy}}{\mathrm{d} Q_k} +\frac{\mathrm{d} \alpha_{zz}}{\mathrm{d} Q_k} \bigg)^2 \\
+  \bar{\gamma}_k^2 &= 3 \bigg[ \bigg( \frac{\mathrm{d} \alpha_{xy}}{\mathrm{d} Q_k} + \frac{\mathrm{d} \alpha_{xz}}{\mathrm{d} Q_k} +\frac{\mathrm{d} \alpha_{yz}}{\mathrm{d} Q_k} \bigg)^2 \bigg] \\
+			&+\frac12 \bigg[ \bigg( \frac{\mathrm{d} \alpha_{xx}}{\mathrm{d} Q_k} - \frac{\mathrm{d} \alpha_{yy}}{\mathrm{d} Q_k} \bigg)^2
+			+ \frac12 \bigg( \frac{\mathrm{d} \alpha_{xx}}{\mathrm{d} Q_k} - \frac{\mathrm{d} \alpha_{zz}}{\mathrm{d} Q_k} \bigg)^2
+			+ \frac12 \bigg( \frac{\mathrm{d} \alpha_{yy}}{\mathrm{d} Q_k} - \frac{\mathrm{d} \alpha_{zz}}{\mathrm{d} Q_k} \bigg)^2 \bigg] \, .
+```
+
+The rotational invariants can further be used to calculate the parallel (or "polarized") and perpendicular (or "depolarized")
+intensities as $I_{\text{pol}} = 45 \bar{\alpha}_k^2 + 4 \bar{\gamma}_k^2$ and $I_{\text{depol}} = 3 \bar{\gamma}_k^2$, respectively,
+from which the so-called *depolarization ratio* $\rho$ can be calculated as
+```{math}
+  \rho = \frac{I_{\text{depol}}}{I_{\text{pol}}} \, .
+```
 
 
 

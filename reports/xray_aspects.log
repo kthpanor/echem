@@ -17,27 +17,94 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# standard Python modules and functions
-from scipy.interpolate import interp1d
-from matplotlib import gridspec
-import matplotlib.pyplot as plt
-import numpy as np
-import copy
+from pyscf import gto
 
-# QC software suites and functionalities
-from pyscf import gto, scf, mp, cc, dft
-import veloxchem as vlx
-import gator
-import adcc
-from veloxchem.rsplinabscross import LinearAbsorptionCrossSection
-
-# for vlx
-silent_ostream = vlx.OutputStream(None)
-from mpi4py import MPI
-comm = MPI.COMM_WORLD
-
-# au to eV conversion factor
-au2ev = 27.211386
+u6311gss  = {'O': gto.basis.parse('''
+O    S
+   8588.500                  1.000000 
+O    S
+   1297.230                  1.000000 
+O    S
+    299.2960                 1.000000 
+O    S
+     87.37710                1.000000 
+O    S
+     25.67890                1.000000 
+O    S
+      3.740040               1.000000 
+O    SP
+     42.11750                0.113889               0.0365114
+      9.628370               0.920811               0.237153
+      2.853320              -0.00327447             0.819702
+O    SP
+      0.905661               1.000000               1.000000
+O    SP
+      0.255611               1.000000               1.000000
+O    D
+      1.292                  1.000000
+'''), 'H': '6-311G**'}
+un6311gss = {'O': gto.basis.parse('''
+O    S
+   8588.500                  1.000000 
+O    S
+   1297.230                  1.000000 
+O    S
+    299.2960                 1.000000 
+O    S
+     87.37710                1.000000 
+O    S
+     25.67890                1.000000 
+O    S
+      3.740040               1.000000 
+O    SP
+     42.11750                1.000000               1.000000
+O    SP
+      9.628370               1.000000               1.000000
+O    SP
+      2.853320               1.000000               1.000000
+O    SP
+      0.905661               1.000000               1.000000
+O    SP
+      0.255611               1.000000               1.000000
+O    D
+      1.292                  1.000000
+'''), 'H': '6-311G**'}
+z6311gss  = {'O': gto.basis.parse('''
+O    S
+   8588.500                  0.00189515
+   1297.230                  0.0143859
+    299.2960                 0.0707320
+     87.37710                0.2400010
+     25.67890                0.5947970
+      3.740040               0.2808020
+O    SP
+     42.11750                0.113889               0.0365114
+      9.628370               0.920811               0.237153
+      2.853320              -0.00327447             0.819702
+O    SP
+      0.905661               1.000000               1.000000
+O    SP
+      0.255611               1.000000               1.000000
+O    D
+      1.292                  1.000000
+O    S
+  11427.10                   0.00180093
+   1722.350                  0.0137419
+    395.7460                 0.0681334
+    115.1390                 0.2333250
+     33.60260                0.5890860
+      4.919010               0.2995050
+O    SP
+     55.44410                0.114536               0.0354609
+     12.63230                0.920512               0.237451
+      3.717560              -0.00337804             0.820458
+O    SP
+      1.165450               1.000000               1.000000
+O    SP
+      0.321892               1.000000               1.000000
+O    D
+      1.750                  1.000000
+'''), 'H': '6-311G**'}
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
@@ -72,12 +139,12 @@ au2ev = 27.211386
 During handling of the above exception, another exception occurred:
 
 [0;31mOSError[0m                                   Traceback (most recent call last)
-[0;32m<ipython-input-1-14d0a8e19729>[0m in [0;36m<module>[0;34m[0m
-[1;32m      7[0m [0;34m[0m[0m
-[1;32m      8[0m [0;31m# QC software suites and functionalities[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
-[0;32m----> 9[0;31m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mgto[0m[0;34m,[0m [0mscf[0m[0;34m,[0m [0mmp[0m[0;34m,[0m [0mcc[0m[0;34m,[0m [0mdft[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     10[0m [0;32mimport[0m [0mveloxchem[0m [0;32mas[0m [0mvlx[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     11[0m [0;32mimport[0m [0mgator[0m[0;34m[0m[0;34m[0m[0m
+[0;32m<ipython-input-1-e52bc9e43255>[0m in [0;36m<module>[0;34m[0m
+[0;32m----> 1[0;31m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mgto[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      2[0m [0;34m[0m[0m
+[1;32m      3[0m u6311gss  = {'O': gto.basis.parse('''
+[1;32m      4[0m [0mO[0m    [0mS[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m    [0;36m8588.500[0m                  [0;36m1.000000[0m[0;34m[0m[0;34m[0m[0m
 
 [0;32m~/Notebook/anaconda/lib/python3.7/site-packages/pyscf/__init__.py[0m in [0;36m<module>[0;34m[0m
 [1;32m    111[0m [0;34m[0m[0m
