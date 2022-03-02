@@ -61,6 +61,37 @@ scf_drv = vlx.ScfRestrictedDriver()
 ```
 - Has to be quite flexible
 
+### References
+
+Include URL or DOI (but not both) to create links in the references:
+```
+@article{Sellers1993,
+author = {Sellers, Harrell},
+title = {The C2-DIIS convergence acceleration algorithm},
+journal = {Int. J. Quant. Chem.},
+volume = {45},
+number = {1},
+pages = {31-41},
+url = {https://doi.org/10.1002/qua.560450106},
+year = {1993}
+}
+```
+
+or 
+```
+@article{Sellers1993,
+author = {Sellers, Harrell},
+title = {The C2-DIIS convergence acceleration algorithm},
+journal = {Int. J. Quant. Chem.},
+volume = {45},
+number = {1},
+pages = {31-41},
+doi = {10.1002/qua.560450106},
+year = {1993}
+}
+```
+
+
 ### Miscellaneous
 
 - Module loads:
