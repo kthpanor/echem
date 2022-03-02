@@ -61,6 +61,37 @@ scf_drv = vlx.ScfRestrictedDriver()
 ```
 - Has to be quite flexible
 
+### References
+
+Include URL or DOI (but not both) to create links in the references:
+```
+@article{Sellers1993,
+author = {Sellers, Harrell},
+title = {The C2-DIIS convergence acceleration algorithm},
+journal = {Int. J. Quant. Chem.},
+volume = {45},
+number = {1},
+pages = {31-41},
+url = {https://doi.org/10.1002/qua.560450106},
+year = {1993}
+}
+```
+
+or 
+```
+@article{Sellers1993,
+author = {Sellers, Harrell},
+title = {The C2-DIIS convergence acceleration algorithm},
+journal = {Int. J. Quant. Chem.},
+volume = {45},
+number = {1},
+pages = {31-41},
+doi = {10.1002/qua.560450106},
+year = {1993}
+}
+```
+
+
 ### Miscellaneous
 
 - Module loads:
@@ -70,66 +101,4 @@ scf_drv = vlx.ScfRestrictedDriver()
 - Link between sections
 - Static images and Python cells if too expensive
 
-
-
-
-### Spacing
-
-- Can do formatting over notebooks
-- This one
-```python
-```
-
-### Naming objects for SCF
-
-- v1
-```python
-water_xyz = """
-C        0.00000000    0.00000000    0.00000000
-O        0.00000000    0.00000000    1.43
-"""
-mol_vlx = vlx.Molecule.read_str(water_xyz) 
-bas_vlx = vlx.MolecularBasis.read(mol_vlx,'6-31G') 
-```
-- v2
-```python
-mol_str = """
-C        0.00000000    0.00000000    0.00000000
-O        0.00000000    0.00000000    1.43
-"""
-molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
-basis = vlx.MolecularBasis.read(molecule, 'cc-pVDZ')
-```
-
-### Containers
-
-- Standardize SCF part?
-
-- SCF
-    - scf_gs = vlx.ScfRestrictedDriver()
-    - scf_drv = vlx.ScfRestrictedDriver()
-    - scfdrv = vlx.ScfRestrictedDriver()
-- Response
-    - rsp_drv = vlx.LinearResponseSolver()
-    - lrs = vlx.LinearResponseEigenSolver()
-- ADC
-    - adc_vis = adcc.adc2(scf_gs, n_states=5)
-    - adc_state = adcc.adc2(scf_gs, n_states=5)
-
-
-### Figure generation, size, and showing
-
-- Default colors from plt?
-
-- Same-ish broadening function and parameters?
-
-- Minimal
-```python
-fig = plt.figure()
-```
-- More adaptive
-```python
-plt.figure(figsize = (6,4))
-plt.tight_layout(); plt.show()
-```
 <!-- #endregion -->
