@@ -11,6 +11,16 @@ Need to be a bit flexible, as full consistency is not always preferable
 - Figure out cheap(er) visualizations
 
 
+### Exercises
+
+- As its own subsection at the end of each section, for example:
+    - X-ray spectroscopy
+        - Calculating
+        - Analysis
+        - Exercises
+
+- Solutions on the same page (for starters - might change)
+
 
 ### Equations
 

@@ -90,44 +90,8 @@ The HPC-QC module of Gator focuses on large-scale correlated calculations on HPC
 MultiPsi is a quantum chemistry program designed for multireference calculations with a special focus on spectroscopy. It currently implements a general configuration interaction solver and a multiconfigurational self-consistent field (MCSCF) method. It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods.
 
 
-
-### VIAMD
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-
-Other tools
------------
-
-### Gromacs
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
-
-x
+<!-- #region -->
+## Other tools
 
 
 ### geomeTRIC
@@ -137,3 +101,93 @@ x
 
 The workflow integration between QM and MM/MD
 
+<!-- #endregion -->
+
+<!-- #region -->
+## Installation
+
+### Required software packages
+
+Conda is an open-source package and environment management system that runs on Windows, MacOS, and Linux. The conda repository contains a large number of open-source certified packages enabling scientific work. It is recommended that you install the minimal installer for conda named [miniconda](https://docs.conda.io/en/latest/miniconda.html) that includes only conda, Python, the packages they depend on, and a small number of other useful packages, including pip, zlib and a few others. 
+
+Start a conda terminal, or Anaconda Powershell as it is referred to on a Windows system. Conda supports multiple *environments* and you start in the one named `base` as is typically indicated by the prompt. The packages required by eChem is then most conveniently installed by using [this](https://github.com/kthpanor/echem/blob/master/echem.yml) .yml-file. Download and run the following in the same folder:
+
+```
+$ conda env create -f echem.yml 
+```
+
+And activate it with
+
+```
+$ conda activate echem
+```
+
+You can list your conda environments with
+
+```
+$ conda env list
+```
+
+The activated environment will be marked with an asterisk. Using such an environment enables the local installation of different software packages without interfering with the `base` (default) environment, and can often be used on HPC services where permissions to install programs in the default environment may not be permitted. 
+
+You should now be ready to start a Jupyter notebook with the command
+
+```
+$ jupyter-notebook
+```
+or
+```
+$ jupyter-lab
+```
+
+which should open in your default web browser. With this, the various modules in the book can be opened by running `jupyter-notebook` or `jupyter-lab`, with which you can move around in the files system, open and execute notebooks, and more.
+
+```{note}
+Jupyter only has permission to go down in the file tree from where it was initiated, so make sure to initiate it sufficiently high up.
+```
+
+Alternatively, if not all the software packages are needed or desired, you can install only a few specific ones using `conda`. First, create and activate an (empty) environment
+
+```
+$ conda create -n echem
+$ conda activate echem
+```
+
+
+
+Then install the desired software packages, using instructions found on the respective homepages, or usually found when searching th [anaconda](https://anaconda.org/) webpage. For example, in order to install `veloxchem`:
+
+```
+$ conda install -c veloxchem veloxchem 
+```
+
+```{note}
+You can install packages while creating the environment, if so desired.
+```
+
+### The eChem project
+
+If you want to download the full eChem project, this is most conveniently done by cloning [repository](https://github.com/kthpanor/echem.git):
+
+```
+$ git clone https://github.com/kthpanor/echem.git
+```
+
+You find the Notebook files under `/docs`. If you want to perform local changes and compile your own version of the eChem book, you need the jupyter-book package
+
+```
+$ pip install -U jupyter-book
+```
+
+Building the (local) book is done by running the following in the eChem folder
+
+```
+$ jupyter-book build .
+```
+
+...and you can see the resulting book by navigating to the `/_build/html`-folder through your GUI, or by running
+
+```
+$ open _build/html/index.html
+```
+<!-- #endregion -->
