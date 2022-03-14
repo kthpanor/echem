@@ -795,6 +795,10 @@
   <div class="section" id="spectrum-calculation">
 <h1>Spectrum calculation<a class="headerlink" href="#spectrum-calculation" title="Permalink to this headline">¶</a></h1>
 <p>This section focus on the calculation of XPS, XAS, XES, and RIXS, with focus on considering these spectroscopies with ADC and (TD)DFT. For a more general overview of the large number of methods available for considering these properties, see, <em>e.g.</em>, <span id="id1">[<a class="reference internal" href="refs.html#id115">ND18</a>]</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>No multi-reference methods, at the moment.</p>
+</div>
 <p><em>Loading modules and functions:</em></p>
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <div class="cell_input docutils container">
@@ -839,10 +843,10 @@
 
 <span class="c1"># Create veloxchem mol and basis objects</span>
 <span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span> 
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span><span class="s1">&#39;6-31G&#39;</span><span class="p">)</span> 
+<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span> 
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies</span>
@@ -863,21 +867,21 @@
 <div class="section" id="the-maximum-overlap-method">
 <h3>The maximum overlap method<a class="headerlink" href="#the-maximum-overlap-method" title="Permalink to this headline">¶</a></h3>
 <p>In order to converge a core-hole state, an approach which avoid the convergence to a lower-energy valence-hole state is needed. This can be done using several approaches, but the focus here will be on the maximum overlap method (MOM), with which a SCF optimization with the constraint of maximizing the overlap to some initial guess <span id="id3">[<a class="reference internal" href="refs.html#id23">BS71</a>, <a class="reference internal" href="refs.html#id24">GBG08</a>]</span>. The guess is typically taken as the converged wave function of the neutral (no core-hole) system, and new occupied orbitals at each iteration is taken such that they overlap most with the span of old occupied orbitals. Defining the overlap matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-da06e7fc-e1dd-464f-9217-35c7f41822c3">
-<span class="eqno">(7)<a class="headerlink" href="#equation-da06e7fc-e1dd-464f-9217-35c7f41822c3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="math notranslate nohighlight">
+\[
 \textbf{O} = 
 \left( \textbf{C}^{\textrm{old}} \right)^{\dagger} \textbf{SC}^{\textrm{new}},
-\end{equation}\]</div>
+\]</div>
 <p>with <span class="math notranslate nohighlight">\(O_{ij}\)</span> being the overlap between the <span class="math notranslate nohighlight">\(i\)</span>:th old and <span class="math notranslate nohighlight">\(j\)</span>:th new orbital, and <span class="math notranslate nohighlight">\(\textbf{C}\)</span> and <span class="math notranslate nohighlight">\(\textbf{S}\)</span> are the MO coefficient matrices and basis function overlap matrix, respectively. The projections of <span class="math notranslate nohighlight">\(j\)</span>:th new orbital onto the old space is then</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f773a627-43dd-4408-b233-8e1c39188916">
-<span class="eqno">(8)<a class="headerlink" href="#equation-f773a627-43dd-4408-b233-8e1c39188916" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="math notranslate nohighlight">
+\[
 p_j = \sum_i^n O_{ij} = 
 \sum_a^N (
 \sum_b^N (
 \sum_i^n C_{ib}^{old} )
 S_{bc} )
 C_{cj}^{old}.
-\end{equation}\]</div>
+\]</div>
 <p>The occupied orbitals are then selected by largest <span class="math notranslate nohighlight">\(p_j\)</span> values.</p>
 <p>With this, a converged core-hole wave function is obtained with the following scheme:</p>
 <ol class="simple">
@@ -888,8 +892,8 @@ C_{cj}^{old}.
 <p>This can then converge many unstable states, including core-ionized states and certain core-excited states. Some care should observed, though:</p>
 <ul class="simple">
 <li><p>If excited states are considered, check that the final state is reasonable close to what is investigated.</p></li>
-<li><p>Delocalized core orbitals need to be localized, for example by employing ECP:s.</p></li>
-<li><p>If post-HF methods are used, the ground state calculation can attempt to (partially) fill the core-hole, leading to a corrupt wave function which represents some intermediate between a core-hole/valence-hole state.</p></li>
+<li><p><a class="reference internal" href="xray_aspects.html#sec-xray-topics-chloc"><span class="std std-ref">Delocalized core orbitals</span></a> need to be localized, for example by employing ECP:s.</p></li>
+<li><p>If post-HF methods are used, the ground state calculation can attempt to (partially) fill the core-hole of the <a class="reference internal" href="xray_aspects.html#sec-xray-topics-nonaufbau"><span class="std std-ref">non-<em>Aufbau</em> reference state</span></a>, leading to a corrupt wave function which represents some intermediate between a core-hole/valence-hole state.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -902,8 +906,8 @@ C_{cj}^{old}.
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span>       <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">water_xyz</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
@@ -912,7 +916,7 @@ C_{cj}^{old}.
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span>  <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
 <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
@@ -965,19 +969,19 @@ Ionization potential: 543.16 eV
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform unrestricted SCF calculation with a B3LYP</span>
-<span class="n">scf_gs</span>    <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span>  <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
 <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
 <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
     
 <span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-<span class="n">scf_ion</span>    <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>
 <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
@@ -1030,8 +1034,8 @@ Ionization energy: 542.47 eV
 <span class="s1">&#39;&#39;&#39;</span>
 
 <span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span>       <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">esca_xyz</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">esca_xyz</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
@@ -1162,14 +1166,14 @@ Ionization energy: 542.47 eV
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct structure and basis objects</span>
-<span class="n">struct</span>  <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span>   <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="s1">&#39;6-31G&#39;</span><span class="p">)</span>
+<span class="n">struct</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span>  <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
-<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">scf_gs</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;cvs-adc2x&#39;</span><span class="p">,</span><span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cvs-adc2x&#39;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1380,13 +1384,13 @@ Niter n_ss  max_residual  time  Ritz values
 <p>Choosing an energy region of 514-525 eV, using a step length of 0.1 eV and a damping factor of 0.3 eV, we calculate the CPP-DFT (with the B3LYP functional) water spectrum as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecule and basis objects</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span>    <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># SCF settings and calculation</span>
-<span class="n">scf_drv</span>         <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_settings</span>    <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;b3lyp&#39;</span><span class="p">}</span>
-<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span><span class="n">method_settings</span><span class="p">)</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Define spectrum region to be resolved</span>
@@ -1491,8 +1495,8 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span>       <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">water_xyz</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
@@ -1501,8 +1505,8 @@ Niter n_ss  max_residual  time  Ritz values
 <span class="n">scf_res</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span>        <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span>       <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
+<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
 <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1534,7 +1538,7 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There will be convergence issues if including transitions from very different types, <em>e.g.</em> resolving transitions into the core and out to the unoccupied valence region simultaneously. As such, the number of resolved states should remain limited to the number of potential decay channels.</p>
+<p>There will be convergence issues if including transitions from very different types, <em>e.g.</em> resolving transitions into the core and out to the unoccupied valence region simultaneously. As such, the number of required states should not be too high.</p>
 </div>
 <p>The resuls can be printed as a table, and convoluted and plotted using built-in functionalities or a custom broadening. Note that the eigenvalues are negative, and a sign change is thus appropriate when constructing the spectra.</p>
 <div class="cell docutils container">
@@ -1587,13 +1591,13 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="section" id="spectra-from-ground-state-mo-s">
 <h3>Spectra from ground state MO:s<a class="headerlink" href="#spectra-from-ground-state-mo-s" title="Permalink to this headline">¶</a></h3>
 <p>While we have previously seen that Koopmans’ theorem is in significant disagreement with experimental ionization energies (due to lack of relaxation), it has been noted that the <em>relative</em> position of the (valence) MO energies can still be quite reasonable. As such, a computationally very simple approach for modeling X-ray emission spectra has been used, in which transition energies are estimated from</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8becfa7c-b1d3-4b30-9557-34f877729874">
-<span class="eqno">(9)<a class="headerlink" href="#equation-8becfa7c-b1d3-4b30-9557-34f877729874" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9b5d4551-7e75-4ddc-a7fb-096ab65021c3">
+<span class="eqno">(7)<a class="headerlink" href="#equation-9b5d4551-7e75-4ddc-a7fb-096ab65021c3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \Delta E = \epsilon_v - \epsilon_c
 \end{equation}\]</div>
 <p><em>i.e.</em> the difference in ground state MO energies. The intensities are taken to be proportional to the dipole moment:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-011796be-7181-4115-8c7c-a6d4c485b7c7">
-<span class="eqno">(10)<a class="headerlink" href="#equation-011796be-7181-4115-8c7c-a6d4c485b7c7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-3983a2df-bfda-4884-af0f-dfe302e11949">
+<span class="eqno">(8)<a class="headerlink" href="#equation-3983a2df-bfda-4884-af0f-dfe302e11949" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| ^2
 \end{equation}\]</div>
 <p>This method is very attractive in its simplicity, requiring only a single ground state calculation and the construction of some transition dipole moments for a full spectrum calculation. However, the absolute energies are significantly off, and any differences in relaxation between the different channels will not be included.</p>
@@ -1603,13 +1607,13 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecule and basis objects</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span>    <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># SCF settings and calculation</span>
-<span class="n">scf_drv</span>          <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_settings</span>     <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
 <span class="n">method_settings</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;b3lyp&#39;</span><span class="p">}</span>
-<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span><span class="n">method_settings</span><span class="p">)</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies and number of occupied MOs</span>
@@ -1707,13 +1711,16 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
 <li><p>A core-excitation as modeled like a normal X-ray absorption spectrum</p></li>
 <li><p>A core-decay process from the core-hole system with an electron put in each relevant final state probed in (1), modeled as a (non-resonant) X-ray emission spectrum</p></li>
 </ol>
-<p>{\bf Note and discuss:} Spin-contamination, with &lt;S^2&gt; = 1</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Insert discussion of spin-contamination, as LSOR yield <span class="math notranslate nohighlight">\(\langle S^2 \rangle = 1\)</span>.</p>
+</div>
 <p>The RIXS plane is then constructed from above absorption and emission energies, with RIXS intensity from the multiplication of respective oscillator strength.</p>
 <p>Note that this approach is an approximation, as it disregards potentially important detuning effects, and in the example given below we also ignore existing coupling between the polarization in the incoming and outgoing photon. Furthermore, it requires the convergence of core-ionized states, which is much trickier than core-ionized, and will likely only work for the first few core-excited states.</p>
 <p>Nevertheless, the scheme is quite easy to understand, and introducing core-excited dynamics is relatively straightforward. As such, we here illustrate how the RIXS plane of water can be constructed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span>       <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span>  <span class="o">=</span> <span class="n">water_xyz</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
@@ -1747,7 +1754,7 @@ f \propto \left| \langle \phi_i \left| \hat{\mu} \right| \phi_c \rangle \right| 
     <span class="n">adc_rxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Now the correct combinations of transition energies and intensities need to be constructed:</p>
+<p>Now the correct combinations of transition energies and intensities need to be calculated:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adc_rixs</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Probing LUMO and LUMO+1</span>
