@@ -39,7 +39,7 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 {cite}`Wang2016, Schlegel2011`
 ```
 
-Multiple lists of references are possible but not yet properly implmented.
+Multiple lists of references are possible but not yet properly implemented.
 
 
 # Course plans:
@@ -53,24 +53,29 @@ Multiple lists of references are possible but not yet properly implmented.
     - Integrate visualization tools in respective sections
         - Need to get it to run better... Maybe use static images
     - Send out e-mail to potential participants (TF+MD)
+    - Meta-lock notebook on week 22, followed by peer review
+    - Idea: echem.org
 
 2. General aspects
     - Number of participants (10-15)
     - Expecting participants to install software before
     - Exercises partially run at HPC resources?
+    - Questionnaires using Google Forms (?)
+    - Might move Wednesday to Thursday (time to reflect, Mickael's schedule)
+    - 	Check with Mikael and Markus
     - Worth 1.5 points
 
 3. Schedule: 2/5 - 4/5
     - 2/5: Introduction and theory
-        - 9:00-11:00 Introduction, questionnaire, installation
+        - 9:00-11:00 Introduction, initial questionnaire (experiences, area of expertise, ...)
         - 11:00-12:00 + 13:00-14:00 Hartree-Fock example
         - 14:00-15:00 MP2 exercise
-        - 15:00-15:30 Wrap-up
+        - 15:00-15:30 Wrap-up, maybe short questionnaire
     - 3/5: Theory day
-        - 11:00-12:00 Open questions, potential presentations
-        - 12:00-14:00 Go over notebooks
-        - 14:00-16:00 Exercises
-        - 16:00-16:30 Wrap-up
+        - 11:00-12:00 Open questions, potential presentations (start 10:00?)
+        - 13:00-15:00 Go over notebooks
+        - 15:00-17:00 Exercises
+        - 17:00-17:30 Wrap-up, maybe short questionnaire
     - 4/5: Tutorial day
         - 9:00-10:00 Open questions, potential presentations
         - 10:00-12:00 Go over notebooks
