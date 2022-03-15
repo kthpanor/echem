@@ -173,13 +173,7 @@ If you want to download the full eChem project, this is most conveniently done b
 $ git clone https://github.com/kthpanor/echem.git
 ```
 
-You find the Notebook files under `/docs`. If you want to perform local changes and compile your own version of the eChem book, you need the jupyter-book package
-
-```
-$ pip install -U jupyter-book
-```
-
-Building the (local) book is done by running the following in the eChem folder
+You find the Notebook files under `/docs`. If you want to perform local changes and compile your own version of the eChem book, you need the jupyter-book package, which is included in echem.yml. Building the (local) book is done by running the following in the eChem folder
 
 ```
 $ jupyter-book build .
