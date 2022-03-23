@@ -630,6 +630,19 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aimd-example-with-xtb">
+   AIMD example with XTB
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -641,6 +654,84 @@
   <div class="section" id="running-a-simulation">
 <h1>Running a simulation<a class="headerlink" href="#running-a-simulation" title="Permalink to this headline">¶</a></h1>
 <p>Workflow with example in openMM.</p>
+<p>Can also link to good tutorial with <a class="reference external" href="http://www.mdtutorials.com/gmx/lysozyme/index.html">lysozyme</a> etc (gromacs).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="section" id="aimd-example-with-xtb">
+<h2>AIMD example with XTB<a class="headerlink" href="#aimd-example-with-xtb" title="Permalink to this headline">¶</a></h2>
+<p>See https://xtb-docs.readthedocs.io/en/latest/md.html for more details.</p>
+<ul class="simple">
+<li><p>Want to run from notebook</p>
+<ul>
+<li><p>Run without creating all files</p></li>
+</ul>
+</li>
+<li><p>Visualize trajectory</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">write_xyz</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span><span class="n">fname</span><span class="p">):</span>
+    <span class="n">input_str</span> <span class="o">=</span> <span class="s1">&#39;$coord</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="n">mol_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">mol_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">tmp_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+                        <span class="n">save_el</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tmp_str</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span>
+            <span class="n">tmp_str</span> <span class="o">+=</span> <span class="n">save_el</span>
+            <span class="n">input_str</span> <span class="o">+=</span> <span class="n">tmp_str</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">input_str</span> <span class="o">+=</span> <span class="s1">&#39;$end&#39;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">);</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_str</span><span class="p">);</span> <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">md_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;$md</span>
+<span class="s1">   temp=300</span>
+<span class="s1">   time= 25.0</span>
+<span class="s1">   dump=100.0</span>
+<span class="s1">   step=  2.5</span>
+<span class="s1">$end</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">mol_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">O       0.0000000000     0.0000000000     0.1178336003</span>
+<span class="s1">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
+<span class="s1">H       0.7595754146     0.0000000000    -0.4713344012</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+
+<span class="n">mol_name</span> <span class="o">=</span> <span class="s1">&#39;molecule&#39;</span>
+<span class="n">md_name</span> <span class="o">=</span> <span class="s1">&#39;md.inp&#39;</span>
+<span class="n">save_xyz</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span><span class="n">mol_name</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;md.inp&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">);</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">md_str</span><span class="p">);</span> <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># !xtb $mol_name --input $md_name --omd</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;xtb.trj&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">xyzs</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">snapshots</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;energy:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">n_atoms</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">snapshots</span><span class="p">)):</span>
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">((</span><span class="n">snapshots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">tmp_snapshot</span> <span class="o">=</span> <span class="n">snapshots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">xyzs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_snapshot</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+    
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
