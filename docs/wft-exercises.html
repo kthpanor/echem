@@ -28,8 +28,6 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
@@ -42,7 +40,6 @@
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/thebelab-helper.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -56,10 +53,11 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Density functional theory" href="dft.html" />
+    <link rel="prev" title="Multiconfigurational methods" href="mcscf.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -236,7 +234,7 @@
   Electronic structure theory
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="elecstruct-general.html">
    General aspects
@@ -269,16 +267,16 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="wft.html">
    Wave function theory
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="wft-general.html">
      General aspects
@@ -302,6 +300,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="mcscf.html">
      Multiconfigurational methods
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Exercises
     </a>
    </li>
   </ul>
@@ -734,21 +737,20 @@
 <h2>Configuration interaction<a class="headerlink" href="#configuration-interaction" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="particle-density-matrix">
 <h3>1-particle density matrix<a class="headerlink" href="#particle-density-matrix" title="Permalink to this headline">¶</a></h3>
-<p>In order to compute expectation values, useful for properties, but also as an intermediate for some additional electronic structure methods (such as MCSCF see later chapters), we often need to compute density matrices. While the density matrices are trivial for a single Slater Determinant such as in Hartree-Fock, they are more complex for a CI wavefunction.</p>
-<p>Fortunately, the structure of the code is very similar to that of the energy, and actually, the energy can be computed directly from the 1 and 2-particle density matrix.</p>
-<p>As an exercise, let us compute the 1-particle density matrix for a CI vector. The density matrix (in molecular orbital basis) is defined in second quantization as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-20ebdff0-80c4-4b73-b789-a527e4029cf0">
-<span class="eqno">()<a class="headerlink" href="#equation-20ebdff0-80c4-4b73-b789-a527e4029cf0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>In this exercise, we are going to compute the one-particle density matrix for a CI wavefunction. The structure of the code is very similar to that of the energy, and actually, the energy can be computed directly from the 1 and 2-particle density matrix.</p>
+<p>As a reminder, the density matrix (in molecular orbital basis) is defined in second quantization as:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-a944b15f-d300-438e-942d-b1142007ac9b">
+<span class="eqno">(64)<a class="headerlink" href="#equation-a944b15f-d300-438e-942d-b1142007ac9b" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 \end{equation}\]</div>
 <p>This is indeed very similar to the 1-electron part of the <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bdcb15a6-71c1-4a18-b4d3-d10dee767978">
-<span class="eqno">()<a class="headerlink" href="#equation-bdcb15a6-71c1-4a18-b4d3-d10dee767978" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-df4d3d2a-5d33-49aa-866a-ebbf0bc1dd7f">
+<span class="eqno">(65)<a class="headerlink" href="#equation-df4d3d2a-5d33-49aa-866a-ebbf0bc1dd7f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \sigma^{(1)} = \sum_{pq} \hat{a}_p^\dagger \hat{a}_q | 0 \rangle h_{pq}
 \end{equation}\]</div>
-<p>The difference then with the sigma algorithm is that instead of adding the <span class="math notranslate nohighlight">\(h_{ia}\)</span> integral, we only store the product of the coefficients (vector[idet] and vector[excdet.index()]) in the “i,a” position of the density matrix. Note that the diagonal term thus includes a loop over all occupied <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
+<p>The difference then with the sigma algorithm is that instead of adding the <span class="math notranslate nohighlight">\(h_{ia}\)</span> integral to the <span class="math notranslate nohighlight">\(\sigma\)</span> vector, we store the product of the coefficients (vector[idet] and vector[excdet.index()]) in the “i,a” position of the density matrix. Note that the diagonal term <span class="math notranslate nohighlight">\(D_{pp}\)</span> includes a loop over all occupied <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
 <p>First let’s initialize our calculations:</p>
-<div class="cell docutils container">
+<div class="cell tag_hide_output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
@@ -767,7 +769,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 
 <span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">MolSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">expansion</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 
@@ -814,7 +816,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -147.550438945281 a.u. Time: 0.03 sec.                                 
+* Info * ...done. SCF energy in reduced basis set: -147.550438945281 a.u. Time: 0.05 sec.                                 
                                                                                                                           
 </pre></div>
 </div>
@@ -840,7 +842,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 2 iterations. Time: 0.01 sec.                                                         
+               *** SCF converged in 2 iterations. Time: 0.02 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -866,26 +868,26 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.99088 a.u.                                                                  
-               (   1 O   1s  :     0.18) (   1 O   2s  :    -0.78) (   1 O   1p0 :     0.16)                              
-               (   2 O   1s  :    -0.18) (   2 O   2s  :     0.78) (   2 O   1p0 :     0.16)                              
+               (   1 O   1s  :    -0.18) (   1 O   2s  :     0.78) (   1 O   1p0 :    -0.16)                              
+               (   2 O   1s  :     0.18) (   2 O   2s  :    -0.78) (   2 O   1p0 :    -0.16)                              
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.64661 a.u.                                                                  
-               (   1 O   1p+1:     0.63) (   1 O   1p-1:     0.19) (   2 O   1p+1:     0.63)                              
-               (   2 O   1p-1:     0.19)                                                                                  
+               (   1 O   1p+1:    -0.63) (   1 O   1p-1:    -0.19) (   2 O   1p+1:    -0.63)                              
+               (   2 O   1p-1:    -0.19)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.58501 a.u.                                                                  
-               (   1 O   2s  :    -0.33) (   1 O   1p0 :     0.61) (   2 O   2s  :    -0.33)                              
-               (   2 O   1p0 :    -0.61)                                                                                  
+               (   1 O   2s  :     0.33) (   1 O   1p0 :    -0.61) (   2 O   2s  :     0.33)                              
+               (   2 O   1p0 :     0.61)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.52415 a.u.                                                                  
-               (   1 O   1p+1:     0.19) (   1 O   1p-1:    -0.63) (   2 O   1p+1:     0.19)                              
-               (   2 O   1p-1:    -0.63)                                                                                  
+               (   1 O   1p+1:    -0.19) (   1 O   1p-1:     0.63) (   2 O   1p+1:    -0.19)                              
+               (   2 O   1p-1:     0.63)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
@@ -896,8 +898,8 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.19167 a.u.                                                                  
-               (   1 O   1p+1:     0.23) (   1 O   1p-1:    -0.74) (   2 O   1p+1:    -0.23)                              
-               (   2 O   1p-1:     0.74)                                                                                  
+               (   1 O   1p+1:    -0.23) (   1 O   1p-1:     0.74) (   2 O   1p+1:     0.23)                              
+               (   2 O   1p-1:    -0.74)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -907,16 +909,35 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
                                                                                                                           
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">yn</span><span class="o">/</span><span class="n">sjrk11nj0zs5nb8wzbytm0j00000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_30138</span><span class="o">/</span><span class="mf">1187379889.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">17</span> 
-<span class="ne">---&gt; </span><span class="mi">18</span> <span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">MolSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">expansion</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
+          ------------------------
+Number of inactive (occupied) orbitals: 4
+Number of active orbitals:              6
+Number of virtual orbitals:             0
 
-<span class="ne">AttributeError</span>: module &#39;multipsi&#39; has no attribute &#39;MolSpace&#39;
+    This is a CASSCF wavefunction: CAS(8,6)
+
+          CI expansion:
+          -------------
+Number of determinants:      120
+
+
+
+        CI Iterations
+        -------------
+
+Iteration   Average energy      Time
+     1        -147.72142572   0:00:00
+Convergence reached in 1 iterations
+
+        Final results
+        -------------
+
+* State 1
+- Energy: -147.72142571880917
+- S^2   : 2.00  (multiplicity = 3.0 )
+- Natural orbitals
+[1.96865 1.95514 1.95514 1.04412 1.04412 0.03284]
 </pre></div>
 </div>
 </div>
@@ -978,7 +999,21 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
               
             
                 <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="mcscf.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Multiconfigurational methods</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="dft.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Density functional theory</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
             
         </div>

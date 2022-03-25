@@ -28,8 +28,6 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
@@ -42,7 +40,6 @@
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/thebelab-helper.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -56,7 +53,6 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -304,6 +300,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="mcscf.html">
      Multiconfigurational methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="wft-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -719,8 +720,8 @@
 <h2>Gradient descent<a class="headerlink" href="#gradient-descent" title="Permalink to this headline">¶</a></h2>
 <p>Notebook for gradient descent?</p>
 <p>The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-649287dd-3b98-4fd3-94d4-5fbffcfec5e8">
-<span class="eqno">(168)<a class="headerlink" href="#equation-649287dd-3b98-4fd3-94d4-5fbffcfec5e8" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-66f89c50-45c8-4aaa-b4f2-d0d2bedf1bfa">
+<span class="eqno">(170)<a class="headerlink" href="#equation-66f89c50-45c8-4aaa-b4f2-d0d2bedf1bfa" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{x}_{i+1} = \mathbf{x}_i - k_i\nabla E(\mathbf{x}_i) \label{eq:grad-descent} \,, 
 \end{equation}\]</div>
 <p>where by <span class="math notranslate nohighlight">\(\mathbf{x}_{i+1}\)</span> we denote the new coordinates (in a generic coordinate system – either Cartesian or internal coordinates), <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> are the coordinates at the previous step <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\nabla E\)</span> is the energy gradient and <span class="math notranslate nohighlight">\(k_i\)</span> is the step size. The step size can either be kept constant, or adjusted at each iteration, e.g. by the line search procedure.</p>
@@ -729,44 +730,44 @@
 <div class="section" id="conjugate-gradient">
 <h2>Conjugate gradient<a class="headerlink" href="#conjugate-gradient" title="Permalink to this headline">¶</a></h2>
 <p>An improved method over the gradient-descent approach is to use the “gradient history” (steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span>) to determine the coordinates at step <span class="math notranslate nohighlight">\(i+1\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-212ad807-f6df-4122-b9a8-21c3d78001de">
-<span class="eqno">(169)<a class="headerlink" href="#equation-212ad807-f6df-4122-b9a8-21c3d78001de" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-b4095b42-cf6a-4979-8280-f1da2e8e7b81">
+<span class="eqno">(171)<a class="headerlink" href="#equation-b4095b42-cf6a-4979-8280-f1da2e8e7b81" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     \mathbf{x}_{i+1} = \mathbf{x}_i - k_i \mathbf{h}_i\,,\label{eq:conjugate_gradient}
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{h}_i = \nabla E (\mathbf{x}_i)+\gamma_i\mathbf{h}_{i-1}\)</span>. The function <span class="math notranslate nohighlight">\(\gamma_i\)</span> contains gradient information from steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span> and can be defined in different ways. For example, in the Fletcher-Reeves conjugate gradient method:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-869772ee-315e-431f-a301-ea37ba230ae2">
-<span class="eqno">(170)<a class="headerlink" href="#equation-869772ee-315e-431f-a301-ea37ba230ae2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-99c781a6-2b48-442a-8a90-16d663d092a8">
+<span class="eqno">(172)<a class="headerlink" href="#equation-99c781a6-2b48-442a-8a90-16d663d092a8" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     \gamma_i = \frac{|\nabla E(\mathbf{x}_i)|^2}{|\nabla E(\mathbf{x}_{i-1})|^2}\,.
 \end{equation}\]</div>
 </div>
 <div class="section" id="newton-raphson-and-quasi-newton">
 <h2>Newton–Raphson and quasi-Newton<a class="headerlink" href="#newton-raphson-and-quasi-newton" title="Permalink to this headline">¶</a></h2>
 <p>The next step in the hierarchy of minimization methods is to use both the first and second order energy derivatives (i.e. gradient <span class="math notranslate nohighlight">\( \nabla E\)</span> and Hessian <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>) in determining the next step in conformation space. This is based on a quadratic approximation for the local shape of the PES:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bd0701b5-8cbe-4328-9cd4-d0e00d22c23c">
-<span class="eqno">(171)<a class="headerlink" href="#equation-bd0701b5-8cbe-4328-9cd4-d0e00d22c23c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-bfc8b4dc-165f-46db-a0ba-2d35ad145e56">
+<span class="eqno">(173)<a class="headerlink" href="#equation-bfc8b4dc-165f-46db-a0ba-2d35ad145e56" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     E(\mathbf{x}+\Delta\mathbf{x}) \approx E(\mathbf{x}) + \nabla E(\mathbf{x})\Delta\mathbf{x} + \frac{1}{2}\Delta\mathbf{x}^\mathrm{T}\mathbf{H}\Delta\mathbf{x} \label{eq:quadratic_approx_PES} \,,
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\Delta \mathbf{x}\)</span> is the Newton step used to update the coordinates:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-99c9b30d-f828-485b-8f85-c940782148f6">
-<span class="eqno">(172)<a class="headerlink" href="#equation-99c9b30d-f828-485b-8f85-c940782148f6" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-e83bd2a6-2ca2-4a29-a2ae-0b2a4834e655">
+<span class="eqno">(174)<a class="headerlink" href="#equation-e83bd2a6-2ca2-4a29-a2ae-0b2a4834e655" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
     \Delta \mathbf{x} &amp;= -\mathbf{H}^{-1}\nabla E(\mathbf{x})\label{eq:Newton_step}\,,\\
     \mathbf{x}_\mathrm{i+1} &amp;= \mathbf{x}_\mathrm{i}+\Delta \mathbf{x}\,.
 \end{flalign}\]</div>
 <p>When redundant internal coordinates are used, it is important to ensure that the displacements are only performed in the non-redundant part of the internal coordinate space. This is achieved by applying a projector <span class="math notranslate nohighlight">\(\mathbf{P}=\mathbf{G}^{-}\mathbf{G}\)</span> to the gradient and Hessian before constructing the Newton step \cite{orcamanual}:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ad7553d7-45f6-48a5-be1a-e2e0b7429400">
-<span class="eqno">(173)<a class="headerlink" href="#equation-ad7553d7-45f6-48a5-be1a-e2e0b7429400" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-c0ac1c00-5691-4785-be7d-c8d5bdd84487">
+<span class="eqno">(175)<a class="headerlink" href="#equation-c0ac1c00-5691-4785-be7d-c8d5bdd84487" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
  \tilde{\mathbf{g}}_q &amp;= \mathbf{P}\nabla E(\mathbf{q}) \, , \\
  \tilde{\mathbf{H}}_q &amp;= \mathbf{P}\mathbf{H}_q\mathbf{P}+\alpha(1-\mathbf{P}) \,,
  \end{flalign}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is an arbitrary large value (e.g. 1000).</p>
 <p>As evident from Eq.~\eqref{eq:Newton_step}, the second order derivatives of the energy with respect to nuclear displacements are required to generate the Newton step. The direct computation of these derivatives (which compose the Hessian matrix) is quite expensive, but good \textit{approximations} for the Hessian can be constructed using  the gradient history. For example, the Broyden-Fletcher-Goldfarb-Shanno (BFGS, used by \code{geomeTRIC}) approach uses the relation:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3a7117f1-8c12-4d7b-be21-cc3f23a3d640">
-<span class="eqno">(174)<a class="headerlink" href="#equation-3a7117f1-8c12-4d7b-be21-cc3f23a3d640" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-cac704ca-cc7a-4352-9b0e-f2ecf173ffa0">
+<span class="eqno">(176)<a class="headerlink" href="#equation-cac704ca-cc7a-4352-9b0e-f2ecf173ffa0" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
 \mathbf{H}_{i+1} &amp;= \mathbf{H}_i + \frac{\mathbf{g}^{\textcolor{white}{.}}_i\mathbf{g}_i^\mathrm{T}}{\mathbf{g}_i^\mathrm{T}\mathbf{s}^{\textcolor{white}{.}}_i} - \frac{\mathbf{H}_i\mathbf{s}_i\left(\mathbf{H}_i\mathbf{s}_i\right)_{\textcolor{white}{i}}^\mathrm{T}}{\mathbf{s}_i^\mathrm{T}\mathbf{H}_i^{\textcolor{white}{.}}\mathbf{s}_i^{\textcolor{white}{.}}} \, ,\label{eq:BFGS}
 \end{flalign}\]</div>
 <p>with,</p>
-<div class="amsmath math notranslate nohighlight" id="equation-86a99ad7-dc8d-460b-bade-5164b9dd06e5">
-<span class="eqno">(175)<a class="headerlink" href="#equation-86a99ad7-dc8d-460b-bade-5164b9dd06e5" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-430d6f94-572a-4ca3-b75d-4ed8d006a7ce">
+<span class="eqno">(177)<a class="headerlink" href="#equation-430d6f94-572a-4ca3-b75d-4ed8d006a7ce" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
 \mathbf{g}_i &amp;= \nabla E(\mathbf{x}_{i+1}) - \nabla E(\mathbf{x}_i) \, \\
 \mathbf{s}_i &amp;= \mathbf{x}_{i+1} - \mathbf{x}_{i} \,,
 \end{flalign}\]</div>

@@ -17,55 +17,48 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-water_xyz = """
-O       0.0000000000     0.0000000000     0.1178336003
-H      -0.7595754146    -0.0000000000    -0.4713344012
-H       0.7595754146     0.0000000000    -0.4713344012
-"""
-
-# Create molecule object 
 mol = gto.Mole()
-mol.atom  = water_xyz
-mol.basis = 'STO-3G'
+mol.atom = water_xyz
+mol.basis = '6-31G'
 mol.build()
 
-# Index of core MO
-core = 0
+# GS
+scf_gs = scf.UHF(mol)
+scf_gs.kernel()
+adc_gs = adcc.cvs_adc2x(scf_gs, n_states=5, core_orbitals=1)
 
-# Initial restricted/unrestricted SCF
-dft_re = dft.RKS(mol); dft_re.xc = 'b3lyp'; dft_re.kernel()
-dft_ur = dft.UKS(mol); dft_ur.xc = 'b3lyp'; dft_ur.kernel()
+# LSOR
+mo0 = copy.deepcopy(scf_gs.mo_coeff)
+occ0 = copy.deepcopy(scf_gs.mo_occ)
+occ0[0][4] = 0.0
+occ0[0][5] = 1.0
+scf_es = scf.UHF(mol)
+scf.addons.mom_occ(scf_es, mo0, occ0)
+scf_es.kernel()
+print(27.2114*(scf_gs.e_tot - scf_es.e_tot))
+adc_ls = adcc.cvs_adc2x(scf_es, n_states=5, core_orbitals=1)
 
-# Single ionization energy
-mo0 = copy.deepcopy(dft_ur.mo_coeff)
-occ0 = copy.deepcopy(dft_ur.mo_occ)
-occ0[0][core] = 0.0
-dft_ion = dft.UKS(mol)
-dft_ion.xc = 'b3lyp'
-imom(dft_ion, mo0, occ0)
-dft_ion.kernel()
-print('Single ionization energy:',np.around(au2ev*(dft_ion.energy_tot() - dft_gs.energy_tot()),2),'eV')
-
-# Double ionization energy
-mo0 = copy.deepcopy(dft_re.mo_coeff)
-occ0 = copy.deepcopy(dft_re.mo_occ)
-occ0[core] = 0.0
-dft_ion = dft.RKS(mol)
-dft_ion.xc = 'b3lyp'
-imom(dft_ion, mo0, occ0)
-dft_ion.kernel()
-print('Double ionization energy:',np.around(au2ev*(dft_ion.energy_tot() - dft_gs.energy_tot()),2),'eV')
+# HSOR
+mo0 = copy.deepcopy(scf_gs.mo_coeff)
+occ0 = copy.deepcopy(scf_gs.mo_occ)
+occ0[0][4] = 0.0
+occ0[1][5] = 1.0
+scf_es = scf.UHF(mol)
+scf.addons.mom_occ(scf_es, mo0, occ0)
+scf_es.kernel()
+print(27.2114*(scf_gs.e_tot - scf_es.e_tot))
+adc_hs = adcc.cvs_adc2x(scf_es, n_states=5, core_orbitals=1)
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/var/folders/yn/sjrk11nj0zs5nb8wzbytm0j00000gn/T/ipykernel_30506/535966796.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     26[0m [0mimom[0m[0;34m([0m[0mdft_ion[0m[0;34m,[0m [0mmo0[0m[0;34m,[0m [0mocc0[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     27[0m [0mdft_ion[0m[0;34m.[0m[0mkernel[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 28[0;31m [0mprint[0m[0;34m([0m[0;34m'Single ionization energy:'[0m[0;34m,[0m[0mnp[0m[0;34m.[0m[0maround[0m[0;34m([0m[0mau2ev[0m[0;34m*[0m[0;34m([0m[0mdft_ion[0m[0;34m.[0m[0menergy_tot[0m[0;34m([0m[0;34m)[0m [0;34m-[0m [0mdft_gs[0m[0;34m.[0m[0menergy_tot[0m[0;34m([0m[0;34m)[0m[0;34m)[0m[0;34m,[0m[0;36m2[0m[0;34m)[0m[0;34m,[0m[0;34m'eV'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     29[0m [0;34m[0m[0m
-[1;32m     30[0m [0;31m# Double ionization energy[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m/var/folders/yn/sjrk11nj0zs5nb8wzbytm0j00000gn/T/ipykernel_37264/24788708.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      1[0m [0mmol[0m [0;34m=[0m [0mgto[0m[0;34m.[0m[0mMole[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 2[0;31m [0mmol[0m[0;34m.[0m[0matom[0m [0;34m=[0m [0mwater_xyz[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      3[0m [0mmol[0m[0;34m.[0m[0mbasis[0m [0;34m=[0m [0;34m'6-31G'[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      4[0m [0mmol[0m[0;34m.[0m[0mbuild[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0;34m[0m[0m
 
-[0;31mNameError[0m: name 'dft_gs' is not defined
-NameError: name 'dft_gs' is not defined
+[0;31mNameError[0m: name 'water_xyz' is not defined
+NameError: name 'water_xyz' is not defined
 
