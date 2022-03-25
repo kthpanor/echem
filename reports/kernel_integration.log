@@ -1,46 +1,456 @@
 Traceback (most recent call last):
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
     record_timing=False,
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1087, in execute
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 1085, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 74, in wrapped
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 84, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 53, in just_run
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 62, in just_run
     return loop.run_until_complete(coro)
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+  File "/opt/anaconda3/envs/echem/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
     return future.result()
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 541, in async_execute
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 552, in async_execute
     cell, index, execution_count=self.code_cells_executed + 1
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 832, in async_execute_cell
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 846, in async_execute_cell
     self._check_raise_for_error(cell, exec_reply)
-  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 740, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
+  File "/opt/anaconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 748, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# define a molecular system
-h2o_xyz = """3
-water
-O    0.000000000000        0.000000000000        0.000000000000
-H    0.000000000000        0.740848095288        0.582094932012
-H    0.000000000000       -0.740848095288        0.582094932012
-"""
-molecule = vlx.Molecule.from_xyz_string(h2o_xyz)
+basis = vlx.MolecularBasis.read(molecule, "def2-svpd")
+scf_drv.compute(molecule, basis) # perform an SCF optimization
 
-# determine the method
-scf_drv = vlx.ScfRestrictedDriver()
-method_settings = {'xcfun': 'b3lyp', 'grid_level': 4}
-scf_drv.update_settings({}, method_settings)
+den_drv = vlx.veloxchemlib.DensityGridDriver()
+
+den_mats = scf_drv.scf_tensors['D'] # tuple of (alpha, beta) spin densities
+den_array_format = np.array([den_mats[0], den_mats[1]])
+den_cpp_format = vlx.veloxchemlib.AODensityMatrix(den_array_format, vlx.veloxchemlib.denmat.rest)
+
+xctype = vlx.veloxchemlib.xcfun.lda # generate densities but no gradients of densities
+    
+n_grid_points = []
+n_elec = []
+
+for grid_level in range(1,7):
+
+    grid_drv.set_level(grid_level) # available grid levels are between 1-6
+
+    # generate grid points and weights for molecule
+    mol_grid = grid_drv.generate(molecule)
+    weights = mol_grid.w_to_numpy()
+    n_grid_points.append(mol_grid.number_of_points())
+
+    # generate density on grid
+    den_grid = den_drv.generate(den_cpp_format, molecule, basis, mol_grid, xctype)
+    den_alpha = den_grid.density_aa_to_numpy(0)
+    den_beta  = den_grid.density_bb_to_numpy(0)
+
+    n_elec.append(np.dot(weights, den_alpha) + np.dot(weights, den_beta))
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mAttributeError[0m                            Traceback (most recent call last)
-[0;32m<ipython-input-2-6a6fba44e62a>[0m in [0;36m<module>[0;34m[0m
-[1;32m      6[0m [0mH[0m    [0;36m0.000000000000[0m       [0;34m-[0m[0;36m0.740848095288[0m        [0;36m0.582094932012[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      7[0m """
-[0;32m----> 8[0;31m [0mmolecule[0m [0;34m=[0m [0mvlx[0m[0;34m.[0m[0mMolecule[0m[0;34m.[0m[0mfrom_xyz_string[0m[0;34m([0m[0mh2o_xyz[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m      9[0m [0;34m[0m[0m
-[1;32m     10[0m [0;31m# determine the method[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+[0;32m/var/folders/yn/sjrk11nj0zs5nb8wzbytm0j00000gn/T/ipykernel_30048/2326663189.py[0m in [0;36m<module>[0;34m[0m
+[1;32m     23[0m [0;34m[0m[0m
+[1;32m     24[0m     [0;31m# generate density on grid[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 25[0;31m     [0mden_grid[0m [0;34m=[0m [0mden_drv[0m[0;34m.[0m[0mgenerate[0m[0;34m([0m[0mden_cpp_format[0m[0;34m,[0m [0mmolecule[0m[0;34m,[0m [0mbasis[0m[0;34m,[0m [0mmol_grid[0m[0;34m,[0m [0mxctype[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     26[0m     [0mden_alpha[0m [0;34m=[0m [0mden_grid[0m[0;34m.[0m[0mdensity_aa_to_numpy[0m[0;34m([0m[0;36m0[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     27[0m     [0mden_beta[0m  [0;34m=[0m [0mden_grid[0m[0;34m.[0m[0mdensity_bb_to_numpy[0m[0;34m([0m[0;36m0[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mAttributeError[0m: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
-AttributeError: type object 'veloxchem.veloxchemlib.Molecule' has no attribute 'from_xyz_string'
+[0;31mTypeError[0m: generate(): incompatible function arguments. The following argument types are supported:
+    1. (self: veloxchem.veloxchemlib.DensityGridDriver, aoDensityMatrix: veloxchem.veloxchemlib.AODensityMatrix, molecule: veloxchem.veloxchemlib.Molecule, basis: veloxchem.veloxchemlib.MolecularBasis, molecularGrid: veloxchem.veloxchemlib.MolecularGrid, xcFunctionalType: str) -> CDensityGrid
+
+Invoked with: <veloxchem.veloxchemlib.DensityGridDriver object at 0x7fba3ce12570>, <veloxchem.veloxchemlib.AODensityMatrix object at 0x7fba3bbb41f0>, <veloxchem.veloxchemlib.Molecule object at 0x7fba3c9d9330>, 
+[CMolecularBasis (Object):0x7fba3b00c7b0]
+_label: DEF2-SVPD
+_maxAngularMomentum: 2
+_atomicBasisSets: 
+_atomicBasisSets[0]: 
+
+[CAtomBasis (Object):0x7fba3b0c8dd0]
+_idElemental: 8
+_maxAngularMomentum: 2
+_basisFunctions: 
+_basisFunctions[0]: 
+
+[CBasisFunction (Object):0x7fba3b0c4780]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+2266.18
+_exponents[1]: 
+340.87
+_exponents[2]: 
+77.3631
+_exponents[3]: 
+21.4796
+_exponents[4]: 
+6.65894
+_normFactors: 
+_normFactors[0]: 
+-1.26159
+_normFactors[1]: 
+-2.27485
+_normFactors[2]: 
+-3.34796
+_normFactors[3]: 
+-3.33
+_normFactors[4]: 
+-1.32038
+
+_basisFunctions[1]: 
+
+[CBasisFunction (Object):0x7fba3b0c47b8]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.80976
+_normFactors: 
+_normFactors[0]: 
+0.608383
+
+_basisFunctions[2]: 
+
+[CBasisFunction (Object):0x7fba3b0c47f0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.255308
+_normFactors: 
+_normFactors[0]: 
+0.255981
+
+_basisFunctions[3]: 
+
+[CBasisFunction (Object):0x7fba3b0c4828]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+17.7215
+_exponents[1]: 
+3.86355
+_exponents[2]: 
+1.04809
+_normFactors: 
+_normFactors[0]: 
+3.24601
+_normFactors[1]: 
+2.5735
+_normFactors[2]: 
+1.12084
+
+_basisFunctions[4]: 
+
+[CBasisFunction (Object):0x7fba3b0c4860]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.276415
+_normFactors: 
+_normFactors[0]: 
+0.285689
+
+_basisFunctions[5]: 
+
+[CBasisFunction (Object):0x7fba3b0c4898]
+_angularMomentum: 2
+_exponents: 
+_exponents[0]: 
+1.2
+_normFactors: 
+_normFactors[0]: 
+1.13226
+
+_basisFunctions[6]: 
+
+[CBasisFunction (Object):0x7fba3b0c48d0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.0765725
+_normFactors: 
+_normFactors[0]: 
+0.103744
+
+_basisFunctions[7]: 
+
+[CBasisFunction (Object):0x7fba3b0c4908]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.0690023
+_normFactors: 
+_normFactors[0]: 
+0.0504103
+
+_basisFunctions[8]: 
+
+[CBasisFunction (Object):0x7fba3b0c4940]
+_angularMomentum: 2
+_exponents: 
+_exponents[0]: 
+0.17992
+_normFactors: 
+_normFactors[0]: 
+0.0409044
+
+
+_atomicBasisSets[1]: 
+
+[CAtomBasis (Object):0x7fba3b0c8df0]
+_idElemental: 1
+_maxAngularMomentum: 1
+_basisFunctions: 
+_basisFunctions[0]: 
+
+[CBasisFunction (Object):0x7fba3c8274d0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+13.0107
+_exponents[1]: 
+1.96226
+_exponents[2]: 
+0.444538
+_normFactors: 
+_normFactors[0]: 
+0.16349
+_normFactors[1]: 
+0.277352
+_normFactors[2]: 
+0.31575
+
+_basisFunctions[1]: 
+
+[CBasisFunction (Object):0x7fba3c827508]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.12195
+_normFactors: 
+_normFactors[0]: 
+0.147077
+
+_basisFunctions[2]: 
+
+[CBasisFunction (Object):0x7fba3c827540]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.8
+_normFactors: 
+_normFactors[0]: 
+1.07846
+
+_basisFunctions[3]: 
+
+[CBasisFunction (Object):0x7fba3c827578]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.117041
+_normFactors: 
+_normFactors[0]: 
+0.0975804
+
+
+, <veloxchem.veloxchemlib.MolecularGrid object at 0x7fba3c9d9570>, <xcfun.lda: 0>
+TypeError: generate(): incompatible function arguments. The following argument types are supported:
+    1. (self: veloxchem.veloxchemlib.DensityGridDriver, aoDensityMatrix: veloxchem.veloxchemlib.AODensityMatrix, molecule: veloxchem.veloxchemlib.Molecule, basis: veloxchem.veloxchemlib.MolecularBasis, molecularGrid: veloxchem.veloxchemlib.MolecularGrid, xcFunctionalType: str) -> CDensityGrid
+
+Invoked with: <veloxchem.veloxchemlib.DensityGridDriver object at 0x7fba3ce12570>, <veloxchem.veloxchemlib.AODensityMatrix object at 0x7fba3bbb41f0>, <veloxchem.veloxchemlib.Molecule object at 0x7fba3c9d9330>, 
+[CMolecularBasis (Object):0x7fba3b00c7b0]
+_label: DEF2-SVPD
+_maxAngularMomentum: 2
+_atomicBasisSets: 
+_atomicBasisSets[0]: 
+
+[CAtomBasis (Object):0x7fba3b0c8dd0]
+_idElemental: 8
+_maxAngularMomentum: 2
+_basisFunctions: 
+_basisFunctions[0]: 
+
+[CBasisFunction (Object):0x7fba3b0c4780]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+2266.18
+_exponents[1]: 
+340.87
+_exponents[2]: 
+77.3631
+_exponents[3]: 
+21.4796
+_exponents[4]: 
+6.65894
+_normFactors: 
+_normFactors[0]: 
+-1.26159
+_normFactors[1]: 
+-2.27485
+_normFactors[2]: 
+-3.34796
+_normFactors[3]: 
+-3.33
+_normFactors[4]: 
+-1.32038
+
+_basisFunctions[1]: 
+
+[CBasisFunction (Object):0x7fba3b0c47b8]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.80976
+_normFactors: 
+_normFactors[0]: 
+0.608383
+
+_basisFunctions[2]: 
+
+[CBasisFunction (Object):0x7fba3b0c47f0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.255308
+_normFactors: 
+_normFactors[0]: 
+0.255981
+
+_basisFunctions[3]: 
+
+[CBasisFunction (Object):0x7fba3b0c4828]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+17.7215
+_exponents[1]: 
+3.86355
+_exponents[2]: 
+1.04809
+_normFactors: 
+_normFactors[0]: 
+3.24601
+_normFactors[1]: 
+2.5735
+_normFactors[2]: 
+1.12084
+
+_basisFunctions[4]: 
+
+[CBasisFunction (Object):0x7fba3b0c4860]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.276415
+_normFactors: 
+_normFactors[0]: 
+0.285689
+
+_basisFunctions[5]: 
+
+[CBasisFunction (Object):0x7fba3b0c4898]
+_angularMomentum: 2
+_exponents: 
+_exponents[0]: 
+1.2
+_normFactors: 
+_normFactors[0]: 
+1.13226
+
+_basisFunctions[6]: 
+
+[CBasisFunction (Object):0x7fba3b0c48d0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.0765725
+_normFactors: 
+_normFactors[0]: 
+0.103744
+
+_basisFunctions[7]: 
+
+[CBasisFunction (Object):0x7fba3b0c4908]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.0690023
+_normFactors: 
+_normFactors[0]: 
+0.0504103
+
+_basisFunctions[8]: 
+
+[CBasisFunction (Object):0x7fba3b0c4940]
+_angularMomentum: 2
+_exponents: 
+_exponents[0]: 
+0.17992
+_normFactors: 
+_normFactors[0]: 
+0.0409044
+
+
+_atomicBasisSets[1]: 
+
+[CAtomBasis (Object):0x7fba3b0c8df0]
+_idElemental: 1
+_maxAngularMomentum: 1
+_basisFunctions: 
+_basisFunctions[0]: 
+
+[CBasisFunction (Object):0x7fba3c8274d0]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+13.0107
+_exponents[1]: 
+1.96226
+_exponents[2]: 
+0.444538
+_normFactors: 
+_normFactors[0]: 
+0.16349
+_normFactors[1]: 
+0.277352
+_normFactors[2]: 
+0.31575
+
+_basisFunctions[1]: 
+
+[CBasisFunction (Object):0x7fba3c827508]
+_angularMomentum: 0
+_exponents: 
+_exponents[0]: 
+0.12195
+_normFactors: 
+_normFactors[0]: 
+0.147077
+
+_basisFunctions[2]: 
+
+[CBasisFunction (Object):0x7fba3c827540]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.8
+_normFactors: 
+_normFactors[0]: 
+1.07846
+
+_basisFunctions[3]: 
+
+[CBasisFunction (Object):0x7fba3c827578]
+_angularMomentum: 1
+_exponents: 
+_exponents[0]: 
+0.117041
+_normFactors: 
+_normFactors[0]: 
+0.0975804
+
+
+, <veloxchem.veloxchemlib.MolecularGrid object at 0x7fba3c9d9570>, <xcfun.lda: 0>
 
