@@ -157,7 +157,7 @@ Multiple lists of references are possible but not yet properly implemented.
             - IB, MH
             - To finish
     - Transition-state theory
-            - AD
+            - JG, DG
             - Missing (Ch. 14 overleaf)
     - Interpolation
             - IB, YM
