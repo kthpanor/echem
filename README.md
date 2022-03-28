@@ -158,13 +158,13 @@ Multiple lists of references are possible but not yet properly implemented.
             - To finish
     - Transition-state theory
             - JG, DG
-            - Missing (Ch. 14 overleaf)
+            - Missing
     - Interpolation
             - IB, YM
             - To finish
     - Conical intersections
             - AD
-            - Missing (Ch. 15 overleaf)
+            - Missing
     - Molecular dynamics
             - TF, PN
             - To finish
