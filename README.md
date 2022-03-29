@@ -1,13 +1,17 @@
 <!-- #region -->
-# Compiled homepage
-https://kthpanor.github.io/echem/docs/intro.html
-
 # Create a conda environment for the eChem book
 
 Using the echem.yml file (stored at the root of the echem directory) to create a conda environment `echem` will install all needed packages to compile the book.
 
 ```
 conda env create -f echem.yml
+```
+
+# Publish the html-version
+
+```
+$ pip install ghp-import
+$ ghp-import -n -p -f _build/html
 ```
 
 # Some commands
@@ -24,13 +28,6 @@ $ open _build/html/index.html
 ```
 
 **Note**: We need version 0.11 (or higher) to compile our book which is not yet available with `conda install` so therefore do `pip install` as suggested above.
-
-# Publish the html-version
-
-```
-$ pip install ghp-import
-$ ghp-import -n -p -f _build/html
-```
 
 # References
 The file `references.bib` in the top directory is a regular BIBTEX file. Add your references in this file. A citation in the text is added with
@@ -77,7 +74,7 @@ Multiple lists of references are possible but not yet properly implemented.
         - 15:00-17:00 Exercises
         - 17:00-17:30 Wrap-up, maybe short questionnaire
     - 4/5: Tutorial day
-        - 9:00-10:00 Open questions, potential presentations
+        - 9:00-10:00 Andreas
         - 10:00-12:00 Go over notebooks
         - 13:00-15:00 Exercises
         - 15:00-15:30 Wrap-up, end questionnaire
@@ -88,7 +85,7 @@ Multiple lists of references are possible but not yet properly implemented.
         - MCSCF (MD)
         - Structure optimization (IEB+YMR)
         - Force field parameterization and interpolated PES (IEB+YMR)
-        - TDSCF (TF) [discuss with PN]
+        - TDSCF (TF) [discuss with PN+AD]
         - ADC (MH)
     - Tutorials
         - UV/vis (MD+TF)
@@ -103,7 +100,6 @@ Multiple lists of references are possible but not yet properly implemented.
     -  Missing: Nice main figure (IEB)
 	-  Missing?: Description of structure of echem
 	-  To improve: description of multipsi (MD)
-	-  To improve: Installation (TF)
 
 1. Tutorials and Workflows: 
     -  UV/vis
@@ -205,7 +201,7 @@ Multiple lists of references are possible but not yet properly implemented.
         - Missing
 <!-- #endregion -->
 
-# Random comments
+# Misc.
 
 - Figures in png 300 dpi or svg
 
