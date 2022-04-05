@@ -65,7 +65,7 @@ Similarly, the standard operators of quantum mechanics can be represented in sec
 A similar formula can be used for two-electron operators. For example, the Hamiltonian of a molecular system can be written as:
 
 \begin{equation}
-\hat H = \sum_{pq} h_{pq} \hat{a}_p^\dagger \hat{a}_q + \frac{1}{2} \sum_{pqrs} g_{pqrs} \hat{a}_p^\dagger \hat{a}_q \hat{a}_r^\dagger \hat{a}_s \ , 
+\hat H = \sum_{pq} h_{pq} \hat{a}_p^\dagger \hat{a}_q + \frac{1}{2} \sum_{pqrs} g_{pqrs} \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q \ , 
 \end{equation}
 where $h_{pq}$ is the one-electron part of electronic Hamiltonian 
 \begin{equation}
@@ -77,6 +77,50 @@ g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathb
 \end{equation}
 
 At the end, second quantization is a completely equivalent way to represent quantum mechanics, but by using a unified description of operator and states and reducing all the complications of the antisymmetry to simple commutation rules between the creation and annihilation operators, it is often a significantly more straightforward and compact way to derive various wave function models than the conventional approach based on the direct application of Slater-Condon rules to individual Slater determinants. For example, derivation of working equations for coupled-cluster singles and doubles wave function in second quantization becomes a single lecture affair, compared to the conventional way, which is several days undertaking. Thus, the second quantization is a valuable mathematical tool for working with correlated wave functions.
+
+## Illustration
+
+To illustrate the power and simplicity of this formulation, we can derive the energy of a Slater Determinant $| 0 \rangle$:
+
+\begin{equation}
+\langle 0| \hat H | 0\rangle = \sum_{pq} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle + \frac{1}{2} \sum_{pqrs} g_{pqrs} \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle
+\end{equation}
+
+For this we only need to evaluate the density matrices $D_{pq} = \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle$ and $d_{pqrs} = \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle$. 
+
+For the one-particle density matrix $D_{pq}$ we immediately notice that the orbital $q$ has to be occupied for the element to be non-zero when the annihilation operator is acting on the right on $| 0\rangle$ (the same is true for $p$ when $\hat{a}_p^\dagger$ is acting on the left on $\langle 0|$). But then, we can apply the commutation rule to get:
+
+\begin{equation}
+\langle 0| \hat{a}_p^\dagger \hat{a}_q | 0 \rangle = \delta_{p,q} \langle 0| 0 \rangle - \langle 0| \hat{a}_q \hat{a}_p^\dagger | 0 \rangle
+\end{equation}
+
+Now, $\hat{a}_q$ acts as a creation operator on the left on $\langle 0|$ and since we said $q$ was occupied, this last term gives zero. The only term left is thus $\delta_{p,q}$. The one-electron term thus gives:
+
+\begin{equation}
+\sum_{pq} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle = \sum_{pq \in \mathrm{occupied}} h_{pq} \delta_{p,q} = \sum_{p \in \mathrm{occupied}} h_{pp}
+\end{equation}
+
+By using the indices $i, j, k, l$ to refer to occupied orbitals, we can simply write this term as $\sum_{i} h_{ii}$
+
+We can now turn our attention the two-electron terms. Here both $q$ and $s$ have to be occupied. We will focus on $s$ which we will call $i$ and we will use the same trick of moving $\hat{a}_i$ to the left to generate a zero:
+
+\begin{align}
+\hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_i \hat{a}_q &= \delta_{r,i} \hat{a}_p^\dagger \hat{a}_q - \hat{a}_p^\dagger \hat{a}_i \hat{a}_r^\dagger \hat{a}_q\\
+ &= \delta_{r,i} \hat{a}_p^\dagger \hat{a}_q - \delta_{p,i} \hat{a}_r^\dagger \hat{a}_q + \hat{a}_i \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_q
+\end{align}
+
+The last term will now disappear and we are left with only terms depending on 2 creation or annihilation operators, which we have already solved earlier:
+
+\begin{align}
+\frac{1}{2} \sum_{pqrs} g_{pqrs} \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle &= \frac{1}{2} \sum_{ipq} g_{pqii} \langle 0|\hat{a}_p^\dagger \hat{a}_q | 0\rangle - \sum_{iqr} g_{iqri} \langle 0| \hat{a}_r^\dagger \hat{a}_q | 0\rangle \\
+& = \frac{1}{2} \sum_{ij} g_{jjii} - g_{ijji}
+\end{align}
+
+Our final energy is thus:
+\begin{equation}
+\langle 0| \hat H | 0\rangle = \sum_i h_{ii} + \frac{1}{2} \sum_{ij} g_{jjii} - g_{ijji}
+\end{equation}
+
 
 ## Spin
 
