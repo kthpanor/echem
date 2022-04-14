@@ -589,7 +589,7 @@ plt.tight_layout(); plt.show()
 
 
     
-![png](output_12_0.png)
+![png](../img/ir_raman/raman_output_12_0.png)
     
 
 
