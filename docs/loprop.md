@@ -1,3 +1,0 @@
-# LoProp charges and polarizabilities
-
-
