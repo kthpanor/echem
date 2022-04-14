@@ -4,6 +4,6 @@ In this section, we will describe different ways to define and calculate local a
 
 We will consider:
 
-- ESP atomic charges
-- RESP atomic charges
+- [ESP atomic charges](sec:esp_charges)
+- [RESP atomic charges](sec:resp_charges)
 - [LoProp charges and polarizabilities](sec:loprop)
