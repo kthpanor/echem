@@ -832,8 +832,8 @@ H:  0.1191
 
 Localized polarizabilities (a.u.):
      xx      xy      xz      yy      yz      zz
-F: [ 0.4371 -0.      0.      0.4371  0.      1.917 ]
-H: [0.226  0.     0.     0.226  0.     1.9525]
+F: [ 0.4371 -0.      0.      0.4371 -0.      1.917 ]
+H: [ 0.226  -0.      0.      0.226   0.      1.9525]
 </pre></div>
 </div>
 </div>
@@ -1051,9 +1051,6 @@ Virtual orbitals: [2, 6, 7, 8, 10]
  [-0.0121 -0.0765  0.     -0.      0.     -0.0698  0.      0.      1.      0.5822 -0.    ]
  [ 0.     -0.      0.4636 -0.      0.     -0.      0.      0.      0.5822  1.     -0.1497]
  [ 0.0573  0.2767 -0.     -0.     -0.     -0.0505  0.      0.     -0.     -0.1497  1.    ]]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -1594,15 +1591,15 @@ alpha_(AB):
 <p>In the LoProp scheme, it assumed that <span class="math notranslate nohighlight">\(\Delta Q_{AB}\)</span> should be as small as possible and also that the charge transfer is short range. To accommodate these desired properties, a Lagrangian is formed</p>
 <div class="math notranslate nohighlight">
 \[ 
-\mathcal{L} =  \sum_{AB} \big[ \Delta Q_{AB} \big]^2 f(R_{AB}) + 
+\mathcal{L} =  \sum_{AB} \big[ \Delta Q_{AB} \big]^2 f(\Delta R_{AB}) + 
 \sum_{A} \lambda_A \big( \sum_{A \neq B} \Delta Q_{AB} - \Delta Q_A \big) 
 \]</div>
 <p>where the penatly function, <span class="math notranslate nohighlight">\(f\)</span>, for long-distance charge transfer is chosen as</p>
 <div class="math notranslate nohighlight">
 \[
-f(R_{AB}) = \exp\Big(\alpha \Big(\frac{R_{AB}}{R_A^\mathrm{BS} + R_B^\mathrm{BS}}\Big)^2\Big) 
+f(R_{AB}) = \exp\Big(\alpha \Big(\frac{\Delta R_{AB}}{R_A^\mathrm{BS} + R_B^\mathrm{BS}}\Big)^2\Big) 
 \]</div>
-<p>with <span class="math notranslate nohighlight">\(\alpha\)</span> set equal <span class="math notranslate nohighlight">\(2.0\)</span> and <span class="math notranslate nohighlight">\(R_A^\mathrm{BS}\)</span> and <span class="math notranslate nohighlight">\(R_B^\mathrm{BS}\)</span> are the Bragg–Slater radii of atoms <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, respectively.</p>
+<p>with <span class="math notranslate nohighlight">\(\alpha\)</span> set equal <span class="math notranslate nohighlight">\(2.0\)</span>, <span class="math notranslate nohighlight">\(\Delta R_{AB} = |\boldsymbol{R}_A - \boldsymbol{R}_B|\)</span>, and <span class="math notranslate nohighlight">\(R_A^\mathrm{BS}\)</span> and <span class="math notranslate nohighlight">\(R_B^\mathrm{BS}\)</span> are the Bragg–Slater radii of atoms <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
@@ -1612,9 +1609,9 @@ f(R_{AB}) = \exp\Big(\alpha \Big(\frac{R_{AB}}{R_A^\mathrm{BS} + R_B^\mathrm{BS}
     <span class="n">R_BS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span> <span class="o">/</span> <span class="n">bohr2ang</span>
     
     <span class="c1"># interatomic distance</span>
-    <span class="n">R_AB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="n">A</span><span class="p">,:]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="n">B</span><span class="p">,</span><span class="n">B</span><span class="p">,:])</span>
+    <span class="n">dR_AB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="n">A</span><span class="p">,:]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="n">B</span><span class="p">,</span><span class="n">B</span><span class="p">,:])</span>
         
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">R_AB</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_BS</span><span class="p">[</span><span class="n">A</span><span class="p">]</span> <span class="o">+</span> <span class="n">R_BS</span><span class="p">[</span><span class="n">B</span><span class="p">]))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">dR_AB</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_BS</span><span class="p">[</span><span class="n">A</span><span class="p">]</span> <span class="o">+</span> <span class="n">R_BS</span><span class="p">[</span><span class="n">B</span><span class="p">]))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1627,18 +1624,18 @@ L \lambda = \Delta Q
 <p>where</p>
 <div class="math notranslate nohighlight">
 \[
-L_{AB}  = \frac{1}{2 f(R_{AB})} + C
+L_{AB}  = \frac{1}{2 f(\Delta R_{AB})} + C
 \]</div>
 <p>and</p>
 <div class="math notranslate nohighlight">
 \[
-L_{AA}  = -\sum_{A \neq B} \frac{1}{2 f(R_{AB})} + C
+L_{AA}  = -\sum_{A \neq B} \frac{1}{2 f(\Delta R_{AB})} + C
 \]</div>
 <p>The constant <span class="math notranslate nohighlight">\(C\)</span> is determined from the requirement of charge conservation, or zero net charge transfer.</p>
 <p>Once the Lagrange multipliers are determined, we have</p>
 <div class="math notranslate nohighlight">
 \[
-\Delta Q_{AB} = - \frac{\lambda_{A} - \lambda_{B}}{2f(R_{AB})}
+\Delta Q_{AB} = - \frac{\lambda_{A} - \lambda_{B}}{2 f(\Delta R_{AB})}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1682,16 +1679,13 @@ L_{AA}  = -\sum_{A \neq B} \frac{1}{2 f(R_{AB})} + C
  [ 1.5231 -0.    ]]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 </div>
 <p>The <span class="math notranslate nohighlight">\(zz\)</span>-component of the bond polarizability is defined by</p>
 <div class="math notranslate nohighlight">
 \[
 \alpha^\mathrm{bond}_{AB} =
-\Delta Q_{AB} \big( \boldsymbol{R}_A - \boldsymbol{R}_B \big)_z
+\Delta Q_{AB} \Delta \boldsymbol{R}_{AB, z}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1708,9 +1702,6 @@ L_{AA}  = -\sum_{A \neq B} \frac{1}{2 f(R_{AB})} + C
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[-0.      2.6396]
  [ 2.6396 -0.    ]]
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
