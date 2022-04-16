@@ -776,12 +776,12 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="loprop-charges-and-polarisabilities">
 <span id="sec-loprop"></span><h1>LoProp charges and polarisabilities<a class="headerlink" href="#loprop-charges-and-polarisabilities" title="Permalink to this headline">¶</a></h1>
-<p>The <em>localised properties</em> (LoProp) method <span id="id1">[<a class="reference internal" href="refs.html#id50">GLKarlstrom04</a>]</span> is a computationally inexpensive scheme that gives physically meaningful localised charges and polarisabilities that sum up to the corresponding molecular properties.</p>
+<p>The <em>localised properties</em> (LoProp) method <span id="id1">[<a class="reference internal" href="refs.html#id54">GLKarlstrom04</a>]</span> is a computationally inexpensive scheme that gives physically meaningful localised charges and polarisabilities that sum up to the corresponding molecular properties.</p>
 <p>In this scheme, we classify atomic orbitals in the basis set to be either <em>occupied</em> or <em>virtual</em> based on the associated atomic electron configurations. The former category includes both doubly and partially occupied sub-shells.</p>
 <p>We note that the family of atomic natiural orbital (ANO) basis sets is well suited for LoProp calculations as the basis functions are close to the orbitals of the atoms.</p>
 <div class="section" id="reference-loprop-calculations">
 <h2>Reference LoProp calculations<a class="headerlink" href="#reference-loprop-calculations" title="Permalink to this headline">¶</a></h2>
-<p>As an example, let us consider hydrogen floride at the Hartree–Fock/6-31G level of theory. We first run a reference LoProp calculation with the built-in module in the VeloxChem program and will thereafter repeat the LoProp calculation step-by-step in the notebook.</p>
+<p>As an example, let us consider hydrogen fluoride at the Hartree–Fock/6-31G level of theory. We first run a reference LoProp calculation with the built-in module in the VeloxChem program and will thereafter repeat the LoProp calculation step-by-step in the notebook.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -833,7 +833,7 @@ H:  0.1191
 Localized polarizabilities (a.u.):
      xx      xy      xz      yy      yz      zz
 F: [ 0.4371 -0.      0.      0.4371 -0.      1.917 ]
-H: [ 0.226  -0.      0.      0.226   0.      1.9525]
+H: [ 0.226   0.     -0.      0.226   0.      1.9525]
 </pre></div>
 </div>
 </div>
@@ -1361,7 +1361,9 @@ mu_AB:
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mu_(AB):
- [[ 0.5144  0.1471]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [[ 0.5144  0.1471]
  [ 0.1471 -0.1116]]
 </pre></div>
 </div>
@@ -1393,7 +1395,7 @@ g \\
 <p>where the elements of <span class="math notranslate nohighlight">\(g\)</span> refer to pairs of occupied–virtual orbital indices. With use of normalized, spin-adapted, electron excitation operators</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{E}_{si} = \frac{1}{\sqrt{2}}
+\hat{E}_{si}^\dagger = \frac{1}{\sqrt{2}}
 \big(
 \hat{a}^\dagger_{s, \alpha} \hat{a}_{i, \alpha} +
 \hat{a}^\dagger_{s, \beta} \hat{a}_{i, \beta} 
@@ -1403,7 +1405,7 @@ g \\
 <div class="math notranslate nohighlight">
 \[
 g_{si} = 
-\langle 0 | \big[ \hat{E}_{is}, \hat{\mu} \big] | 0 \rangle =
+\langle 0 | \big[ \hat{E}_{si}, \hat{\mu} \big] | 0 \rangle =
 \sqrt{2} \mu_{si}
 \]</div>
 <p>The response vector <span class="math notranslate nohighlight">\(N(\omega)\)</span> is introduced as the solution vector to the linear response equation</p>
@@ -1591,15 +1593,15 @@ alpha_(AB):
 <p>In the LoProp scheme, it assumed that <span class="math notranslate nohighlight">\(\Delta Q_{AB}\)</span> should be as small as possible and also that the charge transfer is short range. To accommodate these desired properties, a Lagrangian is formed</p>
 <div class="math notranslate nohighlight">
 \[ 
-\mathcal{L} =  \sum_{AB} \big[ \Delta Q_{AB} \big]^2 f(\Delta R_{AB}) + 
+\mathcal{L}(\Delta Q_{AB}, \lambda_A) =  \sum_{AB} \big[ \Delta Q_{AB} \big]^2 f(\Delta R_{AB}) + 
 \sum_{A} \lambda_A \big( \sum_{A \neq B} \Delta Q_{AB} - \Delta Q_A \big) 
 \]</div>
-<p>where the penatly function, <span class="math notranslate nohighlight">\(f\)</span>, for long-distance charge transfer is chosen as</p>
+<p>where <span class="math notranslate nohighlight">\(\Delta R_{AB} = |\boldsymbol{R}_A - \boldsymbol{R}_B|\)</span> and <span class="math notranslate nohighlight">\(f\)</span> is a penatly function preventing long-distance charge transfer chosen as</p>
 <div class="math notranslate nohighlight">
 \[
-f(R_{AB}) = \exp\Big(\alpha \Big(\frac{\Delta R_{AB}}{R_A^\mathrm{BS} + R_B^\mathrm{BS}}\Big)^2\Big) 
+f(r) = \exp\Big(\alpha \Big(\frac{r}{R_A^\mathrm{BS} + R_B^\mathrm{BS}}\Big)^2\Big) 
 \]</div>
-<p>with <span class="math notranslate nohighlight">\(\alpha\)</span> set equal <span class="math notranslate nohighlight">\(2.0\)</span>, <span class="math notranslate nohighlight">\(\Delta R_{AB} = |\boldsymbol{R}_A - \boldsymbol{R}_B|\)</span>, and <span class="math notranslate nohighlight">\(R_A^\mathrm{BS}\)</span> and <span class="math notranslate nohighlight">\(R_B^\mathrm{BS}\)</span> are the Bragg–Slater radii of atoms <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, respectively.</p>
+<p>The constant <span class="math notranslate nohighlight">\(\alpha\)</span> is chosen equal to <span class="math notranslate nohighlight">\(2.0\)</span> and <span class="math notranslate nohighlight">\(R_A^\mathrm{BS}\)</span> is the Bragg–Slater radius of atom <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
