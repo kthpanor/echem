@@ -1,4 +1,5 @@
 # Exact states
+(sec:exact-response)=
 
 ## Ehrenfest theorem based
 
