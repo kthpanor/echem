@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -682,7 +689,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -690,8 +697,8 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#transient">
-   Transient
+  <a class="reference internal nav-link" href="#transient-xas">
+   Transient XAS
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -700,6 +707,11 @@
     </a>
    </li>
   </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transient-xps-xes">
+   Transient XPS/XES
+  </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#mom-approaches">
@@ -724,6 +736,11 @@
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ionization-energies-from-xas-xes">
+   Ionization energies from XAS/XES
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#xas-in-reverse">
    XAS in reverse
   </a>
@@ -741,21 +758,84 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Non-standard calculations</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transient-xas">
+   Transient XAS
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#low-spin-open-shell-reference-lsor">
+     Low-spin open-shell reference (LSOR)
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transient-xps-xes">
+   Transient XPS/XES
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mom-approaches">
+   MOM approaches
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#full-space-vs-cvs">
+   Full space vs CVS
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#full-space">
+     Full-space
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cvs-space">
+     CVS space
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ionization-energies-from-xas-xes">
+   Ionization energies from XAS/XES
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xas-in-reverse">
+   XAS in reverse
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xes-in-reverse">
+   XES in reverse
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="non-standard-calculations">
 <h1>Non-standard calculations<a class="headerlink" href="#non-standard-calculations" title="Permalink to this headline">¶</a></h1>
 <p>In this chapter we will consider some non-standard calculations. Some will be useful but need care for practical considerations (<em>i.e.</em> transient X-ray spectroscopy), and some are more illustrations of alternative (but not recommended) ways of modelling spectra.</p>
-<p>Included:</p>
-<ul class="simple">
-<li><p>TR-XAS</p></li>
-<li><p>TR-XPS?</p></li>
-<li><p>(I)MOM</p></li>
-<li><p>Full space versus CVS</p></li>
-<li><p>Alternative XES</p></li>
-<li><p>Alternative XAS (?)</p></li>
-</ul>
 <div class="cell tag_hide-input tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
@@ -783,13 +863,14 @@
 </div>
 </div>
 </div>
-<div class="section" id="transient">
-<h2>Transient<a class="headerlink" href="#transient" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="transient-xas">
+<h2>Transient XAS<a class="headerlink" href="#transient-xas" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="low-spin-open-shell-reference-lsor">
 <h3>Low-spin open-shell reference (LSOR)<a class="headerlink" href="#low-spin-open-shell-reference-lsor" title="Permalink to this headline">¶</a></h3>
 <p>Here an electron from an occupied alpha spin-orbital is promoted to an unoccupied alpha spin-orbital. Note that spin-contaminated by construction, so should perhaps focus on HSOR… Check S2 and so on, consider what would be needed to be spin-pure</p>
 <ul class="simple">
 <li><p>Include practical example with LSOR and HSOR</p></li>
+<li><p>Also consider coupling scheme</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -834,63 +915,125 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3344885e-12  2S+1 = 1
-Starting cvs-adc2x  Jacobi-Davidson ...
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3353767e-12  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     8        1.6222  937ms  [20.26123431 20.31992537 20.32302691 20.3464984  20.77599022]
-  2    16      0.083151  232ms  [19.71909108 19.74517237 19.78850074 19.81333602 20.43548576]
-  3    24     0.0053797  434ms  [19.69205492 19.71929679 19.77413246 19.79760548 20.43133363]
-  4    32     0.0011589  625ms  [19.68965835 19.71687333 19.77255677 19.79676938 20.43113845]
-  5    40    0.00010183  760ms  [19.68907709 19.71641759 19.7724787  19.79670158 20.43112515]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.6222  254ms  [20.26123431 20.31992537 20.32302691 20.3464984  20.77599022]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16      0.083151  293ms  [19.71909108 19.74517237 19.78850074 19.81333602 20.43548576]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24     0.0053797  357ms  [19.69205492 19.71929679 19.77413246 19.79760548 20.43133363]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32     0.0011589  403ms  [19.68965835 19.71687333 19.77255677 19.79676938 20.43113845]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40    0.00010183  401ms  [19.68907709 19.71641759 19.7724787  19.79670158 20.43112515]
 === Converged ===
     Number of matrix applies:    40
-    Total solver time:             3s  14ms
+    Total solver time:             1s 729ms
+converged SCF energy = -75.7142931989803  &lt;S^2&gt; = 1.0127856  2S+1 = 2.2474747
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-7.335572577593563
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.7142931989802  &lt;S^2&gt; = 1.0127856  2S+1 = 2.2474747
--7.3355725775951095
-Starting cvs-adc2x  Jacobi-Davidson ...
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     8        1.4197  944ms  [19.65025265 20.45690115 20.50695083 20.60577589 20.87460994]
-  2    16       0.61503  211ms  [19.42062302 19.947623   19.99001099 20.52523445 20.56375323]
-  3    24       0.13866  280ms  [19.41668154 19.90410164 19.94479007 20.071764   20.36786149]
-  4    32        0.7002  463ms  [19.41628888 19.9008495  19.93986716 20.01129509 20.28160489]
-  5    40       0.51076  411ms  [19.41624278 19.90054206 19.93902184 20.00607709 20.0152278 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.4197  257ms  [19.65025265 20.45690115 20.50695083 20.60577589 20.87460994]
+  2    16       0.61503  292ms  [19.42062302 19.947623   19.99001099 20.52523445 20.56375323]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24       0.13866  323ms  [19.41668154 19.90410164 19.94479007 20.071764   20.36786149]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32        0.7002  413ms  [19.41628888 19.9008495  19.93986716 20.01129509 20.28160489]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40       0.51076  392ms  [19.41624278 19.90054206 19.93902184 20.00607709 20.0152278 ]
 === Restart ===
-  6    16       0.20678  360ms  [19.41623535 19.76616036 19.90050231 19.93894428 20.00537831]
-  7    24      0.046603  322ms  [19.41623306 19.6513648  19.90049127 19.93892677 20.00520365]
-  8    32     0.0071816  446ms  [19.41623272 19.62621905 19.90048986 19.9389235  20.00515954]
-  9    40    0.00053412  337ms  [19.41623268 19.62250827 19.90048969 19.93892289 20.00515557]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    16       0.20678  322ms  [19.41623535 19.76616036 19.90050231 19.93894428 20.00537831]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    24      0.046603  364ms  [19.41623306 19.6513648  19.90049127 19.93892677 20.00520365]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    32     0.0071816  373ms  [19.41623272 19.62621905 19.90048986 19.9389235  20.00515954]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    40    0.00053412  418ms  [19.41623268 19.62250827 19.90048969 19.93892289 20.00515557]
 === Restart ===
- 10    16    6.6039e-05  393ms  [19.41623268 19.62224227 19.90048966 19.93892284 20.00515537]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10    16    6.6039e-05  334ms  [19.41623268 19.62224227 19.90048966 19.93892284 20.00515537]
 === Converged ===
     Number of matrix applies:    80
-    Total solver time:             4s 181ms
-converged SCF energy = -75.7278282670683  &lt;S^2&gt; = 2.0038371  2S+1 = 3.002557
--6.967264425822885
-Starting cvs-adc2x  Jacobi-Davidson ...
+    Total solver time:             3s 506ms
+converged SCF energy = -75.7278282670684  &lt;S^2&gt; = 2.0038371  2S+1 = 3.002557
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-6.967264425822885
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     9        1.3402   2.9s  [19.65310247 20.44001891 20.46846981 20.50328038 20.87239002]
-  2    18       0.11756  242ms  [19.4217916  19.95552731 19.98294836 20.03036606 20.62242844]
-  3    27       0.21374  369ms  [19.41843698 19.91184347 19.93648234 19.97966558 20.51210272]
-  4    36       0.02464  872ms  [19.41818793 19.90833174 19.93198212 19.97550496 20.38192777]
-  5    45      0.083416   1.4s  [19.41817362 19.90794076 19.93125584 19.97506049 20.34383719]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     9        1.3402  547ms  [19.65310247 20.44001891 20.46846981 20.50328038 20.87239002]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    18       0.11756  380ms  [19.4217916  19.95552731 19.98294836 20.03036606 20.62242844]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    27       0.21374  393ms  [19.41843698 19.91184347 19.93648234 19.97966558 20.51210272]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    36       0.02464  432ms  [19.41818793 19.90833174 19.93198212 19.97550496 20.38192777]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    45      0.083416  453ms  [19.41817362 19.90794076 19.93125584 19.97506049 20.34383719]
 === Restart ===
-  6    18      0.017265  397ms  [19.41817283 19.90790728 19.93112402 19.97500891 20.29145965]
-  7    27     0.0036224  351ms  [19.41817275 19.90790115 19.93108056 19.97499724 20.27339332]
-  8    36      0.006205  903ms  [19.41817274 19.90790034 19.93107562 19.97499536 20.2615985 ]
-  9    45      0.002315  761ms  [19.41817274 19.90790025 19.93107471 19.97499515 20.25811703]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    18      0.017265  421ms  [19.41817283 19.90790728 19.93112402 19.97500891 20.29145965]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    27     0.0036224  379ms  [19.41817275 19.90790115 19.93108056 19.97499724 20.27339332]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    36      0.006205  462ms  [19.41817274 19.90790034 19.93107562 19.97499536 20.2615985 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9    45      0.002315  514ms  [19.41817274 19.90790025 19.93107471 19.97499515 20.25811703]
 === Restart ===
- 10    18    0.00090932  369ms  [19.41817274 19.90790024 19.93107456 19.97499514 20.25681637]
- 11    27    0.00088398  637ms  [19.41817274 19.90790024 19.93107452 19.97499514 20.25597361]
- 12    36    0.00047102  549ms  [19.41817274 19.90790024 19.93107451 19.97499514 20.25511388]
- 13    45     0.0002145  469ms  [19.41817274 19.90790024 19.93107451 19.97499514 20.2546862 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 10    18    0.00090932  449ms  [19.41817274 19.90790024 19.93107456 19.97499514 20.25681637]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 11    27    0.00088398  406ms  [19.41817274 19.90790024 19.93107452 19.97499514 20.25597361]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 12    36    0.00047102  381ms  [19.41817274 19.90790024 19.93107451 19.97499514 20.25511388]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 13    45     0.0002145  541ms  [19.41817274 19.90790024 19.93107451 19.97499514 20.2546862 ]
 === Converged ===
     Number of matrix applies:    117
-    Total solver time:            10s 219ms
+    Total solver time:             5s 787ms
 </pre></div>
 </div>
 </div>
@@ -910,6 +1053,9 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="transient-xps-xes">
+<h2>Transient XPS/XES<a class="headerlink" href="#transient-xps-xes" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="mom-approaches">
 <h2>MOM approaches<a class="headerlink" href="#mom-approaches" title="Permalink to this headline">¶</a></h2>
@@ -1029,12 +1175,28 @@ Niter n_ss  max_residual  time  Ritz values
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.2761808865588
-converged SCF energy = -75.2761808866238  &lt;S^2&gt; = 8.8817842e-16  2S+1 = 1
-converged SCF energy = -55.3337590090957  &lt;S^2&gt; = 0.7505567  2S+1 = 2.0005566
-Single ionization energy: 571.83 eV
-converged SCF energy = -31.2166877507321
-Double ionization energy: 1228.09 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.2761808865589
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.276180886624  &lt;S^2&gt; = 3.5527137e-15  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.dft.uks.UKS&#39;&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -55.3337590090958  &lt;S^2&gt; = 0.7505567  2S+1 = 2.0005566
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">Input In [5],</span> in <span class="ni">&lt;cell line: 28&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">26</span> <span class="n">imom</span><span class="p">(</span><span class="n">dft_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span> <span class="n">dft_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="ne">---&gt; </span><span class="mi">28</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Single ionization energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">dft_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">dft_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">30</span> <span class="c1"># Double ionization energy</span>
+<span class="g g-Whitespace">     </span><span class="mi">31</span> <span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dft_re</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;dft_gs&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -1450,6 +1612,12 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 </ul>
 </div>
 </div>
+<div class="section" id="ionization-energies-from-xas-xes">
+<h2>Ionization energies from XAS/XES<a class="headerlink" href="#ionization-energies-from-xas-xes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Using diffuse basis function</p></li>
+</ul>
+</div>
 <div class="section" id="xas-in-reverse">
 <h2>XAS in reverse<a class="headerlink" href="#xas-in-reverse" title="Permalink to this headline">¶</a></h2>
 <p>One can also simply consider the XAS process in reverse, i.e. preparing a core excited state and determining the deexcitation energy and oscillator strength.</p>
@@ -1781,8 +1949,8 @@ Excitation Energy/eV     Osc. strength
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="xray_large.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1799,19 +1967,17 @@ Excitation Energy/eV     Osc. strength
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

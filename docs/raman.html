@@ -41,22 +41,19 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Magnetic resonances" href="magnetic.html" />
+    <link rel="next" title="Exercises" href="ir_raman_exercises.html" />
     <link rel="prev" title="IR spectroscopy" href="ir.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -172,6 +169,11 @@
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -626,12 +633,12 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/raman.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/raman.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -662,10 +669,27 @@
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/raman.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -673,8 +697,19 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#raman-spectrum-of-uracil-and-thymine-initially-cafestol-and-kahweol">
-   Raman spectrum of uracil and thymine (initially cafestol and kahweol)
+  <a class="reference internal nav-link" href="#raman-spectra-of-h-2o-nh-3-and-ch-4">
+   Raman spectra of H
+   <span class="math notranslate nohighlight">
+    \(_2\)
+   </span>
+   O, NH
+   <span class="math notranslate nohighlight">
+    \(_3\)
+   </span>
+   and CH
+   <span class="math notranslate nohighlight">
+    \(_4\)
+   </span>
   </a>
  </li>
 </ul>
@@ -685,285 +720,237 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Raman spectroscopy</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#raman-spectra-of-h-2o-nh-3-and-ch-4">
+   Raman spectra of H
+   <span class="math notranslate nohighlight">
+    \(_2\)
+   </span>
+   O, NH
+   <span class="math notranslate nohighlight">
+    \(_3\)
+   </span>
+   and CH
+   <span class="math notranslate nohighlight">
+    \(_4\)
+   </span>
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="raman-spectroscopy">
 <h1>Raman spectroscopy<a class="headerlink" href="#raman-spectroscopy" title="Permalink to this headline">¶</a></h1>
-<p id="sec-raman-tutorial">The Raman scattering process involves the inelasic scattering of light in the visible range, leaving the molecule in a different vibrational state. The associated scattering amplitude is related to the transition polarizability tensor (<span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>) expressed uing the Kramers-Heisenberg-Dirac equation <span id="id1">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0e0260c0-b07f-46fb-ae89-d2734caa2cc3">
-<span class="eqno">(2)<a class="headerlink" href="#equation-0e0260c0-b07f-46fb-ae89-d2734caa2cc3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-\alpha_{ab}(\omega,\omega') = \frac{1}{\hbar}\sum_n\left[\frac{\langle f|\hat{\mu}_a | n\rangle\langle n|\hat{\mu}_b | 0\rangle}{\omega_{n0}-\omega - i\gamma_n}+\frac{\langle f|\hat{\mu}_b | n\rangle\langle n|\hat{\mu}_a | 0\rangle}{\omega_{n0}+\omega' + i\gamma_n}\right]\,,
-\end{equation}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\alpha_{ab}\)</span> is a tensor element (with <span class="math notranslate nohighlight">\(a,b=x,y,\)</span> or <span class="math notranslate nohighlight">\(z\)</span>), <span class="math notranslate nohighlight">\(|0\rangle\)</span> and <span class="math notranslate nohighlight">\(|f\rangle\)</span> are the ground state, respectively excited vibrational state, <span class="math notranslate nohighlight">\(\hat{\mu}\)</span> is the dipole operator, <span class="math notranslate nohighlight">\(\omega\)</span> and <span class="math notranslate nohighlight">\(\omega'\)</span> are the incoming, respectively, outgoing photon angular frequecy, the sumation is over all intermidite excited states <span class="math notranslate nohighlight">\(|n \rangle\)</span>, <span class="math notranslate nohighlight">\(\gamma_n\)</span> is the inverse lifetime parameter of state <span class="math notranslate nohighlight">\(|n\rangle\)</span>, and <span class="math notranslate nohighlight">\(\omega_{n0}\)</span> is the angular frequency associated to the energy difference between the vibrational excited state <span class="math notranslate nohighlight">\(|n\rangle\)</span> and the ground state.</p>
-<p>In the case of normal Raman scattering described using the harmonic approximation for molecular vibrations, the transition polarizability associated to normal mode <span class="math notranslate nohighlight">\(k\)</span> (<span class="math notranslate nohighlight">\(\alpha^k_{ab}\)</span>) becomes <span id="id2">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-99d324a7-8644-45bd-a646-407aad137c2f">
-<span class="eqno">(3)<a class="headerlink" href="#equation-99d324a7-8644-45bd-a646-407aad137c2f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-\alpha^k_{ab} = \sqrt{\frac{\hbar}{2\omega_k}}\left(\frac{\partial \alpha^\mathrm{e}_{ab}}{\partial Q_k}\right)\,.
-\end{equation}\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\omega_k\)</span> is the angular frequency corresponding to the normal mode described by the <span class="math notranslate nohighlight">\(Q_k\)</span> normal coordiante and <span class="math notranslate nohighlight">\(\alpha^\mathrm{e}_{ab}\)</span> is the <span class="math notranslate nohighlight">\(ab\)</span> component of the electronic polarizability tensor.</p>
-<p>Raman scattering amplitudes thus depend on the derivative of the electronic polarizability with respect to the normal coordinate, so only modes along which the polarizability changes will be Raman active.</p>
-<p>For randomly oriented molecules and linearly polarized incident light, the Raman differenial cross-section is calculated in practice as <span id="id3">[<a class="reference internal" href="refs.html#id164">Gut19</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0309e717-8abd-450d-bc80-6a090cca55b4">
-<span class="eqno">(4)<a class="headerlink" href="#equation-0309e717-8abd-450d-bc80-6a090cca55b4" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-\frac{\mathrm{d}\sigma_k}{\mathrm{d}\Omega} = \frac{\hbar\omega_L\omega_S^3}{32\pi^2\epsilon_0^2c^4\omega_k}\frac{S_k}{45}
-\end{equation}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\omega_L\)</span> is …, <span class="math notranslate nohighlight">\(\omega_S\)</span> is the angular frequency of the scattered light, <span class="math notranslate nohighlight">\(\omega_k\)</span> is the angular frequency of vibrational mode <span class="math notranslate nohighlight">\(k\)</span>, and <span class="math notranslate nohighlight">\(S_k\)</span> is the Raman activity of the mode, defined as <span id="id4">[<a class="reference internal" href="refs.html#id164">Gut19</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-91beb697-1be4-42d4-ae5e-d6d868fea018">
-<span class="eqno">(5)<a class="headerlink" href="#equation-91beb697-1be4-42d4-ae5e-d6d868fea018" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-S_k=45\bar{\alpha}^2_k + 7\bar{\gamma}^2_k.
-\end{equation}\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\bar{\alpha}^2_k\)</span> and <span class="math notranslate nohighlight">\(\bar{\gamma}^2_k\)</span> are Raman rotational invariants <span id="id5">[<a class="reference internal" href="refs.html#id164">Gut19</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2558e8a9-f92d-4948-94bf-99578eecc4b8">
-<span class="eqno">(6)<a class="headerlink" href="#equation-2558e8a9-f92d-4948-94bf-99578eecc4b8" title="Permalink to this equation">¶</a></span>\[\begin{align}
-\bar{\alpha}^2_k &amp;= \frac{1}{9}\left(\frac{\partial \alpha_{xx}^\mathrm{e}}{\partial Q_k} + \frac{\partial \alpha_{yy}^\mathrm{e}}{\partial Q_k} + \frac{\partial \alpha_{zz}^\mathrm{e}}{\partial Q_k}\right)^2\\
-\bar{\gamma}^2_k &amp;= 3 \left[\left(\frac{\partial \alpha_{xy}^\mathrm{e}}{\partial Q_k}\right)^2 + \left(\frac{\partial \alpha_{xz}^\mathrm{e}}{\partial Q_k}\right)^2 + \left(\frac{\partial \alpha_{yz}^\mathrm{e}}{\partial Q_k}\right)^2\right]\\
-&amp;+\frac12\left[ \left(\frac{\partial \alpha_{xx}^\mathrm{e}}{\partial Q_k}-\frac{\partial \alpha_{yy}^\mathrm{e}}{\partial Q_k}\right)^2 + \left(\frac{\partial \alpha_{xx}^\mathrm{e}}{\partial Q_k}-\frac{\partial \alpha_{zz}^\mathrm{e}}{\partial Q_k}\right)^2 +\left(\frac{\partial \alpha_{yy}^\mathrm{e}}{\partial Q_k}-\frac{\partial \alpha_{zz}^\mathrm{e}}{\partial Q_k}\right)^2    \right]\,.
-\end{align}\]</div>
-<div class="section" id="raman-spectrum-of-uracil-and-thymine-initially-cafestol-and-kahweol">
-<h2>Raman spectrum of uracil and thymine (initially cafestol and kahweol)<a class="headerlink" href="#raman-spectrum-of-uracil-and-thymine-initially-cafestol-and-kahweol" title="Permalink to this headline">¶</a></h2>
-<p><em>Cafestol and kahweol are two molecules with very similr molecular structures contained in coffee beans. Cafestol is contained in Robusta coffee, while Kahweol is contained in the Arabica type and has a distinctive Raman peak. This peak allows to identify Arabica coffee beans by Raman spectroscopy. Here, we will calculate the Raman spectrum of cafestol and kahweol and identify the peak which distinguishes between them, as well as the associated vibrational normal mode.</em></p>
-<p>Uracil and thymine differ by a methyl group which has signatures in the vibrational spectrum</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
+<p id="sec-raman-tutorial">The Raman scattering process involves the inelasic scattering of light in the visible range, leaving the molecule in a different vibrational state. The associated scattering amplitude is related to the transition polarizability tensor (<span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>), as discussed in more details <a class="reference internal" href="hessians.html#dipole-mom-gradient-label"><span class="std std-ref">here</span></a>. In the case of normal Raman scattering described using the harmonic approximation for molecular vibrations, the transition polarizability associated to a normal mode <span class="math notranslate nohighlight">\(k\)</span> depends on the derivative of the electronic polarizability with respect to the normal coordinate <span class="math notranslate nohighlight">\(Q_k\)</span>. As a consequence, only modes along which the polarizability changes will be Raman active.</p>
+<div class="section" id="raman-spectra-of-h-2o-nh-3-and-ch-4">
+<h2>Raman spectra of H<span class="math notranslate nohighlight">\(_2\)</span>O, NH<span class="math notranslate nohighlight">\(_3\)</span> and CH<span class="math notranslate nohighlight">\(_4\)</span><a class="headerlink" href="#raman-spectra-of-h-2o-nh-3-and-ch-4" title="Permalink to this headline">¶</a></h2>
+<p>Here, we will calculate the Raman spectra of H<span class="math notranslate nohighlight">\(_2\)</span>O, NH<span class="math notranslate nohighlight">\(_3\)</span> and CH<span class="math notranslate nohighlight">\(_4\)</span> and determine how going from O, to N, to C influences the vibrational frequencies of the Hydrogen stretching modes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">bohr_in_angstroms</span>
 
-<span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span> <span class="c1"># bigger basis set? / Already too big to import eri derivs for these molecules; smaller systems here??</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
 </pre></div>
 </div>
-<p>To computea meaningful Raman spectrum, the molecular geometries must be optimized at the same level of theory and using the same basis set. See the notebook on ground state geometry optimization <span class="xref myst">here</span>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecules and basis sets:</span>
-<span class="n">uracil_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;uracil_mp2_opt.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-<span class="n">thymine_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;thymine_mp2_opt.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
+</div>
+</div>
+<p>To computea meaningful Raman spectrum, the molecular geometries must be optimized at the same level of theory and using the same basis set. Let us assume that we have optimized the geometries at the HF/6-31G theory level and we have these geometries stored in xyz files. start by performing the necessary geometry optimizations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecules and basis sets:</span>
+<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_h2o.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
+<span class="n">nh3_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_nh3.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
+<span class="n">ch4_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_ch4.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
 
-<span class="n">uracil</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">uracil_xyz</span><span class="p">)</span>
-<span class="n">uracil_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">uracil</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
-<span class="n">thymine</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">thymine_xyz</span><span class="p">)</span>
-<span class="n">thymine_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">thymine</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
+<span class="n">h2o</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
+<span class="n">h2o_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(a) Uracil MP2 optimized geometry    (b) Thymine MP2 optimized geometry&quot;</span><span class="p">)</span>
-<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">linked</span><span class="o">=</span><span class="n">Falseandandandand</span><span class="p">)</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">uracil_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">thymine_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">nh3</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">nh3_xyz</span><span class="p">)</span>
+<span class="n">nh3_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
+
+<span class="n">ch4</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">ch4_xyz</span><span class="p">)</span>
+<span class="n">ch4_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">        (a) H2O            (b) NH3               (c) CH4&quot;</span><span class="p">)</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(a) Uracil MP2 optimized geometry    (b) Thymine MP2 optimized geometry
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        (a) H2O            (b) NH3               (c) CH4
 </pre></div>
 </div>
-<div id="3dmolviewer_16461031086266248"  style="position: relative; width: 500px; height: 250px">
-        <p id="3dmolwarning_16461031086266248" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394354246645"  style="position: relative; width: 500px; height: 250px">
+        <p id="3dmolwarning_1650394354246645" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
-<p>var loadScriptAsync = function(uri){
-return new Promise((resolve, reject) =&gt; {
-var tag = document.createElement(‘script’);
-tag.src = uri;
-tag.async = true;
-tag.onload = () =&gt; {
-resolve();
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
 };
-var firstScriptTag = document.getElementsByTagName(‘script’)[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-});
-};</p>
-<p>if(typeof <span class="math notranslate nohighlight">\(3Dmolpromise === 'undefined') {
-\)</span>3Dmolpromise = null;
-$3Dmolpromise = loadScriptAsync(‘https://3dmol.org/build/3Dmol.js’);
-}</p>
-<p>var viewer_16461031086266248 = null;
-var warn = document.getElementById(“3dmolwarning_16461031086266248”);
-if(warn) {
-warn.parentNode.removeChild(warn);
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
-<span class="math notranslate nohighlight">\(3Dmolpromise.then(function() {
-var viewergrid_16461031086266248 = null;
-viewergrid_16461031086266248 = \)</span>3Dmol.createViewerGrid($(“#3dmolviewer_16461031086266248”),{rows: 1, cols: 2, control_all: false},{backgroundColor:”white”});
-viewer_16461031086266248 = viewergrid_16461031086266248[0][0];
-viewergrid_16461031086266248[0][0].zoomTo();viewergrid_16461031086266248[0][1].zoomTo();	viewergrid_16461031086266248[0][0].addModel(” 12\n Cs\n C     0.000000     0.313341     1.284889\n C     0.000000    -1.129946     1.193271\n C     0.000000    -1.722413    -0.011510\n N     0.000000    -1.002386    -1.171240 ! no aug\n C     0.000000     0.377102    -1.212137\n N     0.000000     0.946281     0.038980 ! no aug\n O     0.000000     0.966706     2.309430\n O     0.000000     1.007669    -2.246643\n H     0.000000    -2.791379    -0.129000\n H     0.000000     1.954858     0.054525\n H     0.000000    -1.456186    -2.067038\n H     0.000000    -1.702677     2.098114\n”,”xyz”);
-viewergrid_16461031086266248[0][1].addModel(” 15\n C1\n C     0.095722    -0.037785    -1.093615\n C    -0.011848     1.408694    -1.113404\n C    -0.204706     2.048475     0.052807\n N    -0.302595     1.390520     1.249226 ! no aug\n C    -0.214596     0.023933     1.378238  \n N    -0.017387    -0.607231     0.171757 ! no aug\n O     0.270287    -0.735594    -2.076393\n C     0.098029     2.096194    -2.424990 ! no aug\n H     1.052976     1.874860    -2.891573\n H     0.002157     3.170639    -2.310554\n H    -0.671531     1.743694    -3.104794\n O    -0.301905    -0.554734     2.440234\n H    -0.292790     3.119685     0.106201\n H     0.053626    -1.612452     0.215637\n H    -0.446827     1.892203     2.107092\n”,”xyz”);
-viewergrid_16461031086266248[0][0].setStyle({“stick”: {}});
-viewergrid_16461031086266248[0][1].setStyle({“stick”: {}});
-viewergrid_16461031086266248[0][1].render();
-viewergrid_16461031086266248[0][0].render();
+
+var viewer_1650394354246645 = null;
+var warn = document.getElementById("3dmolwarning_1650394354246645");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_1650394354246645 = null;
+viewergrid_1650394354246645 = $3Dmol.createViewerGrid($("#3dmolviewer_1650394354246645"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
+viewer_1650394354246645 = viewergrid_1650394354246645[0][0];
+viewergrid_1650394354246645[0][0].zoomTo();viewergrid_1650394354246645[0][1].zoomTo();viewergrid_1650394354246645[0][2].zoomTo();	viewergrid_1650394354246645[0][0].addModel("3\nHF/6-31G\nO       0.0308991       0.0228758      -0.0161623\nH       0.2572697       0.8975361       0.2762831\nH       0.5960312      -0.2658119      -0.7226208\n","xyz");
+	viewergrid_1650394354246645[0][1].addModel("4\nHF/6-31G\nN       0.0961758       0.0137254       0.1108604\nH      -0.4973546       0.2946055       0.8535526\nH       0.7093592       0.7070993      -0.2441077\nH       0.4632196      -0.9053302       0.1689946\n","xyz");
+	viewergrid_1650394354246645[0][2].addModel("5\nHF/6-31G\nC      -0.0000199       0.0000199       0.0000000\nH       0.5489997       0.7922034       0.4919110\nH       0.6769972      -0.8058792      -0.2512524\nH      -0.7710148      -0.3700500       0.6629997\nH      -0.4550622       0.3838059      -0.9036583\n","xyz");
+	viewergrid_1650394354246645[0][0].setStyle({"stick": {}});
+	viewergrid_1650394354246645[0][1].setStyle({"stick": {}});
+	viewergrid_1650394354246645[0][2].setStyle({"stick": {}});
+viewergrid_1650394354246645[0][2].render();
+viewergrid_1650394354246645[0][1].render();
+viewergrid_1650394354246645[0][0].render();
 });
-</script></p>
+</script></div></div>
+</div>
 <p>To compute the Raman spectrum, we need the vibrational frequencies and Raman intensities. The frequencies are eigenvalues of the molecular Hessian, while the Raman intensities are proportional to the gradient of the polarizability. The first step is to determine the Hessian matrix.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings:</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings:</span>
 <span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-5</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># HF;  use &#39;xcfun&#39;: &#39;b3lyp&#39;, &#39;grid_level&#39;: 4, etc. for a DFT calculation </span>
 <span class="c1"># Numerical Hessian, based on the analytical gradient (or use numerical??)</span>
 <span class="n">hessian_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numerical&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;do_raman&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;print_depolarization_ratio&#39;</span><span class="p">:</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;numerical_grad&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;do_print_hessian&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;do_four_point&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
+<span class="c1"># We first need to run SCF calculations:</span>
+<span class="n">h2o_scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">h2o_scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">h2o_scfdrv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># To remove printout</span>
+<span class="n">h2o_scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_basis</span><span class="p">)</span>
 
-<span class="c1"># We first need to run an SCF calculation:</span>
-<span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">uracil</span><span class="p">,</span> <span class="n">uracil_basis</span><span class="p">)</span>
+<span class="n">nh3_scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">nh3_scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">nh3_scfdrv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">nh3_scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_basis</span><span class="p">)</span>
+
+<span class="n">ch4_scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">ch4_scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">ch4_scfdrv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">ch4_scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_basis</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                                            Self Consistent Field Driver Setup                                            
-                                           ====================================                                           
-                                                                                                                          
-                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
-                   Initial Guess Model             : Superposition of Atomic Densities                                    
-                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
-                   Max. Number of Iterations       : 50                                                                   
-                   Max. Number of Error Vectors    : 10                                                                   
-                   Convergence Threshold           : 1.0e-05                                                              
-                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
-                   ERI Screening Mode              : Dynamic                                                              
-                   ERI Screening Threshold         : 1.0e-12                                                              
-                   Linear Dependence Threshold     : 1.0e-06                                                              
-                                                                                                                          
-* Info * Nuclear repulsion energy: 358.3227306362 a.u.                                                                    
-                                                                                                                          
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.01 sec.                                                                   
-                                                                                                                          
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-* Info * SAD initial guess computed in 0.00 sec.                                                                          
-                                                                                                                          
-* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -407.075250226064 a.u. Time: 1.33 sec.                                 
-                                                                                                                          
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.03 sec.                                                                   
-                                                                                                                          
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-                                                                                                                          
-               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
-               --------------------------------------------------------------------------------------------               
-                  1      -407.075330408785    0.0000000000      0.00304876      0.00026555      0.00000000                
-                  2      -407.075332217070   -0.0000018083      0.00146988      0.00015903      0.00170335                
-                  3      -407.075332915537   -0.0000006985      0.00034515      0.00004183      0.00187425                
-                  4      -407.075332934708   -0.0000000192      0.00011819      0.00000784      0.00019052                
-                  5      -407.075332937819   -0.0000000031      0.00004744      0.00000465      0.00012024                
-                  6      -407.075332938167   -0.0000000003      0.00000529      0.00000041      0.00002733                
-                                                                                                                          
-               *** SCF converged in 6 iterations. Time: 2.02 sec.                                                         
-                                                                                                                          
-               Spin-Restricted Hartree-Fock:                                                                              
-               -----------------------------                                                                              
-               Total Energy                       :     -407.0753329382 a.u.                                              
-               Electronic Energy                  :     -765.3980635744 a.u.                                              
-               Nuclear Repulsion Energy           :      358.3227306362 a.u.                                              
-               ------------------------------------                                                                       
-               Gradient Norm                      :        0.0000052903 a.u.                                              
-                                                                                                                          
-                                                                                                                          
-               Ground State Information                                                                                   
-               ------------------------                                                                                   
-               Charge of Molecule            :  0.0                                                                       
-               Multiplicity (2S+1)           :  1.0                                                                       
-               Magnetic Quantum Number (M_S) :  0.0                                                                       
-                                                                                                                          
-                                                                                                                          
-                                                 Spin Restricted Orbitals                                                 
-                                                 ------------------------                                                 
-                                                                                                                          
-               Molecular Orbital No.  25:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.44715 a.u.                                                                    
-               (   2 C   1p+1:     0.33) (   3 C   1p+1:     0.44) (   4 N   1p+1:     0.39)                              
-               (   5 C   1p+1:    -0.33) (   6 N   1p+1:    -0.34) (   8 O   1p+1:    -0.37)                              
-                                                                                                                          
-               Molecular Orbital No.  26:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.36029 a.u.                                                                    
-               (   2 C   1p-1:     0.17) (   4 N   2s  :     0.15) (   4 N   1p-1:     0.26)                              
-               (   6 N   2s  :    -0.27) (   6 N   1p-1:     0.16) (   7 O   1p-1:     0.40)                              
-               (   8 O   1p-1:     0.69) (   8 O   1p0 :     0.35)                                                        
-                                                                                                                          
-               Molecular Orbital No.  27:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.32787 a.u.                                                                    
-               (   2 C   2s  :    -0.15) (   2 C   1p-1:    -0.22) (   6 N   1p0 :     0.31)                              
-               (   7 O   1p-1:    -0.65) (   7 O   1p0 :     0.44) (   8 O   1p-1:     0.36)                              
-               (   8 O   1p0 :     0.30)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.  28:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.30453 a.u.                                                                    
-               (   1 C   1p+1:     0.17) (   5 C   1p+1:     0.15) (   6 N   1p+1:    -0.69)                              
-               (   7 O   1p+1:     0.46) (   8 O   1p+1:     0.53)                                                        
-                                                                                                                          
-               Molecular Orbital No.  29:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.0 Energy:   -0.26505 a.u.                                                                    
-               (   2 C   1p+1:    -0.57) (   3 C   1p+1:    -0.35) (   4 N   1p+1:     0.57)                              
-               (   7 O   1p+1:     0.37) (   8 O   1p+1:    -0.30)                                                        
-                                                                                                                          
-               Molecular Orbital No.  30:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.23410 a.u.                                                                    
-               (   1 C   1p+1:    -0.43) (   2 C   1p+1:    -0.46) (   3 C   1p+1:     0.72)                              
-               (   4 N   1p+1:    -0.28) (   6 N   1p+1:     0.26) (   7 O   1p+1:     0.46)                              
-                                                                                                                          
-               Molecular Orbital No.  31:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.31094 a.u.                                                                    
-               (   1 C   1p+1:     0.40) (   2 C   1p+1:    -0.31) (   4 N   1p+1:     0.26)                              
-               (   5 C   1p+1:    -0.75) (   6 N   1p+1:     0.16) (   7 O   1p+1:    -0.33)                              
-               (   8 O   1p+1:     0.60)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.  32:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.44723 a.u.                                                                    
-               (   1 C   1p+1:     0.65) (   2 C   1p+1:    -0.56) (   3 C   1p+1:     0.45)                              
-               (   4 N   1p+1:    -0.31) (   5 C   1p+1:     0.45) (   6 N   1p+1:    -0.37)                              
-               (   7 O   1p+1:    -0.41) (   8 O   1p+1:    -0.28)                                                        
-                                                                                                                          
-               Molecular Orbital No.  33:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.53637 a.u.                                                                    
-               (   1 C   2s  :     0.17) (   1 C   1p-1:    -0.19) (   2 C   2s  :     0.19)                              
-               (   2 C   1p-1:    -0.29) (   2 C   1p0 :     0.15) (   3 C   1p-1:    -0.52)                              
-               (   3 C   1p0 :     0.22) (   4 N   2s  :     0.93) (   4 N   1p-1:    -0.22)                              
-               (   4 N   1p0 :    -0.22) (   5 C   2s  :    -0.27) (   5 C   1p0 :    -0.16)                              
-               (   6 N   2s  :     0.41) (   9 H   1s  :    -0.48) (  10 H   1s  :    -0.31)                              
-               (  11 H   1s  :    -0.84) (  12 H   1s  :    -0.45)                                                        
-                                                                                                                          
-               Molecular Orbital No.  34:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.0 Energy:    0.58703 a.u.                                                                    
-               (   1 C   2s  :     0.75) (   1 C   1p0 :    -0.39) (   2 C   2s  :    -0.20)                              
-               (   2 C   1p-1:    -0.35) (   3 C   1p-1:    -0.34) (   4 N   1p-1:    -0.29)                              
-               (   5 C   2s  :     0.54) (   5 C   1p0 :     0.35) (   6 N   1s  :     0.18)                              
-               (   6 N   2s  :    -1.20) (   7 O   1p0 :     0.16) (   8 O   1p0 :    -0.15)                              
-               (   9 H   1s  :    -0.26) (  10 H   1s  :     0.72)                                                        
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Hessian driver object, update settings, and compute </span>
+<span class="n">h2o_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">h2o_scfdrv</span><span class="p">)</span>
+<span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
+
+<span class="n">nh3_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">nh3_scfdrv</span><span class="p">)</span>
+<span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
+
+<span class="n">ch4_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">ch4_scfdrv</span><span class="p">)</span>
+<span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Hessian driver object, update settings, and compute </span>
-<span class="n">hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">scfdrv</span><span class="p">)</span>
-<span class="n">hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="nn">Input In [4],</span> in <span class="ni">&lt;cell line: 2&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># Create a Hessian driver object, update settings, and compute </span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">h2o_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">h2o_scfdrv</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">nh3_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">nh3_scfdrv</span><span class="p">)</span>
+
+<span class="ne">AttributeError</span>: module &#39;veloxchem&#39; has no attribute &#39;scfhessiandriver&#39;
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">uracil</span><span class="p">,</span> <span class="n">uracil_basis</span><span class="p">)</span>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate hessians from scratch</span>
+<span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_basis</span><span class="p">)</span>
+<span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_basis</span><span class="p">)</span>
+<span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_basis</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                                                    SCF Hessian Driver                                                    
-                                                   ====================                                                   
-                                                                                                                          
-                                  *** Time spent in Hessian calculation: 5117.63 sec ***                                  
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Or read from checkpoint file:</span>
+
+<span class="kn">import</span> <span class="nn">h5py</span>
+
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;../h5files/ir_raman/raman.h5&#39;</span>
+<span class="n">hf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;h2o&#39;</span><span class="p">,</span> <span class="s1">&#39;nh3&#39;</span><span class="p">,</span> <span class="s1">&#39;ch4&#39;</span><span class="p">]</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    
+<span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="p">[</span><span class="n">h2o_hessian_drv</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="p">]:</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="n">driver</span><span class="o">.</span><span class="n">hessian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="o">+</span><span class="s1">&#39;_hessian&#39;</span><span class="p">))</span> 
+    <span class="n">driver</span><span class="o">.</span><span class="n">pol_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="o">+</span><span class="s1">&#39;_polgrad&#39;</span><span class="p">))</span> 
+    <span class="n">driver</span><span class="o">.</span><span class="n">dipole_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="o">+</span><span class="s1">&#39;_dipolegrad&#39;</span><span class="p">))</span>
+    
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">hf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Note that the geometries were optimized at MP2/cc-pVTZ level, but the Hessian was caculated using HF/sto-3g, thus the two imagiary frequencies!</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">uracil</span><span class="p">,</span> <span class="n">uracil_basis</span><span class="p">)</span>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_basis</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                                                   Vibrational Analysis                                                   
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                   Vibrational Analysis                                                   
                                                   ======================                                                  
                                                                                                                           
                  Harmonic frequencies (in cm**-1), force constants (in mdyne/A), reduced masses (in amu),                 
@@ -973,237 +960,147 @@ viewergrid_16461031086266248[0][0].render();
                                                                                                                           
                                                                                                                           
   Index:                        1                              2                              3               
-  Frequency:                 -186.11                        -157.18                        237.15             
-  Force constant:            0.1270                         0.0994                         0.0456             
-  Reduced mass:              6.2248                         6.8303                         1.3761             
-  IR intensity:              25.9891                        5.1533                         88.9465            
-  Raman activ.:              0.1587                         0.1546                         4.9529             
-  Parallel Raman:            1.1562                         1.1265                         36.0888            
-  Perp. Raman:               0.8672                         0.8448                         27.0666            
-  Depol. ratio:              0.7500                         0.7500                         0.7500             
+  Frequency:                 1736.87                        3988.20                        4145.10            
+  Force constant:            1.9404                         9.7200                         11.0231            
+  Reduced mass:              1.0917                         1.0372                         1.0889             
+  IR intensity:             123.0358                        2.9544                         54.2936            
+  Raman activ.:              10.6274                        90.1326                        40.0871            
+  Parallel Raman:            97.0716                       943.7930                       292.0906            
+  Perp. Raman:               38.4408                       205.5058                       219.0680            
+  Depol. ratio:              0.3960                         0.2177                         0.7500             
   Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C             -0.0271    0.0000   -0.0000  | -0.0022   -0.0000   -0.0000  |  0.0391   -0.0000   -0.0000  |
-  2 C              0.1268   -0.0000    0.0000  | -0.2273   -0.0000    0.0000  |  0.1089   -0.0000    0.0000  |
-  3 C              0.0847   -0.0000    0.0000  | -0.1232    0.0000    0.0000  | -0.0562    0.0000   -0.0000  |
-  4 N             -0.3189   -0.0000   -0.0000  |  0.4095    0.0000   -0.0000  |  0.0423    0.0000   -0.0000  |
-  5 C             -0.0416   -0.0000   -0.0000  |  0.0083    0.0000    0.0000  |  0.0185    0.0000    0.0000  |
-  6 N             -0.3820   -0.0000   -0.0000  | -0.3504    0.0000   -0.0000  | -0.0816   -0.0000    0.0000  |
-  7 O              0.1293    0.0000   -0.0000  |  0.2943   -0.0000   -0.0000  | -0.0384    0.0000   -0.0000  |
-  8 O              0.3125    0.0000    0.0000  | -0.0283   -0.0000    0.0000  |  0.0581   -0.0000    0.0000  |
-  9 H              0.2782   -0.0000    0.0000  | -0.3032   -0.0000   -0.0000  | -0.1937   -0.0000   -0.0000  |
-  10 H            -0.2091   -0.0000   -0.0000  | -0.3720   -0.0000   -0.0000  | -0.1138   -0.0000    0.0000  |
-  11 H             0.6049   -0.0000   -0.0000  |  0.2489   -0.0000   -0.0000  | -0.9438    0.0000   -0.0000  |
-  12 H             0.3538    0.0000    0.0000  | -0.5127   -0.0000    0.0000  |  0.1692   -0.0000   -0.0000  |
+  1 O             -0.0554   -0.0410    0.0290  | -0.0327   -0.0242    0.0171  | -0.0158    0.0544    0.0467  |
+  2 H              0.5217    0.0427   -0.4725  |  0.1273    0.6466    0.2544  | -0.1681   -0.6495   -0.2172  |
+  3 H              0.3571    0.6079    0.0128  |  0.3919   -0.2622   -0.5260  |  0.4197   -0.2144   -0.5246  |
                                                                                                                           
-  Index:                        4                              5                              6               
-  Frequency:                 394.55                         419.97                         539.43             
-  Force constant:            1.0460                         0.2011                         1.1030             
-  Reduced mass:              11.4052                        1.9347                         6.4336             
-  IR intensity:              21.3525                        0.4337                         11.6283            
-  Raman activ.:              1.3590                         0.1065                         0.3231             
-  Parallel Raman:            9.9048                         0.7763                         2.3604             
-  Perp. Raman:               7.4239                         0.5822                         1.7592             
-  Depol. ratio:              0.7495                         0.7500                         0.7453             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000    0.0997   -0.0500  | -0.1578   -0.0000    0.0000  | -0.0000    0.2389    0.0569  |
-  2 C             -0.0000    0.1182   -0.0627  | -0.1467   -0.0000   -0.0000  | -0.0000    0.2671   -0.1624  |
-  3 C              0.0000    0.0534    0.0098  |  0.1608   -0.0000   -0.0000  |  0.0000    0.0545   -0.0595  |
-  4 N             -0.0000    0.1619    0.1228  | -0.0078    0.0000   -0.0000  | -0.0000   -0.2322   -0.2300  |
-  5 C             -0.0000    0.1466    0.0203  | -0.0277    0.0000    0.0000  | -0.0000   -0.2285   -0.0231  |
-  6 N             -0.0000    0.3448   -0.0052  | -0.0009   -0.0000    0.0000  |  0.0000   -0.0146   -0.0547  |
-  7 O              0.0000   -0.4123    0.2774  |  0.0889    0.0000   -0.0000  |  0.0000   -0.0734    0.2772  |
-  8 O              0.0000   -0.4041   -0.3222  |  0.0164   -0.0000    0.0000  |  0.0000    0.0409    0.1521  |
-  9 H              0.0000    0.0615   -0.0394  |  0.5324   -0.0000   -0.0000  |  0.0000    0.0186    0.2828  |
-  10 H             0.0000    0.3478    0.0162  |  0.5139   -0.0000    0.0000  | -0.0002   -0.0057   -0.5201  |
-  11 H            -0.0000    0.2784    0.0651  | -0.6071    0.0000   -0.0000  | -0.0000   -0.2767   -0.2090  |
-  12 H             0.0000    0.2488    0.0168  |  0.0517   -0.0000   -0.0000  | -0.0000    0.2556   -0.1711  |
                                                                                                                           
-  Index:                        7                              8                              9               
-  Frequency:                 559.96                         583.77                         617.15             
-  Force constant:            0.2221                         1.2358                         1.9307             
-  Reduced mass:              1.2020                         6.1547                         8.6035             
-  IR intensity:             134.4780                        0.0649                         1.3538             
-  Raman activ.:              4.1416                         2.2369                         3.0619             
-  Parallel Raman:            30.1775                        17.7864                        27.4736            
-  Perp. Raman:               22.6331                        10.7363                        11.5698            
-  Depol. ratio:              0.7500                         0.6036                         0.4211             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0403    0.0000   -0.0000  |  0.0000   -0.0200    0.2379  |  0.0000    0.0756   -0.2383  |
-  2 C              0.0564    0.0000   -0.0000  |  0.0000   -0.0527   -0.1458  |  0.0000    0.0123   -0.2499  |
-  3 C             -0.0442    0.0000    0.0000  | -0.0000    0.0479   -0.2515  | -0.0000   -0.2954   -0.0895  |
-  4 N              0.0277   -0.0000   -0.0000  |  0.0000    0.0611   -0.1647  |  0.0000   -0.0531    0.0955  |
-  5 C              0.0024   -0.0000   -0.0000  |  0.0000    0.0238    0.1349  |  0.0000   -0.0423    0.3132  |
-  6 N             -0.0789   -0.0000   -0.0000  | -0.0000   -0.0532    0.1862  | -0.0000    0.3262    0.0353  |
-  7 O             -0.0385   -0.0000    0.0000  | -0.0000    0.2778    0.0771  | -0.0000    0.0127   -0.2227  |
-  8 O             -0.0209    0.0000    0.0000  | -0.0000   -0.2798   -0.0357  | -0.0000   -0.1023    0.3281  |
-  9 H             -0.1469    0.0000    0.0000  | -0.0000    0.0489   -0.2721  | -0.0000   -0.2991   -0.0819  |
-  10 H             0.9676   -0.0000   -0.0000  |  0.0001   -0.0526    0.2578  |  0.0001    0.3235   -0.0688  |
-  11 H             0.1620   -0.0000    0.0000  |  0.0000    0.3182   -0.2961  |  0.0000    0.3191   -0.0921  |
-  12 H             0.0155    0.0000    0.0000  |  0.0000   -0.3805   -0.3526  | -0.0000    0.2590   -0.0963  |
-                                                                                                                          
-  Index:                       10                             11                             12               
-  Frequency:                 698.11                         753.92                         874.86             
-  Force constant:            3.0238                         1.3156                         0.7013             
-  Reduced mass:              10.5308                        3.9284                         1.5551             
-  IR intensity:              53.2483                        30.8002                        30.3960            
-  Raman activ.:              3.3536                         6.3335                         5.2763             
-  Parallel Raman:            24.4354                        46.1482                        38.4451            
-  Perp. Raman:               18.3265                        34.6112                        28.8338            
-  Depol. ratio:              0.7500                         0.7500                         0.7500             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C             -0.1740    0.0000    0.0000  | -0.3731   -0.0000   -0.0000  | -0.1430    0.0000    0.0000  |
-  2 C              0.0025    0.0000   -0.0000  |  0.1874    0.0000    0.0000  |  0.1264   -0.0000   -0.0000  |
-  3 C             -0.0472   -0.0000    0.0000  | -0.2212    0.0000    0.0000  |  0.0996   -0.0000   -0.0000  |
-  4 N             -0.1653   -0.0000   -0.0000  |  0.1065    0.0000   -0.0000  | -0.0315   -0.0000    0.0000  |
-  5 C              0.8261   -0.0000   -0.0000  | -0.0771    0.0000    0.0000  |  0.0035    0.0000   -0.0000  |
-  6 N             -0.1330   -0.0000   -0.0000  |  0.0961    0.0000   -0.0000  |  0.0140    0.0000   -0.0000  |
-  7 O              0.0465   -0.0000    0.0000  |  0.0901   -0.0000   -0.0000  |  0.0381    0.0000    0.0000  |
-  8 O             -0.2632    0.0000    0.0000  |  0.0246   -0.0000   -0.0000  | -0.0003    0.0000   -0.0000  |
-  9 H              0.0806   -0.0000    0.0000  |  0.0295    0.0000    0.0000  | -0.5664   -0.0000   -0.0000  |
-  10 H            -0.1017    0.0000   -0.0000  |  0.0157    0.0000    0.0000  |  0.0259    0.0000   -0.0000  |
-  11 H            -0.0213   -0.0000    0.0000  |  0.2676    0.0000    0.0000  | -0.0569    0.0000    0.0000  |
-  12 H             0.3889    0.0000    0.0000  |  0.8178    0.0000    0.0000  | -0.7914   -0.0000    0.0000  |
-                                                                                                                          
-  Index:                       13                             14                             15               
-  Frequency:                 904.76                         1103.93                        1124.25            
-  Force constant:            4.1043                         3.9410                         0.9407             
-  Reduced mass:              8.5098                         5.4887                         1.2632             
-  IR intensity:              2.8891                         1.1351                         2.3067             
-  Raman activ.:              9.1652                         0.6332                         1.3946             
-  Parallel Raman:           106.6049                        6.7998                         10.1613            
-  Perp. Raman:               10.2622                        1.2748                         7.6210             
-  Depol. ratio:              0.0963                         0.1875                         0.7500             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C             -0.0000   -0.1201   -0.1587  |  0.0000    0.0761   -0.0130  | -0.0087    0.0000    0.0000  |
-  2 C              0.0000    0.2071    0.0590  | -0.0000    0.1702   -0.2436  | -0.0930   -0.0000    0.0000  |
-  3 C              0.0000    0.5168    0.0105  |  0.0000   -0.1316   -0.0460  |  0.1197    0.0000    0.0000  |
-  4 N             -0.0000    0.1187   -0.0756  |  0.0000    0.2108    0.2889  | -0.0022   -0.0000   -0.0000  |
-  5 C              0.0000   -0.0725    0.1636  | -0.0000   -0.0161   -0.0079  | -0.0108    0.0000    0.0000  |
-  6 N             -0.0000   -0.1893    0.0332  | -0.0000   -0.3342   -0.0640  |  0.0038    0.0000   -0.0000  |
-  7 O              0.0000   -0.1825   -0.2381  |  0.0000    0.0122    0.0607  |  0.0019    0.0000   -0.0000  |
-  8 O             -0.0000   -0.1900    0.2060  |  0.0000    0.0036    0.0048  |  0.0012   -0.0000    0.0000  |
-  9 H             -0.0001    0.5260    0.1468  | -0.0000   -0.1010   -0.3243  | -0.7927    0.0000   -0.0000  |
-  10 H            -0.0000   -0.2062    0.1212  | -0.0000   -0.3464   -0.2429  |  0.0043    0.0000   -0.0000  |
-  11 H             0.0000    0.0951   -0.0532  |  0.0000    0.3582    0.2335  |  0.0421   -0.0000   -0.0000  |
-  12 H            -0.0001    0.1491   -0.0007  |  0.0000    0.3795   -0.1310  |  0.5888   -0.0000    0.0000  |
-                                                                                                                          
-  Index:                       16                             17                             18               
-  Frequency:                 1132.11                        1252.00                        1355.35            
-  Force constant:            1.7009                         1.4483                         1.2080             
-  Reduced mass:              2.2524                         1.5682                         1.1162             
-  IR intensity:              1.9011                         10.1273                        37.6114            
-  Raman activ.:              3.1292                         12.6889                        10.9895            
-  Parallel Raman:            24.5757                       106.9703                        81.7552            
-  Perp. Raman:               15.3250                        54.8288                        58.3742            
-  Depol. ratio:              0.6236                         0.5126                         0.7140             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000    0.0623   -0.0019  | -0.0000   -0.0352    0.0245  |  0.0000    0.0013    0.0034  |
-  2 C              0.0000   -0.1601    0.0966  | -0.0000    0.0072   -0.1261  | -0.0000   -0.0080    0.0069  |
-  3 C             -0.0000    0.0695   -0.0413  |  0.0000    0.0888   -0.0011  | -0.0000   -0.0298    0.0450  |
-  4 N             -0.0000    0.0899    0.0351  | -0.0000   -0.0494    0.1240  |  0.0000    0.0385   -0.0204  |
-  5 C              0.0000   -0.0913   -0.0005  | -0.0000   -0.0151   -0.0206  |  0.0000    0.0249    0.0213  |
-  6 N             -0.0000    0.0410   -0.1588  | -0.0000    0.0479    0.0019  |  0.0000   -0.0219   -0.0491  |
-  7 O             -0.0000    0.0167    0.0552  |  0.0000    0.0028   -0.0133  | -0.0000   -0.0067   -0.0008  |
-  8 O             -0.0000   -0.0343    0.0877  |  0.0000    0.0193   -0.0067  | -0.0000   -0.0003   -0.0007  |
-  9 H              0.0000    0.1259   -0.5155  | -0.0000    0.0846    0.1928  |  0.0000   -0.1051    0.7152  |
-  10 H             0.0000    0.0495   -0.6694  | -0.0000    0.0506    0.0396  |  0.0000   -0.0216   -0.1940  |
-  11 H             0.0000    0.1005    0.0389  | -0.0000   -0.4267    0.3277  | -0.0000    0.4731   -0.2482  |
-  12 H            -0.0000   -0.3912   -0.0334  |  0.0000   -0.5852   -0.5221  |  0.0000   -0.3273   -0.1946  |
-                                                                                                                          
-  Index:                       19                             20                             21               
-  Frequency:                 1494.59                        1625.86                        1635.41            
-  Force constant:            1.9918                         3.2445                         3.4518             
-  Reduced mass:              1.5134                         2.0832                         2.1905             
-  IR intensity:              21.0979                        39.9570                        42.7560            
-  Raman activ.:              0.7947                         7.3164                         1.6044             
-  Parallel Raman:            7.5860                         70.4179                        16.4581            
-  Perp. Raman:               2.5476                         22.8752                        3.9999             
-  Depol. ratio:              0.3358                         0.3248                         0.2430             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000   -0.1440    0.1035  | -0.0000   -0.1483    0.1120  |  0.0000   -0.0961    0.0339  |
-  2 C             -0.0000   -0.0157   -0.0496  |  0.0000    0.1417    0.0136  | -0.0000   -0.0847   -0.0717  |
-  3 C              0.0000    0.0242   -0.0481  |  0.0000    0.0203    0.0290  |  0.0000    0.0708   -0.0523  |
-  4 N              0.0000    0.0015    0.0075  | -0.0000   -0.1049    0.0686  |  0.0000    0.0486    0.0576  |
-  5 C             -0.0000    0.0682    0.0462  | -0.0000   -0.0888   -0.0234  |  0.0000   -0.1512   -0.1111  |
-  6 N             -0.0000    0.0261   -0.0192  | -0.0000    0.0680    0.0049  |  0.0000    0.0729   -0.1155  |
-  7 O              0.0000    0.0144   -0.0165  |  0.0000   -0.0112   -0.0443  | -0.0000    0.0473    0.0619  |
-  8 O              0.0000   -0.0019   -0.0092  |  0.0000    0.0504   -0.0461  | -0.0000   -0.0052    0.0590  |
-  9 H             -0.0000   -0.0117    0.2952  | -0.0000    0.0753   -0.4937  | -0.0000    0.0389    0.3852  |
-  10 H            -0.0000    0.0405   -0.7214  | -0.0000    0.0787   -0.1760  |  0.0000    0.0674    0.6733  |
-  11 H            -0.0000   -0.2589    0.1423  | -0.0000    0.6933   -0.3452  | -0.0000    0.2254   -0.0223  |
-  12 H             0.0000    0.4499    0.2356  |  0.0000   -0.0627   -0.1341  |  0.0000    0.4243    0.2477  |
-                                                                                                                          
-  Index:                       22                             23                             24               
-  Frequency:                 1711.84                        1802.65                        1956.89            
-  Force constant:            10.0844                        10.0415                        14.6460            
-  Reduced mass:              5.8408                         5.2447                         6.4913             
-  IR intensity:              24.4034                       174.9251                       204.7973            
-  Raman activ.:              34.0702                        13.5709                        33.6373            
-  Parallel Raman:           289.8114                        98.8957                       373.9704            
-  Perp. Raman:              144.6241                        74.1493                        54.9456            
-  Depol. ratio:              0.4990                         0.7498                         0.1469             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000    0.1243   -0.0502  |  0.0000    0.1594   -0.1405  |  0.0000    0.0705    0.0384  |
-  2 C             -0.0000   -0.1565   -0.0949  | -0.0000   -0.2269   -0.0521  |  0.0000    0.1802    0.3390  |
-  3 C             -0.0000    0.0530    0.0674  | -0.0000    0.2162   -0.1378  |  0.0000   -0.0790   -0.5315  |
-  4 N              0.0000    0.1472    0.0081  |  0.0000   -0.3061    0.1807  | -0.0000    0.0100    0.1418  |
-  5 C             -0.0000   -0.3367   -0.1411  |  0.0000    0.1174    0.1546  | -0.0000   -0.1145   -0.0264  |
-  6 N             -0.0000    0.0463    0.4024  | -0.0000   -0.0849    0.0258  | -0.0000    0.0166    0.0567  |
-  7 O              0.0000   -0.0228   -0.0805  |  0.0000    0.0154    0.0492  | -0.0000   -0.0598   -0.0703  |
-  8 O              0.0000    0.0601   -0.0982  |  0.0000    0.0637   -0.1034  |  0.0000    0.0310   -0.0276  |
-  9 H             -0.0000    0.0576    0.2727  |  0.0000    0.2319    0.1276  | -0.0000   -0.2495    0.5505  |
-  10 H             0.0000    0.0698   -0.6623  |  0.0000   -0.0919   -0.0495  |  0.0000    0.0198    0.0403  |
-  11 H            -0.0000    0.1834    0.0028  |  0.0000    0.5784   -0.2671  | -0.0000   -0.1177    0.2244  |
-  12 H             0.0000    0.1761    0.1267  |  0.0000    0.2872    0.2762  |  0.0000   -0.2468    0.1313  |
-                                                                                                                          
-  Index:                       25                             26                             27               
-  Frequency:                 2147.00                        2189.22                        3813.76            
-  Force constant:            28.1196                        25.7469                        9.3653             
-  Reduced mass:              10.3536                        9.1180                         1.0929             
-  IR intensity:             248.3281                       493.3896                        59.7170            
-  Raman activ.:              64.6501                        6.4173                         40.9996            
-  Parallel Raman:           672.2948                        68.6467                       306.8913            
-  Perp. Raman:              152.0711                        13.1815                       215.9027            
-  Depol. ratio:              0.2262                         0.1920                         0.7035             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000   -0.4253   -0.6096  | -0.0000    0.0054   -0.0461  |  0.0000    0.0035   -0.0008  |
-  2 C             -0.0000    0.1391    0.1008  |  0.0000    0.0005    0.0143  |  0.0000   -0.0387    0.0547  |
-  3 C              0.0000   -0.0139   -0.0439  | -0.0000    0.0135   -0.0453  |  0.0000    0.0564    0.0046  |
-  4 N              0.0000    0.0247   -0.0060  | -0.0000   -0.1318    0.0907  | -0.0000   -0.0002    0.0002  |
-  5 C             -0.0000   -0.0582    0.0395  |  0.0000    0.3492   -0.6049  |  0.0000   -0.0017    0.0000  |
-  6 N              0.0000    0.0153    0.1264  |  0.0000   -0.0046    0.1765  | -0.0000    0.0003    0.0004  |
-  7 O             -0.0000    0.2305    0.3483  |  0.0000    0.0063    0.0045  | -0.0000   -0.0002    0.0001  |
-  8 O             -0.0000    0.0212   -0.0393  | -0.0000   -0.1870    0.3087  |  0.0000    0.0002   -0.0002  |
-  9 H             -0.0000   -0.0322    0.0319  |  0.0000    0.0043    0.0102  |  0.0000   -0.6433   -0.0676  |
-  10 H            -0.0000    0.0169   -0.3820  | -0.0000    0.0160   -0.4027  | -0.0000   -0.0005    0.0006  |
-  11 H            -0.0000   -0.0510    0.0285  | -0.0000    0.3587   -0.1709  |  0.0000    0.0017    0.0006  |
-  12 H             0.0000   -0.2151   -0.1403  | -0.0000   -0.0061    0.0057  | -0.0000    0.4081   -0.6383  |
-                                                                                                                          
-  Index:                       28                             29                             30               
-  Frequency:                 3838.13                        4242.89                        4300.48            
-  Force constant:            9.5769                         11.4470                        11.7781            
-  Reduced mass:              1.1034                         1.0792                         1.0809             
-  IR intensity:              8.7699                         29.3473                        92.4526            
-  Raman activ.:              60.1729                        44.1349                        79.0644            
-  Parallel Raman:           640.0772                       447.4504                       813.8740            
-  Perp. Raman:              127.1996                       115.3231                       194.2916            
-  Depol. ratio:              0.1987                         0.2577                         0.2387             
-  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
-  1 C              0.0000   -0.0023   -0.0007  | -0.0000    0.0010   -0.0018  |  0.0000    0.0006   -0.0001  |
-  2 C             -0.0000    0.0272   -0.0539  |  0.0000    0.0004   -0.0002  |  0.0000   -0.0003   -0.0017  |
-  3 C              0.0000    0.0698    0.0120  |  0.0000    0.0002    0.0002  | -0.0000    0.0022   -0.0019  |
-  4 N              0.0000   -0.0024    0.0016  |  0.0000    0.0005   -0.0002  | -0.0000    0.0342    0.0665  |
-  5 C             -0.0000   -0.0002    0.0005  | -0.0000    0.0007    0.0020  |  0.0000   -0.0022    0.0001  |
-  6 N              0.0000   -0.0002    0.0002  | -0.0000   -0.0740   -0.0015  |  0.0000   -0.0008   -0.0003  |
-  7 O             -0.0000    0.0002    0.0002  |  0.0000   -0.0002   -0.0001  | -0.0000   -0.0001   -0.0001  |
-  8 O             -0.0000    0.0000   -0.0001  |  0.0000   -0.0001    0.0002  | -0.0000    0.0000    0.0002  |
-  9 H              0.0000   -0.7526   -0.0832  | -0.0000   -0.0017   -0.0003  | -0.0000   -0.0082   -0.0008  |
-  10 H             0.0000   -0.0022    0.0002  | -0.0000    0.9971    0.0161  | -0.0000    0.0049    0.0001  |
-  11 H            -0.0000    0.0072    0.0110  | -0.0000    0.0028    0.0050  |  0.0000   -0.4590   -0.8852  |
-  12 H             0.0000   -0.3459    0.5460  | -0.0000   -0.0000    0.0003  |  0.0000   -0.0033    0.0052  |
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_broadening</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">,</span> <span class="n">list_osci_strength</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                   Vibrational Analysis                                                   
+                                                  ======================                                                  
+                                                                                                                          
+                 Harmonic frequencies (in cm**-1), force constants (in mdyne/A), reduced masses (in amu),                 
+                          IR intensities (in km/mol), Raman scattering activities (in A**4/amu),                          
+                      parallel and perpendicular Raman scattering activities, depolarization ratios,                      
+                                         and Cartesian normal mode displacements.                                         
+                                                                                                                          
+                                                                                                                          
+  Index:                        1                              2                              3               
+  Frequency:                 597.47                         1814.46                        1814.46            
+  Force constant:            0.2525                         2.1054                         2.1054             
+  Reduced mass:              1.2003                         1.0854                         1.0854             
+  IR intensity:             644.8631                        46.9030                        46.9031            
+  Raman activ.:              4.6612                         6.2677                         6.2677             
+  Parallel Raman:            58.6274                        45.6690                        45.6689            
+  Perp. Raman:               0.8086                         34.2517                        34.2517            
+  Depol. ratio:              0.0138                         0.7500                         0.7500             
+  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
+  1 N             -0.0794   -0.0113   -0.0915  | -0.0248    0.0720    0.0126  | -0.0530   -0.0269    0.0493  |
+  2 H              0.4452    0.0243    0.3601  | -0.1861   -0.6105    0.1226  | -0.0566    0.4586   -0.1636  |
+  3 H              0.3156   -0.0200    0.4779  |  0.3946   -0.5027   -0.3578  |  0.2326   -0.2683    0.0085  |
+  4 H              0.3420    0.1531    0.4336  |  0.1368    0.1133    0.0595  |  0.5598    0.1841   -0.5295  |
+                                                                                                                          
+  Index:                        4                              5                              6               
+  Frequency:                 3779.47                        3983.60                        3983.60            
+  Force constant:            8.5217                         10.2768                        10.2768            
+  Reduced mass:              1.0125                         1.0991                         1.0991             
+  IR intensity:              0.5571                         16.1430                        16.1430            
+  Raman activ.:             109.6648                        39.5443                        39.5443            
+  Parallel Raman:           1223.8453                      288.1354                       288.1352            
+  Perp. Raman:              174.5125                       216.1015                       216.1014            
+  Depol. ratio:              0.1426                         0.7500                         0.7500             
+  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
+  1 N             -0.0122   -0.0017   -0.0141  |  0.0430    0.0566   -0.0443  | -0.0467    0.0612    0.0329  |
+  2 H             -0.3677    0.1623    0.4143  | -0.2536    0.1383    0.3124  |  0.4198   -0.1853   -0.5200  |
+  3 H              0.3412    0.4046   -0.2305  | -0.5002   -0.5693    0.2946  | -0.0257    0.0007    0.0167  |
+  4 H              0.1966   -0.5426    0.0122  |  0.1563   -0.3555    0.0085  |  0.2549   -0.6664    0.0459  |
+                                                                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                   Vibrational Analysis                                                   
+                                                  ======================                                                  
+                                                                                                                          
+                 Harmonic frequencies (in cm**-1), force constants (in mdyne/A), reduced masses (in amu),                 
+                          IR intensities (in km/mol), Raman scattering activities (in A**4/amu),                          
+                      parallel and perpendicular Raman scattering activities, depolarization ratios,                      
+                                         and Cartesian normal mode displacements.                                         
+                                                                                                                          
+                                                                                                                          
+  Index:                        1                              2                              3               
+  Frequency:                 1516.76                        1516.77                        1516.77            
+  Force constant:            1.6021                         1.6021                         1.6021             
+  Reduced mass:              1.1820                         1.1820                         1.1820             
+  IR intensity:              21.4495                        21.4495                        21.4495            
+  Raman activ.:              2.9988                         2.9988                         2.9988             
+  Parallel Raman:            21.8503                        21.8503                        21.8502            
+  Perp. Raman:               16.3877                        16.3877                        16.3876            
+  Depol. ratio:              0.7500                         0.7500                         0.7500             
+  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
+  1 C             -0.1244    0.0169   -0.0070  |  0.0179    0.1024   -0.0708  |  0.0038    0.0711    0.1037  |
+  2 H              0.4480   -0.2978   -0.1007  |  0.0582   -0.2840    0.4696  |  0.2630    0.0643   -0.2464  |
+  3 H              0.2934    0.2815    0.1469  | -0.2528   -0.2936    0.4023  | -0.2743   -0.0368   -0.4034  |
+  4 H              0.2911   -0.2286    0.2978  |  0.2702   -0.3211    0.0341  | -0.1610   -0.4101   -0.3757  |
+  5 H              0.4501    0.0436   -0.2602  | -0.2888   -0.3211   -0.0623  |  0.1270   -0.4641   -0.2099  |
+                                                                                                                          
+  Index:                        4                              5                              6               
+  Frequency:                 1708.70                        1708.70                        3181.65            
+  Force constant:            1.7339                         1.7339                         6.0118             
+  Reduced mass:              1.0080                         1.0080                         1.0080             
+  IR intensity:              0.0000                         0.0000                         0.0000             
+  Raman activ.:              39.5165                        39.5165                       145.7008            
+  Parallel Raman:           287.9329                       287.9329                       1857.8604           
+  Perp. Raman:              215.9497                       215.9497                        0.0000             
+  Depol. ratio:              0.7500                         0.7500                         0.0000             
+  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
+  1 C              0.0000    0.0000   -0.0000  | -0.0000    0.0000   -0.0000  | -0.0000   -0.0000   -0.0000  |
+  2 H              0.4302   -0.2000   -0.1579  |  0.0247   -0.2757    0.4164  |  0.2537    0.3660    0.2273  |
+  3 H              0.3427    0.1914    0.3097  |  0.1862    0.2733   -0.3750  |  0.3128   -0.3724   -0.1161  |
+  4 H             -0.3271    0.0041   -0.3781  | -0.1268    0.4698    0.1148  | -0.3562   -0.1710    0.3063  |
+  5 H             -0.4458    0.0045    0.2264  | -0.0841   -0.4675   -0.1562  | -0.2103    0.1773   -0.4175  |
+                                                                                                                          
+  Index:                        7                              8                              9               
+  Frequency:                 3296.17                        3296.17                        3296.18            
+  Force constant:            7.0367                         7.0367                         7.0367             
+  Reduced mass:              1.0993                         1.0993                         1.0993             
+  IR intensity:              37.8000                        37.8000                        37.8000            
+  Raman activ.:              66.7338                        66.7338                        66.7338            
+  Parallel Raman:           486.2494                       486.2493                       486.2492            
+  Perp. Raman:              364.6870                       364.6869                       364.6869            
+  Depol. ratio:              0.7500                         0.7500                         0.7500             
+  Normal mode:       X         Y         Z     |    X         Y         Z     |    X         Y         Z     |
+  1 C             -0.0077    0.0344    0.0840  | -0.0149   -0.0836    0.0329  | -0.0895    0.0110   -0.0127  |
+  2 H             -0.2953   -0.4141   -0.2407  |  0.2616    0.3612    0.2466  |  0.1895    0.3103    0.1875  |
+  3 H              0.3019   -0.3528   -0.0908  | -0.2796    0.3062    0.1109  |  0.3489   -0.4404   -0.1415  |
+  4 H              0.3110    0.1593   -0.2472  |  0.4074    0.1755   -0.3451  |  0.3384    0.1766   -0.3146  |
+  5 H             -0.2256    0.1976   -0.4220  | -0.2118    0.1534   -0.4043  |  0.1898   -0.1770    0.4202  |
+                                                                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_broadening</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">,</span> <span class="n">list_osci_strength</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">)</span> <span class="o">-</span> <span class="mi">50</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">)</span> <span class="o">+</span> <span class="mi">50</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -1221,29 +1118,282 @@ viewergrid_16461031086266248[0][0].render();
                     <span class="n">y</span><span class="p">[</span><span class="n">xp</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line_param</span> <span class="o">*</span> <span class="n">f</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span>
                         <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">xp</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">line_param</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
-
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the IR spectrum</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the Raman spectra</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="c1"># Spectrum from -CHF </span>
-<span class="n">x1</span><span class="p">,</span><span class="n">y1</span> <span class="o">=</span> <span class="n">hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
-<span class="n">x1i</span><span class="p">,</span> <span class="n">y1i</span> <span class="o">=</span> <span class="n">add_broadening</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span><span class="n">line_param</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1i</span><span class="p">,</span><span class="n">y1i</span><span class="p">)</span>
-<span class="c1">#plt.plot(x1,y1,&#39;x&#39;)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;wavenumber (cm**-1)&#39;</span><span class="p">)</span>
+
+<span class="n">h2o_x</span><span class="p">,</span><span class="n">h2o_y</span> <span class="o">=</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
+<span class="n">nh3_x</span><span class="p">,</span><span class="n">nh3_y</span> <span class="o">=</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
+<span class="n">ch4_x</span><span class="p">,</span><span class="n">ch4_y</span> <span class="o">=</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
+
+<span class="n">h2o_xl</span><span class="p">,</span> <span class="n">h2o_yl</span> <span class="o">=</span> <span class="n">add_broadening</span><span class="p">(</span><span class="n">h2o_x</span><span class="p">,</span> <span class="n">h2o_y</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">nh3_xl</span><span class="p">,</span> <span class="n">nh3_yl</span> <span class="o">=</span> <span class="n">add_broadening</span><span class="p">(</span><span class="n">nh3_x</span><span class="p">,</span> <span class="n">nh3_y</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ch4_xl</span><span class="p">,</span> <span class="n">ch4_yl</span> <span class="o">=</span> <span class="n">add_broadening</span><span class="p">(</span><span class="n">ch4_x</span><span class="p">,</span> <span class="n">ch4_y</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h2o_xl</span><span class="p">,</span> <span class="n">h2o_yl</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;H2O&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nh3_xl</span><span class="p">,</span> <span class="n">nh3_yl</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;NH3&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ch4_xl</span><span class="p">,</span> <span class="n">ch4_yl</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;CH4&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Wavenumber (cm**-1)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Raman activity(A**4/amu)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Calculated Raman sepctrum of uracil&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Calculated Raman sepctra of H2O, NH3, CH4&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="c1"># TODO: add comparison to expriment</span>
 </pre></div>
 </div>
-<p><img alt="png" src="../_images/raman_output_12_0.png" /></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/raman_14_0.png" src="../_images/raman_14_0.png" />
+</div>
+</div>
+<p>Let’s compare the H-stretching modes:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># To animate the normal mode we will need both the geometry and the displacements </span>
+<span class="k">def</span> <span class="nf">get_normal_mode</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">normal_mode</span><span class="p">):</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span> <span class="c1"># To transform from au to A</span>
+    <span class="n">natm</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
+    <span class="n">vib_xyz</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">natm</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="n">normal_mode</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">natm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natm</span><span class="p">):</span>
+        <span class="c1"># add coordinates:</span>
+        <span class="n">vib_xyz</span> <span class="o">+=</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+        <span class="c1"># add displacements:</span>
+        <span class="n">vib_xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vib_xyz</span>
 </pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_h1</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">h2o_h2</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">nh3_h1</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">nh3_h2</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">nh3_h3</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">ch4_h1</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">ch4_h2</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">ch4_h3</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">ch4_h4</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;These are the two H stretching modes of H2O.&quot;</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the two H stretching modes of H2O.
+</pre></div>
+</div>
+<div class="output text_html"><div id="3dmolviewer_1650290141050237"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1650290141050237" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_1650290141050237 = null;
+var warn = document.getElementById("3dmolwarning_1650290141050237");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_1650290141050237 = null;
+viewergrid_1650290141050237 = $3Dmol.createViewerGrid($("#3dmolviewer_1650290141050237"),{rows: 1, cols: 2, control_all: true},{backgroundColor:"white"});
+viewer_1650290141050237 = viewergrid_1650290141050237[0][0];
+viewergrid_1650290141050237[0][0].zoomTo();viewergrid_1650290141050237[0][1].zoomTo();	viewergrid_1650290141050237[0][0].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623      -0.0327103      -0.0242164       0.0171098\nH       0.2572697       0.8975361       0.2762831       0.1272767       0.6466132       0.2543968\nH       0.5960312      -0.2658119      -0.7226208       0.3919276      -0.2622308      -0.5259781\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_1650290141050237[0][1].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623      -0.0158488       0.0544265       0.0467331\nH       0.2572697       0.8975361       0.2762831      -0.1681027      -0.6495226      -0.2171700\nH       0.5960312      -0.2658119      -0.7226208       0.4196674      -0.2143795      -0.5246164\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_1650290141050237[0][0].setStyle({"stick": {}});
+	viewergrid_1650290141050237[0][1].setStyle({"stick": {}});
+	viewergrid_1650290141050237[0][0].animate({"loop": "backAndForth"});
+	viewergrid_1650290141050237[0][1].animate({"loop": "backAndForth"});
+	viewergrid_1650290141050237[0][0].zoomTo();
+	viewergrid_1650290141050237[0][1].zoomTo();
+viewergrid_1650290141050237[0][1].render();
+viewergrid_1650290141050237[0][0].render();
+});
+</script></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;These are the three H stretching modes of NH3.&quot;</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h3</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the three H stretching modes of NH3.
+</pre></div>
+</div>
+<div class="output text_html"><div id="3dmolviewer_16502901463558133"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_16502901463558133" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_16502901463558133 = null;
+var warn = document.getElementById("3dmolwarning_16502901463558133");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16502901463558133 = null;
+viewergrid_16502901463558133 = $3Dmol.createViewerGrid($("#3dmolviewer_16502901463558133"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
+viewer_16502901463558133 = viewergrid_16502901463558133[0][0];
+viewergrid_16502901463558133[0][0].zoomTo();viewergrid_16502901463558133[0][1].zoomTo();viewergrid_16502901463558133[0][2].zoomTo();	viewergrid_16502901463558133[0][0].addModel("4\n\nN       0.0961758       0.0137254       0.1108604      -0.0122340      -0.0017463      -0.0141057\nH      -0.4973546       0.2946055       0.8535526      -0.3677188       0.1622816       0.4143224\nH       0.7093592       0.7070993      -0.2441077       0.3411584       0.4045997      -0.2304920\nH       0.4632196      -0.9053302       0.1689946       0.1965647      -0.5426142       0.0121831\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901463558133[0][1].addModel("4\n\nN       0.0961758       0.0137254       0.1108604       0.0429949       0.0565972      -0.0442967\nH      -0.4973546       0.2946055       0.8535526      -0.2535520       0.1383357       0.3124294\nH       0.7093592       0.7070993      -0.2441077      -0.5001939      -0.5692808       0.2945721\nH       0.4632196      -0.9053302       0.1689946       0.1562870      -0.3555313       0.0085468\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901463558133[0][2].addModel("4\n\nN       0.0961758       0.0137254       0.1108604      -0.0466954       0.0612368       0.0329181\nH      -0.4973546       0.2946055       0.8535526       0.4197779      -0.1852980      -0.5200048\nH       0.7093592       0.7070993      -0.2441077      -0.0257480       0.0007105       0.0167187\nH       0.4632196      -0.9053302       0.1689946       0.2548512      -0.6663613       0.0458549\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901463558133[0][0].setStyle({"stick": {}});
+	viewergrid_16502901463558133[0][1].setStyle({"stick": {}});
+	viewergrid_16502901463558133[0][2].setStyle({"stick": {}});
+	viewergrid_16502901463558133[0][0].animate({"loop": "backAndForth"});
+	viewergrid_16502901463558133[0][1].animate({"loop": "backAndForth"});
+	viewergrid_16502901463558133[0][2].animate({"loop": "backAndForth"});
+	viewergrid_16502901463558133[0][0].zoomTo();
+	viewergrid_16502901463558133[0][1].zoomTo();
+	viewergrid_16502901463558133[0][2].zoomTo();
+viewergrid_16502901463558133[0][2].render();
+viewergrid_16502901463558133[0][1].render();
+viewergrid_16502901463558133[0][0].render();
+});
+</script></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;These are the four H stretching modes of CH4.&quot;</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h3</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h4</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the four H stretching modes of CH4.
+</pre></div>
+</div>
+<div class="output text_html"><div id="3dmolviewer_16502901472127056"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_16502901472127056" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_16502901472127056 = null;
+var warn = document.getElementById("3dmolwarning_16502901472127056");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16502901472127056 = null;
+viewergrid_16502901472127056 = $3Dmol.createViewerGrid($("#3dmolviewer_16502901472127056"),{rows: 1, cols: 4, control_all: true},{backgroundColor:"white"});
+viewer_16502901472127056 = viewergrid_16502901472127056[0][0];
+viewergrid_16502901472127056[0][0].zoomTo();viewergrid_16502901472127056[0][1].zoomTo();viewergrid_16502901472127056[0][2].zoomTo();viewergrid_16502901472127056[0][3].zoomTo();	viewergrid_16502901472127056[0][0].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0000000      -0.0000009      -0.0000003\nH       0.5489997       0.7922034       0.4919110       0.2536850       0.3660432       0.2272971\nH       0.6769972      -0.8058792      -0.2512524       0.3128196      -0.3723701      -0.1160927\nH      -0.7710148      -0.3700500       0.6629997      -0.3562465      -0.1709947       0.3063464\nH      -0.4550622       0.3838059      -0.9036583      -0.2102577       0.1773327      -0.4175466\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901472127056[0][1].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0077241       0.0344092       0.0839776\nH       0.5489997       0.7922034       0.4919110      -0.2953023      -0.4141416      -0.2407360\nH       0.6769972      -0.8058792      -0.2512524       0.3019003      -0.3527562      -0.0907592\nH      -0.7710148      -0.3700500       0.6629997       0.3110419       0.1592979      -0.2471824\nH      -0.4550622       0.3838059      -0.9036583      -0.2256033       0.1975943      -0.4219636\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901472127056[0][2].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0149095      -0.0836173       0.0328902\nH       0.5489997       0.7922034       0.4919110       0.2616416       0.3612297       0.2465600\nH       0.6769972      -0.8058792      -0.2512524      -0.2795597       0.3061844       0.1109267\nH      -0.7710148      -0.3700500       0.6629997       0.4074213       0.1754978      -0.3450876\nH      -0.4550622       0.3838059      -0.9036583      -0.2118474       0.1534357      -0.4043054\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901472127056[0][3].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0895207       0.0109575      -0.0127235\nH       0.5489997       0.7922034       0.4919110       0.1895490       0.3102659       0.1875379\nH       0.6769972      -0.8058792      -0.2512524       0.3489224      -0.4404296      -0.1415457\nH      -0.7710148      -0.3700500       0.6629997       0.3384387       0.1765956      -0.3145687\nH      -0.4550622       0.3838059      -0.9036583       0.1897800      -0.1769965       0.4201848\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16502901472127056[0][0].setStyle({"stick": {}});
+	viewergrid_16502901472127056[0][1].setStyle({"stick": {}});
+	viewergrid_16502901472127056[0][2].setStyle({"stick": {}});
+	viewergrid_16502901472127056[0][3].setStyle({"stick": {}});
+	viewergrid_16502901472127056[0][0].animate({"loop": "backAndForth"});
+	viewergrid_16502901472127056[0][1].animate({"loop": "backAndForth"});
+	viewergrid_16502901472127056[0][2].animate({"loop": "backAndForth"});
+	viewergrid_16502901472127056[0][3].animate({"loop": "backAndForth"});
+	viewergrid_16502901472127056[0][0].zoomTo();
+	viewergrid_16502901472127056[0][1].zoomTo();
+	viewergrid_16502901472127056[0][2].zoomTo();
+	viewergrid_16502901472127056[0][3].zoomTo();
+viewergrid_16502901472127056[0][3].render();
+viewergrid_16502901472127056[0][2].render();
+viewergrid_16502901472127056[0][1].render();
+viewergrid_16502901472127056[0][0].render();
+});
+</script></div></div>
 </div>
 </div>
 </div>
@@ -1270,8 +1420,8 @@ viewergrid_16461031086266248[0][0].render();
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="ir.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1280,27 +1430,25 @@ viewergrid_16461031086266248[0][0].render();
             <p class="prev-next-title">IR spectroscopy</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="magnetic.html" title="next page">
+    <a class='right-next' id="next-link" href="ir_raman_exercises.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Magnetic resonances</p>
+        <p class="prev-next-title">Exercises</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

@@ -12,9 +12,15 @@ getting insights into matter at its fundamental scale.
 But quantum chemistry is also very complex. Answering a chemical question requires selecting parameters among a wide variety of choices.
 Choosing a model system, an electronic structure method, a basis set, a set of properties, and a wide array of parameters which can affect the results in small but sometimes meaningful way... It can be a very daunting task, even for veterans of the field.
 
+```{figure} /img/cover.png
+:scale: 100%
+:align: left
+```
+
 Similarly, for those who wish to get a deeper understanding of a method, going through the pages of equation often riddled with inconsistent notations and formulations is very challenging. And at the end, the link between the equation and the computer implementation found in existing softwares can be vague at best.
 
 We believe that a core issue is that humans are not good at learning in abstract terms. We can get very far with a lecture or a textbook, but we will never build as much intuition about how a clock work as by simply breaking one apart and rebuilding it from scratch.
+
 
 This is exactly the aim of this page, allowing a hands-on approach to computational chemistry.
 Together we will dismantle the black box that a computational chemistry code often seems to be, 

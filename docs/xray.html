@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -682,19 +689,29 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
         </div>
     </div>
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>X-ray spectroscopies</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="x-ray-spectroscopies">
 <h1>X-ray spectroscopies<a class="headerlink" href="#x-ray-spectroscopies" title="Permalink to this headline">¶</a></h1>
-<p>Tuning the photon energy to the X-ray regime, processes involving the transition of core electrons can be probed, providing measurements which are very sensitive to elements and local environment <span id="id1">[<a class="reference internal" href="refs.html#id2">BYY17</a>, <a class="reference internal" href="refs.html#id115">ND18</a>, <a class="reference internal" href="refs.html#id3">vBL16</a>]</span>. Here we will discuss the modeling of four such spectroscopies, as illustrated in <a class="reference internal" href="#xray-processes"><span class="std std-numref">Fig. 3</span></a></p>
+<p>Tuning the photon energy to the X-ray regime, processes involving the transition of core electrons can be probed, providing measurements which are very sensitive to elements and local environment <span id="id1">[<a class="reference internal" href="refs.html#id6" title="U. Bergmann, V. K. Yachandra, and J. Yano. X-Ray Free Electron Lasers: Applications in Materials, Chemistry, and Biology. The Royal Society of Chemistry, 2017. ISBN 978-1-84973-100-3. URL: https://doi.org/10.1039/9781782624097.">BYY17</a>, <a class="reference internal" href="refs.html#id119" title="P. Norman and A. Dreuw. Simulating x-ray spectroscopies and calculating core-excited states of molecules. Chem. Rev., 118:7208-7248, 2018. URL: https://doi.org/10.1021/acs.chemrev.8b00156.">ND18</a>, <a class="reference internal" href="refs.html#id7" title="J. A. van Bokhoven and C. Laberti. X-Ray Absorption and X-Ray Emission Spectroscopy: Theory and Applications. John Wiley &amp; Sons, 2016. ISBN 9781118844236. URL: https://doi.org/10.1002/9781118844243.">vBL16</a>]</span>. Here we will discuss the modeling of four such spectroscopies, as illustrated in <a class="reference internal" href="#xray-processes"><span class="std std-numref">Fig. 3</span></a></p>
 <div class="figure align-default" id="xray-processes">
 <img alt="../_images/processes.svg" src="../_images/processes.svg" /><p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Electronic processes involved in the X-ray sectroscopies discussed in this tutorial.</span><a class="headerlink" href="#xray-processes" title="Permalink to this image">¶</a></p>
 </div>
@@ -720,6 +737,10 @@
 <li><p>For higher photon energies the contribution of <em>multipole-allowed</em> states enables transitions which are electric-dipole forbidden.</p></li>
 </ul>
 <p>This tutorial will now discuss the calculation of these X-ray spectra, focusing on how this is achieved using TDDFT and ADC. Following <a class="reference internal" href="xray_calc.html"><span class="doc std std-doc">illustrations</span></a> of how the processes can be modeled, basic <a class="reference internal" href="xray_analysis.html"><span class="doc std std-doc">analysis</span></a> schemes and <a class="reference internal" href="xray_aspects.html"><span class="doc std std-doc">aspects</span></a> raised above will be considered in some detail. The tutorial continues with a discussion on considering <a class="reference internal" href="xray_large.html"><span class="doc std std-doc">larger systems</span></a> and more exotic, <a class="reference internal" href="xray_nonstandard.html"><span class="doc std std-doc">non-standard calculations</span></a>, before closing with some general <a class="reference internal" href="xray_rec.html"><span class="doc std std-doc">recommendations</span></a> for practical calculations and <a class="reference internal" href="xray_exercises.html"><span class="doc std std-doc">exercises</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Add more references.</p>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -746,8 +767,8 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="magnetic.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -764,19 +785,17 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

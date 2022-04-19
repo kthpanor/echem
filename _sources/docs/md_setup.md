@@ -1,3 +1,4 @@
+<!-- #region -->
 # Ensembles and time integration
 
 Workflow of a simulation.
@@ -91,10 +92,10 @@ These two equations, together with the expression for the acceleration found in 
 
 
 ```{figure} ../img/md/MD_euler_even.svg
----
 width: 300px
 name: fig_euler
 ---
+<!-- #endregion -->
 Simulation of a harmonic oscillator using Euler integration. The integration time step, $\Delta t$ is given as a fraction of the period of the oscillator, $T$.
 ```
 

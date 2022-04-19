@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -665,7 +672,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -712,13 +719,63 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Exact states</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ehrenfest-theorem-based">
+   Ehrenfest theorem based
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#complex-polarization-propagator">
+   Complex polarization propagator
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#relaxation-in-density-matrix-theory">
+     Relaxation in density-matrix theory
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#relaxation-in-wave-function-theory">
+     Relaxation in wave-function theory
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#polarizability">
+     Polarizability
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#linear-absorption-cross-section">
+     Linear absorption cross section
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="exact-states">
 <h1>Exact states<a class="headerlink" href="#exact-states" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ehrenfest-theorem-based">
-<h2>Ehrenfest theorem based<a class="headerlink" href="#ehrenfest-theorem-based" title="Permalink to this headline">¶</a></h2>
+<span id="sec-exact-response"></span><h2>Ehrenfest theorem based<a class="headerlink" href="#ehrenfest-theorem-based" title="Permalink to this headline">¶</a></h2>
 <p>The exact eigenstates of the molecular Hamiltonian are never available in practice and any attempt to derive response functions for exact states may therefore appear as an academic exercise. However, there are several good and practical reasons to do so:</p>
 <ul class="simple">
 <li><p>First and foremost, it reveals the dependence of molecular response properties on intrinsic properties of the system, such as excitation energies and transition moments, and it thereby connects different spectroscopies</p></li>
@@ -885,7 +942,7 @@ energies. Before being exposed to the perturbation, we assume the molecule to be
 </div>
 <div class="section" id="relaxation-in-wave-function-theory">
 <h3>Relaxation in wave-function theory<a class="headerlink" href="#relaxation-in-wave-function-theory" title="Permalink to this headline">¶</a></h3>
-<p>Expressed in terms of the phase-isolated wave function, the above equation takes the form <span id="id1">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span></p>
+<p>Expressed in terms of the phase-isolated wave function, the above equation takes the form <span id="id1">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span></p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
 \label{cpp-Ehrenfest}
@@ -1000,7 +1057,7 @@ are dictated by the first terms in the above equations. At least the diagonal co
 </div>
 <div class="section" id="linear-absorption-cross-section">
 <h3>Linear absorption cross section<a class="headerlink" href="#linear-absorption-cross-section" title="Permalink to this headline">¶</a></h3>
-<p>From the imaginary part of the polarizability, we obtain the linear absorption cross section <span id="id2">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span></p>
+<p>From the imaginary part of the polarizability, we obtain the linear absorption cross section <span id="id2">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span></p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}\label{cross-section}
 \sigma(\omega) = 
@@ -1036,8 +1093,8 @@ are dictated by the first terms in the above equations. At least the diagonal co
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="response.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1054,19 +1111,17 @@ are dictated by the first terms in the above equations. At least the diagonal co
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

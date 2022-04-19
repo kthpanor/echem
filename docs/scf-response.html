@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -682,7 +689,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -807,13 +814,141 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Hartree–Fock</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameterization">
+   Parameterization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#equation-of-motion">
+   Equation of motion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#response-functions">
+   Response functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#matrix-elements">
+   Matrix elements
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#electronic-hessian">
+     Electronic Hessian
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#overlap-matrix">
+     Overlap matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#property-gradient">
+     Property gradient
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#numerical-example">
+     Numerical example
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#e-2-matrix">
+       E[2] matrix
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#s-2-matrix">
+       S[2] matrix
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#v-1-gradient">
+       V[1] gradient
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#electric-dipole-polarizability">
+   Electric-dipole polarizability
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#uv-vis-spectrum">
+   UV/vis spectrum
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#generlized-eigenvalue-equation">
+     Generlized eigenvalue equation
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#excitation-energies">
+       Excitation energies
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#transition-moments">
+       Transition moments
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tamm-dancoff-approximation">
+     Tamm–Dancoff approximation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#natural-transition-orbitals">
+     Natural transition orbitals
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       Numerical example
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#complex-polarizability">
+   Complex polarizability
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="hartreefock">
 <h1>Hartree–Fock<a class="headerlink" href="#hartreefock" title="Permalink to this headline">¶</a></h1>
 <p>Compared to exact-state theory, the first and foremost difference is that, in approximate-state methods, state vectors are in general not eigenstates of the unperturbed Hamiltonian but are rather formed in terms of Slater determinants. Apart from this, the steps to be taken in the derivation of response functions are very similar in the two situations.</p>
-<p>In Hartree–Fock and Kohn–Sham density functional theory, the reference state is described by a single Slater determinant, also referred to as the self-consistent field (SCF) approximation. The detailed derivation of response functions in this approximation can be found in <span id="id1">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span> but the key steps are indicated below.</p>
+<p>In Hartree–Fock and Kohn–Sham density functional theory, the reference state is described by a single Slater determinant, also referred to as the self-consistent field (SCF) approximation. The detailed derivation of response functions in this approximation can be found in <span id="id1">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span> but the key steps are indicated below.</p>
 <div class="section" id="parameterization">
 <h2>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">¶</a></h2>
 <p>Parameterization of SCF states:</p>
@@ -1382,11 +1517,8 @@ alpha_zz(w=0.0656):  7.244817
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.):
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [0.291534]
-Transition moments (a.u.): [ 1.531492  0.       -0.      ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.): [0.291534]
+Transition moments (a.u.): [ 1.531492 -0.       -0.      ]
 Oscillator strength: [0.455855]
 </pre></div>
 </div>
@@ -1492,8 +1624,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="transition-moments">
 <h4>Transition moments<a class="headerlink" href="#transition-moments" title="Permalink to this headline">¶</a></h4>
 <p>Since <span class="math notranslate nohighlight">\((\Omega \Lambda)^{-1} = \Lambda^{-1} \Omega^{-1}\)</span>, we can form the inverse of the RPA matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-279f873e-d1b2-4c55-b41d-ad79a0ed735e">
-<span class="eqno">(197)<a class="headerlink" href="#equation-279f873e-d1b2-4c55-b41d-ad79a0ed735e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-7a325910-f033-437a-83c5-e55befba4815">
+<span class="eqno">(192)<a class="headerlink" href="#equation-7a325910-f033-437a-83c5-e55befba4815" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \left( E^{[2]} - \omega S^{[2]} \right)^{-1} =
   X \left[ X^\dagger \left( E^{[2]} - \omega S^{[2]} \right) X \right]^{-1} X^\dagger
 \end{equation}\]</div>
@@ -1543,10 +1675,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -1.531506
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.):  1.531506
 </pre></div>
 </div>
 </div>
@@ -1556,8 +1685,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="tamm-dancoff-approximation">
 <h3>Tamm–Dancoff approximation<a class="headerlink" href="#tamm-dancoff-approximation" title="Permalink to this headline">¶</a></h3>
 <p>The Tamm–Dancoff approximation (TDA) corresponds to setting <span class="math notranslate nohighlight">\(B=0\)</span> in the electronic Hessian and diagonalize matrix block <span class="math notranslate nohighlight">\(A\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-201ef375-9651-4ff9-a1d3-03c361e4bf7b">
-<span class="eqno">(198)<a class="headerlink" href="#equation-201ef375-9651-4ff9-a1d3-03c361e4bf7b" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-70b2075a-42b5-42d8-9161-7b1a0d4ff546">
+<span class="eqno">(193)<a class="headerlink" href="#equation-70b2075a-42b5-42d8-9161-7b1a0d4ff546" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 E^{[2]} &amp; = &amp;
 	\begin{pmatrix}
     \rule[-5pt]{0pt}{20pt}
@@ -1727,8 +1856,8 @@ T = U \Lambda V^T
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0. -0. -0.  0. -0. -0. -0.  1.]
-Electron orbital no. 1: [-1.    0.    0.    0.   -0.    0.   -0.    0.   -0.    0.04  0.   -0.    0.   -0.   -0.    0.   -0.   -0.  ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0.  0. -0. -0.  0. -0. -0. -1.]
+Electron orbital no. 1: [-1.   -0.    0.    0.    0.    0.   -0.   -0.   -0.    0.04  0.   -0.    0.    0.   -0.   -0.   -0.   -0.  ]
 </pre></div>
 </div>
 </div>
@@ -1738,7 +1867,7 @@ Electron orbital no. 1: [-1.    0.    0.    0.   -0.    0.   -0.    0.   -0.    
 </div>
 <div class="section" id="complex-polarizability">
 <h2>Complex polarizability<a class="headerlink" href="#complex-polarizability" title="Permalink to this headline">¶</a></h2>
-<p>The complex polarizability is determined from the linear response function according to <span id="id3">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span></p>
+<p>The complex polarizability is determined from the linear response function according to <span id="id3">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span></p>
 <div class="math notranslate nohighlight">
 \[
 \alpha_{\alpha\beta}(\omega) = -
@@ -1829,8 +1958,8 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="ci-response.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1847,19 +1976,17 @@ E^{[2]} - (\omega + i\gamma) S^{[2]}
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

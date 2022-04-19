@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -665,7 +672,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -740,6 +747,14 @@
        Euler integration
       </a>
      </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#width-300px-name-fig-euler">
+     width: 300px
+name: fig_euler
+    </a>
+    <ul class="nav section-nav flex-column">
      <li class="toc-h3 nav-item toc-entry">
       <a class="reference internal nav-link" href="#verlet-integration">
        Verlet integration
@@ -762,10 +777,119 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Ensembles and time integration</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Ensembles and time integration
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#choice-of-ensemble">
+     Choice of ensemble
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#microcanonical-ensemble-textit-nve">
+       Microcanonical ensemble (
+       <span class="math notranslate nohighlight">
+        \(\textit{NVE}\)
+       </span>
+       )
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#canonical-ensemble-textit-nvt">
+       Canonical ensemble (
+       <span class="math notranslate nohighlight">
+        \(\textit{NVT}\)
+       </span>
+       )
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#thermostat">
+         Thermostat
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#isothermal-isobaric-ensemble-textit-npt">
+       Isothermal-isobaric ensemble
+       <span class="math notranslate nohighlight">
+        \((\textit{NPT})\)
+       </span>
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#barostat">
+         Barostat
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#time-integration">
+     Time integration
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#euler-integration">
+       Euler integration
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#width-300px-name-fig-euler">
+     width: 300px
+name: fig_euler
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#verlet-integration">
+       Verlet integration
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#velocity-verlet">
+       Velocity Verlet
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="ensembles-and-time-integration">
+  <!-- #region -->
+<div class="tex2jax_ignore mathjax_ignore section" id="ensembles-and-time-integration">
 <h1>Ensembles and time integration<a class="headerlink" href="#ensembles-and-time-integration" title="Permalink to this headline">¶</a></h1>
 <p>Workflow of a simulation.</p>
 <ul class="simple">
@@ -846,11 +970,15 @@
 \mathbf{v}_{i+1}&amp; = \mathbf{v}_i + \mathbf{a}_i \Delta t + \mathcal{O}(\Delta t^2).
 \end{align*}\]</div>
 <p>These two equations, together with the expression for the acceleration found in Equation \eqref{eq:acceleration} make up the Euler method. For each step, the acceleration is obtained from Equation \eqref{eq:acceleration}, then the velocities are calculated with Equation \eqref{eq:eulerv} and finally a new set of coordinates with Equation \eqref{eq:eulerr} before the process is repeated, step by step. This is an extremely simple method, with a local truncation error in order of <span class="math notranslate nohighlight">\(\Delta t^2\)</span> for each step and a global error of first order for the trajectory as a whole. This can be seen from the fact that a trajectory of length <span class="math notranslate nohighlight">\(T\)</span> requires <span class="math notranslate nohighlight">\(M = T / \Delta t\)</span> steps. For each step, an error of order <span class="math notranslate nohighlight">\(\Delta t^2\)</span> is added, leading to a total error of <span class="math notranslate nohighlight">\(T/ \Delta t \hspace{1mm} \mathcal{O}(\Delta t^2) = \mathcal{O}(\Delta t)\)</span>, i.e.\ first order. A simple example of integration using the Euler method is shown in Figure \ref{fig:euler}.</p>
-<div class="figure align-default" id="fig-euler">
-<a class="reference internal image-reference" href="../_images/MD_euler_even.svg"><img alt="../_images/MD_euler_even.svg" src="../_images/MD_euler_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-euler" title="Permalink to this image">¶</a></p>
+<div class="figure align-default">
+<img alt="../_images/MD_euler_even.svg" src="../_images/MD_euler_even.svg" /></div>
 </div>
 </div>
+<div class="section" id="width-300px-name-fig-euler">
+<h2>width: 300px
+name: fig_euler<a class="headerlink" href="#width-300px-name-fig-euler" title="Permalink to this headline">¶</a></h2>
+<!-- #endregion -->
+<p>Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <div class="section" id="verlet-integration">
 <h3>Verlet integration<a class="headerlink" href="#verlet-integration" title="Permalink to this headline">¶</a></h3>
 <p>A better choice of integrator can be found in the Verlet algorithm.[cite verlet1967] In this algorithm, the coordinates of the previous time step, <span class="math notranslate nohighlight">\(\mathbf{R}_{i-1}\)</span>, are required, which can be obtained by replacing <span class="math notranslate nohighlight">\(\Delta t\)</span> with <span class="math notranslate nohighlight">\(-\Delta t\)</span> in Equation \eqref{eq:md1}:</p>
@@ -868,7 +996,7 @@
 <p>Neglecting higher order terms and using the acceleration from Equation \eqref{eq:acceleration}, this expression makes up the Verlet algorithm, with a local truncation error in the order of <span class="math notranslate nohighlight">\(\Delta t^4\)</span>. The global error, however, is of second order,[cite jensen2006] due to the presence of two previous coordinates in the expression. Figure \ref{fig:verlet} shows the improvement over the Euler method.</p>
 <div class="figure align-default" id="fig-md-verlet-even">
 <a class="reference internal image-reference" href="../_images/MD_verlet_even.svg"><img alt="../_images/MD_verlet_even.svg" src="../_images/MD_verlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="velocity-verlet">
@@ -905,7 +1033,7 @@
 <p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in Figure \ref{fig:vverlet}, where the total error of the velocity Verlet algorithm is comparable to that of the Verlet algorithm in Figure \ref{fig:verlet}.</p>
 <div class="figure align-default" id="fig-md-vverlet-even">
 <a class="reference internal image-reference" href="../_images/MD_vverlet_even.svg"><img alt="../_images/MD_vverlet_even.svg" src="../_images/MD_vverlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 27 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -933,8 +1061,8 @@
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="md_ffs.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -951,19 +1079,17 @@
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

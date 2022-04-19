@@ -41,16 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -170,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -389,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -505,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -629,7 +638,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -680,7 +689,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -771,13 +780,107 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>LoProp charges and polarisabilities</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reference-loprop-calculations">
+   Reference LoProp calculations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#loprop-transformation">
+   LoProp transformation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#t0-atomic-orbital-rearrangement">
+     T0: Atomic orbital rearrangement
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#t1-gramschmidt-orthogonalization-of-atomic-blocks">
+     T1: Gram–Schmidt orthogonalization of atomic blocks
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#t2-lodwin-orthonormalization-of-occupied-and-virtual-blocks">
+     T2: Lödwin orthonormalization of occupied and virtual blocks
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#t3-occupiedvirtual-projection">
+     T3: Occupied–virtual projection
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#t4-lodwin-orthogonalizatio-of-virtual-blocks">
+     T4: Lödwin  orthogonalizatio of virtual blocks
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#localization-of-first-order-properties">
+   Localization of first-order properties
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#localized-charges">
+     Localized charges
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#localized-dipole-moments">
+     Localized dipole moments
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#localization-of-second-order-properties">
+   Localization of  second-order properties
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#polarizabilities-from-response-functions">
+     Polarizabilities from response functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#polarizabilities-from-perturbed-density-matrices">
+     Polarizabilities from perturbed density matrices
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#localized-polarizabilities">
+     Localized polarizabilities
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="loprop-charges-and-polarisabilities">
 <span id="sec-loprop"></span><h1>LoProp charges and polarisabilities<a class="headerlink" href="#loprop-charges-and-polarisabilities" title="Permalink to this headline">¶</a></h1>
-<p>The <em>localised properties</em> (LoProp) method <span id="id1">[<a class="reference internal" href="refs.html#id54">GLKarlstrom04</a>]</span> is a computationally inexpensive scheme that gives physically meaningful localised charges and polarisabilities that sum up to the corresponding molecular properties.</p>
-<p>In this scheme, we classify atomic orbitals in the basis set to be either <em>occupied</em> or <em>virtual</em> based on the associated atomic electron configurations. The former category includes both doubly and partially occupied sub-shells.</p>
+<p>The <em>localised properties</em> (LoProp) method <span id="id1">[<a class="reference internal" href="refs.html#id54" title="Laura Gagliardi, Roland Lindh, and Gunnar Karlström. Local properties of quantum chemical systems: The LoProp approach. J. Chem. Phys., 121(10):4494-4500, 2004.">GLKarlstrom04</a>]</span> is a computationally inexpensive scheme that gives physically meaningful localised charges and polarisabilities that sum up to the corresponding molecular properties.</p>
+<p>In this scheme, we classify atomic orbitals in the basis set to be either <em>occupied</em> or <em>virtual</em> based on the associated atomic electron configurations. The former category includes both fully and partially occupied atomic sub-shells.</p>
 <p>We note that the family of atomic natiural orbital (ANO) basis sets is well suited for LoProp calculations as the basis functions are close to the orbitals of the atoms.</p>
 <div class="section" id="reference-loprop-calculations">
 <h2>Reference LoProp calculations<a class="headerlink" href="#reference-loprop-calculations" title="Permalink to this headline">¶</a></h2>
@@ -832,8 +935,8 @@ H:  0.1191
 
 Localized polarizabilities (a.u.):
      xx      xy      xz      yy      yz      zz
-F: [ 0.4371 -0.      0.      0.4371 -0.      1.917 ]
-H: [ 0.226   0.     -0.      0.226   0.      1.9525]
+F: [ 0.4371 -0.     -0.      0.4371  0.      1.917 ]
+H: [ 0.226  -0.      0.      0.226  -0.      1.9525]
 </pre></div>
 </div>
 </div>
@@ -887,7 +990,7 @@ H: [ 0.226   0.     -0.      0.226   0.      1.9525]
 <div class="section" id="t0-atomic-orbital-rearrangement">
 <h3>T0: Atomic orbital rearrangement<a class="headerlink" href="#t0-atomic-orbital-rearrangement" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="t0-transformation">
-<img alt="../_images/loprop_T0.svg" src="../_images/loprop_T0.svg" /><p class="caption"><span class="caption-number">Fig. 33 </span><span class="caption-text">Re-arranging atomic orbitals.</span><a class="headerlink" href="#t0-transformation" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_T0.svg" src="../_images/loprop_T0.svg" /><p class="caption"><span class="caption-number">Fig. 31 </span><span class="caption-text">Re-arranging atomic orbitals.</span><a class="headerlink" href="#t0-transformation" title="Permalink to this image">¶</a></p>
 </div>
 <p>For hydrogen floride with the user defined order of atoms (F before H), the AOs are arranged as follow:</p>
 <p><font color='red'><span class="math notranslate nohighlight">\(\chi_{1s}^{F}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{F}\)</span></font>,  <span class="math notranslate nohighlight">\(\chi_{3s}^{F}\)</span>
@@ -952,7 +1055,7 @@ H: [ 0.226   0.     -0.      0.226   0.      1.9525]
 <div class="section" id="t1-gramschmidt-orthogonalization-of-atomic-blocks">
 <h3>T1: Gram–Schmidt orthogonalization of atomic blocks<a class="headerlink" href="#t1-gramschmidt-orthogonalization-of-atomic-blocks" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="t1-transformation">
-<img alt="../_images/loprop_T1.svg" src="../_images/loprop_T1.svg" /><p class="caption"><span class="caption-number">Fig. 34 </span><span class="caption-text">Diagonalization of the atomic blocks.</span><a class="headerlink" href="#t1-transformation" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_T1.svg" src="../_images/loprop_T1.svg" /><p class="caption"><span class="caption-number">Fig. 32 </span><span class="caption-text">Diagonalization of the atomic blocks.</span><a class="headerlink" href="#t1-transformation" title="Permalink to this image">¶</a></p>
 </div>
 <p>Orthonormality in the atomic blocks of the overlap matrix is reached with a Gram–Schmidt orthogonalization, or equivalently with a Cholesky factorization. Using Gram-Schmidt orthogonalization ensures that the atomic subspace of the occupied basis functions is left intact. We have</p>
 <p><span class="math notranslate nohighlight">\(S_0 = L L^T\)</span></p>
@@ -985,10 +1088,7 @@ H: [ 0.226   0.     -0.      0.226   0.      1.9525]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Occupied orbitals:
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [0, 1, 3, 4, 5, 9]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Occupied orbitals: [0, 1, 3, 4, 5, 9]
 Virtual orbitals: [2, 6, 7, 8, 10] 
 
 [[ 1.     -0.      0.      0.      0.      0.      0.      0.      0.      0.0341  0.0501]
@@ -1010,7 +1110,7 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 <div class="section" id="t2-lodwin-orthonormalization-of-occupied-and-virtual-blocks">
 <h3>T2: Lödwin orthonormalization of occupied and virtual blocks<a class="headerlink" href="#t2-lodwin-orthonormalization-of-occupied-and-virtual-blocks" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="t2-transformation">
-<img alt="../_images/loprop_T2.svg" src="../_images/loprop_T2.svg" /><p class="caption"><span class="caption-number">Fig. 35 </span><span class="caption-text">Diagonalization of the occupied and virtual blocks.</span><a class="headerlink" href="#t2-transformation" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_T2.svg" src="../_images/loprop_T2.svg" /><p class="caption"><span class="caption-number">Fig. 33 </span><span class="caption-text">Diagonalization of the occupied and virtual blocks.</span><a class="headerlink" href="#t2-transformation" title="Permalink to this image">¶</a></p>
 </div>
 <p>The use of Löwdin orthonormalization ensures that the orbitals in the occupied and virtual subspaces are made orthonormal with a minimal modification as compared to the original atomic orbitals.</p>
 <div class="cell docutils container">
@@ -1040,17 +1140,17 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.     -0.     -0.0209 -0.      0.     -0.      0.      0.     -0.0121  0.      0.0573]
- [-0.      1.     -0.1143 -0.      0.     -0.      0.      0.     -0.0765 -0.      0.2767]
- [-0.0209 -0.1143  1.     -0.      0.     -0.0414  0.      0.      0.      0.4636 -0.    ]
- [-0.     -0.     -0.      1.     -0.     -0.      0.      0.     -0.     -0.     -0.    ]
- [ 0.      0.      0.     -0.      1.      0.      0.      0.      0.      0.     -0.    ]
- [-0.     -0.     -0.0414 -0.      0.      1.      0.      0.     -0.0698 -0.     -0.0505]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.     -0.     -0.0209  0.      0.      0.      0.      0.     -0.0121  0.      0.0573]
+ [ 0.      1.     -0.1143  0.      0.     -0.      0.      0.     -0.0765 -0.      0.2767]
+ [-0.0209 -0.1143  1.     -0.     -0.     -0.0414  0.      0.      0.      0.4636 -0.    ]
+ [ 0.      0.     -0.      1.     -0.      0.      0.      0.     -0.     -0.      0.    ]
+ [ 0.      0.     -0.     -0.      1.     -0.      0.      0.      0.      0.      0.    ]
+ [ 0.     -0.     -0.0414  0.     -0.      1.      0.      0.     -0.0698  0.     -0.0505]
  [ 0.      0.      0.      0.      0.      0.      1.      0.      0.      0.      0.    ]
  [ 0.      0.      0.      0.      0.      0.      0.      1.      0.      0.      0.    ]
  [-0.0121 -0.0765  0.     -0.      0.     -0.0698  0.      0.      1.      0.5822 -0.    ]
- [ 0.     -0.      0.4636 -0.      0.     -0.      0.      0.      0.5822  1.     -0.1497]
- [ 0.0573  0.2767 -0.     -0.     -0.     -0.0505  0.      0.     -0.     -0.1497  1.    ]]
+ [ 0.     -0.      0.4636 -0.      0.      0.      0.      0.      0.5822  1.     -0.1497]
+ [ 0.0573  0.2767 -0.      0.      0.     -0.0505  0.      0.     -0.     -0.1497  1.    ]]
 </pre></div>
 </div>
 </div>
@@ -1059,7 +1159,7 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 <div class="section" id="t3-occupiedvirtual-projection">
 <h3>T3: Occupied–virtual projection<a class="headerlink" href="#t3-occupiedvirtual-projection" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="t3-transformation">
-<img alt="../_images/loprop_T3.svg" src="../_images/loprop_T3.svg" /><p class="caption"><span class="caption-number">Fig. 36 </span><span class="caption-text">Projecting out the occupied space from the virtual.</span><a class="headerlink" href="#t3-transformation" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_T3.svg" src="../_images/loprop_T3.svg" /><p class="caption"><span class="caption-number">Fig. 34 </span><span class="caption-text">Projecting out the occupied space from the virtual.</span><a class="headerlink" href="#t3-transformation" title="Permalink to this image">¶</a></p>
 </div>
 <p>Components from the occipied subspace are projected out of the virtual subspace by means of Gram–Schmidt orthonormalizaton.</p>
 <div class="cell docutils container">
@@ -1078,17 +1178,17 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.     -0.     -0.     -0.      0.     -0.      0.      0.     -0.      0.      0.    ]
- [-0.      1.      0.     -0.      0.     -0.      0.      0.      0.     -0.      0.    ]
- [-0.      0.      0.7698  0.     -0.     -0.      0.      0.     -0.2818  0.      0.1001]
- [-0.     -0.      0.      1.     -0.     -0.      0.      0.      0.     -0.      0.    ]
- [ 0.      0.     -0.     -0.      1.      0.      0.      0.     -0.      0.      0.    ]
- [-0.     -0.     -0.     -0.      0.      1.      0.      0.     -0.     -0.      0.    ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1.     -0.     -0.      0.      0.      0.      0.      0.     -0.      0.      0.    ]
+ [ 0.      1.      0.      0.      0.     -0.      0.      0.      0.     -0.     -0.    ]
+ [-0.      0.      0.7698  0.      0.     -0.      0.      0.     -0.2818  0.      0.1001]
+ [ 0.      0.      0.      1.     -0.      0.      0.      0.      0.     -0.     -0.    ]
+ [ 0.      0.      0.     -0.      1.     -0.      0.      0.     -0.      0.     -0.    ]
+ [ 0.     -0.     -0.      0.     -0.      1.      0.      0.     -0.      0.      0.    ]
  [ 0.      0.      0.      0.      0.      0.      1.      0.      0.      0.      0.    ]
  [ 0.      0.      0.      0.      0.      0.      0.      1.      0.      0.      0.    ]
  [-0.      0.     -0.2818  0.     -0.     -0.      0.      0.      0.6502  0.      0.1055]
- [ 0.     -0.      0.     -0.      0.     -0.      0.      0.      0.      1.     -0.    ]
- [ 0.      0.      0.1001  0.      0.      0.      0.      0.      0.1055 -0.      0.8952]]
+ [ 0.     -0.      0.     -0.      0.      0.      0.      0.      0.      1.      0.    ]
+ [ 0.     -0.      0.1001 -0.     -0.      0.      0.      0.      0.1055  0.      0.8952]]
 </pre></div>
 </div>
 </div>
@@ -1097,7 +1197,7 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 <div class="section" id="t4-lodwin-orthogonalizatio-of-virtual-blocks">
 <h3>T4: Lödwin  orthogonalizatio of virtual blocks<a class="headerlink" href="#t4-lodwin-orthogonalizatio-of-virtual-blocks" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="t4-transformation">
-<img alt="../_images/loprop_T4.svg" src="../_images/loprop_T4.svg" /><p class="caption"><span class="caption-number">Fig. 37 </span><span class="caption-text">Diagonalization the virtual subspace.</span><a class="headerlink" href="#t4-transformation" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_T4.svg" src="../_images/loprop_T4.svg" /><p class="caption"><span class="caption-number">Fig. 35 </span><span class="caption-text">Diagonalization the virtual subspace.</span><a class="headerlink" href="#t4-transformation" title="Permalink to this image">¶</a></p>
 </div>
 <p>The virtual subspace is Löwdin orthonmalised.</p>
 <div class="cell docutils container">
@@ -1117,17 +1217,17 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1. -0. -0. -0.  0. -0.  0. -0. -0.  0.  0.]
- [-0.  1.  0. -0.  0. -0.  0.  0.  0. -0.  0.]
- [-0.  0.  1.  0. -0. -0.  0. -0.  0.  0. -0.]
- [-0. -0.  0.  1. -0. -0.  0. -0.  0. -0.  0.]
- [ 0.  0. -0. -0.  1.  0. -0. -0. -0.  0.  0.]
- [-0. -0. -0. -0.  0.  1.  0. -0. -0. -0.  0.]
- [ 0.  0.  0.  0. -0.  0.  1.  0.  0.  0.  0.]
- [-0.  0. -0. -0. -0. -0.  0.  1.  0.  0. -0.]
- [-0.  0.  0.  0. -0. -0.  0.  0.  1.  0. -0.]
- [ 0. -0.  0. -0.  0. -0.  0.  0.  0.  1. -0.]
- [ 0.  0. -0.  0.  0.  0.  0. -0. -0. -0.  1.]]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 1. -0. -0.  0.  0.  0. -0. -0. -0.  0.  0.]
+ [ 0.  1.  0.  0.  0. -0. -0.  0.  0. -0. -0.]
+ [-0.  0.  1.  0.  0. -0.  0.  0.  0.  0. -0.]
+ [ 0.  0.  0.  1. -0.  0. -0.  0.  0. -0. -0.]
+ [ 0.  0.  0. -0.  1. -0. -0.  0.  0.  0. -0.]
+ [ 0. -0. -0.  0. -0.  1.  0. -0. -0.  0.  0.]
+ [-0.  0.  0. -0. -0.  0.  1. -0.  0.  0.  0.]
+ [-0.  0.  0.  0.  0. -0. -0.  1. -0. -0. -0.]
+ [-0.  0.  0.  0.  0. -0.  0. -0.  1.  0. -0.]
+ [ 0. -0.  0. -0.  0.  0.  0. -0.  0.  1. -0.]
+ [ 0. -0. -0. -0. -0.  0.  0. -0. -0.  0.  1.]]
 </pre></div>
 </div>
 </div>
@@ -1151,16 +1251,16 @@ Virtual orbitals: [2, 6, 7, 8, 10]
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   F 1s    F 2s    F 2px   F 2py   F 2pz   H 1s
  -------------------------------------------------
-[[ 0.9997 -0.2541  0.      0.     -0.0022  0.0123]
- [ 0.0032  1.0527 -0.      0.      0.0229 -0.1253]
+[[ 0.9997 -0.2541  0.     -0.     -0.0022  0.0123]
+ [ 0.0032  1.0527  0.      0.      0.0229 -0.1253]
  [ 0.      0.      0.      0.      0.      0.    ]
  [-0.0183 -0.1215 -0.      0.     -0.1295  1.045 ]
  [ 0.      0.      0.      0.      0.      0.    ]
- [ 0.      0.     -0.      1.      0.      0.    ]
+ [ 0.      0.      0.      1.     -0.      0.    ]
  [ 0.      0.      0.      0.      0.      0.    ]
- [ 0.0033  0.0222 -0.      0.      1.0237 -0.1295]
+ [ 0.0033  0.0222  0.     -0.      1.0237 -0.1295]
  [ 0.      0.      0.      0.      0.      0.    ]
- [ 0.     -0.      1.     -0.     -0.     -0.    ]
+ [ 0.      0.      1.      0.      0.     -0.    ]
  [ 0.      0.      0.      0.      0.      0.    ]]
 </pre></div>
 </div>
@@ -1316,7 +1416,7 @@ mu_AB:
 <p>We note that the nuclear contribution to the total molecular dipole moment here vanished as due to our choice of placing the origin of the coordinate system at the center of nuclear charge.</p>
 <p>The local dipole moment is origin dependent and local origins are therefore used.</p>
 <div class="figure align-center" id="local-origin">
-<img alt="../_images/loprop_local_origin.svg" src="../_images/loprop_local_origin.svg" /><p class="caption"><span class="caption-number">Fig. 38 </span><span class="caption-text">Bond midpoint coordinates.</span><a class="headerlink" href="#local-origin" title="Permalink to this image">¶</a></p>
+<img alt="../_images/loprop_local_origin.svg" src="../_images/loprop_local_origin.svg" /><p class="caption"><span class="caption-number">Fig. 36 </span><span class="caption-text">Bond midpoint coordinates.</span><a class="headerlink" href="#local-origin" title="Permalink to this image">¶</a></p>
 </div>
 <p>We introduce</p>
 <div class="math notranslate nohighlight">
@@ -1361,9 +1461,7 @@ mu_AB:
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mu_(AB):
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [[ 0.5144  0.1471]
+ [[ 0.5144  0.1471]
  [ 0.1471 -0.1116]]
 </pre></div>
 </div>
@@ -1762,8 +1860,8 @@ Molecular polarizability:  3.8695 a.u.
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="resp.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1780,19 +1878,17 @@ Molecular polarizability:  3.8695 a.u.
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

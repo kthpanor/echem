@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -665,7 +672,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -700,7 +707,45 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Polarizable embedding</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subsystems-and-coupling">
+   Subsystems and coupling
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#electron-spill-out-and-exchange-repulsion">
+   Electron spill-out and exchange repulsion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#environment-fragmentation">
+   Environment fragmentation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#local-field-factors-and-intensities">
+   Local field factors and intensities
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="polarizable-embedding">
@@ -718,21 +763,21 @@ atom in-linking.  After partitioning the molecular system into QM and MM regions
 systems, the electronic wave function of the QM system can be determined by solving the wave function model specific equation
 in the presence of external potential generated by the MM region.</p>
 <p>To illustrate this concept, here we consider the QM/MM version of the Kohn–Sham method. The total energy of the molecular system in the KS/MM method is partitioned into three contributions:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aec1fc6c-3277-4082-bfb8-e9d22a16fad5">
-<span class="eqno">(230)<a class="headerlink" href="#equation-aec1fc6c-3277-4082-bfb8-e9d22a16fad5" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-6520576a-2e2c-49a4-9ef4-ff28f19c6c74">
+<span class="eqno">(225)<a class="headerlink" href="#equation-6520576a-2e2c-49a4-9ef4-ff28f19c6c74" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{eq:e_qmmm}
 E = E_\mathrm{MM} + E_\mathrm{MM/QM} + E_\mathrm{QM} \ , 
 \end{equation}\]</div>
 <p>where the first term is the energy of the MM region, the second term is the interaction energy of the QM and MM regions, and
 the last term is the QM region energy. Assuming a polarizable force field describes MM region, the second term  in Eq. \ref{eq:e_qmmm}
 can be expanded as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-efb56b63-cbb2-4016-b8c8-ed9a20d50dda">
-<span class="eqno">(231)<a class="headerlink" href="#equation-efb56b63-cbb2-4016-b8c8-ed9a20d50dda" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-202108f9-34e3-4616-9ee4-f1e99934eb78">
+<span class="eqno">(226)<a class="headerlink" href="#equation-202108f9-34e3-4616-9ee4-f1e99934eb78" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{nuc} )   +   \sum_i \mathbf{p}_i^\mathrm{ind} (\mathbf{E}_{i}^\mathrm{ele}+ \mathbf{E}_{i}^\mathrm{nuc} )  \ ,
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\{ q_i^\mathrm{perm}\}\)</span> is the set of permanent charges in MM region, <span class="math notranslate nohighlight">\(\{\mathbf{p}_i^{ind}\}\)</span> is the set of induced dipoles in MM region, the <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{ele}\)</span> and <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{nuc}\)</span> are potential components are generated by electrons and nuclei in MM region,  <span class="math notranslate nohighlight">\(\mathbf{E}_{i}^\mathrm{ele}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{E}_{i}^\mathrm{nuc}\)</span> are potential components are generated by electrons and nuclei in MM region. The <span class="math notranslate nohighlight">\(E_\mathrm{MM/QM}\)</span> converts to additional contribution to external potential <span class="math notranslate nohighlight">\(v(\mathbf{r})\)</span> Kohn–Sham equations (see Eq.~\eqref{eq:ksao})</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3a715679-0c6d-4a3e-94be-93a473b8a22a">
-<span class="eqno">(232)<a class="headerlink" href="#equation-3a715679-0c6d-4a3e-94be-93a473b8a22a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c5c54199-d3b8-43d6-a983-c3fcd37226a6">
+<span class="eqno">(227)<a class="headerlink" href="#equation-c5c54199-d3b8-43d6-a983-c3fcd37226a6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{V}_\mathrm{MM/QM}(\mathbf{C})_{\mu\nu}  = \int \phi_{\mu} (\mathbf{r}, s)^* \{ 
  \sum_i q_i^\mathrm{perm} T_i^q(\mathbf{r})   +   \sum_i \mathbf{p}_i^\mathrm{ind} T_i^m(\mathbf{r})) \} \phi_{\mu} (\mathbf{r}, s) d \mathbf{r} d s ,  
 \end{equation}\]</div>
@@ -771,8 +816,8 @@ E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{n
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="loprop.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -789,19 +834,17 @@ E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{n
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

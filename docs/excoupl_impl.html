@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Implementation &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>Implementation of the exciton coupling model &#8212; Computational Chemistry from  Laptop to HPC</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -41,15 +41,12 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -505,7 +502,7 @@
   <ul class="current">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -539,7 +536,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="loprop.html">
-     LoProp charges and polarisabilities
+     LoProp charges and polarizabilities
     </a>
    </li>
   </ul>
@@ -629,7 +626,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -680,7 +677,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -698,8 +695,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#set-up-exciton-model">
-   Set up exciton model
+  <a class="reference internal nav-link" href="#set-up-the-exciton-model-driver">
+   Set up the exciton model driver
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -718,6 +715,11 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#print-the-exciton-model-hamiltonian">
+   Print the exciton model Hamiltonian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#get-excitation-energies-and-transition-dipoles">
    Get excitation energies and transition dipoles
   </a>
@@ -730,23 +732,75 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Implementation of the exciton coupling model</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#import-modules">
+   Import modules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-molecule-and-basis-set">
+   Set up molecule and basis set
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#set-up-the-exciton-model-driver">
+   Set up the exciton model driver
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#initializes-exciton-model-hamiltonian-and-transition-dipoles">
+   Initializes exciton model Hamiltonian and transition dipoles
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-monomer-calculations">
+   Run monomer calculations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#run-dimer-calculations">
+   Run dimer calculations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#print-the-exciton-model-hamiltonian">
+   Print the exciton model Hamiltonian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-excitation-energies-and-transition-dipoles">
+   Get excitation energies and transition dipoles
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="implementation">
-<h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
+  <div class="tex2jax_ignore mathjax_ignore section" id="implementation-of-the-exciton-coupling-model">
+<h1>Implementation of the exciton coupling model<a class="headerlink" href="#implementation-of-the-exciton-coupling-model" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="import-modules">
 <h2>Import modules<a class="headerlink" href="#import-modules" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
 </pre></div>
 </div>
 </div>
@@ -780,8 +834,8 @@
 </div>
 </div>
 </div>
-<div class="section" id="set-up-exciton-model">
-<h2>Set up exciton model<a class="headerlink" href="#set-up-exciton-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="set-up-the-exciton-model-driver">
+<h2>Set up the exciton model driver<a class="headerlink" href="#set-up-the-exciton-model-driver" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># exciton model setup</span>
@@ -818,7 +872,7 @@
 <span class="n">total_num_states</span> <span class="o">=</span> <span class="n">total_LE_states</span> <span class="o">+</span> <span class="n">total_CT_states</span>
 
 <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="n">total_num_states</span><span class="p">))</span>
-<span class="n">exmod_drv</span><span class="o">.</span><span class="n">trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">exmod_drv</span><span class="o">.</span><span class="n">center_of_mass</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
@@ -862,7 +916,7 @@
         <span class="c1"># LE energies</span>
         <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;exc_energies&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
         <span class="c1"># LE transition dipoles</span>
-        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;electric&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;electric&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
         <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
         <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;magnetic&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
 </pre></div>
@@ -908,8 +962,8 @@
                                            ====================================                                           
                                                                                                                           
                    Wave Function Model             : Spin-Restricted Hartree-Fock                                         
-                   Initial Guess Model             : Superposition of Atomic Densities                                    
-                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Initial Guess Model             : Restart from Checkpoint                                              
+                   Convergence Accelerator         : Direct Inversion of Iterative Subspace                               
                    Max. Number of Iterations       : 150                                                                  
                    Max. Number of Error Vectors    : 10                                                                   
                    Convergence Threshold           : 1.0e-06                                                              
@@ -932,49 +986,14 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -77.938957127732 a.u. Time: 0.10 sec.                                  
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_1.scf.h5                                                                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -77.976557123996    0.0000000000      0.09489888      0.01290528      0.00000000                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -77.977520078787   -0.0009629548      0.01398453      0.00235274      0.02938556                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -77.977544421754   -0.0000243430      0.00352086      0.00057093      0.00470842                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -77.977546548111   -0.0000021264      0.00046203      0.00007456      0.00153235                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -77.977546603605   -0.0000000555      0.00006899      0.00001360      0.00033144                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -77.977546605077   -0.0000000015      0.00001040      0.00000219      0.00006395                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  7       -77.977546605109   -0.0000000000      0.00000091      0.00000011      0.00000951                
+                  1       -77.977546605109    0.0000000000      0.00000091      0.00000011      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -982,7 +1001,7 @@
                                                                                                                           
 * Info * SCF tensors written to file: monomer_1.scf.tensors.h5                                                            
                                                                                                                           
-               *** SCF converged in 7 iterations. Time: 1.01 sec.                                                         
+               *** SCF converged in 1 iterations. Time: 0.22 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1091,7 +1110,9 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_1.rsp.h5                                                                
+                                                                                                                          
+                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
                                                                                                                           
                    State  1: 0.34776432 a.u. Residual Norm: 0.06411031                                                    
                    State  2: 0.35563977 a.u. Residual Norm: 0.08504656                                                    
@@ -1101,9 +1122,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.22e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.22e-03                   
                                                                                                                           
                    State  1: 0.31097350 a.u. Residual Norm: 0.03718790                                                    
                    State  2: 0.34145869 a.u. Residual Norm: 0.01285025                                                    
@@ -1113,9 +1132,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.02e-02 and 1.94e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.02e-02 and 1.94e-03                   
                                                                                                                           
                    State  1: 0.30903317 a.u. Residual Norm: 0.00798914                                                    
                    State  2: 0.34134501 a.u. Residual Norm: 0.00248600                                                    
@@ -1125,9 +1142,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.30e-02 and 1.24e-04                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.30e-02 and 1.24e-04                   
                                                                                                                           
                    State  1: 0.30897493 a.u. Residual Norm: 0.00322653                                                    
                    State  2: 0.34133733 a.u. Residual Norm: 0.00047385                                                    
@@ -1137,9 +1152,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
                                                                                                                           
                    State  1: 0.30897029 a.u. Residual Norm: 0.00084213                                                    
                    State  2: 0.34133726 a.u. Residual Norm: 0.00011005                                                    
@@ -1149,9 +1162,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.13e-03 and 7.94e-06                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.13e-03 and 7.94e-06                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00010760                                                    
                    State  2: 0.34133726 a.u. Residual Norm: 0.00002105                                                    
@@ -1161,9 +1172,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 8.41e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 8.41e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00001205                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000319                                                    
@@ -1173,9 +1182,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.05e-04 and 3.30e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.05e-04 and 3.30e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00000130                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000073                                                    
@@ -1185,9 +1192,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 1.65e-05 and 1.20e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 1.65e-05 and 1.20e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00000027                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000012                                                    
@@ -1197,9 +1202,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
-                                                                                                                          
-               *** 5 excited states converged in 9 iterations. Time: 1.32 sec                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** 5 excited states converged in 9 iterations. Time: 0.15 sec                                             
                                                                                                                           
                                                                                                                           
 </pre></div>
@@ -1290,8 +1293,8 @@
                                            ====================================                                           
                                                                                                                           
                    Wave Function Model             : Spin-Restricted Hartree-Fock                                         
-                   Initial Guess Model             : Superposition of Atomic Densities                                    
-                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Initial Guess Model             : Restart from Checkpoint                                              
+                   Convergence Accelerator         : Direct Inversion of Iterative Subspace                               
                    Max. Number of Iterations       : 150                                                                  
                    Max. Number of Error Vectors    : 10                                                                   
                    Convergence Threshold           : 1.0e-06                                                              
@@ -1314,49 +1317,12 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_2.scf.h5                                                                
                                                                                                                           
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -77.938962719117 a.u. Time: 0.09 sec.                                  
                                                                                                                           
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -77.976569083369    0.0000000000      0.09490689      0.01290816      0.00000000                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -77.977532245423   -0.0009631621      0.01399502      0.00231192      0.02939863                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -77.977556624827   -0.0000243794      0.00352284      0.00057127      0.00471110                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -77.977558753783   -0.0000021290      0.00046240      0.00007460      0.00153316                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -77.977558809364   -0.0000000556      0.00006906      0.00001361      0.00033156                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -77.977558810840   -0.0000000015      0.00001041      0.00000219      0.00006400                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  7       -77.977558810872   -0.0000000000      0.00000094      0.00000011      0.00000952                
+                  1       -77.977558810872    0.0000000000      0.00000094      0.00000011      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1364,7 +1330,7 @@
                                                                                                                           
 * Info * SCF tensors written to file: monomer_2.scf.tensors.h5                                                            
                                                                                                                           
-               *** SCF converged in 7 iterations. Time: 1.01 sec.                                                         
+               *** SCF converged in 1 iterations. Time: 0.22 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1390,71 +1356,71 @@
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.78137 a.u.                                                                  
-               (   1 C   1s  :    -0.15) (   1 C   2s  :     0.30) (   2 C   1s  :     0.15)                              
-               (   2 C   2s  :    -0.30) (   3 H   1s  :     0.20) (   4 H   1s  :    -0.20)                              
-               (   5 H   1s  :     0.19) (   6 H   1s  :    -0.19)                                                        
+               (   1 C   1s  :     0.15) (   1 C   2s  :    -0.30) (   2 C   1s  :    -0.15)                              
+               (   2 C   2s  :     0.30) (   3 H   1s  :    -0.20) (   4 H   1s  :     0.20)                              
+               (   5 H   1s  :    -0.19) (   6 H   1s  :     0.19)                                                        
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.64290 a.u.                                                                  
-               (   1 C   1p-1:     0.25) (   2 C   1p-1:     0.25) (   3 H   1s  :    -0.21)                              
-               (   4 H   1s  :    -0.21) (   5 H   1s  :     0.21) (   6 H   1s  :     0.21)                              
+               (   1 C   1p-1:    -0.25) (   2 C   1p-1:    -0.25) (   3 H   1s  :     0.21)                              
+               (   4 H   1s  :     0.21) (   5 H   1s  :    -0.21) (   6 H   1s  :    -0.21)                              
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.58495 a.u.                                                                  
-               (   1 C   1p+1:    -0.38) (   2 C   1p+1:     0.38) (   3 H   1s  :     0.17)                              
-               (   4 H   1s  :     0.17) (   5 H   1s  :     0.17) (   6 H   1s  :     0.17)                              
+               (   1 C   1p+1:     0.38) (   2 C   1p+1:    -0.38) (   3 H   1s  :    -0.17)                              
+               (   4 H   1s  :    -0.17) (   5 H   1s  :    -0.17) (   6 H   1s  :    -0.17)                              
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50717 a.u.                                                                  
-               (   1 C   1p-1:    -0.24) (   2 C   1p-1:     0.24) (   3 H   1s  :     0.26)                              
-               (   4 H   1s  :    -0.26) (   5 H   1s  :    -0.26) (   6 H   1s  :     0.26)                              
+               (   1 C   1p-1:     0.24) (   2 C   1p-1:    -0.24) (   3 H   1s  :    -0.26)                              
+               (   4 H   1s  :     0.26) (   5 H   1s  :     0.26) (   6 H   1s  :    -0.26)                              
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.37611 a.u.                                                                  
-               (   1 C   1p-1:     0.19) (   1 C   1p0 :    -0.33) (   1 C   2p0 :    -0.26)                              
-               (   2 C   1p-1:     0.19) (   2 C   1p0 :    -0.33) (   2 C   2p0 :    -0.26)                              
+               (   1 C   1p-1:    -0.19) (   1 C   1p0 :     0.33) (   1 C   2p0 :     0.26)                              
+               (   2 C   1p-1:    -0.19) (   2 C   1p0 :     0.33) (   2 C   2p0 :     0.26)                              
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.16446 a.u.                                                                  
-               (   1 C   1p-1:     0.17) (   1 C   1p0 :    -0.30) (   1 C   2p-1:     0.38)                              
-               (   1 C   2p0 :    -0.65) (   2 C   1p-1:    -0.17) (   2 C   1p0 :     0.30)                              
-               (   2 C   2p-1:    -0.38) (   2 C   2p0 :     0.66)                                                        
+               (   1 C   1p-1:    -0.17) (   1 C   1p0 :     0.30) (   1 C   2p-1:    -0.38)                              
+               (   1 C   2p0 :     0.65) (   2 C   1p-1:     0.17) (   2 C   1p0 :    -0.30)                              
+               (   2 C   2p-1:     0.38) (   2 C   2p0 :    -0.66)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20503 a.u.                                                                  
-               (   1 C   3s  :     1.59) (   1 C   2p+1:    -0.52) (   1 C   2p-1:    -0.17)                              
-               (   2 C   3s  :     1.59) (   2 C   2p+1:     0.52) (   2 C   2p-1:     0.18)                              
-               (   3 H   2s  :    -1.11) (   4 H   2s  :    -1.11) (   5 H   2s  :    -1.12)                              
-               (   6 H   2s  :    -1.12)                                                                                  
+               (   1 C   3s  :    -1.59) (   1 C   2p+1:     0.52) (   1 C   2p-1:     0.17)                              
+               (   2 C   3s  :    -1.59) (   2 C   2p+1:    -0.52) (   2 C   2p-1:    -0.18)                              
+               (   3 H   2s  :     1.11) (   4 H   2s  :     1.11) (   5 H   2s  :     1.12)                              
+               (   6 H   2s  :     1.12)                                                                                  
                                                                                                                           
                Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.23175 a.u.                                                                  
-               (   1 C   1p-1:     0.18) (   1 C   2p+1:    -0.28) (   1 C   2p-1:     0.62)                              
-               (   1 C   2p0 :     0.36) (   2 C   1p-1:     0.18) (   2 C   2p+1:    -0.28)                              
-               (   2 C   2p-1:     0.62) (   2 C   2p0 :     0.36) (   3 H   2s  :     1.17)                              
-               (   4 H   2s  :     1.17) (   5 H   2s  :    -1.16) (   6 H   2s  :    -1.16)                              
+               (   1 C   1p-1:    -0.18) (   1 C   2p+1:     0.28) (   1 C   2p-1:    -0.62)                              
+               (   1 C   2p0 :    -0.36) (   2 C   1p-1:    -0.18) (   2 C   2p+1:     0.28)                              
+               (   2 C   2p-1:    -0.62) (   2 C   2p0 :    -0.36) (   3 H   2s  :    -1.17)                              
+               (   4 H   2s  :    -1.17) (   5 H   2s  :     1.16) (   6 H   2s  :     1.16)                              
                                                                                                                           
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.24118 a.u.                                                                  
-               (   1 C   3s  :     2.29) (   1 C   2p+1:    -0.18) (   2 C   3s  :    -2.29)                              
-               (   2 C   2p+1:    -0.18) (   3 H   2s  :    -1.27) (   4 H   2s  :     1.27)                              
-               (   5 H   2s  :    -1.27) (   6 H   2s  :     1.27)                                                        
+               (   1 C   3s  :    -2.29) (   1 C   2p+1:     0.18) (   2 C   3s  :     2.29)                              
+               (   2 C   2p+1:     0.18) (   3 H   2s  :     1.27) (   4 H   2s  :    -1.27)                              
+               (   5 H   2s  :     1.27) (   6 H   2s  :    -1.27)                                                        
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30331 a.u.                                                                  
-               (   1 C   1p-1:    -0.16) (   1 C   2p+1:     0.59) (   1 C   2p-1:    -1.30)                              
-               (   1 C   2p0 :    -0.75) (   2 C   1p-1:     0.16) (   2 C   2p+1:    -0.59)                              
-               (   2 C   2p-1:     1.30) (   2 C   2p0 :     0.75) (   3 H   2s  :    -1.66)                              
-               (   4 H   2s  :     1.66) (   5 H   2s  :     1.66) (   6 H   2s  :    -1.66)                              
+               (   1 C   1p-1:     0.16) (   1 C   2p+1:    -0.59) (   1 C   2p-1:     1.30)                              
+               (   1 C   2p0 :     0.75) (   2 C   1p-1:    -0.16) (   2 C   2p+1:     0.59)                              
+               (   2 C   2p-1:    -1.30) (   2 C   2p0 :    -0.75) (   3 H   2s  :     1.66)                              
+               (   4 H   2s  :    -1.66) (   5 H   2s  :    -1.66) (   6 H   2s  :     1.66)                              
                                                                                                                           
 </pre></div>
 </div>
@@ -1470,7 +1436,9 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_2.rsp.h5                                                                
+                                                                                                                          
+                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
                                                                                                                           
                    State  1: 0.34783116 a.u. Residual Norm: 0.06412244                                                    
                    State  2: 0.35563877 a.u. Residual Norm: 0.08503436                                                    
@@ -1480,9 +1448,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.21e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.21e-03                   
                                                                                                                           
                    State  1: 0.31108179 a.u. Residual Norm: 0.03718485                                                    
                    State  2: 0.34152241 a.u. Residual Norm: 0.01285172                                                    
@@ -1492,9 +1458,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.01e-02 and 1.94e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.01e-02 and 1.94e-03                   
                                                                                                                           
                    State  1: 0.30914159 a.u. Residual Norm: 0.00799112                                                    
                    State  2: 0.34140869 a.u. Residual Norm: 0.00248645                                                    
@@ -1504,9 +1468,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.29e-02 and 1.24e-04                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.29e-02 and 1.24e-04                   
                                                                                                                           
                    State  1: 0.30908321 a.u. Residual Norm: 0.00323357                                                    
                    State  2: 0.34140101 a.u. Residual Norm: 0.00047406                                                    
@@ -1516,9 +1478,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
                                                                                                                           
                    State  1: 0.30907855 a.u. Residual Norm: 0.00084350                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00011023                                                    
@@ -1528,9 +1488,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.11e-03 and 8.02e-06                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.11e-03 and 8.02e-06                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00010769                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00002109                                                    
@@ -1540,9 +1498,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 6.03e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 6.03e-07                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00001208                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000320                                                    
@@ -1552,9 +1508,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.06e-04 and 1.56e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.06e-04 and 1.56e-07                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00000134                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000074                                                    
@@ -1564,9 +1518,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 2.38e-05 and 5.62e-08                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 2.38e-05 and 5.62e-08                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00000038                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000020                                                    
@@ -1576,9 +1528,7 @@
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
-                                                                                                                          
-               *** 5 excited states converged in 9 iterations. Time: 1.30 sec                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** 5 excited states converged in 9 iterations. Time: 0.15 sec                                             
                                                                                                                           
                                                                                                                           
 </pre></div>
@@ -1705,7 +1655,7 @@
             <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">])</span>
             <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">energy</span>
             <span class="c1"># CT transition dipoles</span>
-            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">trans_dipoles</span><span class="p">[</span>
+            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">[</span>
                 <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;electric&#39;</span><span class="p">][</span><span class="n">i_vec</span><span class="p">]</span>
             <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">[</span>
                 <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="n">i_vec</span><span class="p">]</span>
@@ -1739,7 +1689,9 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                              Molecular Geometry (Angstroms)                                              
-                                             ================================                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                             ================================                                             
                                                                                                                           
                           Atom         Coordinate X          Coordinate Y          Coordinate Z                           
                                                                                                                           
@@ -1781,6 +1733,85 @@
 </div>
 </div>
 </div>
+<div class="section" id="print-the-exciton-model-hamiltonian">
+<h2>Print the exciton model Hamiltonian<a class="headerlink" href="#print-the-exciton-model-hamiltonian" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-LE(A) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-LE(B) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(B)-LE(B) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(B)-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The CT-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The LE(A)-LE(A) block:
+
+[[0.30897  0.       0.       0.       0.      ]
+ [0.       0.341337 0.       0.       0.      ]
+ [0.       0.       0.344649 0.       0.      ]
+ [0.       0.       0.       0.355572 0.      ]
+ [0.       0.       0.       0.       0.375562]] 
+
+The LE(A)-LE(B) block:
+
+[[ 0.010489  0.000014 -0.000463 -0.00056  -0.001684]
+ [ 0.000021  0.000819  0.000129 -0.000111 -0.000016]
+ [ 0.000482 -0.000073 -0.000021  0.000514 -0.000068]
+ [ 0.000572  0.000176  0.000512 -0.000331 -0.000106]
+ [-0.001701  0.000005  0.000068  0.000098  0.000189]] 
+
+The LE(A)-CT block:
+
+[[-0.024055  0.040748]
+ [-0.000318 -0.00002 ]
+ [-0.002549  0.000729]
+ [ 0.003201  0.000696]
+ [ 0.003133 -0.003358]] 
+
+The LE(B)-LE(B) block:
+
+[[0.309078 0.       0.       0.       0.      ]
+ [0.       0.341401 0.       0.       0.      ]
+ [0.       0.       0.344651 0.       0.      ]
+ [0.       0.       0.       0.355577 0.      ]
+ [0.       0.       0.       0.       0.375687]] 
+
+The LE(B)-CT block:
+
+[[ 0.040745 -0.02406 ]
+ [-0.000026  0.001419]
+ [-0.00079   0.002581]
+ [-0.000753 -0.003238]
+ [-0.003497  0.003299]] 
+
+The CT-CT block:
+
+[[ 0.391015 -0.001078]
+ [-0.001078  0.390773]] 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="section" id="get-excitation-energies-and-transition-dipoles">
 <h2>Get excitation energies and transition dipoles<a class="headerlink" href="#get-excitation-energies-and-transition-dipoles" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
@@ -1789,7 +1820,7 @@
 
 <span class="n">eigvals</span><span class="p">,</span> <span class="n">eigvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">)</span>
 
-<span class="n">elec_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">trans_dipoles</span><span class="p">)</span>
+<span class="n">elec_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">)</span>
 <span class="n">velo_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">)</span>
 <span class="n">magn_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span><span class="p">)</span>
 
@@ -1848,8 +1879,8 @@ S12  e=0.42585774  f=0.0129  R=0.0307
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="excoupl.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1866,19 +1897,17 @@ S12  e=0.42585774  f=0.0129  R=0.0307
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -665,7 +672,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -700,7 +707,45 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Second quantization</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fock-space">
+   Fock space
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creation-and-annihilation-operators">
+   Creation and annihilation operators
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#illustration">
+   Illustration
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#spin">
+   Spin
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="second-quantization">
@@ -715,23 +760,23 @@
 <li><p>two occupation number vectors <span class="math notranslate nohighlight">\(| \mathbf{k} \rangle\)</span> and <span class="math notranslate nohighlight">\(| \mathbf{m} \rangle\)</span> are orthogonal i.e., <span class="math notranslate nohighlight">\(\langle \mathbf{k} | \mathbf{m} \rangle = \delta_{\mathbf{k}, \mathbf{m}}\)</span></p></li>
 <li><p>occupation number vectors constitutes complete basis i.e. arbitrary vector <span class="math notranslate nohighlight">\(|\mathbf{g}\rangle\)</span> can be expressed as linear combination of occupation number vectors</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-2ada0fdf-7c0f-4e39-a182-b404f5d02524">
-<span class="eqno">(9)<a class="headerlink" href="#equation-2ada0fdf-7c0f-4e39-a182-b404f5d02524" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c3477ee6-8a6b-4cc3-8ae1-bd2ec9271494">
+<span class="eqno">(4)<a class="headerlink" href="#equation-c3477ee6-8a6b-4cc3-8ae1-bd2ec9271494" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \mathbf{g} \rangle = \sum_\mathbf{k} c_\mathbf{k} | \mathbf{k} \rangle
 \end{equation}\]</div>
 <p>and outer product of occupation number vectors resolve to identity operator</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f74e3d01-f117-4a0a-93e5-f0ac8cd78598">
-<span class="eqno">(10)<a class="headerlink" href="#equation-f74e3d01-f117-4a0a-93e5-f0ac8cd78598" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-00bc624f-86e7-4584-813f-b48c8f544461">
+<span class="eqno">(5)<a class="headerlink" href="#equation-00bc624f-86e7-4584-813f-b48c8f544461" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 1 = \sum_\mathbf{k} | \mathbf{k} \rangle \langle  \mathbf{k} | 
 \end{equation}\]</div>
 <p>The Fock space consisting of <span class="math notranslate nohighlight">\(N\)</span> spin orbitals, <span class="math notranslate nohighlight">\(F(N)\)</span>, can be partitioned into sub-spaces as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6526af32-2e78-454e-9ed8-6f139f1a6b62">
-<span class="eqno">(11)<a class="headerlink" href="#equation-6526af32-2e78-454e-9ed8-6f139f1a6b62" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-54febff8-c1f6-4505-bdad-66296a50d058">
+<span class="eqno">(6)<a class="headerlink" href="#equation-54febff8-c1f6-4505-bdad-66296a50d058" title="Permalink to this equation">¶</a></span>\[\begin{equation}
  F(N) = F(0,N) \oplus F(1,N) \oplus ... \oplus F(N,N) 
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(F(M, N)\)</span> is the set of occupation number vectors with <span class="math notranslate nohighlight">\(M\)</span> occupied spin-orbitals. The Fock subspace <span class="math notranslate nohighlight">\(F(M,N)\)</span> can be viewed as an <span class="math notranslate nohighlight">\(M\)</span>-electron wave function expressed in occupation number vectors, as it contains all Slater determinant generated by distributing <span class="math notranslate nohighlight">\(M\)</span> electrons in <span class="math notranslate nohighlight">\(N\)</span> spin orbitals. Among the Fock subspaces, the <span class="math notranslate nohighlight">\(F(0, N)\)</span> subspace corresponds to a completely unoccupied Slater determinant and is called a vacuum state <span class="math notranslate nohighlight">\(| vac \rangle\)</span>. The vacuum state has the following properties</p>
-<div class="amsmath math notranslate nohighlight" id="equation-86ad61d4-b326-4e32-9a66-db7de3525734">
-<span class="eqno">(12)<a class="headerlink" href="#equation-86ad61d4-b326-4e32-9a66-db7de3525734" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5ea88a28-98d7-4e3f-bf15-373d1044e59b">
+<span class="eqno">(7)<a class="headerlink" href="#equation-5ea88a28-98d7-4e3f-bf15-373d1044e59b" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | vac \rangle = | 0_1, 0_2, ..., 0_N \rangle  \ \mathrm{and} \ \langle vac | vac \rangle = 1   
 \end{equation}\]</div>
 </div>
@@ -741,20 +786,20 @@
 <ul class="simple">
 <li><p>creation operator <span class="math notranslate nohighlight">\(\hat{a}_p^\dagger\)</span>:</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-940945d6-7255-4f5b-bc04-1d1f176f452d">
-<span class="eqno">(13)<a class="headerlink" href="#equation-940945d6-7255-4f5b-bc04-1d1f176f452d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-caaca3bb-2c0e-4935-ba87-3d2af4f6099f">
+<span class="eqno">(8)<a class="headerlink" href="#equation-caaca3bb-2c0e-4935-ba87-3d2af4f6099f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
  \hat{a}_p^\dagger | \mathbf{k} \rangle = \delta_{k_p, 0} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...1_p ...k_N \rangle 
 \end{equation}\]</div>
 <ul class="simple">
 <li><p>annihilation operator <span class="math notranslate nohighlight">\(\hat{a}_p\)</span>:</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-003edcfd-fb0f-4437-84cc-a7dd97f3d934">
-<span class="eqno">(14)<a class="headerlink" href="#equation-003edcfd-fb0f-4437-84cc-a7dd97f3d934" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-889508ee-fe67-403e-8be6-5f71010c7aa1">
+<span class="eqno">(9)<a class="headerlink" href="#equation-889508ee-fe67-403e-8be6-5f71010c7aa1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
  \hat{a}_p | \mathbf{k} \rangle = \delta_{k_p, 1} \prod_{i = 1}^{p} (-1)^{k_p} | k_1 k_2...0_p ...k_N \rangle 
 \end{equation}\]</div>
 <p>The <span class="math notranslate nohighlight">\(\delta_{k_p, 0}\)</span> ensures that the creation operator cannot add an electron to a state that is already populated while <span class="math notranslate nohighlight">\(\delta_{k_p, 1}\)</span> prevents the destruction of a non-existing electron. The phase factor <span class="math notranslate nohighlight">\(\prod_{i = 1}^{p} (-1)^{k_p}\)</span> ensures the antisymmetry of the wavefunction.  However, the main strength of this formulation is that the phase factor is a direct consequence of the anti-commutator relationship of the creation and annihilation operators:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a130535c-6bd1-4a5e-85f8-0d0296d27a80">
-<span class="eqno">(15)<a class="headerlink" href="#equation-a130535c-6bd1-4a5e-85f8-0d0296d27a80" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-93390e66-444d-4aed-bb61-fdd8f3afe444">
+<span class="eqno">(10)<a class="headerlink" href="#equation-93390e66-444d-4aed-bb61-fdd8f3afe444" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 \hat{a}_p^\dagger \hat{a}_q +  \hat{a}_q \hat{a}_p^\dagger &amp;=&amp; \delta_{p,q}  \ ,  \\ 
 \hat{a}_p^\dagger \hat{a}_q^\dagger +  \hat{a}_q^\dagger \hat{a}_p^\dagger &amp;=&amp; 0 \ ,  \\
 \hat{a}_p \hat{a}_q +  \hat{a}_q \hat{a}_p &amp;=&amp; 0 \ , 
@@ -762,23 +807,23 @@
 <p>which are primary tools to manipulate occupation number vectors.</p>
 <p>Having defined those operators, it is easy to see that any arbitrary state can be simply formed by applying a string of creation operators on the vacuum state.</p>
 <p>Similarly, the standard operators of quantum mechanics can be represented in second quantization using the creation and annihilation operators. Any operator <span class="math notranslate nohighlight">\(\hat{O}\)</span> depending on the coordinates (both spatial and spin) <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> of a single electron can be expressed as a product of the integral of the operator in the chosen basis <span class="math notranslate nohighlight">\(O_{pq}= \int \psi_p^* (\mathbf{x}) \hat{O} (\mathbf{x}) \psi_q (\mathbf{x}) d\mathbf{x}\)</span> and the excitation operator <span class="math notranslate nohighlight">\(\hat{a}_p^\dagger \hat{a}_q\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5b7af1f7-4c66-4c33-a9c4-5f47ac889a3e">
-<span class="eqno">(16)<a class="headerlink" href="#equation-5b7af1f7-4c66-4c33-a9c4-5f47ac889a3e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9a86a933-be2d-416d-aa8b-9e1f15b0105c">
+<span class="eqno">(11)<a class="headerlink" href="#equation-9a86a933-be2d-416d-aa8b-9e1f15b0105c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \hat{O} = \sum_{pq} O_{pq} \hat{a}_p^\dagger \hat{a}_q
 \end{equation}\]</div>
 <p>A similar formula can be used for two-electron operators. For example, the Hamiltonian of a molecular system can be written as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1a6f4cb8-cfcd-4cc5-a7c3-8985312ccc85">
-<span class="eqno">(17)<a class="headerlink" href="#equation-1a6f4cb8-cfcd-4cc5-a7c3-8985312ccc85" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-24c4e8e1-ec61-411a-88f9-c29a0dec215e">
+<span class="eqno">(12)<a class="headerlink" href="#equation-24c4e8e1-ec61-411a-88f9-c29a0dec215e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \hat H = \sum_{pq} h_{pq} \hat{a}_p^\dagger \hat{a}_q + \frac{1}{2} \sum_{pqrs} g_{pqrs} \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q \ , 
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(h_{pq}\)</span> is the one-electron part of electronic Hamiltonian</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f2938f58-2292-4b93-a8d3-ff9d833e2932">
-<span class="eqno">(18)<a class="headerlink" href="#equation-f2938f58-2292-4b93-a8d3-ff9d833e2932" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-afc31513-03b7-42b6-8903-9e3beb178e6f">
+<span class="eqno">(13)<a class="headerlink" href="#equation-afc31513-03b7-42b6-8903-9e3beb178e6f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
  h_{pq} = \int \psi_p(\mathbf{x})^* \bigg \{ - \frac{1}{2} \hat{\nabla}^2 - \sum_K \frac{Z_k}{|\mathbf{r} - \mathbf{R}_K |} \bigg \} \psi_q(\mathbf{x}) d \mathbf{x} \ , 
 \end{equation}\]</div>
 <p>and <span class="math notranslate nohighlight">\(g_{pqrs}\)</span> is the two-electron part of electronic Hamiltonian</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6a33b38b-7201-4518-8189-5ee617ad5e33">
-<span class="eqno">(19)<a class="headerlink" href="#equation-6a33b38b-7201-4518-8189-5ee617ad5e33" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-03382506-dd79-4b9b-a61b-01bc6882c6b2">
+<span class="eqno">(14)<a class="headerlink" href="#equation-03382506-dd79-4b9b-a61b-01bc6882c6b2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathbf{r} - \mathbf{r}'|} \psi_q(\mathbf{x}) \psi_s(\mathbf{x}') d \mathbf{x} d \mathbf{x}' \ .  
 \end{equation}\]</div>
 <p>At the end, second quantization is a completely equivalent way to represent quantum mechanics, but by using a unified description of operator and states and reducing all the complications of the antisymmetry to simple commutation rules between the creation and annihilation operators, it is often a significantly more straightforward and compact way to derive various wave function models than the conventional approach based on the direct application of Slater-Condon rules to individual Slater determinants. For example, derivation of working equations for coupled-cluster singles and doubles wave function in second quantization becomes a single lecture affair, compared to the conventional way, which is several days undertaking. Thus, the second quantization is a valuable mathematical tool for working with correlated wave functions.</p>
@@ -786,37 +831,37 @@ g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathb
 <div class="section" id="illustration">
 <h2>Illustration<a class="headerlink" href="#illustration" title="Permalink to this headline">¶</a></h2>
 <p>To illustrate the power and simplicity of this formulation, we can derive the energy of a Slater Determinant <span class="math notranslate nohighlight">\(| 0 \rangle\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c3362d15-0a53-44d5-9a92-3268f0958a65">
-<span class="eqno">(20)<a class="headerlink" href="#equation-c3362d15-0a53-44d5-9a92-3268f0958a65" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-890336bd-d2af-498c-84a3-5c05aad7f168">
+<span class="eqno">(15)<a class="headerlink" href="#equation-890336bd-d2af-498c-84a3-5c05aad7f168" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \langle 0| \hat H | 0\rangle = \sum_{pq} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle + \frac{1}{2} \sum_{pqrs} g_{pqrs} \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle
 \end{equation}\]</div>
 <p>For this we only need to evaluate the density matrices <span class="math notranslate nohighlight">\(D_{pq} = \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle\)</span> and <span class="math notranslate nohighlight">\(d_{pqrs} = \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle\)</span>.</p>
 <p>For the one-particle density matrix <span class="math notranslate nohighlight">\(D_{pq}\)</span> we immediately notice that the orbital <span class="math notranslate nohighlight">\(q\)</span> has to be occupied for the element to be non-zero when the annihilation operator is acting on the right on <span class="math notranslate nohighlight">\(| 0\rangle\)</span> (the same is true for <span class="math notranslate nohighlight">\(p\)</span> when <span class="math notranslate nohighlight">\(\hat{a}_p^\dagger\)</span> is acting on the left on <span class="math notranslate nohighlight">\(\langle 0|\)</span>). But then, we can apply the commutation rule to get:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-edfc0167-5401-4071-b88c-8b07ea938395">
-<span class="eqno">(21)<a class="headerlink" href="#equation-edfc0167-5401-4071-b88c-8b07ea938395" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-03607d1f-9b63-4d17-bc79-9a10f87e3d30">
+<span class="eqno">(16)<a class="headerlink" href="#equation-03607d1f-9b63-4d17-bc79-9a10f87e3d30" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \langle 0| \hat{a}_p^\dagger \hat{a}_q | 0 \rangle = \delta_{p,q} \langle 0| 0 \rangle - \langle 0| \hat{a}_q \hat{a}_p^\dagger | 0 \rangle
 \end{equation}\]</div>
 <p>Now, <span class="math notranslate nohighlight">\(\hat{a}_q\)</span> acts as a creation operator on the left on <span class="math notranslate nohighlight">\(\langle 0|\)</span> and since we said <span class="math notranslate nohighlight">\(q\)</span> was occupied, this last term gives zero. The only term left is thus <span class="math notranslate nohighlight">\(\delta_{p,q}\)</span>. The one-electron term thus gives:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6d6c6373-c850-4b39-be44-e811419c79a0">
-<span class="eqno">(22)<a class="headerlink" href="#equation-6d6c6373-c850-4b39-be44-e811419c79a0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-707073bb-1588-45e4-9db7-b291ca05a637">
+<span class="eqno">(17)<a class="headerlink" href="#equation-707073bb-1588-45e4-9db7-b291ca05a637" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \sum_{pq} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle = \sum_{pq \in \mathrm{occupied}} h_{pq} \delta_{p,q} = \sum_{p \in \mathrm{occupied}} h_{pp}
 \end{equation}\]</div>
 <p>By using the indices <span class="math notranslate nohighlight">\(i, j, k, l\)</span> to refer to occupied orbitals, we can simply write this term as <span class="math notranslate nohighlight">\(\sum_{i} h_{ii}\)</span></p>
 <p>We can now turn our attention the two-electron terms. Here both <span class="math notranslate nohighlight">\(q\)</span> and <span class="math notranslate nohighlight">\(s\)</span> have to be occupied. We will focus on <span class="math notranslate nohighlight">\(s\)</span> which we will call <span class="math notranslate nohighlight">\(i\)</span> and we will use the same trick of moving <span class="math notranslate nohighlight">\(\hat{a}_i\)</span> to the left to generate a zero:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b00c9fe9-9169-4fa7-b31e-8a2ce1d85631">
-<span class="eqno">(23)<a class="headerlink" href="#equation-b00c9fe9-9169-4fa7-b31e-8a2ce1d85631" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-eb783177-1c7b-4eed-82ac-263606a5fd84">
+<span class="eqno">(18)<a class="headerlink" href="#equation-eb783177-1c7b-4eed-82ac-263606a5fd84" title="Permalink to this equation">¶</a></span>\[\begin{align}
 \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_i \hat{a}_q &amp;= \delta_{r,i} \hat{a}_p^\dagger \hat{a}_q - \hat{a}_p^\dagger \hat{a}_i \hat{a}_r^\dagger \hat{a}_q\\
  &amp;= \delta_{r,i} \hat{a}_p^\dagger \hat{a}_q - \delta_{p,i} \hat{a}_r^\dagger \hat{a}_q + \hat{a}_i \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_q
 \end{align}\]</div>
 <p>The last term will now disappear and we are left with only terms depending on 2 creation or annihilation operators, which we have already solved earlier:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-99c16719-6c95-4dc8-a3fe-07affab2557e">
-<span class="eqno">(24)<a class="headerlink" href="#equation-99c16719-6c95-4dc8-a3fe-07affab2557e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-477a572d-68fe-4c2e-922d-a3535dbf655a">
+<span class="eqno">(19)<a class="headerlink" href="#equation-477a572d-68fe-4c2e-922d-a3535dbf655a" title="Permalink to this equation">¶</a></span>\[\begin{align}
 \frac{1}{2} \sum_{pqrs} g_{pqrs} \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle &amp;= \frac{1}{2} \sum_{ipq} g_{pqii} \langle 0|\hat{a}_p^\dagger \hat{a}_q | 0\rangle - \sum_{iqr} g_{iqri} \langle 0| \hat{a}_r^\dagger \hat{a}_q | 0\rangle \\
 &amp; = \frac{1}{2} \sum_{ij} g_{jjii} - g_{ijji}
 \end{align}\]</div>
 <p>Our final energy is thus:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-93f4f1a8-1351-4d39-b51d-e6d1199f9e45">
-<span class="eqno">(25)<a class="headerlink" href="#equation-93f4f1a8-1351-4d39-b51d-e6d1199f9e45" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-7b6e69b1-9ff2-4071-91c7-5edc056079f8">
+<span class="eqno">(20)<a class="headerlink" href="#equation-7b6e69b1-9ff2-4071-91c7-5edc056079f8" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \langle 0| \hat H | 0\rangle = \sum_i h_{ii} + \frac{1}{2} \sum_{ij} g_{jjii} - g_{ijji}
 \end{equation}\]</div>
 </div>
@@ -850,8 +895,8 @@ g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathb
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="slater.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -868,19 +913,17 @@ g_{pqrs} = \int \int \psi_p(\mathbf{x})^* \psi_r(\mathbf{x}')^* \frac{1}{|\mathb
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

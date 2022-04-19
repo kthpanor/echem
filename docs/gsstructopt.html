@@ -41,21 +41,18 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Transition-state theory" href="tst.html" />
-    <link rel="prev" title="Molecular structure optimization" href="structopt.html" />
+    <link rel="prev" title="Exercises" href="structopt-exercises.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -170,6 +167,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -388,6 +390,11 @@
    </i>
   </label>
   <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Ground state structure optimization
@@ -505,7 +512,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -629,7 +636,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -680,7 +687,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -739,7 +746,69 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Ground state structure optimization</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xtb-geometry-optimization">
+   XTB geometry optimization
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up-the-xtb-gradient-and-optimization-drivers-and-run-the-geometry-optimization">
+     Set up the xtb gradient and optimization drivers and run the geometry optimization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-the-xtb-structure-optimization-for-kahweol">
+     Run the XTB structure optimization for kahweol:
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#compare-initial-and-final-geometries">
+     Compare initial and final geometries
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scf-geometry-optimization">
+   SCF geometry optimization
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-scf-geometry-optimization-for-cafestol">
+     Run SCF geometry optimization for cafestol
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#run-scf-geometry-optimization-for-kahweol">
+     Run SCF geometry optimization for kahweol
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mp2-geometry-optimization-gator">
+   MP2 geometry optimization (Gator)
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="ground-state-structure-optimization">
@@ -748,26 +817,12 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">gator</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">gator</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">xp</span><span class="o">/</span><span class="n">xqxvp53d2831kfb6dsx_zg5w0000gp</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_2555</span><span class="o">/</span><span class="mf">572814381.</span><span class="n">py</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">gator</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;gator&#39;
 </pre></div>
 </div>
 </div>
@@ -917,8 +972,8 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cafestol, starting geometry:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16460544543131087"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16460544543131087" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394339247818"  style="position: relative; width: 200px; height: 480px">
+        <p id="3dmolwarning_1650394339247818" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -941,24 +996,26 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_16460544543131087 = null;
-var warn = document.getElementById("3dmolwarning_16460544543131087");
+var viewer_1650394339247818 = null;
+var warn = document.getElementById("3dmolwarning_1650394339247818");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_16460544543131087 = $3Dmol.createViewer($("#3dmolviewer_16460544543131087"),{backgroundColor:"white"});
-viewer_16460544543131087.zoomTo();
-	viewer_16460544543131087.addModel("51\ncafestol initial structure\nO  -4.5215   -1.3455    0.4926\nO  -5.2905    0.0812   -1.7033\nO   5.1630    0.4345   -0.1101\nC  -1.2807   -0.7511   -0.0465\nC  -0.5244    0.5810   -0.4102\nC   0.9909    0.6610    0.0407\nC  -2.9440    0.2916    1.2866\nC  -1.8143   -0.7311    1.3945\nC  -2.6188   -0.8159   -0.8642\nC  -3.7116   -0.2387    0.0606\nC  -0.4332   -2.0024   -0.3283\nC  -1.3742    1.8303   -0.0654\nC   1.6844   -0.6873   -0.4019\nC  -2.3206    1.6833    1.1309\nC   0.9997   -1.9155    0.1913\nC   1.7285    1.8344   -0.7277\nC   1.1437    0.9261    1.5588\nC   3.1644   -0.6155   -0.2085\nC  -4.6490    0.7442   -0.6282\nC   3.2525    1.9378   -0.4590\nC   3.8298    0.5879   -0.2856\nC   4.1654   -1.5888    0.0140\nC   5.3604   -0.9015    0.0689\nH  -0.4604    0.5817   -1.5108\nH  -3.5646    0.2626    2.1897\nH  -1.0861   -0.4449    2.1498\nH  -2.1902   -1.7145    1.7003\nH  -2.5286   -0.2495   -1.7981\nH  -2.8534   -1.8505   -1.1460\nH  -0.3943   -2.1694   -1.4136\nH  -0.9135   -2.8938    0.0946\nH  -1.9810    2.0650   -0.9487\nH  -0.7587    2.7222    0.0818\nH   1.5605   -0.7646   -1.4951\nH  -1.7642    1.9154    2.0477\nH  -3.1082    2.4431    1.0635\nH   1.0176   -1.9046    1.2859\nH   1.5276   -2.8282   -0.1118\nH   1.2808    2.8061   -0.4944\nH   1.5851    1.6842   -1.8068\nH   0.5898    1.8173    1.8670\nH   0.8147    0.0892    2.1727\nH   2.1832    1.0992    1.8532\nH  -4.1337    1.6158   -1.0351\nH  -5.4265    1.0934    0.0595\nH   3.4273    2.5264    0.4487\nH   3.7385    2.4646   -1.2871\nH  -3.9519   -2.0832    0.7635\nH   4.0442   -2.6573    0.1180\nH  -5.7603   -0.6874   -1.3370\nH   6.3869   -1.2031    0.2186\n","xyz");
-	viewer_16460544543131087.setStyle({"stick": {}});
-	viewer_16460544543131087.zoomTo();
-viewer_16460544543131087.render();
+viewer_1650394339247818 = $3Dmol.createViewer($("#3dmolviewer_1650394339247818"),{backgroundColor:"white"});
+$3Dmol.download("500", viewer_1650394339247818, {}, function() {
+viewer_1650394339247818.zoomTo();
+	viewer_1650394339247818.addModel("51\ncafestol initial structure\nO  -4.5215   -1.3455    0.4926\nO  -5.2905    0.0812   -1.7033\nO   5.1630    0.4345   -0.1101\nC  -1.2807   -0.7511   -0.0465\nC  -0.5244    0.5810   -0.4102\nC   0.9909    0.6610    0.0407\nC  -2.9440    0.2916    1.2866\nC  -1.8143   -0.7311    1.3945\nC  -2.6188   -0.8159   -0.8642\nC  -3.7116   -0.2387    0.0606\nC  -0.4332   -2.0024   -0.3283\nC  -1.3742    1.8303   -0.0654\nC   1.6844   -0.6873   -0.4019\nC  -2.3206    1.6833    1.1309\nC   0.9997   -1.9155    0.1913\nC   1.7285    1.8344   -0.7277\nC   1.1437    0.9261    1.5588\nC   3.1644   -0.6155   -0.2085\nC  -4.6490    0.7442   -0.6282\nC   3.2525    1.9378   -0.4590\nC   3.8298    0.5879   -0.2856\nC   4.1654   -1.5888    0.0140\nC   5.3604   -0.9015    0.0689\nH  -0.4604    0.5817   -1.5108\nH  -3.5646    0.2626    2.1897\nH  -1.0861   -0.4449    2.1498\nH  -2.1902   -1.7145    1.7003\nH  -2.5286   -0.2495   -1.7981\nH  -2.8534   -1.8505   -1.1460\nH  -0.3943   -2.1694   -1.4136\nH  -0.9135   -2.8938    0.0946\nH  -1.9810    2.0650   -0.9487\nH  -0.7587    2.7222    0.0818\nH   1.5605   -0.7646   -1.4951\nH  -1.7642    1.9154    2.0477\nH  -3.1082    2.4431    1.0635\nH   1.0176   -1.9046    1.2859\nH   1.5276   -2.8282   -0.1118\nH   1.2808    2.8061   -0.4944\nH   1.5851    1.6842   -1.8068\nH   0.5898    1.8173    1.8670\nH   0.8147    0.0892    2.1727\nH   2.1832    1.0992    1.8532\nH  -4.1337    1.6158   -1.0351\nH  -5.4265    1.0934    0.0595\nH   3.4273    2.5264    0.4487\nH   3.7385    2.4646   -1.2871\nH  -3.9519   -2.0832    0.7635\nH   4.0442   -2.6573    0.1180\nH  -5.7603   -0.6874   -1.3370\nH   6.3869   -1.2031    0.2186\n","xyz");
+	viewer_1650394339247818.setStyle({"stick": {}});
+	viewer_1650394339247818.zoomTo();
+viewer_1650394339247818.render();
+})
 });
 </script></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kahweol, starting geometry:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16460544543171139"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16460544543171139" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394339249631"  style="position: relative; width: 200px; height: 480px">
+        <p id="3dmolwarning_1650394339249631" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -981,18 +1038,20 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_16460544543171139 = null;
-var warn = document.getElementById("3dmolwarning_16460544543171139");
+var viewer_1650394339249631 = null;
+var warn = document.getElementById("3dmolwarning_1650394339249631");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_16460544543171139 = $3Dmol.createViewer($("#3dmolviewer_16460544543171139"),{backgroundColor:"white"});
-viewer_16460544543171139.zoomTo();
-	viewer_16460544543171139.addModel("49\nkahweol initial structure\nO  -4.4710   -1.5361    0.0905\nO  -5.6188    0.9753   -0.0811\nO   5.1625    0.5695   -0.0997\nC  -1.2209   -0.8317   -0.2017\nC  -0.4821    0.5357   -0.4703\nC  -3.0038    0.1167    1.0462\nC  -1.8514   -0.8737    1.1997\nC  -2.4967   -0.9058   -1.1119\nC   0.9884    0.6333    0.0944\nC  -3.6676   -0.3924   -0.2474\nC  -0.3220   -2.0551   -0.4569\nC  -1.3919    1.7479   -0.1363\nC  -2.4167    1.5304    0.9816\nC   1.7435   -0.6786   -0.3542\nC   1.0741   -1.9483    0.1552\nC   1.0367    0.8330    1.6293\nC  -4.5845    0.5870   -0.9677\nC   1.7610    1.8511   -0.4907\nC   3.2146   -0.5444   -0.1101\nC   3.1013    1.8722   -0.6493\nC   3.8167    0.6946   -0.3059\nC   4.2309   -1.4546    0.2464\nC   5.3980   -0.7259    0.2399\nH  -0.3415    0.5842   -1.5631\nH  -3.6779    0.0397    1.9072\nH  -1.1861   -0.6021    2.0159\nH  -2.2356   -1.8757    1.4322\nH  -2.3648   -0.3090   -2.0216\nH  -2.6844   -1.9384   -1.4328\nH  -0.2098   -2.1924   -1.5413\nH  -0.8043   -2.9694   -0.0890\nH  -1.9406    2.0033   -1.0514\nH  -0.8134    2.6482    0.0921\nH  -1.9341    1.7452    1.9434\nH  -3.2193    2.2709    0.8849\nH   1.6699   -0.7251   -1.4553\nH   1.0259   -1.9792    1.2481\nH   1.6508   -2.8307   -0.1490\nH   2.0514    1.0518    1.9842\nH   0.4166    1.6762    1.9486\nH   0.7233   -0.0489    2.1864\nH  -5.0524    0.1195   -1.8415\nH  -4.0679    1.4861   -1.3088\nH   1.2088    2.7568   -0.7218\nH  -5.0925   -1.2746    0.7905\nH   3.6240    2.7536   -0.9997\nH   4.1386   -2.5085    0.4650\nH  -6.2132    0.2149    0.0339\nH   6.4308   -0.9731    0.4374\n","xyz");
-	viewer_16460544543171139.setStyle({"stick": {}});
-	viewer_16460544543171139.zoomTo();
-viewer_16460544543171139.render();
+viewer_1650394339249631 = $3Dmol.createViewer($("#3dmolviewer_1650394339249631"),{backgroundColor:"white"});
+$3Dmol.download("500", viewer_1650394339249631, {}, function() {
+viewer_1650394339249631.zoomTo();
+	viewer_1650394339249631.addModel("49\nkahweol initial structure\nO  -4.4710   -1.5361    0.0905\nO  -5.6188    0.9753   -0.0811\nO   5.1625    0.5695   -0.0997\nC  -1.2209   -0.8317   -0.2017\nC  -0.4821    0.5357   -0.4703\nC  -3.0038    0.1167    1.0462\nC  -1.8514   -0.8737    1.1997\nC  -2.4967   -0.9058   -1.1119\nC   0.9884    0.6333    0.0944\nC  -3.6676   -0.3924   -0.2474\nC  -0.3220   -2.0551   -0.4569\nC  -1.3919    1.7479   -0.1363\nC  -2.4167    1.5304    0.9816\nC   1.7435   -0.6786   -0.3542\nC   1.0741   -1.9483    0.1552\nC   1.0367    0.8330    1.6293\nC  -4.5845    0.5870   -0.9677\nC   1.7610    1.8511   -0.4907\nC   3.2146   -0.5444   -0.1101\nC   3.1013    1.8722   -0.6493\nC   3.8167    0.6946   -0.3059\nC   4.2309   -1.4546    0.2464\nC   5.3980   -0.7259    0.2399\nH  -0.3415    0.5842   -1.5631\nH  -3.6779    0.0397    1.9072\nH  -1.1861   -0.6021    2.0159\nH  -2.2356   -1.8757    1.4322\nH  -2.3648   -0.3090   -2.0216\nH  -2.6844   -1.9384   -1.4328\nH  -0.2098   -2.1924   -1.5413\nH  -0.8043   -2.9694   -0.0890\nH  -1.9406    2.0033   -1.0514\nH  -0.8134    2.6482    0.0921\nH  -1.9341    1.7452    1.9434\nH  -3.2193    2.2709    0.8849\nH   1.6699   -0.7251   -1.4553\nH   1.0259   -1.9792    1.2481\nH   1.6508   -2.8307   -0.1490\nH   2.0514    1.0518    1.9842\nH   0.4166    1.6762    1.9486\nH   0.7233   -0.0489    2.1864\nH  -5.0524    0.1195   -1.8415\nH  -4.0679    1.4861   -1.3088\nH   1.2088    2.7568   -0.7218\nH  -5.0925   -1.2746    0.7905\nH   3.6240    2.7536   -0.9997\nH   4.1386   -2.5085    0.4650\nH  -6.2132    0.2149    0.0339\nH   6.4308   -0.9731    0.4374\n","xyz");
+	viewer_1650394339249631.setStyle({"stick": {}});
+	viewer_1650394339249631.zoomTo();
+viewer_1650394339249631.render();
+})
 });
 </script></div></div>
 </div>
@@ -1237,8 +1296,8 @@ Converged! =D
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cafestol, starting geometry vs. XTB optimized geometry:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16460546145714314"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16460546145714314" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16503943392687008"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_16503943392687008" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1261,25 +1320,25 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_16460546145714314 = null;
-var warn = document.getElementById("3dmolwarning_16460546145714314");
+var viewer_16503943392687008 = null;
+var warn = document.getElementById("3dmolwarning_16503943392687008");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_16460546145714314 = $3Dmol.createViewer($("#3dmolviewer_16460546145714314"),{backgroundColor:"white"});
-viewer_16460546145714314.zoomTo();
-	viewer_16460546145714314.addModel("51\ncafestol initial structure\nO  -4.5215   -1.3455    0.4926\nO  -5.2905    0.0812   -1.7033\nO   5.1630    0.4345   -0.1101\nC  -1.2807   -0.7511   -0.0465\nC  -0.5244    0.5810   -0.4102\nC   0.9909    0.6610    0.0407\nC  -2.9440    0.2916    1.2866\nC  -1.8143   -0.7311    1.3945\nC  -2.6188   -0.8159   -0.8642\nC  -3.7116   -0.2387    0.0606\nC  -0.4332   -2.0024   -0.3283\nC  -1.3742    1.8303   -0.0654\nC   1.6844   -0.6873   -0.4019\nC  -2.3206    1.6833    1.1309\nC   0.9997   -1.9155    0.1913\nC   1.7285    1.8344   -0.7277\nC   1.1437    0.9261    1.5588\nC   3.1644   -0.6155   -0.2085\nC  -4.6490    0.7442   -0.6282\nC   3.2525    1.9378   -0.4590\nC   3.8298    0.5879   -0.2856\nC   4.1654   -1.5888    0.0140\nC   5.3604   -0.9015    0.0689\nH  -0.4604    0.5817   -1.5108\nH  -3.5646    0.2626    2.1897\nH  -1.0861   -0.4449    2.1498\nH  -2.1902   -1.7145    1.7003\nH  -2.5286   -0.2495   -1.7981\nH  -2.8534   -1.8505   -1.1460\nH  -0.3943   -2.1694   -1.4136\nH  -0.9135   -2.8938    0.0946\nH  -1.9810    2.0650   -0.9487\nH  -0.7587    2.7222    0.0818\nH   1.5605   -0.7646   -1.4951\nH  -1.7642    1.9154    2.0477\nH  -3.1082    2.4431    1.0635\nH   1.0176   -1.9046    1.2859\nH   1.5276   -2.8282   -0.1118\nH   1.2808    2.8061   -0.4944\nH   1.5851    1.6842   -1.8068\nH   0.5898    1.8173    1.8670\nH   0.8147    0.0892    2.1727\nH   2.1832    1.0992    1.8532\nH  -4.1337    1.6158   -1.0351\nH  -5.4265    1.0934    0.0595\nH   3.4273    2.5264    0.4487\nH   3.7385    2.4646   -1.2871\nH  -3.9519   -2.0832    0.7635\nH   4.0442   -2.6573    0.1180\nH  -5.7603   -0.6874   -1.3370\nH   6.3869   -1.2031    0.2186\n","xyz");
-	viewer_16460546145714314.addModel("51\n\nO             -4.586922613633        -1.279899592845         0.480337128578\nO             -5.319323113156         0.246555556552        -1.628991016489\nO              5.096372611815         0.479138514975         0.047311656406\nC             -1.255192892404        -0.766696307361        -0.090680813117\nC             -0.509234231312         0.539151248295        -0.458497563695\nC              0.978370918448         0.632242559843        -0.012006323749\nC             -2.880145890364         0.238843940820         1.312525464887\nC             -1.740421774962        -0.771905583236         1.364308092124\nC             -2.598904458172        -0.799818761641        -0.863822290921\nC             -3.682491309287        -0.248170057257         0.088676794700\nC             -0.416172315741        -1.999831926006        -0.434959553640\nC             -1.378410823513         1.760377192535        -0.090407192128\nC              1.674850224120        -0.681265831824        -0.445496460528\nC             -2.250006152735         1.621571672599         1.161331278707\nC              0.997769837655        -1.919052160298         0.128028928632\nC              1.666368862196         1.766534648213        -0.811794061935\nC              1.168852614536         0.910141240813         1.479830478391\nC              3.135518445878        -0.569551809091        -0.157683844397\nC             -4.609465991089         0.795533911903        -0.551523105903\nC              3.155678592878         1.954156334055        -0.478214191590\nC              3.782185286813         0.630197708184        -0.219343769899\nC              4.130804509997        -1.530153787539         0.161724426955\nC              5.294635030493        -0.835299042139         0.273980574580\nH             -0.446359683663         0.529011855877        -1.555046029618\nH             -3.512277089557         0.221161983579         2.205140965531\nH             -0.987781163065        -0.489631957810         2.090197184186\nH             -2.099445869489        -1.770574150513         1.629874570684\nH             -2.561136757120        -0.227442226036        -1.788299718618\nH             -2.854670107625        -1.827148904254        -1.131641983744\nH             -0.352942849879        -2.090388805289        -1.522821430166\nH             -0.917395579388        -2.895612168970        -0.058886762990\nH             -2.030554608830         1.964782730673        -0.939705889660\nH             -0.751051272842         2.643276152610         0.031130312859\nH              1.568194501766        -0.751873051798        -1.538335140723\nH             -1.648508759809         1.799647071416         2.055436775131\nH             -3.024927698997         2.390216262058         1.135429285172\nH              0.980016448632        -1.887152496049         1.216940986263\nH              1.555470095230        -2.809092648661        -0.168740398448\nH              1.159641611864         2.715755899909        -0.639015681902\nH              1.574164237907         1.537817734629        -1.875629822504\nH              0.649843484198         1.820861882900         1.764748930600\nH              0.808433800730         0.095437986938         2.096511669149\nH              2.222642777935         1.033914752596         1.709232760711\nH             -4.054665773811         1.641878544773        -0.952394342391\nH             -5.302115408423         1.156092156125         0.223528147949\nH              3.278599467613         2.596760939856         0.399104747162\nH              3.657812131737         2.457381139788        -1.308864601308\nH             -4.087268250099        -1.977188083972         0.916499330833\nH              4.002118033564        -2.584675937524         0.293352778483\nH             -5.695011260145        -0.585396873781        -1.313343649388\nH              6.294960173103        -1.145419458620         0.500962370779\n","xyz");
-	viewer_16460546145714314.setStyle({"stick": {}});
-	viewer_16460546145714314.zoomTo();
-viewer_16460546145714314.render();
+viewer_16503943392687008 = $3Dmol.createViewer($("#3dmolviewer_16503943392687008"),{backgroundColor:"white"});
+viewer_16503943392687008.zoomTo();
+	viewer_16503943392687008.addModel("51\ncafestol initial structure\nO  -4.5215   -1.3455    0.4926\nO  -5.2905    0.0812   -1.7033\nO   5.1630    0.4345   -0.1101\nC  -1.2807   -0.7511   -0.0465\nC  -0.5244    0.5810   -0.4102\nC   0.9909    0.6610    0.0407\nC  -2.9440    0.2916    1.2866\nC  -1.8143   -0.7311    1.3945\nC  -2.6188   -0.8159   -0.8642\nC  -3.7116   -0.2387    0.0606\nC  -0.4332   -2.0024   -0.3283\nC  -1.3742    1.8303   -0.0654\nC   1.6844   -0.6873   -0.4019\nC  -2.3206    1.6833    1.1309\nC   0.9997   -1.9155    0.1913\nC   1.7285    1.8344   -0.7277\nC   1.1437    0.9261    1.5588\nC   3.1644   -0.6155   -0.2085\nC  -4.6490    0.7442   -0.6282\nC   3.2525    1.9378   -0.4590\nC   3.8298    0.5879   -0.2856\nC   4.1654   -1.5888    0.0140\nC   5.3604   -0.9015    0.0689\nH  -0.4604    0.5817   -1.5108\nH  -3.5646    0.2626    2.1897\nH  -1.0861   -0.4449    2.1498\nH  -2.1902   -1.7145    1.7003\nH  -2.5286   -0.2495   -1.7981\nH  -2.8534   -1.8505   -1.1460\nH  -0.3943   -2.1694   -1.4136\nH  -0.9135   -2.8938    0.0946\nH  -1.9810    2.0650   -0.9487\nH  -0.7587    2.7222    0.0818\nH   1.5605   -0.7646   -1.4951\nH  -1.7642    1.9154    2.0477\nH  -3.1082    2.4431    1.0635\nH   1.0176   -1.9046    1.2859\nH   1.5276   -2.8282   -0.1118\nH   1.2808    2.8061   -0.4944\nH   1.5851    1.6842   -1.8068\nH   0.5898    1.8173    1.8670\nH   0.8147    0.0892    2.1727\nH   2.1832    1.0992    1.8532\nH  -4.1337    1.6158   -1.0351\nH  -5.4265    1.0934    0.0595\nH   3.4273    2.5264    0.4487\nH   3.7385    2.4646   -1.2871\nH  -3.9519   -2.0832    0.7635\nH   4.0442   -2.6573    0.1180\nH  -5.7603   -0.6874   -1.3370\nH   6.3869   -1.2031    0.2186\n","xyz");
+	viewer_16503943392687008.addModel("51\n\nO             -4.586922613633        -1.279899592845         0.480337128578\nO             -5.319323113156         0.246555556552        -1.628991016489\nO              5.096372611815         0.479138514975         0.047311656406\nC             -1.255192892404        -0.766696307361        -0.090680813117\nC             -0.509234231312         0.539151248295        -0.458497563695\nC              0.978370918448         0.632242559843        -0.012006323749\nC             -2.880145890364         0.238843940820         1.312525464887\nC             -1.740421774962        -0.771905583236         1.364308092124\nC             -2.598904458172        -0.799818761641        -0.863822290921\nC             -3.682491309287        -0.248170057257         0.088676794700\nC             -0.416172315741        -1.999831926006        -0.434959553640\nC             -1.378410823513         1.760377192535        -0.090407192128\nC              1.674850224120        -0.681265831824        -0.445496460528\nC             -2.250006152735         1.621571672599         1.161331278707\nC              0.997769837655        -1.919052160298         0.128028928632\nC              1.666368862196         1.766534648213        -0.811794061935\nC              1.168852614536         0.910141240813         1.479830478391\nC              3.135518445878        -0.569551809091        -0.157683844397\nC             -4.609465991089         0.795533911903        -0.551523105903\nC              3.155678592878         1.954156334055        -0.478214191590\nC              3.782185286813         0.630197708184        -0.219343769899\nC              4.130804509997        -1.530153787539         0.161724426955\nC              5.294635030493        -0.835299042139         0.273980574580\nH             -0.446359683663         0.529011855877        -1.555046029618\nH             -3.512277089557         0.221161983579         2.205140965531\nH             -0.987781163065        -0.489631957810         2.090197184186\nH             -2.099445869489        -1.770574150513         1.629874570684\nH             -2.561136757120        -0.227442226036        -1.788299718618\nH             -2.854670107625        -1.827148904254        -1.131641983744\nH             -0.352942849879        -2.090388805289        -1.522821430166\nH             -0.917395579388        -2.895612168970        -0.058886762990\nH             -2.030554608830         1.964782730673        -0.939705889660\nH             -0.751051272842         2.643276152610         0.031130312859\nH              1.568194501766        -0.751873051798        -1.538335140723\nH             -1.648508759809         1.799647071416         2.055436775131\nH             -3.024927698997         2.390216262058         1.135429285172\nH              0.980016448632        -1.887152496049         1.216940986263\nH              1.555470095230        -2.809092648661        -0.168740398448\nH              1.159641611864         2.715755899909        -0.639015681902\nH              1.574164237907         1.537817734629        -1.875629822504\nH              0.649843484198         1.820861882900         1.764748930600\nH              0.808433800730         0.095437986938         2.096511669149\nH              2.222642777935         1.033914752596         1.709232760711\nH             -4.054665773811         1.641878544773        -0.952394342391\nH             -5.302115408423         1.156092156125         0.223528147949\nH              3.278599467613         2.596760939856         0.399104747162\nH              3.657812131737         2.457381139788        -1.308864601308\nH             -4.087268250099        -1.977188083972         0.916499330833\nH              4.002118033564        -2.584675937524         0.293352778483\nH             -5.695011260145        -0.585396873781        -1.313343649388\nH              6.294960173103        -1.145419458620         0.500962370779\n","xyz");
+	viewer_16503943392687008.setStyle({"stick": {}});
+	viewer_16503943392687008.zoomTo();
+viewer_16503943392687008.render();
 });
 </script></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kahweol, starting geometry vs. XTB optimized geometry:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16460546145733087"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16460546145733087" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394339270001"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_1650394339270001" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1302,19 +1361,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_16460546145733087 = null;
-var warn = document.getElementById("3dmolwarning_16460546145733087");
+var viewer_1650394339270001 = null;
+var warn = document.getElementById("3dmolwarning_1650394339270001");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_16460546145733087 = $3Dmol.createViewer($("#3dmolviewer_16460546145733087"),{backgroundColor:"white"});
-viewer_16460546145733087.zoomTo();
-	viewer_16460546145733087.addModel("49\nkahweol initial structure\nO  -4.4710   -1.5361    0.0905\nO  -5.6188    0.9753   -0.0811\nO   5.1625    0.5695   -0.0997\nC  -1.2209   -0.8317   -0.2017\nC  -0.4821    0.5357   -0.4703\nC  -3.0038    0.1167    1.0462\nC  -1.8514   -0.8737    1.1997\nC  -2.4967   -0.9058   -1.1119\nC   0.9884    0.6333    0.0944\nC  -3.6676   -0.3924   -0.2474\nC  -0.3220   -2.0551   -0.4569\nC  -1.3919    1.7479   -0.1363\nC  -2.4167    1.5304    0.9816\nC   1.7435   -0.6786   -0.3542\nC   1.0741   -1.9483    0.1552\nC   1.0367    0.8330    1.6293\nC  -4.5845    0.5870   -0.9677\nC   1.7610    1.8511   -0.4907\nC   3.2146   -0.5444   -0.1101\nC   3.1013    1.8722   -0.6493\nC   3.8167    0.6946   -0.3059\nC   4.2309   -1.4546    0.2464\nC   5.3980   -0.7259    0.2399\nH  -0.3415    0.5842   -1.5631\nH  -3.6779    0.0397    1.9072\nH  -1.1861   -0.6021    2.0159\nH  -2.2356   -1.8757    1.4322\nH  -2.3648   -0.3090   -2.0216\nH  -2.6844   -1.9384   -1.4328\nH  -0.2098   -2.1924   -1.5413\nH  -0.8043   -2.9694   -0.0890\nH  -1.9406    2.0033   -1.0514\nH  -0.8134    2.6482    0.0921\nH  -1.9341    1.7452    1.9434\nH  -3.2193    2.2709    0.8849\nH   1.6699   -0.7251   -1.4553\nH   1.0259   -1.9792    1.2481\nH   1.6508   -2.8307   -0.1490\nH   2.0514    1.0518    1.9842\nH   0.4166    1.6762    1.9486\nH   0.7233   -0.0489    2.1864\nH  -5.0524    0.1195   -1.8415\nH  -4.0679    1.4861   -1.3088\nH   1.2088    2.7568   -0.7218\nH  -5.0925   -1.2746    0.7905\nH   3.6240    2.7536   -0.9997\nH   4.1386   -2.5085    0.4650\nH  -6.2132    0.2149    0.0339\nH   6.4308   -0.9731    0.4374\n","xyz");
-	viewer_16460546145733087.addModel("51\n\nO             -4.586922613633        -1.279899592845         0.480337128578\nO             -5.319323113156         0.246555556552        -1.628991016489\nO              5.096372611815         0.479138514975         0.047311656406\nC             -1.255192892404        -0.766696307361        -0.090680813117\nC             -0.509234231312         0.539151248295        -0.458497563695\nC              0.978370918448         0.632242559843        -0.012006323749\nC             -2.880145890364         0.238843940820         1.312525464887\nC             -1.740421774962        -0.771905583236         1.364308092124\nC             -2.598904458172        -0.799818761641        -0.863822290921\nC             -3.682491309287        -0.248170057257         0.088676794700\nC             -0.416172315741        -1.999831926006        -0.434959553640\nC             -1.378410823513         1.760377192535        -0.090407192128\nC              1.674850224120        -0.681265831824        -0.445496460528\nC             -2.250006152735         1.621571672599         1.161331278707\nC              0.997769837655        -1.919052160298         0.128028928632\nC              1.666368862196         1.766534648213        -0.811794061935\nC              1.168852614536         0.910141240813         1.479830478391\nC              3.135518445878        -0.569551809091        -0.157683844397\nC             -4.609465991089         0.795533911903        -0.551523105903\nC              3.155678592878         1.954156334055        -0.478214191590\nC              3.782185286813         0.630197708184        -0.219343769899\nC              4.130804509997        -1.530153787539         0.161724426955\nC              5.294635030493        -0.835299042139         0.273980574580\nH             -0.446359683663         0.529011855877        -1.555046029618\nH             -3.512277089557         0.221161983579         2.205140965531\nH             -0.987781163065        -0.489631957810         2.090197184186\nH             -2.099445869489        -1.770574150513         1.629874570684\nH             -2.561136757120        -0.227442226036        -1.788299718618\nH             -2.854670107625        -1.827148904254        -1.131641983744\nH             -0.352942849879        -2.090388805289        -1.522821430166\nH             -0.917395579388        -2.895612168970        -0.058886762990\nH             -2.030554608830         1.964782730673        -0.939705889660\nH             -0.751051272842         2.643276152610         0.031130312859\nH              1.568194501766        -0.751873051798        -1.538335140723\nH             -1.648508759809         1.799647071416         2.055436775131\nH             -3.024927698997         2.390216262058         1.135429285172\nH              0.980016448632        -1.887152496049         1.216940986263\nH              1.555470095230        -2.809092648661        -0.168740398448\nH              1.159641611864         2.715755899909        -0.639015681902\nH              1.574164237907         1.537817734629        -1.875629822504\nH              0.649843484198         1.820861882900         1.764748930600\nH              0.808433800730         0.095437986938         2.096511669149\nH              2.222642777935         1.033914752596         1.709232760711\nH             -4.054665773811         1.641878544773        -0.952394342391\nH             -5.302115408423         1.156092156125         0.223528147949\nH              3.278599467613         2.596760939856         0.399104747162\nH              3.657812131737         2.457381139788        -1.308864601308\nH             -4.087268250099        -1.977188083972         0.916499330833\nH              4.002118033564        -2.584675937524         0.293352778483\nH             -5.695011260145        -0.585396873781        -1.313343649388\nH              6.294960173103        -1.145419458620         0.500962370779\n","xyz");
-	viewer_16460546145733087.setStyle({"stick": {}});
-	viewer_16460546145733087.zoomTo();
-viewer_16460546145733087.render();
+viewer_1650394339270001 = $3Dmol.createViewer($("#3dmolviewer_1650394339270001"),{backgroundColor:"white"});
+viewer_1650394339270001.zoomTo();
+	viewer_1650394339270001.addModel("49\nkahweol initial structure\nO  -4.4710   -1.5361    0.0905\nO  -5.6188    0.9753   -0.0811\nO   5.1625    0.5695   -0.0997\nC  -1.2209   -0.8317   -0.2017\nC  -0.4821    0.5357   -0.4703\nC  -3.0038    0.1167    1.0462\nC  -1.8514   -0.8737    1.1997\nC  -2.4967   -0.9058   -1.1119\nC   0.9884    0.6333    0.0944\nC  -3.6676   -0.3924   -0.2474\nC  -0.3220   -2.0551   -0.4569\nC  -1.3919    1.7479   -0.1363\nC  -2.4167    1.5304    0.9816\nC   1.7435   -0.6786   -0.3542\nC   1.0741   -1.9483    0.1552\nC   1.0367    0.8330    1.6293\nC  -4.5845    0.5870   -0.9677\nC   1.7610    1.8511   -0.4907\nC   3.2146   -0.5444   -0.1101\nC   3.1013    1.8722   -0.6493\nC   3.8167    0.6946   -0.3059\nC   4.2309   -1.4546    0.2464\nC   5.3980   -0.7259    0.2399\nH  -0.3415    0.5842   -1.5631\nH  -3.6779    0.0397    1.9072\nH  -1.1861   -0.6021    2.0159\nH  -2.2356   -1.8757    1.4322\nH  -2.3648   -0.3090   -2.0216\nH  -2.6844   -1.9384   -1.4328\nH  -0.2098   -2.1924   -1.5413\nH  -0.8043   -2.9694   -0.0890\nH  -1.9406    2.0033   -1.0514\nH  -0.8134    2.6482    0.0921\nH  -1.9341    1.7452    1.9434\nH  -3.2193    2.2709    0.8849\nH   1.6699   -0.7251   -1.4553\nH   1.0259   -1.9792    1.2481\nH   1.6508   -2.8307   -0.1490\nH   2.0514    1.0518    1.9842\nH   0.4166    1.6762    1.9486\nH   0.7233   -0.0489    2.1864\nH  -5.0524    0.1195   -1.8415\nH  -4.0679    1.4861   -1.3088\nH   1.2088    2.7568   -0.7218\nH  -5.0925   -1.2746    0.7905\nH   3.6240    2.7536   -0.9997\nH   4.1386   -2.5085    0.4650\nH  -6.2132    0.2149    0.0339\nH   6.4308   -0.9731    0.4374\n","xyz");
+	viewer_1650394339270001.addModel("51\n\nO             -4.586922613633        -1.279899592845         0.480337128578\nO             -5.319323113156         0.246555556552        -1.628991016489\nO              5.096372611815         0.479138514975         0.047311656406\nC             -1.255192892404        -0.766696307361        -0.090680813117\nC             -0.509234231312         0.539151248295        -0.458497563695\nC              0.978370918448         0.632242559843        -0.012006323749\nC             -2.880145890364         0.238843940820         1.312525464887\nC             -1.740421774962        -0.771905583236         1.364308092124\nC             -2.598904458172        -0.799818761641        -0.863822290921\nC             -3.682491309287        -0.248170057257         0.088676794700\nC             -0.416172315741        -1.999831926006        -0.434959553640\nC             -1.378410823513         1.760377192535        -0.090407192128\nC              1.674850224120        -0.681265831824        -0.445496460528\nC             -2.250006152735         1.621571672599         1.161331278707\nC              0.997769837655        -1.919052160298         0.128028928632\nC              1.666368862196         1.766534648213        -0.811794061935\nC              1.168852614536         0.910141240813         1.479830478391\nC              3.135518445878        -0.569551809091        -0.157683844397\nC             -4.609465991089         0.795533911903        -0.551523105903\nC              3.155678592878         1.954156334055        -0.478214191590\nC              3.782185286813         0.630197708184        -0.219343769899\nC              4.130804509997        -1.530153787539         0.161724426955\nC              5.294635030493        -0.835299042139         0.273980574580\nH             -0.446359683663         0.529011855877        -1.555046029618\nH             -3.512277089557         0.221161983579         2.205140965531\nH             -0.987781163065        -0.489631957810         2.090197184186\nH             -2.099445869489        -1.770574150513         1.629874570684\nH             -2.561136757120        -0.227442226036        -1.788299718618\nH             -2.854670107625        -1.827148904254        -1.131641983744\nH             -0.352942849879        -2.090388805289        -1.522821430166\nH             -0.917395579388        -2.895612168970        -0.058886762990\nH             -2.030554608830         1.964782730673        -0.939705889660\nH             -0.751051272842         2.643276152610         0.031130312859\nH              1.568194501766        -0.751873051798        -1.538335140723\nH             -1.648508759809         1.799647071416         2.055436775131\nH             -3.024927698997         2.390216262058         1.135429285172\nH              0.980016448632        -1.887152496049         1.216940986263\nH              1.555470095230        -2.809092648661        -0.168740398448\nH              1.159641611864         2.715755899909        -0.639015681902\nH              1.574164237907         1.537817734629        -1.875629822504\nH              0.649843484198         1.820861882900         1.764748930600\nH              0.808433800730         0.095437986938         2.096511669149\nH              2.222642777935         1.033914752596         1.709232760711\nH             -4.054665773811         1.641878544773        -0.952394342391\nH             -5.302115408423         1.156092156125         0.223528147949\nH              3.278599467613         2.596760939856         0.399104747162\nH              3.657812131737         2.457381139788        -1.308864601308\nH             -4.087268250099        -1.977188083972         0.916499330833\nH              4.002118033564        -2.584675937524         0.293352778483\nH             -5.695011260145        -0.585396873781        -1.313343649388\nH              6.294960173103        -1.145419458620         0.500962370779\n","xyz");
+	viewer_1650394339270001.setStyle({"stick": {}});
+	viewer_1650394339270001.zoomTo();
+viewer_1650394339270001.render();
 });
 </script></div></div>
 </div>
@@ -1446,14 +1505,14 @@ viewer_16460546145733087.render();
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="structopt.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="structopt-exercises.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Molecular structure optimization</p>
+            <p class="prev-next-title">Exercises</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="tst.html" title="next page">
@@ -1464,19 +1523,17 @@ viewer_16460546145733087.render();
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

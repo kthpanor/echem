@@ -41,18 +41,15 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -172,6 +169,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="raman.html">
      Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ir_raman_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -391,6 +393,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
     </a>
@@ -507,7 +514,7 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="excoupl_impl.html">
-     Implementation
+     Implementation of the exciton coupling model
     </a>
    </li>
   </ul>
@@ -631,7 +638,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -682,41 +689,36 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#now-we-can-calculate-the-hessian">
-   Now we can calculate the Hessian
-  </a>
- </li>
-</ul>
-
-            </nav>
         </div>
     </div>
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>IR spectroscopy</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="ir-spectroscopy">
 <h1>IR spectroscopy<a class="headerlink" href="#ir-spectroscopy" title="Permalink to this headline">¶</a></h1>
-<p id="sec-ir-tutorial">The infrared (IR) absorption process involves the absorption of light with low photon energy (from approx. 800 nm to approx. 1000 <span class="math notranslate nohighlight">\(\mu\)</span>m) which promotes the excitation of molecular vibrations. Of the entire IR photon energy range, the photons which excite fundamental vibrations of covalent bonds have energies in the range 2.5-25 <span class="math notranslate nohighlight">\(\mu\)</span>m <span id="id1">[<a class="reference internal" href="refs.html#id161">Cen15</a>, <a class="reference internal" href="refs.html#id48">NRS18</a>]</span>. The absorbed photon energies (i.e. IR absorption peak positions) correspond to the molecular vibrational freqencies, while the IR intensities are related to the IR linear absorption cross-section (<strong>link to response theory</strong>) <span id="id2">[<a class="reference internal" href="refs.html#id48">NRS18</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-473d16f6-c64d-4397-9f27-f8122a3bf2d7">
-<span class="eqno">(1)<a class="headerlink" href="#equation-473d16f6-c64d-4397-9f27-f8122a3bf2d7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p id="sec-ir-tutorial">The infrared (IR) absorption process involves the absorption of light with low photon energy (from approx. 800 nm to approx. 1000 <span class="math notranslate nohighlight">\(\mu\)</span>m) which promotes the excitation of molecular vibrations. Of the entire IR photon energy range, the photons which excite fundamental vibrations of covalent bonds have energies in the range 2.5-25 <span class="math notranslate nohighlight">\(\mu\)</span>m <span id="id1">[<a class="reference internal" href="refs.html#id165" title="A. Centrone. Infrared imaging and spectroscopy beyond the diffraction limit. Annu. Rev. Anal. Chem., 8:101-126, 2015. doi:https://doi.org/10.1146/annurev-anchem-071114-040435.">Cen15</a>, <a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span>. The absorbed photon energies (i.e. IR absorption peak positions) correspond to the molecular vibrational freqencies, while the IR intensities are related to the IR <a class="reference internal" href="exact-response.html#sec-exact-response"><span class="std std-ref">linear absorption cross-section</span></a> <span id="id2">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span>:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-0749717e-9e60-4360-8d6b-40b94c6d557d">
+<span class="eqno">(1)<a class="headerlink" href="#equation-0749717e-9e60-4360-8d6b-40b94c6d557d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \sigma_k(\omega)= \frac{\pi}{3\epsilon_0c}\left(\frac{\partial \mu}{\partial Q_k}\right)^2\frac{\gamma_{k}}{(\omega_{k0}-\omega)^2+\gamma_{k}^2}\,.
 \end{equation}\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\mu\)</span> is the molecular dipole moment of the electronic ground state, <span class="math notranslate nohighlight">\(Q_k\)</span> is the normal coordinate corresponding to the vibrational mode <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\omega\)</span> is the angular frequency of the absorbed electromagnetic radiation, <span class="math notranslate nohighlight">\(\omega_{k0}\)</span> is the anugular frequency difference between the excited vibrational state <span class="math notranslate nohighlight">\(|k\rangle\)</span> and the ground state, and <span class="math notranslate nohighlight">\(\gamma_{k}\)</span> is the half-width broadening associated with the inverse lifetime of <span class="math notranslate nohighlight">\(|k\rangle\)</span>. As can be seen from the equation, the IR absorption cross-section depends on the derivative of the dipole moment with respect to the normal coordinate <span class="math notranslate nohighlight">\(Q_k\)</span>. This means that the only modes which have non-zero IR absorption cross-sections are those associated with a change in the dipole moment <span id="id3">[<a class="reference internal" href="refs.html#id162">SH07</a>]</span>.</p>
-<p>These molecular vibrations constitute fingerprints of different functional groups present in the system and thus are important for chemical characterization and molecular identification <strong>to be refined, to add examples</strong>.</p>
+<p>Here, <span class="math notranslate nohighlight">\(\mu\)</span> is the molecular dipole moment of the electronic ground state, <span class="math notranslate nohighlight">\(Q_k\)</span> is the normal coordinate corresponding to the vibrational mode <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\omega\)</span> is the angular frequency of the absorbed electromagnetic radiation, <span class="math notranslate nohighlight">\(\omega_{k0}\)</span> is the anugular frequency difference between the excited vibrational state <span class="math notranslate nohighlight">\(|k\rangle\)</span> and the ground state, and <span class="math notranslate nohighlight">\(\gamma_{k}\)</span> is the half-width broadening associated with the inverse lifetime of <span class="math notranslate nohighlight">\(|k\rangle\)</span>. As can be seen from the equation, the IR absorption cross-section depends on the derivative of the dipole moment with respect to the normal coordinate <span class="math notranslate nohighlight">\(Q_k\)</span>. This means that the only modes which have non-zero IR absorption cross-sections are those associated with a change in the dipole moment <span id="id3">[<a class="reference internal" href="refs.html#id166" title="F. Siebert and P. Hildebrandt. Theory of Infrared Absorption and Raman Spectroscopy, chapter 2, pages 11-61. John Wiley and Sons, Ltd, 2007. URL: https://doi.org/10.1002/9783527621347.ch2.">SH07</a>]</span>.</p>
+<p>These molecular vibrations constitute fingerprints of different functional groups present in the system and thus are important for chemical characterization and molecular identification.</p>
 <p>The first step in an IR spectrum calculation is to determine the normal modes and frequencies. These are obtained from the eigenstates and eigenvalues of the Hessian matrix which collects all the second order derivatives of the energy (<span class="math notranslate nohighlight">\(E\)</span>) with respect to the nuclear coordinates. For the ground state, the Hessian can be determined <a class="reference internal" href="hessians.html#hessians-label"><span class="std std-ref">analytically</span></a>, or numerically based on the analytical gradient. The <a class="reference internal" href="hessians.html#dipole-mom-gradient-label"><span class="std std-ref">dipole moment gradient</span></a>, required to compute IR absorption cross-sections, can also be determined analytically.</p>
-<p><strong>To Add: connection between absorption cross-section and the IR intensity calculated in practice.</strong>.</p>
-<p><strong>To Add: anharmonic corrections</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
@@ -725,12 +727,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">bohr_in_angstroms</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
 </pre></div>
 </div>
 </div>
@@ -767,19 +763,15 @@
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the scf calculation</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the scf calculation</span>
+<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1">#{&#39;xcfun&#39;:&#39;b3lyp&#39;}</span>
 <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({},</span><span class="n">method_settings</span><span class="p">)</span>
+<span class="n">scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                            Self Consistent Field Driver Setup                                            
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                                            Self Consistent Field Driver Setup                                            
                                            ====================================                                           
                                                                                                                           
                    Wave Function Model             : Spin-Restricted Hartree-Fock                                         
@@ -795,121 +787,17 @@
                                                                                                                           
 * Info * Nuclear repulsion energy: 9.2514793147 a.u.                                                                      
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+* Info * Overlap matrix computed in 0.01 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+* Info * Nuclear potential matrix computed in 0.01 sec.                                                                   
                                                                                                                           
+* Info * Orthogonalization matrix computed in 0.06 sec.                                                                   
+... 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.959319307971 a.u. Time: 0.02 sec.                                  
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
-                                                                                                                          
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
-                                                                                                                          
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
-               --------------------------------------------------------------------------------------------               
-                  1       -74.959319310077    0.0000000000      0.00002657      0.00000643      0.00000000                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.959319310295   -0.0000000002      0.00000889      0.00000203      0.00002226                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -74.959319310327   -0.0000000000      0.00000049      0.00000011      0.00001225                
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 3 iterations. Time: 0.01 sec.                                                         
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
-               -----------------------------                                                                              
-               Total Energy                       :      -74.9593193103 a.u.                                              
-               Electronic Energy                  :      -84.2107986251 a.u.                                              
-               Nuclear Repulsion Energy           :        9.2514793147 a.u.                                              
-               ------------------------------------                                                                       
-               Gradient Norm                      :        0.0000004869 a.u.                                              
-                                                                                                                          
-                                                                                                                          
-               Ground State Information                                                                                   
-               ------------------------                                                                                   
-               Charge of Molecule            :  0.0                                                                       
-               Multiplicity (2S+1)           :  1.0                                                                       
-               Magnetic Quantum Number (M_S) :  0.0                                                                       
-                                                                                                                          
-                                                                                                                          
-                                                 Spin Restricted Orbitals                                                 
-                                                 ------------------------                                                 
-                                                                                                                          
-               Molecular Orbital No.   1:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.000 Energy:  -20.23340 a.u.                                                                  
-               (   1 O   1s  :    -0.99)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   2:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.000 Energy:   -1.26571 a.u.                                                                  
-               (   1 O   1s  :    -0.23) (   1 O   2s  :     0.83) (   2 H   1s  :     0.16)                              
-               (   3 H   1s  :     0.16)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   3:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.000 Energy:   -0.62927 a.u.                                                                  
-               (   1 O   1p+1:    -0.35) (   1 O   1p0 :     0.49) (   2 H   1s  :     0.44)                              
-               (   3 H   1s  :    -0.44)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   4:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.000 Energy:   -0.44167 a.u.                                                                  
-               (   1 O   2s  :    -0.52) (   1 O   1p+1:     0.65) (   1 O   1p0 :     0.46)                              
-               (   2 H   1s  :     0.27) (   3 H   1s  :     0.27)                                                        
-                                                                                                                          
-               Molecular Orbital No.   5:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 2.000 Energy:   -0.38765 a.u.                                                                  
-               (   1 O   1p-1:    -1.00)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.   6:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.000 Energy:    0.60284 a.u.                                                                  
-               (   1 O   2s  :     0.91) (   1 O   1p+1:     0.58) (   1 O   1p0 :     0.41)                              
-               (   2 H   1s  :    -0.81) (   3 H   1s  :    -0.81)                                                        
-                                                                                                                          
-               Molecular Orbital No.   7:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.000 Energy:    0.76592 a.u.                                                                  
-               (   1 O   1p+1:     0.58) (   1 O   1p0 :    -0.82) (   2 H   1s  :     0.84)                              
-               (   3 H   1s  :    -0.84)                                                                                  
-                                                                                                                          
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="now-we-can-calculate-the-hessian">
-<h2>Now we can calculate the Hessian<a class="headerlink" href="#now-we-can-calculate-the-hessian" title="Permalink to this headline">¶</a></h2>
+<p>Now we can calculate the Hessian</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the Hessian Driver and use it to compute an analytical SCF Hessian</span>
 <span class="n">hessian_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numerical&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;do_four_point&#39;</span><span class="p">:</span><span class="s1">&#39;no&#39;</span><span class="p">}</span>
 <span class="n">cphf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;use_subspace_solver&#39;</span><span class="p">:</span><span class="s1">&#39;yes&#39;</span><span class="p">}</span>
@@ -956,8 +844,8 @@
   3 H(z)      -0.24327478     -0.00000000      0.14371683
 </pre></div>
 </div>
-<p>The normal modes and frequencies are then determined by diagonalizing the Hessian. First, the transation and rotational modes mut be projected out, leaving 3N-6 (or 3N-5 for a linear molecule) vibrational modes. This is done under the hood with the help of geomeTRIC. <strong>add comparison vib-rot removed vs. included?</strong></p>
-<p>The IR intensities are determined as discussed in more details in <strong>add link</strong></p>
+<p>The normal modes and frequencies are then determined by diagonalizing the Hessian. First, the transation and rotational modes mut be projected out, leaving 3N-6 (or 3N-5 for a linear molecule) vibrational modes. This is done under the hood with the help of geomeTRIC.</p>
+<p>The IR intensities are determined as discussed in more details <a class="reference internal" href="hessians.html#dipole-mom-gradient-label"><span class="std std-ref">here</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1077,8 +965,8 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>This is the bending mode at 1927.09 cm-1.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1649957944512753"  style="position: relative; width: 300px; height: 300px">
-        <p id="3dmolwarning_1649957944512753" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394341667695"  style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1650394341667695" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1101,19 +989,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_1649957944512753 = null;
-var warn = document.getElementById("3dmolwarning_1649957944512753");
+var viewer_1650394341667695 = null;
+var warn = document.getElementById("3dmolwarning_1650394341667695");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1649957944512753 = $3Dmol.createViewer($("#3dmolviewer_1649957944512753"),{backgroundColor:"white"});
-viewer_1649957944512753.zoomTo();
-	viewer_1649957944512753.addModel("3\n\nO       0.0000000       0.0000000       0.0000000       0.0587157      -0.0000000       0.0414896\nH       0.0000000       0.0000000       0.9500000      -0.7053752       0.0000000       0.0091568\nH       0.8960000       0.0000000      -0.3170000      -0.2266084      -0.0000000      -0.6677138","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewer_1649957944512753.setStyle({"stick": {}});
-	viewer_1649957944512753.animate({"loop": "backAndForth"});
-	viewer_1649957944512753.zoomTo();
-viewer_1649957944512753.render();
+viewer_1650394341667695 = $3Dmol.createViewer($("#3dmolviewer_1650394341667695"),{backgroundColor:"white"});
+viewer_1650394341667695.zoomTo();
+	viewer_1650394341667695.addModel("3\n\nO       0.0000000       0.0000000       0.0000000       0.0587157      -0.0000000       0.0414896\nH       0.0000000       0.0000000       0.9500000      -0.7053752       0.0000000       0.0091568\nH       0.8960000       0.0000000      -0.3170000      -0.2266084      -0.0000000      -0.6677138","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewer_1650394341667695.setStyle({"stick": {}});
+	viewer_1650394341667695.animate({"loop": "backAndForth"});
+	viewer_1650394341667695.zoomTo();
+viewer_1650394341667695.render();
 });
 </script></div></div>
 </div>
@@ -1133,8 +1021,8 @@ viewer_1649957944512753.render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>This is the symmetric stretching mode at 4545.78 cm-1.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1649957944526289"  style="position: relative; width: 300px; height: 300px">
-        <p id="3dmolwarning_1649957944526289" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394341676409"  style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1650394341676409" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1157,19 +1045,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_1649957944526289 = null;
-var warn = document.getElementById("3dmolwarning_1649957944526289");
+var viewer_1650394341676409 = null;
+var warn = document.getElementById("3dmolwarning_1650394341676409");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1649957944526289 = $3Dmol.createViewer($("#3dmolviewer_1649957944526289"),{backgroundColor:"white"});
-viewer_1649957944526289.zoomTo();
-	viewer_1649957944526289.addModel("3\n\nO       0.0000000       0.0000000       0.0000000       0.0397286       0.0000000       0.0273807\nH       0.0000000       0.0000000       0.9500000       0.0299225      -0.0000000      -0.7000252\nH       0.8960000       0.0000000      -0.3170000      -0.6605266       0.0000000       0.2654166","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewer_1649957944526289.setStyle({"stick": {}});
-	viewer_1649957944526289.animate({"loop": "backAndForth"});
-	viewer_1649957944526289.zoomTo();
-viewer_1649957944526289.render();
+viewer_1650394341676409 = $3Dmol.createViewer($("#3dmolviewer_1650394341676409"),{backgroundColor:"white"});
+viewer_1650394341676409.zoomTo();
+	viewer_1650394341676409.addModel("3\n\nO       0.0000000       0.0000000       0.0000000       0.0397286       0.0000000       0.0273807\nH       0.0000000       0.0000000       0.9500000       0.0299225      -0.0000000      -0.7000252\nH       0.8960000       0.0000000      -0.3170000      -0.6605266       0.0000000       0.2654166","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewer_1650394341676409.setStyle({"stick": {}});
+	viewer_1650394341676409.animate({"loop": "backAndForth"});
+	viewer_1650394341676409.zoomTo();
+viewer_1650394341676409.render();
 });
 </script></div></div>
 </div>
@@ -1189,8 +1077,8 @@ viewer_1649957944526289.render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>This is the asymmetric stretching mode at 4896.44 cm-1.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1649957944538692"  style="position: relative; width: 300px; height: 300px">
-        <p id="3dmolwarning_1649957944538692" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1650394341683863"  style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1650394341683863" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1213,22 +1101,21 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_1649957944538692 = null;
-var warn = document.getElementById("3dmolwarning_1649957944538692");
+var viewer_1650394341683863 = null;
+var warn = document.getElementById("3dmolwarning_1650394341683863");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1649957944538692 = $3Dmol.createViewer($("#3dmolviewer_1649957944538692"),{backgroundColor:"white"});
-viewer_1649957944538692.zoomTo();
-	viewer_1649957944538692.addModel("3\n\nO       0.0000000       0.0000000       0.0000000      -0.0415549      -0.0000000       0.0594816\nH       0.0000000       0.0000000       0.9500000       0.0001976      -0.0000000      -0.7110595\nH       0.8960000       0.0000000      -0.3170000       0.6593957      -0.0000000      -0.2330811","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewer_1649957944538692.setStyle({"stick": {}});
-	viewer_1649957944538692.animate({"loop": "backAndForth"});
-	viewer_1649957944538692.zoomTo();
-viewer_1649957944538692.render();
+viewer_1650394341683863 = $3Dmol.createViewer($("#3dmolviewer_1650394341683863"),{backgroundColor:"white"});
+viewer_1650394341683863.zoomTo();
+	viewer_1650394341683863.addModel("3\n\nO       0.0000000       0.0000000       0.0000000      -0.0415549      -0.0000000       0.0594816\nH       0.0000000       0.0000000       0.9500000       0.0001976      -0.0000000      -0.7110595\nH       0.8960000       0.0000000      -0.3170000       0.6593957      -0.0000000      -0.2330811","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewer_1650394341683863.setStyle({"stick": {}});
+	viewer_1650394341683863.animate({"loop": "backAndForth"});
+	viewer_1650394341683863.zoomTo();
+viewer_1650394341683863.render();
 });
 </script></div></div>
-</div>
 </div>
 </div>
 
@@ -1254,8 +1141,8 @@ viewer_1649957944538692.render();
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="vibrational.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1272,19 +1159,17 @@ viewer_1649957944538692.render();
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

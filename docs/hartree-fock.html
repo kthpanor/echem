@@ -41,18 +41,17 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -541,7 +540,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="loprop.html">
-     LoProp charges and polarisabilities
+     LoProp charges and polarizabilities
     </a>
    </li>
   </ul>
@@ -631,7 +630,7 @@
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -682,7 +681,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -787,7 +786,115 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Hartree–Fock theory</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hartreefock-equation">
+   Hartree–Fock equation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lagrangian">
+     Lagrangian
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#canonical-form">
+     Canonical form
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#in-ao-basis">
+       In AO basis
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hartreefock-energy">
+   Hartree–Fock energy
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#koopmans-theorem">
+   Koopmans’ theorem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#brillouin-s-theorem">
+   Brillouin’s theorem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scf-procedure">
+   SCF procedure
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rothaanhall-scheme">
+     Rothaan–Hall scheme
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#integrals-in-ao-basis">
+       Integrals in AO basis
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#orthogonalization-of-the-ao-basis">
+       Orthogonalization of the AO basis
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#solving-the-hartree-fock-equation">
+       Solving the Hartree–Fock equation
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#scf-iterations">
+       SCF iterations
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#convergence-acceleration">
+     Convergence acceleration
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#direct-inversion-iterative-subspace">
+       Direct inversion iterative subspace
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id4">
+       SCF iterations
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="hartreefock-theory">
@@ -1204,9 +1311,7 @@ C = X C^\mathrm{OAO}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
  0      -68.84975229    2.23e+00
  1      -69.95937641    1.79e+00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 2      -73.34743276    1.74e+00
+ 2      -73.34743276    1.74e+00
  3      -73.46688910    1.36e+00
  4      -74.74058933    1.29e+00
  5      -75.55859127    7.91e-01
@@ -1238,7 +1343,7 @@ SCF iterations converged!
 <h3>Convergence acceleration<a class="headerlink" href="#convergence-acceleration" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="direct-inversion-iterative-subspace">
 <h4>Direct inversion iterative subspace<a class="headerlink" href="#direct-inversion-iterative-subspace" title="Permalink to this headline">¶</a></h4>
-<p>The Rothaan–Hall scheme suffer from poor numerical convergence and in practice some version of convergence acceleration is adopted. In the method of direct inversion of the iterative subspace (DIIS) <span id="id3">[<a class="reference internal" href="refs.html#id27">Pul80</a>, <a class="reference internal" href="refs.html#id26">Pul82</a>, <a class="reference internal" href="refs.html#id25">Sel93</a>]</span> information is used from not only the present but also previous iterations to form an <em>averaged</em> effective one-electron Hamiltonian, or Fock matrix, according to</p>
+<p>The Rothaan–Hall scheme suffer from poor numerical convergence and in practice some version of convergence acceleration is adopted. In the method of direct inversion of the iterative subspace (DIIS) <span id="id3">[<a class="reference internal" href="refs.html#id27" title="P. Pulay. Convergence acceleration of iterative sequences. The case of SCF iteration. Chem. Phys. Lett., 73(2):393-398, 1980. doi:https://doi.org/10.1016/0009-2614(80)80396-4.">Pul80</a>, <a class="reference internal" href="refs.html#id26" title="P. Pulay. Improved SCF convergence acceleration. J. Comput. Chem., 3(4):556-560, 1982. doi:https://doi.org/10.1002/jcc.540030413.">Pul82</a>, <a class="reference internal" href="refs.html#id25" title="Harrell Sellers. The c2-diis convergence acceleration algorithm. Int. J. Quant. Chem., 45(1):31-41, 1993. doi:https://doi.org/10.1002/qua.560450106.">Sel93</a>]</span> information is used from not only the present but also previous iterations to form an <em>averaged</em> effective one-electron Hamiltonian, or Fock matrix, according to</p>
 <div class="math notranslate nohighlight">
 \[
 F_n^\mathrm{DIIS} = \sum_{i=1}^n w_i F_i
@@ -1366,16 +1471,15 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
  0      -68.84975229    2.23e+00
  1      -69.95937641    1.79e+00
- 2      -75.55987052    7.86e-01
- 3      -75.99800048    2.11e-01
- 4      -76.01692364    1.19e-01
- 5      -76.02664635    2.11e-02
- 6      -76.02697763    2.03e-03
- 7      -76.02698227    1.34e-03
- 8      -76.02698392    4.19e-04
- 9      -76.02698410    2.02e-04
-10      -76.02698415    1.36e-04
-11      -76.02698418    6.54e-05
+ 2      -75.60729666    7.45e-01
+ 3      -76.00342023    1.91e-01
+ 4      -76.02271274    7.66e-02
+ 5      -76.02682335    1.36e-02
+ 6      -76.02697656    2.04e-03
+ 7      -76.02698341    5.84e-04
+ 8      -76.02698396    3.13e-04
+ 9      -76.02698411    1.92e-04
+10      -76.02698417    8.81e-05
 SCF iterations converged!
 </pre></div>
 </div>
@@ -1408,8 +1512,8 @@ SCF iterations converged!
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="wft-general.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1426,19 +1530,17 @@ SCF iterations converged!
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By The eChem team<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 
