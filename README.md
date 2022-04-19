@@ -64,20 +64,18 @@ Multiple lists of references are possible but not yet properly implemented.
 
 3. Schedule: 2/5 - 4/5
     - 2/5: Introduction and theory
-        - 9:00-11:00 Introduction, initial questionnaire (experiences, area of expertise, ...)
-        - 11:00-12:00 + 13:00-14:00 Hartree-Fock example
-        - 14:00-15:00 MP2 exercise
-        - 15:00-15:30 Wrap-up, maybe short questionnaire
+        - 9:00-10:00 Introduction, initial questionnaire (experiences, area of expertise, ...) (TF)
+        - 10:00-12:00 SCF block (PN, ZR)
+        - 13:00-15:00 MP2 block (IB, XL)
+        - 15:00-16:00 Wrap-up, block division (TF)
     - 3/5: Theory day
-        - 11:00-12:00 Open questions, potential presentations (start 10:00?)
-        - 13:00-15:00 Go over notebooks
-        - 15:00-17:00 Exercises
-        - 17:00-17:30 Wrap-up, maybe short questionnaire
-    - 4/5: Tutorial day
-        - 9:00-10:00 Andreas
-        - 10:00-12:00 Go over notebooks
-        - 13:00-15:00 Exercises
-        - 15:00-15:30 Wrap-up, end questionnaire
+        - 11:00-12:00 Potential energy surface (gradients, Hessians, coordinates, IM) (YM, IB)
+        - 13:00-16:00 Group work
+        - 16:00-17:00 Wrap-up, presentations
+    - 4/5: Tutorial day (Wednesday)
+        - 9:00-12:00 Excited states: TDDFT (AD), ADC (MH), exciton coupling (XL, last)
+        - 13:00-16:00 Group work
+        - 16:00-17:00 Wrap-up, end questionnaire
         
 4. Blocks and main responsible
     - Theory
@@ -90,7 +88,6 @@ Multiple lists of references are possible but not yet properly implemented.
     - Tutorials
         - UV/vis (MD+TF)
         - IR/Raman (IEB+MH)
-        - CD (PN)
         - X-ray (MD+TF)
 
 # Status:
