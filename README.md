@@ -90,123 +90,93 @@ Multiple lists of references are possible but not yet properly implemented.
         
 4. Blocks and main responsible
     - Theory
-        - DFT (PN+ZR)
+        - SCF [good shape, need exercises] (PN+ZR)
         - MCSCF (MD)
         - Structure optimization (IEB+YMR)
         - Force field parameterization and interpolated PES (IEB+YMR)
-        - TDSCF (TF) [discuss with PN+AD]
+        - TDSCF [missing TDDFT (with AD), exercises] (TF+PN)
         - ADC (MH)
     - Tutorials
         - UV/vis (MD+TF)
         - IR/Raman (IEB+MH)
-        - X-ray (MD+TF)
+        - X-ray [mainly missing exercises] (MD+TF)
 
-# Status:
+# General status:
 0. Intro
-	-  Missing: description of Respondo (AD)
-	-  Missing: MD module
-    -  Missing: Nice main figure (IEB)
-	-  Missing?: Description of structure of echem
-	-  To improve: description of multipsi (MD)
+	- Missing: description of Respondo (AD)
+	- Missing: MD module
+    - Missing: Nice main figure with text (IEB)
+	- Missing?: Description of structure of echem
+	- To improve: description of multipsi (MD)
 
 1. Tutorials and Workflows: 
     -  UV/vis
-    	- TF
-        - To improve (not using water?)
-    -  Catalysis?
-         - Missing
+    	 - TF+MD
+    -  Catalysis
+         - Add later
     -  Optical activity
-         - PN
-         - To finish
+         - PN (?)
     -  Vibrational
     	 - IB, MH
-         - To finish
     -  Magnetic
-    	 - ZR, OV
-         - Missing
+    	 - Missing
     -  X-ray
     	 - TF
-         - To finish (larger systems)
-    -  TF, working on UV/vis and part of MD
 
 2. Electronic Structure Theory:
     - General aspects
-    		- PN, MD
-            - To finish (spin)
+    	 - PN, MD
     - Wavefunction
 	- General
-            - PN, MD
-            - To finish
+         - PN, MD
 	- Hartree—Fock theory
-            - PN
-            - To review
+         - PN
 	- CI
-            - MD
-            - To review
+         - MD
 	- MP
-            - MD?
-            - To review
+         - IEB, MD?
 	- MR methods
-            - MD
-            - To review
+         - MD
     - DFT
-            - PN
-	- To finish?
+         - PN
 
 3. Potential Energy Surfaces:
     - General aspects
-            - IB, MH
-            - To finish
+         - IEB, MH
     - Molecular structure optimization
-            - IB, MH
-            - To finish
+         - IEB, MH
     - Transition-state theory
-            - JG, DG
-            - Missing
+         - JG, DG
     - Interpolation
-            - IB, YM
-            - To finish
+         - IEB, YMR
     - Conical intersections
-            - AD
-            - Missing
+         - AD
     - Molecular dynamics
-            - TF, PN
-            - To finish
+         - TF
 
 4. Properties:
     - Response theory
 	- Exact states
-            - PN
-            - To finish
-	- CI states
-            - MD
-            - Missing
-	- SCF states
-            - PN
-            - To review?
+         - PN
+	- CI
+         - MD
+	- SCF
+         - PN
     - ADC
-            - AD, IB
-            - To finish
+         - MH, IEB, (AD)
     - Exciton coupling model
-            - XL
-            - To finish
+         - XL
 
 5. Environment:
 	-  Localized properties
         - PN
-        - Missing
 	-  Polarizable embedding
-        - To finish
 
 6. Visualization:
 	- Molecular orbitals
-        - To finish
 	- Densities
-        - PN
-        - To organize?
 	- Transition densities, NTOs
         - TF
-        - Missing
 <!-- #endregion -->
 
 # Misc.

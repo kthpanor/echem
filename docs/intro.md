@@ -171,23 +171,19 @@ $ conda install -c veloxchem veloxchem
 You can install packages while creating the environment, if so desired.
 ```
 
-### The eChem project
+### Compiling a local eChem book
 
-If you want to download the full eChem project, this is most conveniently done by cloning [repository](https://github.com/kthpanor/echem.git):
+If you want to download the full eChem project, this is most conveniently done by cloning the [repository](https://github.com/kthpanor/echem.git):
 
 ```
 $ git clone https://github.com/kthpanor/echem.git
 ```
 
-You find the Notebook files under `/docs`. If you want to perform local changes and compile your own version of the eChem book, you need the jupyter-book package, which is included in echem.yml. Building the (local) book is done by running the following in the eChem folder
+You find the Notebook files under `/docs`. If you want to perform local changes and compile your own version of the eChem book, you need the jupyter-book package, which is included in echem.yml. Building the (local) book is done by running the following in the eChem folder:
 
 ```
 $ jupyter-book build .
 ```
 
-...and you can see the resulting book by navigating to the `/_build/html`-folder through your GUI, or by running
-
-```
-$ open _build/html/index.html
-```
+...and you can see the resulting book by navigating to `/_build/html` and opening `index.html`.
 <!-- #endregion -->
