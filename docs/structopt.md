@@ -1,6 +1,5 @@
-# Molecular structure optimization
-
-This will be a notebook in the end.
+(sec:structopt-methods)=
+# Optimization Methods
 
 The first class of special points on the PES that we will discuss are local energy minima. These correspond to equilibrium molecular structures and are characterized by a vanishing first order energy derivative combined with a Hessian matrix which has only positive eigenvalues. The procedure to determine a local minimum (i.e. finding the coordinates that minimize the energy) is called a structure optimization.  
 
