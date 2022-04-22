@@ -37,9 +37,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -48,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -106,7 +111,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="uv-vis.html">
-   UV/vis absorption/emission
+   UV/vis spectroscopies
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -137,6 +142,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_rec.html">
      Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv-vis_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -383,7 +393,7 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="structopt.html">
+  <a class="reference internal" href="structopt-overview.html">
    Molecular structure optimization
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
@@ -393,13 +403,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="structopt-exercises.html">
-     Exercises
+    <a class="reference internal" href="structopt.html">
+     Optimization Methods
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -495,6 +510,11 @@ const thebe_selector_output = ".output, .cell_output"
      TDDFT
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="response_exercises.html">
+     Exercises
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -577,7 +597,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="visual-excited.html">
-   Visualizing excited states
+   Excited states
   </a>
  </li>
 </ul>
@@ -679,93 +699,72 @@ const thebe_selector_output = ".output, .cell_output"
             </div>
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Ensembles and time integration
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#choice-of-ensemble">
+   Choice of ensemble
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#choice-of-ensemble">
-     Choice of ensemble
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#microcanonical-ensemble-textit-nve">
+     Microcanonical ensemble (
+     <span class="math notranslate nohighlight">
+      \(\textit{NVE}\)
+     </span>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#canonical-ensemble-textit-nvt">
+     Canonical ensemble (
+     <span class="math notranslate nohighlight">
+      \(\textit{NVT}\)
+     </span>
+     )
     </a>
     <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#microcanonical-ensemble-textit-nve">
-       Microcanonical ensemble (
-       <span class="math notranslate nohighlight">
-        \(\textit{NVE}\)
-       </span>
-       )
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#thermostat">
+       Thermostat
       </a>
      </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#canonical-ensemble-textit-nvt">
-       Canonical ensemble (
-       <span class="math notranslate nohighlight">
-        \(\textit{NVT}\)
-       </span>
-       )
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#isothermal-isobaric-ensemble-textit-npt">
+     Isothermal-isobaric ensemble
+     <span class="math notranslate nohighlight">
+      \((\textit{NPT})\)
+     </span>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#barostat">
+       Barostat
       </a>
-      <ul class="nav section-nav flex-column">
-       <li class="toc-h4 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#thermostat">
-         Thermostat
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#isothermal-isobaric-ensemble-textit-npt">
-       Isothermal-isobaric ensemble
-       <span class="math notranslate nohighlight">
-        \((\textit{NPT})\)
-       </span>
-      </a>
-      <ul class="nav section-nav flex-column">
-       <li class="toc-h4 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#barostat">
-         Barostat
-        </a>
-       </li>
-      </ul>
      </li>
     </ul>
    </li>
   </ul>
  </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#time-integration">
+   Time integration
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#time-integration">
-     Time integration
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#euler-integration">
+     Euler integration
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#euler-integration">
-       Euler integration
-      </a>
-     </li>
-    </ul>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#width-300px-name-fig-euler">
-     width: 300px
-name: fig_euler
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#verlet-integration">
+     Verlet integration
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#verlet-integration">
-       Verlet integration
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#velocity-verlet">
-       Velocity Verlet
-      </a>
-     </li>
-    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#velocity-verlet">
+     Velocity Verlet
+    </a>
    </li>
   </ul>
  </li>
@@ -789,93 +788,72 @@ name: fig_euler
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Ensembles and time integration
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#choice-of-ensemble">
+   Choice of ensemble
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#choice-of-ensemble">
-     Choice of ensemble
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#microcanonical-ensemble-textit-nve">
+     Microcanonical ensemble (
+     <span class="math notranslate nohighlight">
+      \(\textit{NVE}\)
+     </span>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#canonical-ensemble-textit-nvt">
+     Canonical ensemble (
+     <span class="math notranslate nohighlight">
+      \(\textit{NVT}\)
+     </span>
+     )
     </a>
     <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#microcanonical-ensemble-textit-nve">
-       Microcanonical ensemble (
-       <span class="math notranslate nohighlight">
-        \(\textit{NVE}\)
-       </span>
-       )
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#thermostat">
+       Thermostat
       </a>
      </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#canonical-ensemble-textit-nvt">
-       Canonical ensemble (
-       <span class="math notranslate nohighlight">
-        \(\textit{NVT}\)
-       </span>
-       )
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#isothermal-isobaric-ensemble-textit-npt">
+     Isothermal-isobaric ensemble
+     <span class="math notranslate nohighlight">
+      \((\textit{NPT})\)
+     </span>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#barostat">
+       Barostat
       </a>
-      <ul class="nav section-nav flex-column">
-       <li class="toc-h4 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#thermostat">
-         Thermostat
-        </a>
-       </li>
-      </ul>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#isothermal-isobaric-ensemble-textit-npt">
-       Isothermal-isobaric ensemble
-       <span class="math notranslate nohighlight">
-        \((\textit{NPT})\)
-       </span>
-      </a>
-      <ul class="nav section-nav flex-column">
-       <li class="toc-h4 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#barostat">
-         Barostat
-        </a>
-       </li>
-      </ul>
      </li>
     </ul>
    </li>
   </ul>
  </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#time-integration">
+   Time integration
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#time-integration">
-     Time integration
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#euler-integration">
+     Euler integration
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#euler-integration">
-       Euler integration
-      </a>
-     </li>
-    </ul>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#width-300px-name-fig-euler">
-     width: 300px
-name: fig_euler
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#verlet-integration">
+     Verlet integration
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#verlet-integration">
-       Verlet integration
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#velocity-verlet">
-       Velocity Verlet
-      </a>
-     </li>
-    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#velocity-verlet">
+     Velocity Verlet
+    </a>
    </li>
   </ul>
  </li>
@@ -917,8 +895,8 @@ name: fig_euler
 \[\begin{equation*}
 \lambda = \sqrt{1 + \frac{\Delta t}{\tau} \left( \frac{T_0}{T} - 1 \right)}.
 \end{equation*}\]</div>
-<p>The coupling parameter needs to be chosen with care, as a <span class="math notranslate nohighlight">\(\tau\)</span> that is equal to the time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, just reproduces the velocity rescaling thermostat and a too high <span class="math notranslate nohighlight">\(\tau\)</span> makes the coupling too weak, with the limit <span class="math notranslate nohighlight">\(\tau \rightarrow \infty\)</span> instead describing the microcanonical ensemble. So while the Berendsen thermostat does not describe a true canonical ensemble, there are coupling parameters between <span class="math notranslate nohighlight">\(\Delta t\)</span> and infinity that give a suitably close approximation for larger systems. As the Berendsen thermostat is quite quick to converge to the correct temperature, it is often used for an initial equilibration, after which a true canonical thermostat is used.</p>
-<p>Examples of such thermostats are found in the Andersen [cite andersen1980] and Nosé–Hoover [cite nose1984a,nose1984b,hoover1985] thermostats. The Andersen thermostat takes a stochastic approach, replacing the velocities of a selection of atoms at each step by new velocities taken from the Maxwell–Boltzmann distribution, simulating random collisions. The frequency at which velocities are replaced becomes the coupling parameter of the thermostat, determining the speed at which it converges to the correct temperature. The Nosé–Hoover thermostat, on the other hand, introduces an artificial particle, with a mass and velocity, representing the heat bath. The extended system, containing both the real and artificial systems, is described by a microcanonical ensemble, but due to the coupling between the two, the real system becomes canonical.</p>
+<p>The coupling parameter needs to be chosen with care, as a <span class="math notranslate nohighlight">\(\tau\)</span> that is equal to the time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, just reproduces the velocity rescaling thermostat and a too high <span class="math notranslate nohighlight">\(\tau\)</span> makes the coupling too weak, with the limit <span class="math notranslate nohighlight">\(\tau \rightarrow \infty\)</span> instead describing the microcanonical ensemble. So while the Berendsen thermostat does not describe a true canonical ensemble, there are coupling parameters between <span class="math notranslate nohighlight">\(\Delta t\)</span> and infinity that give a suitably close approximation for larger systems. As the Berendsen thermostat is quite quick to converge to the correct temperature, it is often used for an initial equilibration, after which a true canonical thermostat is used.
+Examples of such thermostats are found in the Andersen [cite andersen1980] and Nosé–Hoover [cite nose1984a,nose1984b,hoover1985] thermostats. The Andersen thermostat takes a stochastic approach, replacing the velocities of a selection of atoms at each step by new velocities taken from the Maxwell–Boltzmann distribution, simulating random collisions. The frequency at which velocities are replaced becomes the coupling parameter of the thermostat, determining the speed at which it converges to the correct temperature. The Nosé–Hoover thermostat, on the other hand, introduces an artificial particle, with a mass and velocity, representing the heat bath. The extended system, containing both the real and artificial systems, is described by a microcanonical ensemble, but due to the coupling between the two, the real system becomes canonical.</p>
 </div>
 </div>
 <div class="section" id="isothermal-isobaric-ensemble-textit-npt">
@@ -926,13 +904,10 @@ name: fig_euler
 <p>In the isothermal-isobaric, or <span class="math notranslate nohighlight">\(\textit{NPT}\)</span>, ensemble, the pressure of the system is kept constant instead of the volume. This means that in addition to a thermostat regulating the temperature, a barostat is required to do the same for the pressure.</p>
 <div class="section" id="barostat">
 <h4>Barostat<a class="headerlink" href="#barostat" title="Permalink to this headline">¶</a></h4>
-</div>
-</div>
-</div>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="id1">
-<h1><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>For the three mentioned thermostats, there are corresponding barostats. In the case of the Berendsen barostat, the method is much the same as for the thermostat. Instead of velocities, however, it is the size of the periodic box containing the system and the coordinates within it that are scaled. If the pressure is too low, the box size is decreased and all atoms within it are brought closer to each other, and for a pressure that is too high the opposite is done. The Andersen and Nosé–Hoover barostats adopt a similar approach to the Nosé–Hoover thermostat, creating a coupling to an artificial system. This system acts as a piston, with artificial mass determining the strength of the coupling, trying to compress the real system.</p>
+</div>
+</div>
+</div>
 <div class="section" id="time-integration">
 <h2>Time integration<a class="headerlink" href="#time-integration" title="Permalink to this headline">¶</a></h2>
 <p>As described in previous chapters, the potential energy of a system can be obtained for a given set of nuclear positions either through QM methods or through more approximate means such as molecular dynamics (MD). Given this knowledge, it is now possible to make the atoms move. Following the Born–Oppenheimer approximation, the behaviour of the nuclei should be described using MD, but such calculations are too resource demanding for any larger systems. As such, this work deals only with classical MD, in which the nuclei move according to Newton’s equations.</p>
@@ -944,8 +919,8 @@ name: fig_euler
 \label{eq:acceleration}
 \mathbf{a}_j = \frac{\mathbf{F}_j}{m_j} = - \frac{1}{m_j} \mbox{\boldmath$\nabla$}_j E,
 \end{equation*}\]</div>
-<p>where <span class="math notranslate nohighlight">\(m_j\)</span> is the mass of atom <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(\mathbf{F}_j\)</span> are the forces acting on it.</p>
-<p>If the atomic coordinates at a given time <span class="math notranslate nohighlight">\(t = t_i\)</span> are <span class="math notranslate nohighlight">\(\mathbf{R}(t_i)\)</span>, the positions after a small time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, can be expressed as a Taylor expansion around <span class="math notranslate nohighlight">\(t = t_i\)</span>:</p>
+<p>where <span class="math notranslate nohighlight">\(m_j\)</span> is the mass of atom <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(\mathbf{F}_j\)</span> are the forces acting on it.
+If the atomic coordinates at a given time <span class="math notranslate nohighlight">\(t = t_i\)</span> are <span class="math notranslate nohighlight">\(\mathbf{R}(t_i)\)</span>, the positions after a small time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, can be expressed as a Taylor expansion around <span class="math notranslate nohighlight">\(t = t_i\)</span>:</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
 \mathbf{R}(t_i + \Delta t)
@@ -970,15 +945,12 @@ name: fig_euler
 \mathbf{v}_{i+1}&amp; = \mathbf{v}_i + \mathbf{a}_i \Delta t + \mathcal{O}(\Delta t^2).
 \end{align*}\]</div>
 <p>These two equations, together with the expression for the acceleration found in Equation \eqref{eq:acceleration} make up the Euler method. For each step, the acceleration is obtained from Equation \eqref{eq:acceleration}, then the velocities are calculated with Equation \eqref{eq:eulerv} and finally a new set of coordinates with Equation \eqref{eq:eulerr} before the process is repeated, step by step. This is an extremely simple method, with a local truncation error in order of <span class="math notranslate nohighlight">\(\Delta t^2\)</span> for each step and a global error of first order for the trajectory as a whole. This can be seen from the fact that a trajectory of length <span class="math notranslate nohighlight">\(T\)</span> requires <span class="math notranslate nohighlight">\(M = T / \Delta t\)</span> steps. For each step, an error of order <span class="math notranslate nohighlight">\(\Delta t^2\)</span> is added, leading to a total error of <span class="math notranslate nohighlight">\(T/ \Delta t \hspace{1mm} \mathcal{O}(\Delta t^2) = \mathcal{O}(\Delta t)\)</span>, i.e.\ first order. A simple example of integration using the Euler method is shown in Figure \ref{fig:euler}.</p>
-<div class="figure align-default">
-<img alt="../_images/MD_euler_even.svg" src="../_images/MD_euler_even.svg" /></div>
+<div class="figure align-default" id="id1">
+<img alt="../_images/MD_euler_even.svg" src="../_images/MD_euler_even.svg" /><p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">width: 300px
+name: fig_euler
+Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 </div>
-<div class="section" id="width-300px-name-fig-euler">
-<h2>width: 300px
-name: fig_euler<a class="headerlink" href="#width-300px-name-fig-euler" title="Permalink to this headline">¶</a></h2>
-<!-- #endregion -->
-<p>Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <div class="section" id="verlet-integration">
 <h3>Verlet integration<a class="headerlink" href="#verlet-integration" title="Permalink to this headline">¶</a></h3>
 <p>A better choice of integrator can be found in the Verlet algorithm.[cite verlet1967] In this algorithm, the coordinates of the previous time step, <span class="math notranslate nohighlight">\(\mathbf{R}_{i-1}\)</span>, are required, which can be obtained by replacing <span class="math notranslate nohighlight">\(\Delta t\)</span> with <span class="math notranslate nohighlight">\(-\Delta t\)</span> in Equation \eqref{eq:md1}:</p>
@@ -994,9 +966,10 @@ name: fig_euler<a class="headerlink" href="#width-300px-name-fig-euler" title="P
 \mathbf{R}_{i+1} = (2\mathbf{R}_i - \mathbf{R}_{i-1}) + \mathbf{a}_i \Delta t^2 + \mathcal{O}(\Delta t^4).
 \end{equation*}\]</div>
 <p>Neglecting higher order terms and using the acceleration from Equation \eqref{eq:acceleration}, this expression makes up the Verlet algorithm, with a local truncation error in the order of <span class="math notranslate nohighlight">\(\Delta t^4\)</span>. The global error, however, is of second order,[cite jensen2006] due to the presence of two previous coordinates in the expression. Figure \ref{fig:verlet} shows the improvement over the Euler method.</p>
-<div class="figure align-default" id="fig-md-verlet-even">
-<a class="reference internal image-reference" href="../_images/MD_verlet_even.svg"><img alt="../_images/MD_verlet_even.svg" src="../_images/MD_verlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id2">
+<img alt="../_images/MD_verlet_even.svg" src="../_images/MD_verlet_even.svg" /><p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">width: 300px
+name: fig_MD_verlet_even
+Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="velocity-verlet">
@@ -1031,11 +1004,13 @@ name: fig_euler<a class="headerlink" href="#width-300px-name-fig-euler" title="P
 \end{equation*}\]</div>
 <p>Equations \eqref{eq:acceleration}, \eqref{eq:md5} and \eqref{eq:md7} make up the velocity Verlet algorithm. First, Equation \eqref{eq:md5} is used to calculated the coordinates of the next step, which are used in Equation \eqref{eq:acceleration} to calculate the acceleration of that step. Finally, the velocities are calculated using Equation \eqref{eq:md7}, completing the step.</p>
 <p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in Figure \ref{fig:vverlet}, where the total error of the velocity Verlet algorithm is comparable to that of the Verlet algorithm in Figure \ref{fig:verlet}.</p>
-<div class="figure align-default" id="fig-md-vverlet-even">
-<a class="reference internal image-reference" href="../_images/MD_vverlet_even.svg"><img alt="../_images/MD_vverlet_even.svg" src="../_images/MD_vverlet_even.svg" width="300px" /></a>
-<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id3">
+<img alt="../_images/MD_vverlet_even.svg" src="../_images/MD_vverlet_even.svg" /><p class="caption"><span class="caption-number">Fig. 27 </span><span class="caption-text">width: 300px
+name: fig_MD_vverlet_even
+Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-</div>
+<hr class="docutils" />
+<!-- #endregion --></div>
 </div>
 </div>
 

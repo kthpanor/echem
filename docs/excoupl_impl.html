@@ -37,9 +37,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -48,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -104,7 +109,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="uv-vis.html">
-   UV/vis absorption/emission
+   UV/vis spectroscopies
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -135,6 +140,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_rec.html">
      Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv-vis_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -381,7 +391,7 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="structopt.html">
+  <a class="reference internal" href="structopt-overview.html">
    Molecular structure optimization
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
@@ -391,13 +401,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="structopt-exercises.html">
-     Exercises
+    <a class="reference internal" href="structopt.html">
+     Optimization Methods
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -493,6 +508,11 @@ const thebe_selector_output = ".output, .cell_output"
      TDDFT
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="response_exercises.html">
+     Exercises
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -575,7 +595,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="visual-excited.html">
-   Visualizing excited states
+   Excited states
   </a>
  </li>
 </ul>
@@ -824,6 +844,15 @@ const thebe_selector_output = ".output, .cell_output"
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: importing &#39;simtk.openmm&#39; is deprecated.  Import &#39;openmm&#39; instead.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="set-up-molecule-and-basis-set">
@@ -982,8 +1011,8 @@ const thebe_selector_output = ".output, .cell_output"
                                            ====================================                                           
                                                                                                                           
                    Wave Function Model             : Spin-Restricted Hartree-Fock                                         
-                   Initial Guess Model             : Restart from Checkpoint                                              
-                   Convergence Accelerator         : Direct Inversion of Iterative Subspace                               
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
                    Max. Number of Iterations       : 150                                                                  
                    Max. Number of Error Vectors    : 10                                                                   
                    Convergence Threshold           : 1.0e-06                                                              
@@ -1006,12 +1035,49 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_1.scf.h5                                                                
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -77.938957127732 a.u. Time: 0.11 sec.                                  
                                                                                                                           
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -77.977546605109    0.0000000000      0.00000091      0.00000011      0.00000000                
+                  1       -77.976557123995    0.0000000000      0.09489888      0.01290528      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -77.977520078787   -0.0009629548      0.01398453      0.00235274      0.02938556                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -77.977544421754   -0.0000243430      0.00352086      0.00057093      0.00470842                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -77.977546548111   -0.0000021264      0.00046203      0.00007456      0.00153235                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -77.977546603605   -0.0000000555      0.00006899      0.00001360      0.00033144                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -77.977546605077   -0.0000000015      0.00001040      0.00000219      0.00006395                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  7       -77.977546605109   -0.0000000000      0.00000091      0.00000011      0.00000951                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1019,7 +1085,7 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 * Info * SCF tensors written to file: monomer_1.scf.tensors.h5                                                            
                                                                                                                           
-               *** SCF converged in 1 iterations. Time: 0.24 sec.                                                         
+               *** SCF converged in 7 iterations. Time: 0.88 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1128,9 +1194,7 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_1.rsp.h5                                                                
-                                                                                                                          
-                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
                                                                                                                           
                    State  1: 0.34776432 a.u. Residual Norm: 0.06411031                                                    
                    State  2: 0.35563977 a.u. Residual Norm: 0.08504656                                                    
@@ -1140,7 +1204,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.22e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.22e-03                   
                                                                                                                           
                    State  1: 0.31097350 a.u. Residual Norm: 0.03718790                                                    
                    State  2: 0.34145869 a.u. Residual Norm: 0.01285025                                                    
@@ -1150,7 +1216,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.02e-02 and 1.94e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.02e-02 and 1.94e-03                   
                                                                                                                           
                    State  1: 0.30903317 a.u. Residual Norm: 0.00798914                                                    
                    State  2: 0.34134501 a.u. Residual Norm: 0.00248600                                                    
@@ -1160,7 +1228,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.30e-02 and 1.24e-04                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.30e-02 and 1.24e-04                   
                                                                                                                           
                    State  1: 0.30897493 a.u. Residual Norm: 0.00322653                                                    
                    State  2: 0.34133733 a.u. Residual Norm: 0.00047385                                                    
@@ -1170,7 +1240,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
                                                                                                                           
                    State  1: 0.30897029 a.u. Residual Norm: 0.00084213                                                    
                    State  2: 0.34133726 a.u. Residual Norm: 0.00011005                                                    
@@ -1180,7 +1252,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.13e-03 and 7.94e-06                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.13e-03 and 7.94e-06                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00010760                                                    
                    State  2: 0.34133726 a.u. Residual Norm: 0.00002105                                                    
@@ -1190,7 +1264,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 8.41e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 8.41e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00001205                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000319                                                    
@@ -1200,7 +1276,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.05e-04 and 3.30e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.05e-04 and 3.30e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00000130                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000073                                                    
@@ -1210,7 +1288,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 1.65e-05 and 1.20e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 1.65e-05 and 1.20e-07                   
                                                                                                                           
                    State  1: 0.30897008 a.u. Residual Norm: 0.00000027                                                    
                    State  2: 0.34133725 a.u. Residual Norm: 0.00000012                                                    
@@ -1220,7 +1300,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** 5 excited states converged in 9 iterations. Time: 0.16 sec                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_1.rsp.h5                                                                     
+                                                                                                                          
+               *** 5 excited states converged in 9 iterations. Time: 1.53 sec                                             
                                                                                                                           
                                                                                                                           
 </pre></div>
@@ -1311,8 +1393,8 @@ const thebe_selector_output = ".output, .cell_output"
                                            ====================================                                           
                                                                                                                           
                    Wave Function Model             : Spin-Restricted Hartree-Fock                                         
-                   Initial Guess Model             : Restart from Checkpoint                                              
-                   Convergence Accelerator         : Direct Inversion of Iterative Subspace                               
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
                    Max. Number of Iterations       : 150                                                                  
                    Max. Number of Error Vectors    : 10                                                                   
                    Convergence Threshold           : 1.0e-06                                                              
@@ -1335,12 +1417,49 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_2.scf.h5                                                                
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -77.938962719117 a.u. Time: 0.11 sec.                                  
                                                                                                                           
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -77.977558810872    0.0000000000      0.00000094      0.00000011      0.00000000                
+                  1       -77.976569083369    0.0000000000      0.09490689      0.01290816      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -77.977532245423   -0.0009631621      0.01399502      0.00231192      0.02939863                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -77.977556624827   -0.0000243794      0.00352284      0.00057127      0.00471110                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -77.977558753783   -0.0000021290      0.00046240      0.00007460      0.00153316                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -77.977558809364   -0.0000000556      0.00006906      0.00001361      0.00033156                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -77.977558810840   -0.0000000015      0.00001041      0.00000219      0.00006400                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  7       -77.977558810872   -0.0000000000      0.00000094      0.00000011      0.00000952                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1348,7 +1467,7 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 * Info * SCF tensors written to file: monomer_2.scf.tensors.h5                                                            
                                                                                                                           
-               *** SCF converged in 1 iterations. Time: 0.23 sec.                                                         
+               *** SCF converged in 7 iterations. Time: 0.92 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1454,9 +1573,7 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Restarting from checkpoint file: monomer_2.rsp.h5                                                                
-                                                                                                                          
-                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   1 * Reduced Space:    5 * Residues (Max,Min): 2.13e-01 and 6.34e-02                   
                                                                                                                           
                    State  1: 0.34783116 a.u. Residual Norm: 0.06412244                                                    
                    State  2: 0.35563877 a.u. Residual Norm: 0.08503436                                                    
@@ -1466,7 +1583,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.21e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   2 * Reduced Space:   10 * Residues (Max,Min): 3.72e-02 and 9.21e-03                   
                                                                                                                           
                    State  1: 0.31108179 a.u. Residual Norm: 0.03718485                                                    
                    State  2: 0.34152241 a.u. Residual Norm: 0.01285172                                                    
@@ -1476,7 +1595,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.01e-02 and 1.94e-03                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   3 * Reduced Space:   15 * Residues (Max,Min): 6.01e-02 and 1.94e-03                   
                                                                                                                           
                    State  1: 0.30914159 a.u. Residual Norm: 0.00799112                                                    
                    State  2: 0.34140869 a.u. Residual Norm: 0.00248645                                                    
@@ -1486,7 +1607,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.29e-02 and 1.24e-04                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   4 * Reduced Space:   20 * Residues (Max,Min): 3.29e-02 and 1.24e-04                   
                                                                                                                           
                    State  1: 0.30908321 a.u. Residual Norm: 0.00323357                                                    
                    State  2: 0.34140101 a.u. Residual Norm: 0.00047406                                                    
@@ -1496,7 +1619,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   5 * Reduced Space:   25 * Residues (Max,Min): 1.29e-02 and 5.35e-05                   
                                                                                                                           
                    State  1: 0.30907855 a.u. Residual Norm: 0.00084350                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00011023                                                    
@@ -1506,7 +1631,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.11e-03 and 8.02e-06                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   6 * Reduced Space:   30 * Residues (Max,Min): 5.11e-03 and 8.02e-06                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00010769                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00002109                                                    
@@ -1516,7 +1643,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 6.03e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   7 * Reduced Space:   35 * Residues (Max,Min): 6.12e-04 and 6.03e-07                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00001208                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000320                                                    
@@ -1526,7 +1655,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.06e-04 and 1.56e-07                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   8 * Reduced Space:   40 * Residues (Max,Min): 1.06e-04 and 1.56e-07                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00000134                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000074                                                    
@@ -1536,7 +1667,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 2.38e-05 and 5.62e-08                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+                   *** Iteration:   9 * Reduced Space:   45 * Residues (Max,Min): 2.38e-05 and 5.62e-08                   
                                                                                                                           
                    State  1: 0.30907834 a.u. Residual Norm: 0.00000038                                                    
                    State  2: 0.34140093 a.u. Residual Norm: 0.00000020                                                    
@@ -1546,7 +1679,9 @@ const thebe_selector_output = ".output, .cell_output"
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** 5 excited states converged in 9 iterations. Time: 0.15 sec                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Checkpoint written to file: monomer_2.rsp.h5                                                                     
+                                                                                                                          
+               *** 5 excited states converged in 9 iterations. Time: 1.75 sec                                             
                                                                                                                           
                                                                                                                           
 </pre></div>

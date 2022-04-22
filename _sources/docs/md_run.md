@@ -4,9 +4,6 @@ Workflow with example in openMM.
 
 Can also link to good tutorial with [lysozyme](http://www.mdtutorials.com/gmx/lysozyme/index.html) etc (gromacs).
 
-```python
-
-```
 
 ## AIMD example with XTB
 

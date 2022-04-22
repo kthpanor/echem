@@ -37,9 +37,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -106,7 +109,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="uv-vis.html">
-   UV/vis absorption/emission
+   UV/vis spectroscopies
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -137,6 +140,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_rec.html">
      Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv-vis_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -383,7 +391,7 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="structopt.html">
+  <a class="reference internal" href="structopt-overview.html">
    Molecular structure optimization
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
@@ -393,13 +401,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="structopt-exercises.html">
-     Exercises
+    <a class="reference internal" href="structopt.html">
+     Optimization Methods
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -577,7 +590,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="visual-excited.html">
-   Visualizing excited states
+   Excited states
   </a>
  </li>
 </ul>
@@ -814,30 +827,30 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="section" id="general-theory">
 <h2>General theory<a class="headerlink" href="#general-theory" title="Permalink to this headline">¶</a></h2>
 <p>One of the conceptually (but not computationally) simplest way to solve the Schrödinger equation is to simply expand our many-body wavefunction on a n-electron basis set (not to be confused with the 1-electron basis functions used to expand orbitals):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ae8e4180-48b9-4385-9bba-3705388cf659">
-<span class="eqno">(23)<a class="headerlink" href="#equation-ae8e4180-48b9-4385-9bba-3705388cf659" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-b0451491-4536-454c-9d20-06c2f33e4b6f">
+<span class="eqno">(23)<a class="headerlink" href="#equation-b0451491-4536-454c-9d20-06c2f33e4b6f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_{CI} \rangle = \sum_k c_k | \mathbf{k} \rangle 
 \end{equation}\]</div>
 <p>with energy:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-abc396e4-42c2-4066-ae8e-5fa83db65a90">
-<span class="eqno">(24)<a class="headerlink" href="#equation-abc396e4-42c2-4066-ae8e-5fa83db65a90" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-0a46db8f-0d0f-4a42-a70d-36f8b8b7720a">
+<span class="eqno">(24)<a class="headerlink" href="#equation-0a46db8f-0d0f-4a42-a70d-36f8b8b7720a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{CIene}
 E = \frac{\langle \Psi_{CI} | \hat{H} | \Psi_{CI} \rangle}{\langle \Psi_{CI} | \Psi_{CI} \rangle} 
 \end{equation}\]</div>
 <p>We will discuss in the next section the choice of the basis, but in all cases, as the size of this basis set increases, the solution converges to the exact solution of the Schrödinger equation.</p>
 <p>There is a redundancy in the parameters <span class="math notranslate nohighlight">\(c_k\)</span> as multiplying them all by a constant does not change the energy. We thus add the constraint that the wavefunction should be normalised <span class="math notranslate nohighlight">\(\langle \Psi_{CI} | \Psi_{CI} \rangle = \sum_k c_k^2 = 1\)</span>. To minimize the wavefunction subject to this constraint, we write a Lagrangian:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-276ec7ab-6a30-4bb8-b1cd-aecdbb675b56">
-<span class="eqno">(25)<a class="headerlink" href="#equation-276ec7ab-6a30-4bb8-b1cd-aecdbb675b56" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-695029dc-db4e-4626-a879-0f60c75a4648">
+<span class="eqno">(25)<a class="headerlink" href="#equation-695029dc-db4e-4626-a879-0f60c75a4648" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 L = E - \epsilon(\sum_k c_k^2 -1)
 \end{equation}\]</div>
 <p>To define our minimisation we set the gradient of our Lagrangian to 0 and obtain:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ceb033d8-9729-4583-946c-b98aee585d99">
-<span class="eqno">(26)<a class="headerlink" href="#equation-ceb033d8-9729-4583-946c-b98aee585d99" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-40ca516d-09cf-495f-a361-589e4dd6ec0b">
+<span class="eqno">(26)<a class="headerlink" href="#equation-40ca516d-09cf-495f-a361-589e4dd6ec0b" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \frac{dL}{d c_k} =  \sum_i \langle \mathbf{i} | \hat{H} | \mathbf{k} \rangle c_i - \epsilon c_k + cc.= 0
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(cc.\)</span> the complex conjugate of the expression. This can finally be recast in the familiar form:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d6975849-92ec-47fa-9ce4-177d68550146">
-<span class="eqno">(27)<a class="headerlink" href="#equation-d6975849-92ec-47fa-9ce4-177d68550146" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5c7c37e7-b4d9-4b29-a9a9-15b9f36f6bd3">
+<span class="eqno">(27)<a class="headerlink" href="#equation-5c7c37e7-b4d9-4b29-a9a9-15b9f36f6bd3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{H} \mathbf{c} = \epsilon \mathbf{c}
 \end{equation}\]</div>
 <p>showing that minimising the wavefunction \ref{CIene} is equivalent to diagonalising the Hamiltonian matrix in our chosen basis, with the eigenvalues being the energies of all possible states in the system. The ground state simply corresponds to the lowest eigenvalue.</p>
@@ -871,6 +884,13 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: importing &#39;simtk.openmm&#39; is deprecated.  Import &#39;openmm&#39; instead.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                             Self Consistent Field Driver Setup                                            
                                            ====================================                                           
@@ -896,7 +916,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.01 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -905,7 +925,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -147.633452768035 a.u. Time: 0.02 sec.                                 
+* Info * ...done. SCF energy in reduced basis set: -147.633452768035 a.u. Time: 0.05 sec.                                 
                                                                                                                           
 </pre></div>
 </div>
@@ -928,7 +948,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 1 iterations. Time: 0.01 sec.                                                         
+               *** SCF converged in 1 iterations. Time: 0.02 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -954,14 +974,14 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.72085 a.u.                                                                  
-               (   1 O   1p+1:    -0.21) (   1 O   1p-1:    -0.62) (   2 O   1p+1:    -0.21)                              
-               (   2 O   1p-1:    -0.62)                                                                                  
+               (   1 O   1p+1:     0.63) (   1 O   1p-1:    -0.20) (   2 O   1p+1:     0.63)                              
+               (   2 O   1p-1:    -0.20)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.72085 a.u.                                                                  
-               (   1 O   1p+1:     0.62) (   1 O   1p-1:    -0.21) (   2 O   1p+1:     0.62)                              
-               (   2 O   1p-1:    -0.21)                                                                                  
+               (   1 O   1p+1:     0.20) (   1 O   1p-1:     0.63) (   2 O   1p+1:     0.20)                              
+               (   2 O   1p-1:     0.63)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -972,14 +992,12 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.41143 a.u.                                                                  
-               (   1 O   1p+1:     0.53) (   1 O   1p-1:     0.56) (   2 O   1p+1:    -0.53)                              
-               (   2 O   1p-1:    -0.56)                                                                                  
+               (   1 O   1p+1:    -0.77) (   2 O   1p+1:     0.77)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.41143 a.u.                                                                  
-               (   1 O   1p+1:    -0.56) (   1 O   1p-1:     0.53) (   2 O   1p+1:     0.56)                              
-               (   2 O   1p-1:    -0.53)                                                                                  
+               (   1 O   1p-1:     0.77) (   2 O   1p-1:    -0.77)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -1005,30 +1023,30 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.55786 a.u.                                                                  
-               (   1 O   2s  :    -0.35) (   1 O   1p0 :     0.61) (   2 O   2s  :    -0.35)                              
-               (   2 O   1p0 :    -0.61)                                                                                  
+               (   1 O   2s  :     0.35) (   1 O   1p0 :    -0.61) (   2 O   2s  :     0.35)                              
+               (   2 O   1p0 :     0.61)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.44994 a.u.                                                                  
-               (   1 O   1p+1:     0.65) (   2 O   1p+1:     0.65)                                                        
+               (   1 O   1p+1:    -0.60) (   1 O   1p-1:    -0.26) (   2 O   1p+1:    -0.60)                              
+               (   2 O   1p-1:    -0.26)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.44994 a.u.                                                                  
-               (   1 O   1p-1:     0.65) (   2 O   1p-1:     0.65)                                                        
+               (   1 O   1p+1:    -0.26) (   1 O   1p-1:     0.60) (   2 O   1p+1:    -0.26)                              
+               (   2 O   1p-1:     0.60)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:    0.27474 a.u.                                                                  
-               (   1 O   1p+1:    -0.28) (   1 O   1p-1:     0.72) (   2 O   1p+1:     0.28)                              
-               (   2 O   1p-1:    -0.72)                                                                                  
+               (   1 O   1p+1:     0.77) (   2 O   1p+1:    -0.77)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:    0.27474 a.u.                                                                  
-               (   1 O   1p+1:    -0.72) (   1 O   1p-1:    -0.28) (   2 O   1p+1:     0.72)                              
-               (   2 O   1p-1:     0.28)                                                                                  
+               (   1 O   1p-1:    -0.77) (   2 O   1p-1:     0.77)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -1280,17 +1298,17 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.969 -0.000 0.000 0.000 0.000 -0.000 0.000 0.000 0.000 -0.176 0.000
- 0.000 0.000 0.030 0.066 0.000 -0.066 0.030 0.000 -0.000 -0.000 -0.000
- 0.000 -0.000 -0.000 -0.000 0.000 0.002 0.003 -0.000 -0.000 0.000 -0.000
- -0.000 -0.000 0.000 0.000 -0.000 0.000 -0.000 -0.000 0.000 0.000 0.000
- -0.000 0.000 -0.000 -0.003 0.002 0.000 -0.000 0.000 -0.000 0.000 -0.000
- 0.000 0.000 -0.000 0.000 0.000 0.000 0.000 -0.032 -0.071 -0.000 0.071
- -0.032 -0.000 0.000 -0.000 -0.066 -0.000 0.000 0.000 0.000 0.000 -0.000
- 0.000 0.000 0.036 0.000 -0.004 -0.000 -0.000 0.008 0.000 -0.000 -0.000
- -0.000 -0.000 -0.000 -0.019 -0.000 0.000 -0.000 0.000 -0.000 -0.000 0.000
- 0.000 0.000 -0.008 0.000 0.000 -0.004 -0.000 -0.000 0.000 -0.000 -0.000
- 0.000 -0.000 -0.019 -0.000 0.000 -0.000 0.000 -0.000 0.000 -0.000]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.969 0.000 0.000 0.000 -0.000 -0.000 -0.000 -0.000 -0.000 -0.176 0.000
+ 0.000 0.000 0.018 -0.070 0.000 -0.070 -0.018 0.000 0.000 -0.000 0.000
+ 0.000 0.000 0.000 0.000 0.000 0.001 -0.004 0.000 0.000 0.000 0.000 0.000
+ 0.000 0.000 0.000 -0.000 0.000 0.000 -0.000 -0.000 0.000 -0.000 -0.000
+ -0.000 0.000 -0.004 -0.001 -0.000 0.000 0.000 0.000 0.000 -0.000 0.000
+ -0.000 -0.000 0.000 -0.000 0.000 -0.000 -0.019 0.075 0.000 0.075 0.019
+ -0.000 -0.000 0.000 0.066 -0.000 0.000 0.000 0.000 0.000 -0.000 0.000
+ -0.000 0.036 0.000 -0.002 0.000 -0.000 0.009 -0.000 -0.000 0.000 0.000
+ 0.000 -0.000 0.019 -0.000 -0.000 -0.000 0.000 0.000 -0.000 -0.000 -0.000
+ -0.000 0.009 -0.000 0.000 0.002 0.000 0.000 0.000 0.000 -0.000 0.000
+ -0.000 0.019 -0.000 -0.000 -0.000 0.000 0.000 0.000 0.000]
 </pre></div>
 </div>
 </div>
@@ -1299,23 +1317,23 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 <p>You may be curious as to what happens in the Hij function, that is, how we compute the <span class="math notranslate nohighlight">\(\langle i | H | j \rangle \)</span> matrix elements. The answer to this is the Slater-Condon rules, see the section on <a class="reference internal" href="slater.html#sec-slater"><span class="std std-ref">Slater Determinants</span></a>. This rules define the matrix elements in terms of molecular integrals, depending on the difference in occupation between the 2 determinants. The difference in occupation is easily formulated in terms of excitations, with different rules depending on if <span class="math notranslate nohighlight">\(|j \rangle\)</span> is singly or doubly excited compared to <span class="math notranslate nohighlight">\(|i \rangle\)</span>. Any higher excitation will simply lead to 0.</p>
 <p>These rules are relatively easy to derive, both in standard and second quantization formulation. The idea is that the Hamiltonian has to “reconcile” the excitations. Being a two-electron operator, the Hamiltonian can reconcile at most two excitations.</p>
 <p>First we need to obtain the necessary integrals. Those are the standard 1 and 2 electron integrals but in the molecular orbital basis as the expressions are simpler in this basis. Since we are leaving some occupied orbitals outside of the CI space (the s orbitals), also called inactive orbitals, we also need to include their interaction with the electrons in our CI. This is done by replacing the 1 electron integrals by the inactive Fock matrix defined as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b21d0507-283a-4af0-9435-fc07c631f8ec">
-<span class="eqno">(28)<a class="headerlink" href="#equation-b21d0507-283a-4af0-9435-fc07c631f8ec" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9cfd5de8-dbcd-434a-a430-b4a8f9b32a1a">
+<span class="eqno">(28)<a class="headerlink" href="#equation-9cfd5de8-dbcd-434a-a430-b4a8f9b32a1a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F^I_{pq} = h_{pq} + \sum_{i \in \mathrm{inactive}} 2 (ii|pq) - (ip|iq) 
 \end{equation}\]</div>
 <p>To compute the total energy, we also need to include the inactive energy, which is simply the energy of the inactive electrons and the nuclear-nuclear repulsion term.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-70b44163-ef28-4095-993b-f9d01b7ffca3">
-<span class="eqno">(29)<a class="headerlink" href="#equation-70b44163-ef28-4095-993b-f9d01b7ffca3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-94748f04-30da-41e9-8fdd-720f62b6bef2">
+<span class="eqno">(29)<a class="headerlink" href="#equation-94748f04-30da-41e9-8fdd-720f62b6bef2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E^I = V_{NN} + \sum_{i \in \mathrm{inactive}} 2 ( h_{ii} + F^I_{ii} )
 \end{equation}\]</div>
 <p>or using the AO matrices</p>
-<div class="amsmath math notranslate nohighlight" id="equation-66d308c7-c53f-4e9e-865f-37ea2bb725e6">
-<span class="eqno">(30)<a class="headerlink" href="#equation-66d308c7-c53f-4e9e-865f-37ea2bb725e6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9839165b-a0c4-4780-afff-e512cfeb8394">
+<span class="eqno">(30)<a class="headerlink" href="#equation-9839165b-a0c4-4780-afff-e512cfeb8394" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E^I = V_{NN} + \sum_{pq} D^I_{pq} ( h_{pq} + F^I_{pq} )
 \end{equation}\]</div>
 <p>with the inactive density defined from the MO coefficients <span class="math notranslate nohighlight">\(C^i_p\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4bf31984-d50c-4e7b-942f-83ad6f544c24">
-<span class="eqno">(31)<a class="headerlink" href="#equation-4bf31984-d50c-4e7b-942f-83ad6f544c24" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-13f17488-0cb1-415f-be54-d0f589782d57">
+<span class="eqno">(31)<a class="headerlink" href="#equation-13f17488-0cb1-415f-be54-d0f589782d57" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 \end{equation}\]</div>
 <div class="cell docutils container">
@@ -1493,19 +1511,19 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <h2>Direct CI<a class="headerlink" href="#direct-ci" title="Permalink to this headline">¶</a></h2>
 <p>As we saw, the number of SD <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}\)</span> grows extremely rapidly with the size of the system. The Hamiltonian matrix grows even faster, with size <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}^2\)</span>. For example, for a singlet with 6 electron in 6 orbitals, the number of SD is 210, growing to 31 878 for 10 electron in 10 orbitals and 82 824 885 for 16 in 16. At this scale, the Hamiltonian matrix would take nearly 7000 TB of storage on a computer. Most of the matrix elements are zero, but even using sparse storage, the memory footprint is enormous.</p>
 <p>Fortunately, we are rarely if ever interested in the entire list of excited states, usually only the ground state and/or a couple of excited states. In this case, one can replace the diagonalisation of the Hamiltonian by an iterative process where we progressively optimise a couple of states. In this case, we do not need to store the entire Hamiltonian matrix, but we only need to know its effect on a vector, the so-called <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-edf27f76-bc29-4dd4-8e55-13b46a8e00f3">
-<span class="eqno">(32)<a class="headerlink" href="#equation-edf27f76-bc29-4dd4-8e55-13b46a8e00f3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9e8659d3-64e6-4b77-9b6e-eee95de34c78">
+<span class="eqno">(32)<a class="headerlink" href="#equation-9e8659d3-64e6-4b77-9b6e-eee95de34c78" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{\sigma} = \mathbf{H} \mathbf{c}
 \end{equation}\]</div>
 <p>In order to solve <span class="math notranslate nohighlight">\( \mathbf{H} \mathbf{c} = \epsilon \mathbf{c} \)</span>, we can use a method similar to the conjugate gradient optimisation, which in this context is called the Davidson method. At each iteration, a new trial vector is constructed according to:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4f526a0c-1d3c-4bfc-8928-26f8f7eea294">
-<span class="eqno">(33)<a class="headerlink" href="#equation-4f526a0c-1d3c-4bfc-8928-26f8f7eea294" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-1c650268-128d-4b11-b66e-9e8db87ae08d">
+<span class="eqno">(33)<a class="headerlink" href="#equation-1c650268-128d-4b11-b66e-9e8db87ae08d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{cidav}
 \mathbf{c_{\mathrm{dav}}} = (\mathbf{H_0} - \epsilon)^{-1} \mathbf{r}
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{H_0}\)</span> the preconditioner, typically the diagonal of the Hamiltonian and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> the residual vector defined as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9e6f4632-68bf-41f3-bd8f-37225dbe508f">
-<span class="eqno">(34)<a class="headerlink" href="#equation-9e6f4632-68bf-41f3-bd8f-37225dbe508f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-f9620dcf-2536-42b1-af57-fe2c01940052">
+<span class="eqno">(34)<a class="headerlink" href="#equation-f9620dcf-2536-42b1-af57-fe2c01940052" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{r} = (\mathbf{H} - \epsilon) \mathbf{c} = \mathbf{\sigma} - \epsilon \mathbf{c}
 \end{equation}\]</div>
 <p>To compute the improved CI vector, one typically creates and diagonalise a small Hamiltonian matrix in the basis of <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{c_{\mathrm{dav}}}\)</span>, sometimes including also the vectors at previous iterations to improve convergence.</p>
@@ -1621,28 +1639,28 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.62953840021842
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.7195188349423
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.71965532380767
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.7231993288263
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.72321465535074
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.72337081581796
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.72337351647633
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.72338917015338
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.72338958978352
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72339145254267
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72339151678761
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.72339185025598
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.72339185984956
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.72339192135365
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.72339192271585
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 9 = -147.72339193456136
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 9 = -147.72339193473428
 </pre></div>
 </div>
 </div>
@@ -1678,9 +1696,9 @@ Number of determinants:      120
 
 Iteration   Average energy      Time
      1        -147.62953840   0:00:00
-     2        -147.71951892   0:00:00
-     3        -147.72335159   0:00:00
-     4        -147.72339067   0:00:00
+     2        -147.71965540   0:00:00
+     3        -147.72335632   0:00:00
+     4        -147.72339072   0:00:00
      5        -147.72339193   0:00:00
      6        -147.72339194   0:00:00
 Convergence reached in 6 iterations
@@ -1689,7 +1707,7 @@ Convergence reached in 6 iterations
         -------------
 
 * State 1
-- Energy: -147.72339193756554
+- Energy: -147.72339193755948
 - S^2   : 2.00  (multiplicity = 3.0 )
 - Natural orbitals
 [1.96583 1.95550 1.95550 1.04380 1.04380 0.03557]
@@ -1703,13 +1721,13 @@ Convergence reached in 6 iterations
 <h2>Density matrices and natural orbitals<a class="headerlink" href="#density-matrices-and-natural-orbitals" title="Permalink to this headline">¶</a></h2>
 <p>In order to compute expectation values, useful for properties, but also as an intermediate for some additional electronic structure methods (such as MCSCF see later chapters), we often need to compute density matrices.</p>
 <p>The one-particle density matrix (in molecular orbital basis) is defined in second quantization as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5df0667a-0d45-49fd-95dd-c0ec92402666">
-<span class="eqno">(35)<a class="headerlink" href="#equation-5df0667a-0d45-49fd-95dd-c0ec92402666" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-e3bc12dc-6831-41d0-b87c-a8b88a3023dc">
+<span class="eqno">(35)<a class="headerlink" href="#equation-e3bc12dc-6831-41d0-b87c-a8b88a3023dc" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 \end{equation}\]</div>
 <p>It is easy to see that for a single Slater Determinant, this simplifies to:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-098fa214-dbb3-483d-b3f4-7d710067b8f8">
-<span class="eqno">(36)<a class="headerlink" href="#equation-098fa214-dbb3-483d-b3f4-7d710067b8f8" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-0dae37de-9e7b-42ca-a3aa-933608993c15">
+<span class="eqno">(36)<a class="headerlink" href="#equation-0dae37de-9e7b-42ca-a3aa-933608993c15" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm{HF} \rangle = \delta_{pq}
 \end{equation}\]</div>
 <p>for <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> occupied, and 0 otherwise.</p>
@@ -1810,7 +1828,7 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.983338616414 a.u. Time: 0.02 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -75.983338616414 a.u. Time: 0.07 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1842,7 +1860,7 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.06 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1878,14 +1896,14 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.71725 a.u.                                                                  
-               (   1 O   1p-1:    -0.51) (   1 O   2p-1:    -0.27) (   2 H   1s  :    -0.27)                              
-               (   3 H   1s  :     0.27)                                                                                  
+               (   1 O   1p-1:     0.51) (   1 O   2p-1:     0.27) (   2 H   1s  :     0.27)                              
+               (   3 H   1s  :    -0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.56447 a.u.                                                                  
-               (   1 O   2s  :     0.18) (   1 O   3s  :     0.31) (   1 O   1p0 :    -0.55)                              
-               (   1 O   2p0 :    -0.40)                                                                                  
+               (   1 O   2s  :    -0.18) (   1 O   3s  :    -0.31) (   1 O   1p0 :     0.55)                              
+               (   1 O   2p0 :     0.40)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -1895,8 +1913,8 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
-               (   1 O   3s  :    -1.21) (   1 O   1p0 :    -0.23) (   1 O   2p0 :    -0.47)                              
-               (   2 H   2s  :     1.00) (   3 H   2s  :     1.00)                                                        
+               (   1 O   3s  :     1.21) (   1 O   1p0 :     0.23) (   1 O   2p0 :     0.47)                              
+               (   2 H   2s  :    -1.00) (   3 H   2s  :    -1.00)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -1913,13 +1931,13 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.16412 a.u.                                                                  
-               (   1 O   1p+1:    -0.96) (   1 O   2p+1:     1.04)                                                        
+               (   1 O   1p+1:     0.96) (   1 O   2p+1:    -1.04)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.20359 a.u.                                                                  
-               (   1 O   1p0 :     0.98) (   1 O   2p0 :    -0.92) (   2 H   1s  :    -0.32)                              
-               (   2 H   2s  :     0.38) (   3 H   1s  :    -0.32) (   3 H   2s  :     0.38)                              
+               (   1 O   1p0 :    -0.98) (   1 O   2p0 :     0.92) (   2 H   1s  :     0.32)                              
+               (   2 H   2s  :    -0.38) (   3 H   1s  :     0.32) (   3 H   2s  :    -0.38)                              
                                                                                                                           
 </pre></div>
 </div>
@@ -1954,11 +1972,11 @@ Convergence reached in 1 iterations
         -------------
 
 * State 1
-- Energy: -75.98333864834031
-- S^2   : 0.00  (multiplicity = 1.0 )
+- Energy: -75.98333864834032
+- S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 [2.00000 2.00000 2.00000 2.00000 2.00000 0.00000 0.00000 0.00000 0.00000
- 0.00000 -0.00000 -0.00000 -0.00000]
+ -0.00000 -0.00000 -0.00000 -0.00000]
 
           Active space definition:
           ------------------------
@@ -1977,21 +1995,24 @@ Number of virtual orbitals:             0
           CI expansion:
           -------------
 Number of determinants:      1141
-
-
-
-        CI Iterations
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        CI Iterations
         -------------
 
 Iteration   Average energy      Time
      1        -76.01442358   0:00:00
-     2        -76.10779837   0:00:00
-     3        -76.11207680   0:00:00
-     4        -76.11217494   0:00:00
-     5        -76.11217818   0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     6        -76.11217827   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2        -76.10779837   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3        -76.11207680   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4        -76.11217494   0:00:00
+     5        -76.11217818   0:00:00
+     6        -76.11217827   0:00:00
      7        -76.11217827   0:00:00
 Convergence reached in 7 iterations
 
@@ -1999,7 +2020,7 @@ Convergence reached in 7 iterations
         -------------
 
 * State 1
-- Energy: -76.11217827267339
+- Energy: -76.11217827267332
 - S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 [1.99996 1.98987 1.98365 1.97674 1.97379 0.02305 0.02163 0.01537 0.01055
@@ -2030,33 +2051,27 @@ Number of determinants:      12901
 Iteration   Average energy      Time
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -76.01430164
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -76.01430164   0:00:00
      2        -76.10827204   0:00:00
-     3        -76.11288891   0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4        -76.11310006
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3        -76.11288891   0:00:00
+     4        -76.11310006   0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0:00:00
-     5        -76.11311575   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5        -76.11311575   0:00:00
+     6        -76.11311693   0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     6        -76.11311693   0:00:00
-     7        -76.11311700   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -76.11311701   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -76.11311700   0:00:00
+     8        -76.11311701   0:00:00
 Convergence reached in 8 iterations
 
         Final results
         -------------
 
 * State 1
-- Energy: -76.11311700623551
+- Energy: -76.11311700623561
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 [1.99996 1.98967 1.98336 1.97603 1.97292 0.02367 0.02214 0.01556 0.01071
@@ -2088,29 +2103,36 @@ Number of determinants:      74991
 Iteration   Average energy      Time
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -76.01430164
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -76.01430164   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0:00:00
-     2        -76.11060745   0:00:00
-     3        -76.11813503   0:00:00
-     4        -76.11855814   0:00:00
-     5        -76.11858805   0:00:00
-     6        -76.11859067   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2        -76.11060745   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -76.11859088   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3        -76.11813503   0:00:02
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -76.11859090   0:00:00
-     9        -76.11859090   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4        -76.11855814   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5        -76.11858805   0:00:01
+     6        -76.11859067   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -76.11859088   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -76.11859090   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     9        -76.11859090   0:00:01
 Convergence reached in 9 iterations
 
         Final results
         -------------
 
 * State 1
-- Energy: -76.11859089816353
+- Energy: -76.11859089816349
 - S^2   : -0.02  (multiplicity = 1.0 )
 - Natural orbitals
 [1.99996 1.98843 1.98094 1.97294 1.96967 0.02673 0.02505 0.01788 0.01208
@@ -2133,25 +2155,31 @@ Number of determinants:      828828
         -------------
 
 Iteration   Average energy      Time
-     1        -76.01430164   0:00:00
-     2        -76.11060758   0:00:00
+     1        -76.01430164   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3        -76.11821220   0:00:00
-     4        -76.11871594   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2        -76.11060758   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5        -76.11874959   0:00:00
-     6        -76.11875358   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3        -76.11821220   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -76.11875386   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4        -76.11871594   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -76.11875389   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5        -76.11874959   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     9        -76.11875389   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     6        -76.11875358   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -76.11875386   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -76.11875389   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     9        -76.11875389   0:00:01
 Convergence reached in 9 iterations
 
         Final results
@@ -2159,7 +2187,7 @@ Convergence reached in 9 iterations
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* State 1
-- Energy: -76.11875388797195
+- Energy: -76.11875388797193
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 [1.99996 1.98835 1.98082 1.97278 1.96949 0.02688 0.02519 0.01800 0.01215
@@ -2268,7 +2296,7 @@ Convergence reached in 9 iterations
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -151.966677073119 a.u. Time: 0.05 sec.                                 
+* Info * ...done. SCF energy in reduced basis set: -151.966677073119 a.u. Time: 0.10 sec.                                 
                                                                                                                           
 </pre></div>
 </div>
@@ -2290,7 +2318,7 @@ Convergence reached in 9 iterations
                   1      -151.966677120244    0.0000000000      0.00036635      0.00005778      0.00000000                
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2      -151.966677134422   -0.0000000142      0.00008963      0.00001523      0.00008622                
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2      -151.966677134423   -0.0000000142      0.00008963      0.00001523      0.00008622                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3      -151.966677136972   -0.0000000025      0.00001089      0.00000104      0.00007257                
@@ -2300,7 +2328,7 @@ Convergence reached in 9 iterations
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.05 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.09 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -2326,14 +2354,15 @@ Convergence reached in 9 iterations
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.71725 a.u.                                                                  
-               (   1 O   1p-1:    -0.51) (   1 O   2p-1:    -0.26) (   2 H   1s  :    -0.27)                              
-               (   3 H   1s  :     0.27)                                                                                  
+               (   1 O   1p-1:    -0.41) (   1 O   2p-1:    -0.21) (   2 H   1s  :    -0.22)                              
+               (   3 H   1s  :     0.22) (   4 O   1p-1:    -0.30) (   4 O   2p-1:    -0.16)                              
+               (   5 H   1s  :    -0.16) (   6 H   1s  :     0.16)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.56447 a.u.                                                                  
-               (   1 O   1p0 :     0.18) (   4 O   2s  :    -0.17) (   4 O   3s  :    -0.30)                              
-               (   4 O   1p0 :     0.52) (   4 O   2p0 :     0.38)                                                        
+               (   1 O   1p0 :    -0.18) (   4 O   2s  :     0.17) (   4 O   3s  :     0.30)                              
+               (   4 O   1p0 :    -0.52) (   4 O   2p0 :    -0.38)                                                        
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
@@ -2344,48 +2373,47 @@ Convergence reached in 9 iterations
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50264 a.u.                                                                  
-               (   1 O   1p+1:    -0.21) (   1 O   2p+1:    -0.17) (   4 O   1p+1:     0.61)                              
+               (   1 O   1p+1:    -0.22) (   1 O   2p+1:    -0.17) (   4 O   1p+1:     0.60)                              
                (   4 O   2p+1:     0.48)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50264 a.u.                                                                  
-               (   1 O   1p+1:    -0.61) (   1 O   2p+1:    -0.48) (   4 O   1p+1:    -0.21)                              
-               (   4 O   2p+1:    -0.17)                                                                                  
+               (   1 O   1p+1:     0.60) (   1 O   2p+1:     0.48) (   4 O   1p+1:     0.22)                              
+               (   4 O   2p+1:     0.17)                                                                                  
                                                                                                                           
                Molecular Orbital No.  11:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
-               (   1 O   3s  :     1.14) (   1 O   1p0 :     0.21) (   1 O   2p0 :     0.45)                              
-               (   2 H   2s  :    -0.95) (   3 H   2s  :    -0.95) (   4 O   3s  :    -0.39)                              
-               (   4 O   2p0 :    -0.15) (   5 H   2s  :     0.33) (   6 H   2s  :     0.33)                              
-                                                                                                                          
-               Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
                (   1 O   3s  :    -0.39) (   1 O   2p0 :    -0.15) (   2 H   2s  :     0.33)                              
                (   3 H   2s  :     0.33) (   4 O   3s  :    -1.14) (   4 O   1p0 :    -0.21)                              
                (   4 O   2p0 :    -0.45) (   5 H   2s  :     0.95) (   6 H   2s  :     0.95)                              
                                                                                                                           
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
+               (   1 O   3s  :     1.14) (   1 O   1p0 :     0.21) (   1 O   2p0 :     0.45)                              
+               (   2 H   2s  :    -0.95) (   3 H   2s  :    -0.95) (   4 O   3s  :    -0.39)                              
+               (   4 O   2p0 :    -0.15) (   5 H   2s  :     0.33) (   6 H   2s  :     0.33)                              
+                                                                                                                          
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30383 a.u.                                                                  
-               (   1 O   2p-1:    -0.25) (   2 H   2s  :     0.43) (   3 H   2s  :    -0.43)                              
-               (   4 O   1p-1:    -0.32) (   4 O   2p-1:    -0.79) (   5 H   2s  :     1.35)                              
-               (   6 H   2s  :    -1.35)                                                                                  
+               (   2 H   2s  :    -0.19) (   3 H   2s  :     0.19) (   4 O   1p-1:     0.33)                              
+               (   4 O   2p-1:     0.82) (   5 H   2s  :    -1.41) (   6 H   2s  :     1.41)                              
                                                                                                                           
                Molecular Orbital No.  14:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30383 a.u.                                                                  
-               (   1 O   1p-1:    -0.32) (   1 O   2p-1:    -0.79) (   2 H   2s  :     1.35)                              
-               (   3 H   2s  :    -1.35) (   4 O   2p-1:     0.25) (   5 H   2s  :    -0.43)                              
-               (   6 H   2s  :     0.43)                                                                                  
+               (   1 O   1p-1:     0.33) (   1 O   2p-1:     0.82) (   2 H   2s  :    -1.41)                              
+               (   3 H   2s  :     1.41) (   5 H   2s  :     0.19) (   6 H   2s  :    -0.19)                              
                                                                                                                           
                Molecular Orbital No.  15:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.05847 a.u.                                                                  
-               (   4 O   2p-1:    -0.83) (   5 H   1s  :     0.97) (   5 H   2s  :    -0.43)                              
-               (   6 H   1s  :    -0.97) (   6 H   2s  :     0.43)                                                        
+               (   1 O   2p-1:     0.17) (   2 H   1s  :    -0.19) (   3 H   1s  :     0.19)                              
+               (   4 O   2p-1:    -0.82) (   5 H   1s  :     0.95) (   5 H   2s  :    -0.42)                              
+               (   6 H   1s  :    -0.95) (   6 H   2s  :     0.42)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -2414,34 +2442,107 @@ Number of determinants:      18441
 Iteration   Average energy      Time
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -151.96835250
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1        -5389.30977441   0:00:02
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0:00:00
-     2        -152.20610632   0:00:00
-     3        -152.21482932   0:00:00
-     4        -152.21517175   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2        -6589.18059943   0:00:01
+     3        -18426.80129954   0:00:02
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5        -152.21519202   0:00:00
-     6        -152.21519313   0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4        -23883.36725853   0:00:01
+     5        -72183.64487016   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -152.21519321   0:00:00
-     8        -152.21519322   0:00:00
-Convergence reached in 8 iterations
-
-        Final results
-        -------------
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     6        -20628.98109668   0:00:01
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* State 1
-- Energy: -152.2151932184082
-- S^2   : 0.00  (multiplicity = 1.0 )
-- Natural orbitals
-[1.99996 1.99996 1.99076 1.99076 1.98529 1.98529 1.97942 1.97942 1.97684
- 1.97684 0.02034 0.02034 0.01909 0.01909 0.01388 0.01388 0.00957 0.00957
- 0.00245 0.00245 0.00175 0.00175 0.00038 0.00038 0.00027 0.00027]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7        -458453.95826522   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8        -22448.12742790   0:00:01
+     9        -2537634.52448594   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    10        -87256.01600941   0:00:01
+    11        -1195443.03393338   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    12        -9337903.77817785   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    13        -115065.23009859   0:00:01
+    14        -53751.64280789   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    15        -1072843.46930940   0:00:01
+    16        -52102.62631834   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    17        -1994251.14664957   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    18        -87687.43645758   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    19        -1589889.29657172   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    20        -77337.15838948   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    21        -415376.14060152   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    22        -145999.60726701   0:00:01
+    23        -364145.06552281   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    24        -75588.78757390   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    25        -423780.87072830   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    26        -49028.03198673   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    27        -159667487.22003272   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    28        -116632.80504287   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    29        -295060214.43483168   0:00:00
+    30        -72325.05790133   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    31        -445270.88225524   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    32        -80017.52587751   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    33        -816253.55199694   0:00:01
+    34        -144299.18992494   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    35        -67299.23875119   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    36        -48749.46898703   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    37        -4301309.08741428   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    38        -90847.19199640   0:00:01
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    39        -117688339.00185943   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    40        -80669.61744231   0:00:01
+Convergence not reached after 40 iterations
 </pre></div>
 </div>
 </div>
@@ -2454,26 +2555,26 @@ Convergence reached in 8 iterations
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI Energy of 2 water molecules -152.2151932184082
-Twice the energy of 1 water molecule -152.2375077759439
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI Energy of 2 water molecules -80669.61744231396
+Twice the energy of 1 water molecule -152.23750777594387
 </pre></div>
 </div>
 </div>
 </div>
 <p>The calculation for the dimer found the energy to be higher than twice the monomer, and not equal as one would expect. This systematic failure of truncated CI is called size consistency error. In general, the truncated CI energy of two molecules far apart from each other is not the same as the sum of the truncated CI energy of each molecule.</p>
 <p>To understand this, let’s assume a molecule <span class="math notranslate nohighlight">\(A\)</span> whose CI expansion consists only of 2 SD, the HF reference and a SD generated by exciting 2 electrons from orbitals <span class="math notranslate nohighlight">\(i, j\)</span> to <span class="math notranslate nohighlight">\(a, b\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-008da2f6-e00d-47ae-8595-6c836079bf18">
-<span class="eqno">(37)<a class="headerlink" href="#equation-008da2f6-e00d-47ae-8595-6c836079bf18" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-90ef0d38-01e8-4bc1-a609-cd1e4561bf27">
+<span class="eqno">(37)<a class="headerlink" href="#equation-90ef0d38-01e8-4bc1-a609-cd1e4561bf27" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_A \rangle = c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle
 \end{equation}\]</div>
 <p>Now let’s assume a second molecule <span class="math notranslate nohighlight">\(B\)</span> with also 2 SD, the second one being generated from a <span class="math notranslate nohighlight">\(klcd\)</span> excitation from the reference:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1b896459-a50d-44d1-a5cc-46692e70bbb7">
-<span class="eqno">(38)<a class="headerlink" href="#equation-1b896459-a50d-44d1-a5cc-46692e70bbb7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-49f7bf8a-0621-4271-af03-4f9766efa95d">
+<span class="eqno">(38)<a class="headerlink" href="#equation-49f7bf8a-0621-4271-af03-4f9766efa95d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_B \rangle = c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle
 \end{equation}\]</div>
 <p>In a correct calculation, since the two systems are far apart, they should be independent, and thus, their combined wavefunction can be expressed as a product of their individual ones:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-cb6bd43c-63ed-4c0b-826e-8afff5c7b553">
-<span class="eqno">(39)<a class="headerlink" href="#equation-cb6bd43c-63ed-4c0b-826e-8afff5c7b553" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-82d54ecb-089b-483c-bf4b-d5b371010a40">
+<span class="eqno">(39)<a class="headerlink" href="#equation-82d54ecb-089b-483c-bf4b-d5b371010a40" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 | \Psi_{AB} \rangle &amp;= | \Psi_A \Psi B \rangle \\
                     &amp;= (c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle)(c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle) \\
                     &amp;= c_0 c'_0 | ... ij...kl ...\rangle + c_{0}c'_{klcd} | ... ij...cd ...\rangle + c_{ijab}c'_{0} | ... ab...kl ...\rangle + c_{ijab}c'_{klcd} | ... ab...cd ...\rangle   \\

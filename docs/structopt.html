@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Molecular structure optimization &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>Optimization Methods &#8212; Computational Chemistry from  Laptop to HPC</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,9 +37,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -48,13 +51,15 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Exercises" href="structopt-exercises.html" />
-    <link rel="prev" title="Force fields" href="forcefields.html" />
+    <link rel="next" title="Ground state structure optimization" href="gsstructopt.html" />
+    <link rel="prev" title="Molecular structure optimization" href="structopt-overview.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -106,7 +111,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="uv-vis.html">
-   UV/vis absorption/emission
+   UV/vis spectroscopies
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -137,6 +142,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_rec.html">
      Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv-vis_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -383,7 +393,7 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+  <a class="reference internal" href="structopt-overview.html">
    Molecular structure optimization
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
@@ -391,15 +401,20 @@ const thebe_selector_output = ".output, .cell_output"
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="structopt-exercises.html">
-     Exercises
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Optimization Methods
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -495,6 +510,11 @@ const thebe_selector_output = ".output, .cell_output"
      TDDFT
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="response_exercises.html">
+     Exercises
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -577,7 +597,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="visual-excited.html">
-   Visualizing excited states
+   Excited states
   </a>
  </li>
 </ul>
@@ -704,7 +724,7 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Molecular structure optimization</h1>
+                <h1>Optimization Methods</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -738,9 +758,8 @@ const thebe_selector_output = ".output, .cell_output"
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="molecular-structure-optimization">
-<h1>Molecular structure optimization<a class="headerlink" href="#molecular-structure-optimization" title="Permalink to this headline">¶</a></h1>
-<p>This will be a notebook in the end.</p>
+  <div class="tex2jax_ignore mathjax_ignore section" id="optimization-methods">
+<span id="sec-structopt-methods"></span><h1>Optimization Methods<a class="headerlink" href="#optimization-methods" title="Permalink to this headline">¶</a></h1>
 <p>The first class of special points on the PES that we will discuss are local energy minima. These correspond to equilibrium molecular structures and are characterized by a vanishing first order energy derivative combined with a Hessian matrix which has only positive eigenvalues. The procedure to determine a local minimum (i.e. finding the coordinates that minimize the energy) is called a structure optimization.</p>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/PES.svg"><img alt="../_images/PES.svg" height="300" src="../_images/PES.svg" width="300" /></a>
@@ -751,8 +770,8 @@ const thebe_selector_output = ".output, .cell_output"
 <h2>Gradient descent<a class="headerlink" href="#gradient-descent" title="Permalink to this headline">¶</a></h2>
 <p>Notebook for gradient descent?</p>
 <p>The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c1fdff73-14eb-4c0c-90f1-5d1da55096b0">
-<span class="eqno">(171)<a class="headerlink" href="#equation-c1fdff73-14eb-4c0c-90f1-5d1da55096b0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-95e9a564-556f-4c73-9833-fcd32415fc4a">
+<span class="eqno">(171)<a class="headerlink" href="#equation-95e9a564-556f-4c73-9833-fcd32415fc4a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{x}_{i+1} = \mathbf{x}_i - k_i\nabla E(\mathbf{x}_i) \label{eq:grad-descent} \,, 
 \end{equation}\]</div>
 <p>where by <span class="math notranslate nohighlight">\(\mathbf{x}_{i+1}\)</span> we denote the new coordinates (in a generic coordinate system – either Cartesian or internal coordinates), <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> are the coordinates at the previous step <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\nabla E\)</span> is the energy gradient and <span class="math notranslate nohighlight">\(k_i\)</span> is the step size. The step size can either be kept constant, or adjusted at each iteration, e.g. by the line search procedure.</p>
@@ -761,44 +780,44 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="section" id="conjugate-gradient">
 <h2>Conjugate gradient<a class="headerlink" href="#conjugate-gradient" title="Permalink to this headline">¶</a></h2>
 <p>An improved method over the gradient-descent approach is to use the “gradient history” (steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span>) to determine the coordinates at step <span class="math notranslate nohighlight">\(i+1\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f2cf568c-0742-4324-b63e-ee67440dd88b">
-<span class="eqno">(172)<a class="headerlink" href="#equation-f2cf568c-0742-4324-b63e-ee67440dd88b" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-87160e37-d348-442a-a5c4-86e29a4e45cc">
+<span class="eqno">(172)<a class="headerlink" href="#equation-87160e37-d348-442a-a5c4-86e29a4e45cc" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     \mathbf{x}_{i+1} = \mathbf{x}_i - k_i \mathbf{h}_i\,,\label{eq:conjugate_gradient}
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{h}_i = \nabla E (\mathbf{x}_i)+\gamma_i\mathbf{h}_{i-1}\)</span>. The function <span class="math notranslate nohighlight">\(\gamma_i\)</span> contains gradient information from steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span> and can be defined in different ways. For example, in the Fletcher-Reeves conjugate gradient method:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-74cc74d3-a454-43cf-9329-7f23b372c5ce">
-<span class="eqno">(173)<a class="headerlink" href="#equation-74cc74d3-a454-43cf-9329-7f23b372c5ce" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-36fa82a4-64c6-4f0c-8d50-7a9c900209ad">
+<span class="eqno">(173)<a class="headerlink" href="#equation-36fa82a4-64c6-4f0c-8d50-7a9c900209ad" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     \gamma_i = \frac{|\nabla E(\mathbf{x}_i)|^2}{|\nabla E(\mathbf{x}_{i-1})|^2}\,.
 \end{equation}\]</div>
 </div>
 <div class="section" id="newton-raphson-and-quasi-newton">
 <h2>Newton–Raphson and quasi-Newton<a class="headerlink" href="#newton-raphson-and-quasi-newton" title="Permalink to this headline">¶</a></h2>
 <p>The next step in the hierarchy of minimization methods is to use both the first and second order energy derivatives (i.e. gradient <span class="math notranslate nohighlight">\( \nabla E\)</span> and Hessian <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>) in determining the next step in conformation space. This is based on a quadratic approximation for the local shape of the PES:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-06b70f3a-730a-4ac8-826d-42c49b87598f">
-<span class="eqno">(174)<a class="headerlink" href="#equation-06b70f3a-730a-4ac8-826d-42c49b87598f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-96c82bd0-74e6-46ff-ae33-f710f7140942">
+<span class="eqno">(174)<a class="headerlink" href="#equation-96c82bd0-74e6-46ff-ae33-f710f7140942" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     E(\mathbf{x}+\Delta\mathbf{x}) \approx E(\mathbf{x}) + \nabla E(\mathbf{x})\Delta\mathbf{x} + \frac{1}{2}\Delta\mathbf{x}^\mathrm{T}\mathbf{H}\Delta\mathbf{x} \label{eq:quadratic_approx_PES} \,,
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\Delta \mathbf{x}\)</span> is the Newton step used to update the coordinates:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a5cb9fac-2a74-45eb-bda9-bea4f25b947d">
-<span class="eqno">(175)<a class="headerlink" href="#equation-a5cb9fac-2a74-45eb-bda9-bea4f25b947d" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-d8b97987-2df5-4da7-af26-1aba9df870d4">
+<span class="eqno">(175)<a class="headerlink" href="#equation-d8b97987-2df5-4da7-af26-1aba9df870d4" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
     \Delta \mathbf{x} &amp;= -\mathbf{H}^{-1}\nabla E(\mathbf{x})\label{eq:Newton_step}\,,\\
     \mathbf{x}_\mathrm{i+1} &amp;= \mathbf{x}_\mathrm{i}+\Delta \mathbf{x}\,.
 \end{flalign}\]</div>
 <p>When redundant internal coordinates are used, it is important to ensure that the displacements are only performed in the non-redundant part of the internal coordinate space. This is achieved by applying a projector <span class="math notranslate nohighlight">\(\mathbf{P}=\mathbf{G}^{-}\mathbf{G}\)</span> to the gradient and Hessian before constructing the Newton step \cite{orcamanual}:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-08ead452-a93f-454c-bd9c-d59a8b619a35">
-<span class="eqno">(176)<a class="headerlink" href="#equation-08ead452-a93f-454c-bd9c-d59a8b619a35" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-39b4b14c-9a8a-40ca-8d5b-d9e6b2b13153">
+<span class="eqno">(176)<a class="headerlink" href="#equation-39b4b14c-9a8a-40ca-8d5b-d9e6b2b13153" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
  \tilde{\mathbf{g}}_q &amp;= \mathbf{P}\nabla E(\mathbf{q}) \, , \\
  \tilde{\mathbf{H}}_q &amp;= \mathbf{P}\mathbf{H}_q\mathbf{P}+\alpha(1-\mathbf{P}) \,,
  \end{flalign}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is an arbitrary large value (e.g. 1000).</p>
 <p>As evident from Eq.~\eqref{eq:Newton_step}, the second order derivatives of the energy with respect to nuclear displacements are required to generate the Newton step. The direct computation of these derivatives (which compose the Hessian matrix) is quite expensive, but good \textit{approximations} for the Hessian can be constructed using  the gradient history. For example, the Broyden-Fletcher-Goldfarb-Shanno (BFGS, used by \code{geomeTRIC}) approach uses the relation:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4bd69b1e-c388-4814-babd-f7c8bc784ae3">
-<span class="eqno">(177)<a class="headerlink" href="#equation-4bd69b1e-c388-4814-babd-f7c8bc784ae3" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-9eb18e35-6608-4117-bf06-27fc02a700bc">
+<span class="eqno">(177)<a class="headerlink" href="#equation-9eb18e35-6608-4117-bf06-27fc02a700bc" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
 \mathbf{H}_{i+1} &amp;= \mathbf{H}_i + \frac{\mathbf{g}^{\textcolor{white}{.}}_i\mathbf{g}_i^\mathrm{T}}{\mathbf{g}_i^\mathrm{T}\mathbf{s}^{\textcolor{white}{.}}_i} - \frac{\mathbf{H}_i\mathbf{s}_i\left(\mathbf{H}_i\mathbf{s}_i\right)_{\textcolor{white}{i}}^\mathrm{T}}{\mathbf{s}_i^\mathrm{T}\mathbf{H}_i^{\textcolor{white}{.}}\mathbf{s}_i^{\textcolor{white}{.}}} \, ,\label{eq:BFGS}
 \end{flalign}\]</div>
 <p>with,</p>
-<div class="amsmath math notranslate nohighlight" id="equation-394bf275-7541-4506-a541-70885ae461da">
-<span class="eqno">(178)<a class="headerlink" href="#equation-394bf275-7541-4506-a541-70885ae461da" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
+<div class="amsmath math notranslate nohighlight" id="equation-f73d82cd-1181-4877-9d7a-932a90d3da97">
+<span class="eqno">(178)<a class="headerlink" href="#equation-f73d82cd-1181-4877-9d7a-932a90d3da97" title="Permalink to this equation">¶</a></span>\[\begin{flalign}
 \mathbf{g}_i &amp;= \nabla E(\mathbf{x}_{i+1}) - \nabla E(\mathbf{x}_i) \, \\
 \mathbf{s}_i &amp;= \mathbf{x}_{i+1} - \mathbf{x}_{i} \,,
 \end{flalign}\]</div>
@@ -807,8 +826,6 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/geom_opt_flowchart.svg"><img alt="../_images/geom_opt_flowchart.svg" height="420" src="../_images/geom_opt_flowchart.svg" width="380" /></a>
 </div>
-</div>
-<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -837,17 +854,17 @@ const thebe_selector_output = ".output, .cell_output"
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="forcefields.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="structopt-overview.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Force fields</p>
+            <p class="prev-next-title">Molecular structure optimization</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="structopt-exercises.html" title="next page">
+    <a class='right-next' id="next-link" href="gsstructopt.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Exercises</p>
+        <p class="prev-next-title">Ground state structure optimization</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

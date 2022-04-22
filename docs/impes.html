@@ -37,9 +37,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -48,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -106,7 +111,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="uv-vis.html">
-   UV/vis absorption/emission
+   UV/vis spectroscopies
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -137,6 +142,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_rec.html">
      Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv-vis_exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -383,7 +393,7 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="structopt.html">
+  <a class="reference internal" href="structopt-overview.html">
    Molecular structure optimization
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
@@ -393,13 +403,18 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="structopt-exercises.html">
-     Exercises
+    <a class="reference internal" href="structopt.html">
+     Optimization Methods
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="gsstructopt.html">
      Ground state structure optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="structopt-exercises.html">
+     Exercises
     </a>
    </li>
   </ul>
@@ -495,6 +510,11 @@ const thebe_selector_output = ".output, .cell_output"
      TDDFT
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="response_exercises.html">
+     Exercises
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
@@ -577,7 +597,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="visual-excited.html">
-   Visualizing excited states
+   Excited states
   </a>
  </li>
 </ul>
@@ -808,20 +828,20 @@ const thebe_selector_output = ".output, .cell_output"
 <p>The steps for transforming Cartesian <span class="math notranslate nohighlight">\(x\)</span> to internal <span class="math notranslate nohighlight">\(q\)</span> coordinates are:</p>
 <ol>
 <li><p>Determine the Willson  <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8f333c67-20f3-48c0-865b-3e1449edc98a">
-<span class="eqno">(179)<a class="headerlink" href="#equation-8f333c67-20f3-48c0-865b-3e1449edc98a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-81ac3be5-5aa4-4d4f-8177-c4d411d7adfc">
+<span class="eqno">(179)<a class="headerlink" href="#equation-81ac3be5-5aa4-4d4f-8177-c4d411d7adfc" title="Permalink to this equation">¶</a></span>\[\begin{equation}
    B_{ij} = \frac{\partial q_i}{\partial x_j}
    \end{equation}\]</div>
 </li>
 <li><p>Construct the  <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> martix:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-7922887f-9dae-40b2-97b5-232df8273a49">
-<span class="eqno">(180)<a class="headerlink" href="#equation-7922887f-9dae-40b2-97b5-232df8273a49" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-23369e18-0a23-4f93-9b91-afcb2c5526d6">
+<span class="eqno">(180)<a class="headerlink" href="#equation-23369e18-0a23-4f93-9b91-afcb2c5526d6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
    \mathbf{G} = \mathbf{B}\mathbf{B}^\mathrm{T}
    \end{equation}\]</div>
 </li>
 <li><p>Set up and solve the eigenvalue equation for <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>, to separate out redundancies:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ff11ee72-8bb8-4d27-a122-278ce88df149">
-<span class="eqno">(181)<a class="headerlink" href="#equation-ff11ee72-8bb8-4d27-a122-278ce88df149" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-f8f5facb-3ee2-4984-8088-5c5658b37d42">
+<span class="eqno">(181)<a class="headerlink" href="#equation-f8f5facb-3ee2-4984-8088-5c5658b37d42" title="Permalink to this equation">¶</a></span>\[\begin{equation}
        \mathbf{G}\begin{pmatrix}\mathbf{U} &amp; \mathbf{R}\end{pmatrix} =\begin{pmatrix}\mathbf{U} &amp; \mathbf{R}\end{pmatrix}    \begin{bmatrix}
     \boldsymbol{\Lambda} &amp; 0 \\
     0 &amp; 0
@@ -830,32 +850,32 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li><p>Select the non-zero eigenvalues <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> and corresponding eigenvectors and construct the generalized inverse matrix <span class="math notranslate nohighlight">\(\mathbf{G}^{-}\)</span>:</p></li>
 </ol>
-<div class="amsmath math notranslate nohighlight" id="equation-f7617547-485c-4bd8-b201-c96a3889887d">
-<span class="eqno">(182)<a class="headerlink" href="#equation-f7617547-485c-4bd8-b201-c96a3889887d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-030abdb5-217f-42e4-9d32-c55ec4d2f188">
+<span class="eqno">(182)<a class="headerlink" href="#equation-030abdb5-217f-42e4-9d32-c55ec4d2f188" title="Permalink to this equation">¶</a></span>\[\begin{equation}
        \mathbf{G}^{-} = \begin{pmatrix}\mathbf{U} &amp; \mathbf{R}\end{pmatrix} \begin{bmatrix} \boldsymbol{\Lambda}^{-1} &amp; 0 \\0 &amp; 0\end{bmatrix}\begin{pmatrix}\mathbf{U}^\mathrm{T}\\ \mathbf{R}^\mathrm{T}\end{pmatrix}
    \end{equation}\]</div>
 <ol>
 <li><p>The gradient can be transformed using:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-45780271-773b-496e-8f73-a02f175b2252">
-<span class="eqno">(183)<a class="headerlink" href="#equation-45780271-773b-496e-8f73-a02f175b2252" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-006b6c4e-37e7-4fd2-a44a-f14d96338253">
+<span class="eqno">(183)<a class="headerlink" href="#equation-006b6c4e-37e7-4fd2-a44a-f14d96338253" title="Permalink to this equation">¶</a></span>\[\begin{equation}
    \mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x
    \end{equation}\]</div>
 </li>
 <li><p>For the Hessian, the second order derivatives of internal coordinates with respect to Cartesian coordinates are required:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b650674d-3558-4e30-b469-7948f841f86c">
-<span class="eqno">(184)<a class="headerlink" href="#equation-b650674d-3558-4e30-b469-7948f841f86c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-46f75a22-5e61-4dad-8f17-f9b82f29936d">
+<span class="eqno">(184)<a class="headerlink" href="#equation-46f75a22-5e61-4dad-8f17-f9b82f29936d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     B^{(2)}_{ijk} = \frac{\partial^2 q_i}{\partial x_j\partial x_k}
    \end{equation}\]</div>
 </li>
 <li><p>Then, the Hessian is transformed by:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-529d5890-bc21-49e4-81f5-c5e72b0148be">
-<span class="eqno">(185)<a class="headerlink" href="#equation-529d5890-bc21-49e4-81f5-c5e72b0148be" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-20384e2f-c62e-470e-ab9c-7578d53ec6b1">
+<span class="eqno">(185)<a class="headerlink" href="#equation-20384e2f-c62e-470e-ab9c-7578d53ec6b1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     \mathbf{H}_q = \mathbf{G}^{-} \mathbf{B} \left[ \mathbf{H}_x - \mathbf{g}_q \mathbf{B}^{(2)}\right]\mathbf{B}^\mathrm{T} \mathbf{G}^{-\mathrm{T}}
    \end{equation}\]</div>
 </li>
 <li><p>The transformation to use <span class="math notranslate nohighlight">\(u=1/R\)</span> instead of <span class="math notranslate nohighlight">\(R\)</span> is a simple change of variables:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2e80bcd6-89ae-4a40-8771-5184dfab3447">
-<span class="eqno">(186)<a class="headerlink" href="#equation-2e80bcd6-89ae-4a40-8771-5184dfab3447" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-400e978e-4ff1-42df-bf62-2971a5cd4411">
+<span class="eqno">(186)<a class="headerlink" href="#equation-400e978e-4ff1-42df-bf62-2971a5cd4411" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     g(u) = \frac{\mathrm{d} E}{\mathrm{d}u}=\frac{\mathrm{d} E}{\mathrm{d}R}\frac{\mathrm{d} R}{\mathrm{d}u} = \frac{\mathrm{d} E}{\mathrm{d}R}\frac{\mathrm{d} u^{-1}}{\mathrm{d}u} =  -u^{-2}\,g(R) =  -R^{2} \,g(R)
    \end{equation}\]</div>
 </li>
@@ -930,8 +950,8 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 <div class="section" id="use-the-energy-gradient-and-hessian-to-represent-the-core-excited-state-pes-analytically">
 <h3>Use the energy, gradient, and Hessian to represent the core-excited state PES analytically<a class="headerlink" href="#use-the-energy-gradient-and-hessian-to-represent-the-core-excited-state-pes-analytically" title="Permalink to this headline">¶</a></h3>
-<div class="amsmath math notranslate nohighlight" id="equation-6a2b5f21-fbab-4ec3-a866-bc6faabcfe54">
-<span class="eqno">(187)<a class="headerlink" href="#equation-6a2b5f21-fbab-4ec3-a866-bc6faabcfe54" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-8093951f-c8f5-4122-946c-64c34a5276f2">
+<span class="eqno">(187)<a class="headerlink" href="#equation-8093951f-c8f5-4122-946c-64c34a5276f2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 V_i(\mathbf{q}) = E_i + (\mathbf{q}-\mathbf{q}_i)\,\mathbf{g}_i + \frac12 (\mathbf{q}-\mathbf{q}_i)\, \mathbf{H}_i \, (\mathbf{q}-\mathbf{q}_i)^\mathrm{T}
 \end{equation}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Rs</span><span class="p">)</span>
@@ -981,28 +1001,28 @@ V_i(\mathbf{q}) = E_i + (\mathbf{q}-\mathbf{q}_i)\,\mathbf{g}_i + \frac12 (\math
 </div>
 <div class="section" id="construct-the-interpolated-core-excited-state-pes">
 <h3>Construct the interpolated core-excited state PES<a class="headerlink" href="#construct-the-interpolated-core-excited-state-pes" title="Permalink to this headline">¶</a></h3>
-<div class="amsmath math notranslate nohighlight" id="equation-77d82f2b-9be1-4b68-b0b1-919f89c4944a">
-<span class="eqno">(188)<a class="headerlink" href="#equation-77d82f2b-9be1-4b68-b0b1-919f89c4944a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-0c59467f-f142-490c-9d92-46f39f87d5d3">
+<span class="eqno">(188)<a class="headerlink" href="#equation-0c59467f-f142-490c-9d92-46f39f87d5d3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 V(\mathbf{q}) = \sum_i w_i(\mathbf{q}) V_i(\mathbf{q}),
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(w_i(\mathbf{q})\)</span> are the normalized weights:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-89847f14-e6dd-4e07-8ec6-5ea506920527">
-<span class="eqno">(189)<a class="headerlink" href="#equation-89847f14-e6dd-4e07-8ec6-5ea506920527" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-f6649412-0088-46b6-bfd9-dca149847fd8">
+<span class="eqno">(189)<a class="headerlink" href="#equation-f6649412-0088-46b6-bfd9-dca149847fd8" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 w_i(\mathbf{q}) = \frac{v_i(\mathbf{q})}{\sum_j v_j(\mathbf{q})}
 \end{equation}\]</div>
 <p>There are different ways to determine the unnormalized weights:</p>
 <ol class="simple">
 <li><p>Simple interpolation:</p></li>
 </ol>
-<div class="amsmath math notranslate nohighlight" id="equation-7db7eef0-c242-40e3-98d5-178962a5dc48">
-<span class="eqno">(190)<a class="headerlink" href="#equation-7db7eef0-c242-40e3-98d5-178962a5dc48" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-04f8824b-fc19-4825-8c6d-272205d79e1c">
+<span class="eqno">(190)<a class="headerlink" href="#equation-04f8824b-fc19-4825-8c6d-272205d79e1c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 v_i(\mathbf{q}) = \frac{1}{(\mathbf{q}-\mathbf{q}_i)^{2p}}
 \end{equation}\]</div>
 <ol class="simple">
 <li><p>Shepard interpolation:</p></li>
 </ol>
-<div class="amsmath math notranslate nohighlight" id="equation-5f2c991a-e239-47e5-9324-eb24ef566d2c">
-<span class="eqno">(191)<a class="headerlink" href="#equation-5f2c991a-e239-47e5-9324-eb24ef566d2c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-d883974b-bbdd-43eb-b3e6-0cb11b1b075e">
+<span class="eqno">(191)<a class="headerlink" href="#equation-d883974b-bbdd-43eb-b3e6-0cb11b1b075e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 v_i(\mathbf{q}) = \frac{1}{\left[\frac{\mathbf{q}-\mathbf{q}_i}{\mathrm{rad}}\right]^{2p}+\left[\frac{\mathbf{q}-\mathbf{q}_i}{\mathrm{rad}}\right]^{2q}}
 \end{equation}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simple_r</span> <span class="o">=</span> <span class="n">impes</span><span class="o">.</span><span class="n">simple_interpolate</span><span class="p">(</span><span class="n">Rs</span><span class="p">,</span> <span class="n">Vs</span><span class="p">,</span> <span class="n">oc</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
