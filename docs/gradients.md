@@ -488,7 +488,7 @@ For CIS, this is the HF reference state, so the density matrices for the excited
 ```
 Since, when written in terms of one- and two-particle density matrices,
 the excited state Lagrangian is virtually identical to the Lagrangians written for HF and MP2,
-we leave the exercise of plugging in the expressions of the DMs into Eq. {eq}`to add` to the reader.
+we leave the exercise of plugging in the expressions of the DMs into Eq. n to the reader.
 The orbital response equations are also straightforwad to derive by using the density matrices
 in Eqs. {eq}`eq:adc1_gamma_total_oo`-{eq}`eq:adc1_Gamma_total_oooo` in the general orbital response equations {eq}`eq:OrbRspEq` and {eq}`eq:omega`.
 We leave the step-by-step derivation to the reader, with a note that care should be given

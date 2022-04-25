@@ -19,6 +19,7 @@ align: left
 ```
 <!-- #endregion -->
 <!-- #region -->
+<<<<<<< HEAD
 Illustration of the propagation of an excitation in a many-electron system (inspired from {cite}`mattuck1992`): (a) a particle-hole pair is created by photon absorption; (b) the pair propagates through the system; (c) the particle and hole interact (the interaction is marked by a wiggly line); (d) the particle interacts with another particle in the system, lifting it out of its place and creating a new particle-hole pair (excitation); (e) the particle interacts with the lifted-out particle and knocks it back into the hole (de-excitation); (f) the particle and hole recombine and emit a photon. (g) Illustration of the series expansion of the polarization propagator (adapted from {cite}`Wormit2009`).
 
 

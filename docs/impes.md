@@ -1,4 +1,4 @@
-# Potential Energy Surfaces by Interpolation
+# Potential energy surfaces by interpolation
 
 ## Core-excited state PES by interpolation
 
