@@ -1,0 +1,55 @@
+Traceback (most recent call last):
+  File "/home/emi/.local/lib/python3.6/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 1093, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/usr/lib/python3.6/asyncio/base_events.py", line 484, in run_until_complete
+    return future.result()
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 560, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 854, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 756, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Compute the 5 lowest states of water using full CI
+
+mol_str = """
+O       0.0000000000     0.0000000000     0.1178336003
+H      -0.7595754146    -0.0000000000    -0.4713344012
+H       0.7595754146     0.0000000000    -0.4713344012
+"""
+
+molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
+basis = vlx.MolecularBasis.read(molecule, "6-31g")
+
+scf_drv = vlx.ScfRestrictedDriver()
+scf_drv.compute(molecule, basis)
+
+space=mtp.OrbSpace(molecule,scf_drv.mol_orbs)
+space.CAS(8,12) #FullCI with frozen 1s orbital
+
+nstates=5
+cidrv=mtp.CIDriver(molecule,basis,space)
+cidrv.compute(nstates)
+
+CIVecs=cidrv.vecs
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+[0;32m<ipython-input-2-0350241e3d5d>[0m in [0;36m<module>[0;34m[0m
+[1;32m     17[0m [0;34m[0m[0m
+[1;32m     18[0m [0mnstates[0m[0;34m=[0m[0;36m5[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 19[0;31m [0mcidrv[0m[0;34m=[0m[0mmtp[0m[0;34m.[0m[0mCIDriver[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m[0mbasis[0m[0;34m,[0m[0mspace[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     20[0m [0mcidrv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mnstates[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     21[0m [0;34m[0m[0m
+
+[0;31mTypeError[0m: __init__() takes from 1 to 3 positional arguments but 4 were given
+TypeError: __init__() takes from 1 to 3 positional arguments but 4 were given
+

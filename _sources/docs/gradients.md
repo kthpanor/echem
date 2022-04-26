@@ -169,7 +169,7 @@ Equations for the $\{\lambda_{pq}\}$ and $\{\omega_{pq}\}$ multipliers are obtai
 or the programmable version {cite}`Levchenko2005,Rehn2019` :
 ```{math}
 :label: eq:OrbitalRspCond_program
-\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}=0\, ,
+\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}=0\, .
 ```
 To calculate the partial derivative of the Lagrangian with respect to $C_{\mu t}$, we will need the following three expressions:
 ```{math}
