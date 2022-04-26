@@ -45,14 +45,11 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -127,21 +124,6 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="uv-vis_aspects.html">
-     Special aspects
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="uv-vis_large.html">
-     Larger systems
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="uv-vis_rec.html">
-     Recommendations
-    </a>
-   </li>
-   <li class="toctree-l2">
     <a class="reference internal" href="uv-vis_exercises.html">
      Exercises
     </a>
@@ -213,11 +195,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="xray_aspects.html">
      Special aspects
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="xray_large.html">
-     Larger systems
     </a>
    </li>
    <li class="toctree-l2">
@@ -435,7 +412,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="impes.html">
-   Potential Energy Surfaces by Interpolation
+   Potential energy surfaces by interpolation
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -507,19 +484,46 @@
      TDDFT
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="response_exercises.html">
+     Exercises
+    </a>
+   </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="adc.html">
    Algebraic diagrammatic construction
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+  <label for="toctree-checkbox-12">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adc-isr.html">
+     Intermediate state representation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adc-cvs.html">
+     Core–valence separation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adc-hpc.html">
+     HPC-QC implementation
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="excoupl.html">
    Exciton coupling model
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
-  <label for="toctree-checkbox-12">
+  <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
+  <label for="toctree-checkbox-13">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -542,8 +546,8 @@
   <a class="reference internal" href="localprop.html">
    Localized properties
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
-  <label for="toctree-checkbox-13">
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <label for="toctree-checkbox-14">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -645,9 +649,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/transmetal.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/transmetal.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
                 onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -680,6 +684,23 @@
             class="fas fa-expand"></i></button></a>
 
             <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/transmetal.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
 
         </div>
 

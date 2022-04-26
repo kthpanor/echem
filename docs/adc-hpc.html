@@ -45,17 +45,16 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -717,44 +716,44 @@
                 
   <div class="section" id="hpc-qc-implementation">
 <h1>HPC-QC implementation<a class="headerlink" href="#hpc-qc-implementation" title="Permalink to this headline">¶</a></h1>
-<p>To enable large-scale ADC(2) calculations on HPC systems, some considerations need to be taken into account in the implementation. Conventionally, the molecular orbital (MO) integrals, which are essentially tensors with four dimensions, are computed by integral transformation on a single compute node (or workstation). This is unfortunately not practical on HPC clusters, since a cluster node usually has moderate amount of memory which is not enough to store an object with <span class="math notranslate nohighlight">\(N^4\)</span> elements (here <span class="math notranslate nohighlight">\(N\)</span> is the number of orbitals). Therefore, the MO integral needs to be stored in a distributed way; in other words, each node need to store a portion of the four-dimensional MO integral. It is then natural to distribute the computation of MO integral as well, such that each node only computes part of the integral that needs to be stored locally. This leads to the so-called Fock matrix-driver integral transformation approach, where MO integrals are expressed in terms of Fock-like matrices <span id="id1">[<a class="reference internal" href="refs.html#id38">HLUMartinez15</a>, <a class="reference internal" href="refs.html#id44">RRH+21</a>]</span></p>
+<p>To enable large-scale ADC(2) calculations on HPC systems, some considerations need to be taken into account in the implementation. Conventionally, the molecular orbital (MO) integrals, which are essentially tensors with four dimensions, are computed by integral transformation on a single compute node (or workstation). This is unfortunately not practical on HPC clusters, since a cluster node usually has moderate amount of memory which is not enough to store an object with <span class="math notranslate nohighlight">\(N^4\)</span> elements (here <span class="math notranslate nohighlight">\(N\)</span> is the number of orbitals). Therefore, the MO integral needs to be stored in a distributed way; in other words, each node need to store a portion of the four-dimensional MO integral. It is then natural to distribute the computation of MO integral as well, such that each node only computes part of the integral that needs to be stored locally. This leads to the so-called Fock matrix-driver integral transformation approach, where MO integrals are expressed in terms of Fock-like matrices <span id="id1">[<a class="reference internal" href="refs.html#id38" title="Edward G. Hohenstein, Nathan Luehr, Ivan S. Ufimtsev, and Todd J. Martínez. An atomic orbital-based formulation of the complete active space self-consistent field method on graphical processing units. J. Chem. Phys., 142:224103, 2015. URL: https://doi.org/10.1063/1.4921956.">HLUMartinez15</a>, <a class="reference internal" href="refs.html#id44" title="D. R. Rehn, Z. Rinkevicius, M. Herbst, M. Li, X. Scheurer, M. Brand, A. L. Dempwolff, I. E. Brumboiu, T. Fransson, A. Dreuw, and P. Norman. Gator: a Python-driven program for spectroscopy simulations using correlated wave functions. WIREs Comput. Mol. Sci., 2021. URL: https://doi.org/10.1002/wcms.1528.">RRH+21</a>]</span></p>
 <div class="math notranslate nohighlight" id="equation-eq-mo-ints-from-fock">
-<span class="eqno">(210)<a class="headerlink" href="#equation-eq-mo-ints-from-fock" title="Permalink to this equation">¶</a></span>\[\langle ij || kl \rangle = \sum_{\gamma \delta}^{N} \left [ C_{\gamma k} F_{\gamma \delta}^{ij} C_{\delta l} - C_{\gamma l} F_{\gamma \delta}^{ij} C_{\delta k} \right ]\]</div>
+<span class="eqno">(201)<a class="headerlink" href="#equation-eq-mo-ints-from-fock" title="Permalink to this equation">¶</a></span>\[\langle ij || kl \rangle = \sum_{\gamma \delta}^{N} \left [ C_{\gamma k} F_{\gamma \delta}^{ij} C_{\delta l} - C_{\gamma l} F_{\gamma \delta}^{ij} C_{\delta k} \right ]\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight" id="equation-eq-fock-from-dens">
-<span class="eqno">(211)<a class="headerlink" href="#equation-eq-fock-from-dens" title="Permalink to this equation">¶</a></span>\[F_{\gamma \delta}^{ij} = \sum_{\alpha \beta}^{N} D_{\alpha \beta}^{ij} (\alpha \gamma|\delta \beta)\]</div>
+<span class="eqno">(202)<a class="headerlink" href="#equation-eq-fock-from-dens" title="Permalink to this equation">¶</a></span>\[F_{\gamma \delta}^{ij} = \sum_{\alpha \beta}^{N} D_{\alpha \beta}^{ij} (\alpha \gamma|\delta \beta)\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-dens-from-mo">
-<span class="eqno">(212)<a class="headerlink" href="#equation-eq-dens-from-mo" title="Permalink to this equation">¶</a></span>\[D_{\alpha \beta}^{ij} = C_{\alpha i} C_{\alpha j}\]</div>
+<span class="eqno">(203)<a class="headerlink" href="#equation-eq-dens-from-mo" title="Permalink to this equation">¶</a></span>\[D_{\alpha \beta}^{ij} = C_{\alpha i} C_{\alpha j}\]</div>
 <p>In practice the <span class="math notranslate nohighlight">\(ij\)</span> pairs and the corresponding <span class="math notranslate nohighlight">\(kl\)</span> matrices are stored on individual nodes. This also facilitates parallelization of subsequent <span class="math notranslate nohighlight">\(\sigma\)</span>-build (matrix-vector multiplication) with minimal amount of communications.</p>
-<p>In HPC-QC implementation of ADC(2), another object that cannot be stored on a cluster node is the excitation vector that involves two particle-hole pairs (namely double excitation). This is because the vector of double excitation has four indices and its sizes increases as <span class="math notranslate nohighlight">\(O(N^4)\)</span>. Fortunately, explicit storage of the double excitation vector can be avoided by converting the standard eigenproblem in single and double space to a nonlinear eigenproblem in single space <span id="id2">[<a class="reference internal" href="refs.html#id39">Hat06</a>]</span>. By expanding the ADC(2) equation</p>
+<p>In HPC-QC implementation of ADC(2), another object that cannot be stored on a cluster node is the excitation vector that involves two particle-hole pairs (namely double excitation). This is because the vector of double excitation has four indices and its sizes increases as <span class="math notranslate nohighlight">\(O(N^4)\)</span>. Fortunately, explicit storage of the double excitation vector can be avoided by converting the standard eigenproblem in single and double space to a nonlinear eigenproblem in single space <span id="id2">[<a class="reference internal" href="refs.html#id39" title="C. Hattig. Beyond hartree-fock: mp2 and coupled-cluster methods for large systems. Comput. Nanosci., 31:245–278, 2006. URL: https://juser.fz-juelich.de/record/152600/files/FZJ-2014-02217.pdf.">Hat06</a>]</span>. By expanding the ADC(2) equation</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec">
-<span class="eqno">(213)<a class="headerlink" href="#equation-eq-adc2-mat-vec" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{pmatrix} M_{11} &amp; M_{12}\\ M_{21} &amp; M_{22} \end{pmatrix}
+<span class="eqno">(204)<a class="headerlink" href="#equation-eq-adc2-mat-vec" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{pmatrix} M_{11} &amp; M_{12}\\ M_{21} &amp; M_{22} \end{pmatrix}
 \begin{pmatrix} V_{1} \\ V_{2} \end{pmatrix}
 = \omega \begin{pmatrix} V_{1} \\ V_{2} \end{pmatrix}\end{split}\]</div>
 <p>we have</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec-v1">
-<span class="eqno">(214)<a class="headerlink" href="#equation-eq-adc2-mat-vec-v1" title="Permalink to this equation">¶</a></span>\[M_{11} V_1 + M_{12} V_2 = \omega V_1\]</div>
+<span class="eqno">(205)<a class="headerlink" href="#equation-eq-adc2-mat-vec-v1" title="Permalink to this equation">¶</a></span>\[M_{11} V_1 + M_{12} V_2 = \omega V_1\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec-v2">
-<span class="eqno">(215)<a class="headerlink" href="#equation-eq-adc2-mat-vec-v2" title="Permalink to this equation">¶</a></span>\[M_{21} V_1 + M_{22} V_2 = \omega V_2\]</div>
+<span class="eqno">(206)<a class="headerlink" href="#equation-eq-adc2-mat-vec-v2" title="Permalink to this equation">¶</a></span>\[M_{21} V_1 + M_{22} V_2 = \omega V_2\]</div>
 <p>where <span class="math notranslate nohighlight">\(\omega\)</span> is the excitation energy, and <span class="math notranslate nohighlight">\(V_1\)</span> and <span class="math notranslate nohighlight">\(V_2\)</span> are the single and double excitation vectors, respectively. The above two equations can be rewritten as (after eliminating <span class="math notranslate nohighlight">\(V_2\)</span>)</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec-folded">
-<span class="eqno">(216)<a class="headerlink" href="#equation-eq-adc2-mat-vec-folded" title="Permalink to this equation">¶</a></span>\[\left[ M_{11} + M_{12} (\omega - M_{22})^{-1} M_{21} \right] V_1 = \omega V_1\]</div>
+<span class="eqno">(207)<a class="headerlink" href="#equation-eq-adc2-mat-vec-folded" title="Permalink to this equation">¶</a></span>\[\left[ M_{11} + M_{12} (\omega - M_{22})^{-1} M_{21} \right] V_1 = \omega V_1\]</div>
 <p>Note that <span class="math notranslate nohighlight">\(M_{22}\)</span> is diagonal in ADC(2). Let</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec-meff">
-<span class="eqno">(217)<a class="headerlink" href="#equation-eq-adc2-mat-vec-meff" title="Permalink to this equation">¶</a></span>\[M^{\rm eff}_{11} = \left[ M_{11} + M_{12} (\omega - M_{22})^{-1} M_{21} \right] V_1\]</div>
+<span class="eqno">(208)<a class="headerlink" href="#equation-eq-adc2-mat-vec-meff" title="Permalink to this equation">¶</a></span>\[M^{\rm eff}_{11} = \left[ M_{11} + M_{12} (\omega - M_{22})^{-1} M_{21} \right] V_1\]</div>
 <p>we have</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-mat-vec-nonlinear">
-<span class="eqno">(218)<a class="headerlink" href="#equation-eq-adc2-mat-vec-nonlinear" title="Permalink to this equation">¶</a></span>\[M^{\rm eff}_{11} V_1 = \omega V_1\]</div>
+<span class="eqno">(209)<a class="headerlink" href="#equation-eq-adc2-mat-vec-nonlinear" title="Permalink to this equation">¶</a></span>\[M^{\rm eff}_{11} V_1 = \omega V_1\]</div>
 <p>This is a nonlinear eigenproblem since <span class="math notranslate nohighlight">\(M^{\rm eff}_{11}\)</span> depends on <span class="math notranslate nohighlight">\(\omega\)</span>.
 The excitation energies and single excitation vectors can then be solved
 by a nonlinear eigensolver.
 Note that the resultant single excitation vectors need to be scaled to satisfy the
 following condition</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-v1-v2-sum">
-<span class="eqno">(219)<a class="headerlink" href="#equation-eq-adc2-v1-v2-sum" title="Permalink to this equation">¶</a></span>\[V_1^{\dagger} V_1^{ } + V_2^{\dagger} V_2^{ } = 1\]</div>
+<span class="eqno">(210)<a class="headerlink" href="#equation-eq-adc2-v1-v2-sum" title="Permalink to this equation">¶</a></span>\[V_1^{\dagger} V_1^{ } + V_2^{\dagger} V_2^{ } = 1\]</div>
 <p>where <span class="math notranslate nohighlight">\(V_2^{\dagger} V_2^{ }\)</span> can be calculated as</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc2-v2-squared">
-<span class="eqno">(220)<a class="headerlink" href="#equation-eq-adc2-v2-squared" title="Permalink to this equation">¶</a></span>\[V_2^{\dagger} V_2^{ } = V_1^{\dagger} M_{12} (\omega - M_{22})^{-2} M_{21} V_1^{ }\]</div>
+<span class="eqno">(211)<a class="headerlink" href="#equation-eq-adc2-v2-squared" title="Permalink to this equation">¶</a></span>\[V_2^{\dagger} V_2^{ } = V_1^{\dagger} M_{12} (\omega - M_{22})^{-2} M_{21} V_1^{ }\]</div>
 </div>
 
     <script type="text/x-thebe-config">

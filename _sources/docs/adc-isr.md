@@ -1,8 +1,8 @@
 (isr:label)=
-# Intermediate state representation
+## Intermediate state representation
 
 
-## ISR approach
+### ISR approach
 
 As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a<b, i<j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
 ```{figure} /img/adc/isr_adc_matrix.svg
@@ -50,7 +50,7 @@ $l$ is the order used for the matrix elements of the shifted Hamiltonian, and th
 In order to get all contributions of a given order $n$, one needs to sum $k,l,m$ over all terms for which $k+l+m = n$.
 
 
-## Explicit expressions for ADC(2)
+### Explicit expressions for ADC(2)
 
 Using Eq. {eq}`eq:Mseries` in combination with specific classes of excitation operators and truncating the series at the desired order, various levels of ADC theory are obtained. One aspect to note is that the excitation classes needed to construct a specific ADC level are directly connected to the order of perturbation theory. This can be easily seen from {numref}`Fig. {number} <fig-propagator>`, where the zeroth and first order terms are related to single excitations (only one particle-hole pair is involved), while second order terms involve double excitations (two particle-hole pairs are involved). To illustrate this further, we list the explicit expressions for the ADC matrix elements up to second order {cite}`Wenzel2016, Wormit2009`:
 %%% %(\textcolor{red}{not completely convinced if to include -- all of -- these})
@@ -85,12 +85,12 @@ where $\delta_{pq}$ is the Kronecker delta.
 The structure of the ADC(2) matrix is depicted in {numref}`Fig. {number} <fig-isr>`c. In principle, the ADC(2) matrix contains all the possible single and double excitations which can be constructed for the system of interest (using a particular basis set). However, except for very small molecules, to include all these excitations would make the ADC matrix intractably large and impossible to diagonalize. In practice, therefore, only the lowest $n$ excited states are ever constructed, where $n$ is the number of states requested by the user. This means that the space of valence excitations is easily accessible, but makes the space of core excitations impossible to reach, except for molecules with very few electrons. An approach to overcome this problem will be discussed in more detail in the next section.
 
 
-## Compactness and separability of the ADC/ISR 
+### Compactness and separability of the ADC/ISR 
 
 
-## Comparison to related methods
+### Comparison to related methods
 
-## Excited-state properties
+### Excited-state properties
 
 A distinct advantage of the ISR over the classical propagator approach is that it gives direct access to excited-state wave functions
 by expanding it in the intermediate-state basis as

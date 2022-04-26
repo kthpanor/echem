@@ -45,17 +45,16 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -784,18 +783,8 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#photochemistry">
-     Photochemistry?
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#dispersion-coefficients">
-     Dispersion coefficients?
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#static-perturbation">
-     Static perturbation?
+     Dispersion coefficients (?)
     </a>
    </li>
   </ul>
@@ -890,18 +879,8 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#photochemistry">
-     Photochemistry?
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#dispersion-coefficients">
-     Dispersion coefficients?
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#static-perturbation">
-     Static perturbation?
+     Dispersion coefficients (?)
     </a>
    </li>
   </ul>
@@ -931,14 +910,6 @@
 <li><p>No need to repeat numerical examples from TDHF - focus on what is new</p></li>
 </ul>
 </div>
-<p>To check:</p>
-<ul class="simple">
-<li><p>Thesis, books</p></li>
-<li><p>Devil’s triangle paper</p></li>
-<li><p>CAM paper</p></li>
-<li><p>AD+JS papers + response</p></li>
-<li><p>Imamura SIE paper</p></li>
-</ul>
 <div class="section" id="theory">
 <h2>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="runge-gross-theorem">
@@ -957,12 +928,13 @@
 i \frac{\delta}{\delta t} \phi_i (r,t) = \left( -\frac{1}{2} \nabla^2 + V_{\textrm{eff}} (r,t) \right) \phi_i (r,t)
 \]</div>
 <p>Requires knowledge of exact time-dependent xc-functional. Even less known than the ground-state correspondance.</p>
+<p>Exists a one-to-one mapping between the time-dependent (external) potential and the density of the system.</p>
 </div>
 <div class="section" id="adiabatic-approximation">
 <h3>Adiabatic approximation<a class="headerlink" href="#adiabatic-approximation" title="Permalink to this headline">¶</a></h3>
 <p>Approximate the xc-functional as one which do not change over time, such that standard ones can be used. Reasonable approximations for systems changing slowly in time.</p>
 <p>Time-dependence of enerrgy only through time-dependet density.</p>
-<p>Search for non-adiabatic functional may be somewhat futile, as technically requires the solution of the time-dependent SE (AD+JS).</p>
+<p>Search for non-adiabatic functional may be somewhat futile, as technically requires the solution of the time-dependent SE, as <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.75.022513">has</a> <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.78.056501">been</a> <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.78.056502">discussed</a>.</p>
 </div>
 <div class="section" id="casida-equation">
 <h3>Casida equation<a class="headerlink" href="#casida-equation" title="Permalink to this headline">¶</a></h3>
@@ -970,9 +942,37 @@ i \frac{\delta}{\delta t} \phi_i (r,t) = \left( -\frac{1}{2} \nabla^2 + V_{\text
 <p class="admonition-title">Note</p>
 <p>Changes when compared to TDHF, and note aspects of incorrect long-range behaviour.</p>
 </div>
+<ul class="simple">
+<li><p>The Hessian matrix is Hermitian and has an internal structure in terms of the matrix blocks <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span></p></li>
+<li><p>The diagonal elements correspond to differences in energy between the single-excited determinants <span class="math notranslate nohighlight">\(|0_i^a\rangle\)</span> and the reference state <span class="math notranslate nohighlight">\(|0\rangle\)</span></p></li>
+<li><p>The <span class="math notranslate nohighlight">\(A\)</span>-block corresponds to the CIS approximation</p></li>
+</ul>
+<p>In the Hartree–Fock approximation, the Hessian can be expressed as the differences in orbital energies corrected by an anti-symmetrized two-electron integral</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+E^{[2]} = 
+\begin{pmatrix}
+    \rule[-10pt]{0pt}{30pt}
+    F_{st} \delta_{ij} \!-\! F_{ji}\delta_{ab} \!-\! \langle aj || bi
+    \rangle 
+    &amp; 
+    -\langle ab||ij \rangle 
+    \\
+    \rule[-10pt]{0pt}{30pt}
+    -\langle ij||ab \rangle 
+    &amp; 
+    F_{ts} \delta_{ij}\! -\! F_{ij} \delta_{ab} 
+    \! - \! \langle ai || bj \rangle 
+    \\
+\end{pmatrix}
+\end{split}\]</div>
+<ul class="simple">
+<li><p>The anti-symmetrized ERI gives the correct asymptotic behavior for charge-transfer excitations</p></li>
+<li><p>At the level of DFT, the exchange–correlation functional is introduced and the asymptotic behavior becomes incorrect</p></li>
+</ul>
 <p>The electronic Hessian takes the form:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-14af97f5-2cf4-4dd9-9983-253d3cbea6f3">
-<span class="eqno">(194)<a class="headerlink" href="#equation-14af97f5-2cf4-4dd9-9983-253d3cbea6f3" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-53fe1385-8e50-4614-aa0c-642bf4b0db83">
+<span class="eqno">(185)<a class="headerlink" href="#equation-53fe1385-8e50-4614-aa0c-642bf4b0db83" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 E^{[2]} &amp; = &amp;
 	\begin{pmatrix}
     \rule[-5pt]{0pt}{20pt}
@@ -993,8 +993,8 @@ B_{ia,jb}  = (ia|bj) + c_{\textrm{HF}}(ib|aj) + (1-c_{\textrm{HF}})(ia|f_{\textr
 <p>In the limits we retrieve the TDHF blocks (<span class="math notranslate nohighlight">\(c_{\textrm{HF}} = 1\)</span>) and pure TDDFT (<span class="math notranslate nohighlight">\(c_{\textrm{HF}} = 0\)</span>).</p>
 <p>Compare what we have derived to the version used in the Casida equation.</p>
 <p>Non-Hermitian eigenvalue equation, with excitation energies and transition amplitudes as eigenvalues and eigenvectors:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ce0b64d9-89f6-4649-afa6-3f1073597208">
-<span class="eqno">(195)<a class="headerlink" href="#equation-ce0b64d9-89f6-4649-afa6-3f1073597208" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-6cb45aa9-424c-468f-b0af-32f5c8115a9c">
+<span class="eqno">(186)<a class="headerlink" href="#equation-6cb45aa9-424c-468f-b0af-32f5c8115a9c" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 \begin{pmatrix}
 \rule[-5pt]{0pt}{20pt}
 \rule{5pt}{0pt}
@@ -1047,12 +1047,14 @@ Y \\
 </div>
 <div class="section" id="self-interaction">
 <h3>Self-interaction<a class="headerlink" href="#self-interaction" title="Permalink to this headline">¶</a></h3>
+<p>Berylium atom</p>
 <ul class="simple">
 <li><p>1/r [electron-nuclei]</p></li>
 <li><p>Refer to DFT SIE example</p></li>
 <li><p>Consider impact on excitations, and how this changes to the previous discussion</p></li>
-<li><p>Imamura paper?</p></li>
 </ul>
+<p>Particularly influential for <a class="reference external" href="https://onlinelibrary.wiley.com/doi/full/10.1002/qua.21025">core transitions</a>.</p>
+<p>From <a class="reference external" href="https://aip.scitation.org/doi/10.1063/5.0035446">here</a>: At the foundation of this triangle lie the incorrect one-particle spectrum, the lack of integer discontinuity, and the self-interaction error. At the top level, these failures manifest themselves in incorrect charge transfer and Rydberg excitation energies, along with poor activation barriers. The latter includes an incorrect one-particle excitation energy spectrum, the lack of an integer discontinuity when adding and removing an electron, and the pervasive self-interaction error. These affect the accuracy of charge-transfer excited states, Rydberg excited states, and activation barriers, which are among the best-known deficiencies of KS applications.</p>
 </div>
 <div class="section" id="transitions-to-rydberg-states">
 <h3>Transitions to Rydberg states<a class="headerlink" href="#transitions-to-rydberg-states" title="Permalink to this headline">¶</a></h3>
@@ -1066,6 +1068,7 @@ Y \\
 <li><p>Point to exercises</p></li>
 <li><p>Calculate <span class="math notranslate nohighlight">\(\Lambda\)</span>?</p></li>
 </ul>
+<p>Functionals have been tailored to yield better results by adding long-range HF exchange, such as with the <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0009261404008620">CAM-B3LYP</a> functional. This functional features 19% HF in the short and 65% in the long limit. Constructed with good results for polarizabilities of long chains, excitations to Rydberg states, and charge-transfer states in mind.</p>
 </div>
 <div class="section" id="triplet-instabilities">
 <h3>Triplet instabilities<a class="headerlink" href="#triplet-instabilities" title="Permalink to this headline">¶</a></h3>
@@ -1079,23 +1082,14 @@ Y \\
 <ul class="simple">
 <li><p>CPP versus states</p></li>
 <li><p>Water B3LYP, 6-31G</p></li>
-<li><p>Make sure scale is OK</p></li>
-</ul>
-</div>
-<div class="section" id="photochemistry">
-<h3>Photochemistry?<a class="headerlink" href="#photochemistry" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Decay…</p></li>
+<li><p>Check scale</p></li>
 </ul>
 </div>
 <div class="section" id="dispersion-coefficients">
-<h3>Dispersion coefficients?<a class="headerlink" href="#dispersion-coefficients" title="Permalink to this headline">¶</a></h3>
+<h3>Dispersion coefficients (?)<a class="headerlink" href="#dispersion-coefficients" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C_6\)</span></p></li>
 </ul>
-</div>
-<div class="section" id="static-perturbation">
-<h3>Static perturbation?<a class="headerlink" href="#static-perturbation" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="recommendations">

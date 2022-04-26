@@ -45,17 +45,16 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -656,9 +655,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/md_setup.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/md_setup.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
                 onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -691,6 +690,23 @@
             class="fas fa-expand"></i></button></a>
 
             <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/md_setup.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
 
         </div>
 
@@ -869,8 +885,7 @@
             
               <div>
                 
-  <!-- #region -->
-<div class="tex2jax_ignore mathjax_ignore section" id="ensembles-and-time-integration">
+  <div class="tex2jax_ignore mathjax_ignore section" id="ensembles-and-time-integration">
 <h1>Ensembles and time integration<a class="headerlink" href="#ensembles-and-time-integration" title="Permalink to this headline">¶</a></h1>
 <p>Workflow of a simulation.</p>
 <ul class="simple">
@@ -889,17 +904,17 @@
 <div class="section" id="thermostat">
 <h4>Thermostat<a class="headerlink" href="#thermostat" title="Permalink to this headline">¶</a></h4>
 <p>The most basic thermostat is a simple rescaling of the system velocities by a factor</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \lambda = \sqrt{\frac{T_0}{T}},
-\end{equation*}\]</div>
+\]</div>
 <p>where <span class="math notranslate nohighlight">\(T\)</span> is the current temperature and <span class="math notranslate nohighlight">\(T_0\)</span> is the desired one. While this fulfils the criterion that the temperature should be constant, since the total kinetic energy is kept constant between steps, this also means that the second criterion is not fulfilled. An improved version of this method comes in the form of the Berendsen thermostat, [cite berendsen1984] which also includes a coupling parameter, <span class="math notranslate nohighlight">\(\tau\)</span>, determining the rate of heat transfer between the heat bath and the system. The rescaling factor then becomes</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \lambda = \sqrt{1 + \frac{\Delta t}{\tau} \left( \frac{T_0}{T} - 1 \right)}.
-\end{equation*}\]</div>
-<p>The coupling parameter needs to be chosen with care, as a <span class="math notranslate nohighlight">\(\tau\)</span> that is equal to the time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, just reproduces the velocity rescaling thermostat and a too high <span class="math notranslate nohighlight">\(\tau\)</span> makes the coupling too weak, with the limit <span class="math notranslate nohighlight">\(\tau \rightarrow \infty\)</span> instead describing the microcanonical ensemble. So while the Berendsen thermostat does not describe a true canonical ensemble, there are coupling parameters between <span class="math notranslate nohighlight">\(\Delta t\)</span> and infinity that give a suitably close approximation for larger systems. As the Berendsen thermostat is quite quick to converge to the correct temperature, it is often used for an initial equilibration, after which a true canonical thermostat is used.
-Examples of such thermostats are found in the Andersen [cite andersen1980] and Nosé–Hoover [cite nose1984a,nose1984b,hoover1985] thermostats. The Andersen thermostat takes a stochastic approach, replacing the velocities of a selection of atoms at each step by new velocities taken from the Maxwell–Boltzmann distribution, simulating random collisions. The frequency at which velocities are replaced becomes the coupling parameter of the thermostat, determining the speed at which it converges to the correct temperature. The Nosé–Hoover thermostat, on the other hand, introduces an artificial particle, with a mass and velocity, representing the heat bath. The extended system, containing both the real and artificial systems, is described by a microcanonical ensemble, but due to the coupling between the two, the real system becomes canonical.</p>
+\]</div>
+<p>The coupling parameter needs to be chosen with care, as a <span class="math notranslate nohighlight">\(\tau\)</span> that is equal to the time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, just reproduces the velocity rescaling thermostat and a too high <span class="math notranslate nohighlight">\(\tau\)</span> makes the coupling too weak, with the limit <span class="math notranslate nohighlight">\(\tau \rightarrow \infty\)</span> instead describing the microcanonical ensemble. So while the Berendsen thermostat does not describe a true canonical ensemble, there are coupling parameters between <span class="math notranslate nohighlight">\(\Delta t\)</span> and infinity that give a suitably close approximation for larger systems. As the Berendsen thermostat is quite quick to converge to the correct temperature, it is often used for an initial equilibration, after which a true canonical thermostat is used.</p>
+<p>Examples of such thermostats are found in the Andersen [cite andersen1980] and Nosé–Hoover [cite nose1984a,nose1984b,hoover1985] thermostats. The Andersen thermostat takes a stochastic approach, replacing the velocities of a selection of atoms at each step by new velocities taken from the Maxwell–Boltzmann distribution, simulating random collisions. The frequency at which velocities are replaced becomes the coupling parameter of the thermostat, determining the speed at which it converges to the correct temperature. The Nosé–Hoover thermostat, on the other hand, introduces an artificial particle, with a mass and velocity, representing the heat bath. The extended system, containing both the real and artificial systems, is described by a microcanonical ensemble, but due to the coupling between the two, the real system becomes canonical.</p>
 </div>
 </div>
 <div class="section" id="isothermal-isobaric-ensemble-textit-npt">
@@ -917,30 +932,30 @@ Examples of such thermostats are found in the Andersen [cite andersen1980] and N
 <div class="section" id="euler-integration">
 <h3>Euler integration<a class="headerlink" href="#euler-integration" title="Permalink to this headline">¶</a></h3>
 <p>The first thing that is needed is the acceleration of each nucleus, obtained from the derivative of the potential energy function with respect to the nuclear coordinates. For the force field energy, a simple analytical function of <span class="math notranslate nohighlight">\(3N\)</span> coordinates, this is easily done, but for the QM energy things are more complicated, possibly requiring numerical differentiation. Based on these derivatives, the acceleration for atom <span class="math notranslate nohighlight">\(j\)</span> can easily be found using Newton’s second law:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \label{eq:acceleration}
 \mathbf{a}_j = \frac{\mathbf{F}_j}{m_j} = - \frac{1}{m_j} \mbox{\boldmath$\nabla$}_j E,
-\end{equation*}\]</div>
+\]</div>
 <p>where <span class="math notranslate nohighlight">\(m_j\)</span> is the mass of atom <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(\mathbf{F}_j\)</span> are the forces acting on it.
 If the atomic coordinates at a given time <span class="math notranslate nohighlight">\(t = t_i\)</span> are <span class="math notranslate nohighlight">\(\mathbf{R}(t_i)\)</span>, the positions after a small time step, <span class="math notranslate nohighlight">\(\Delta t\)</span>, can be expressed as a Taylor expansion around <span class="math notranslate nohighlight">\(t = t_i\)</span>:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}(t_i + \Delta t)
 = \mathbf{R}(t_i) + \frac{\partial\mathbf{R}}{\partial t} \Delta t + \frac{1}{2} \frac{\partial^2\mathbf{R}}{\partial t^2} \Delta t^2 + \frac{1}{6} \frac{\partial^3\mathbf{R}}{\partial t^3} \Delta t^3 + \cdots,
-\end{equation*}\]</div>
+\]</div>
 <p>where each partial derivative is evaluated at <span class="math notranslate nohighlight">\(t = t_i\)</span>. Given a fixed set of time steps, each of length <span class="math notranslate nohighlight">\(\Delta t\)</span>, a series of positions are obtained:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}_{i+1}
 = \mathbf{R}_i + \frac{\partial\mathbf{R}_i}{\partial t} \Delta t + \frac{1}{2} \frac{\partial^2\mathbf{R}_i}{\partial t^2} \Delta t^2 + \frac{1}{6} \frac{\partial ^3\mathbf{R}_i}{\partial t^3} \Delta t^3 + \cdots 
 = \mathbf{R}_i + \mathbf{v}_i \Delta t + \frac{1}{2} \mathbf{a}_i \Delta t^2 + \frac{1}{6} \mathbf{j}_i \Delta t^3 + \mathcal{O}(\Delta t^4),
-\end{equation*}\]</div>
+\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf{v}_i\)</span>, <span class="math notranslate nohighlight">\(\mathbf{a}_i\)</span> and <span class="math notranslate nohighlight">\(\mathbf{j}_i\)</span> are the velocities, acceleration and jerk of time step <span class="math notranslate nohighlight">\(i\)</span>, respectively. Truncating this to the first order gives</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}_{i+1} = \mathbf{R}_i + \mathbf{v}_i \Delta t + \mathcal{O}(\Delta t^2),
-\end{equation*}\]</div>
+\]</div>
 <p>which can be differentiated with respect to time to obtain the velocities for step <span class="math notranslate nohighlight">\(i+1\)</span>:</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
@@ -957,17 +972,15 @@ Simulation of a harmonic oscillator using Euler integration. The integration tim
 <div class="section" id="verlet-integration">
 <h3>Verlet integration<a class="headerlink" href="#verlet-integration" title="Permalink to this headline">¶</a></h3>
 <p>A better choice of integrator can be found in the Verlet algorithm.[cite verlet1967] In this algorithm, the coordinates of the previous time step, <span class="math notranslate nohighlight">\(\mathbf{R}_{i-1}\)</span>, are required, which can be obtained by replacing <span class="math notranslate nohighlight">\(\Delta t\)</span> with <span class="math notranslate nohighlight">\(-\Delta t\)</span> in Equation \eqref{eq:md1}:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
-\label{eq:md3}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}_{i-1} = \mathbf{R}_i - \mathbf{v}_i \Delta t + \frac{1}{2} \mathbf{a}_i \Delta t^2 - \frac{1}{6} \mathbf{j}_i \Delta t^3 + \mathcal{O}(\Delta t^4).
-\end{equation*}\]</div>
-<p>If Equations \eqref{eq:md1} and \eqref{eq:md3} are added together, the velocity and jerk terms cancel and the expression for <span class="math notranslate nohighlight">\(\mathbf{R}_{i+1}\)</span> can be written as</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
-\label{eq:md4}
+\]</div>
+<p>If MD equations are added together, the velocity and jerk terms cancel and the expression for <span class="math notranslate nohighlight">\(\mathbf{R}_{i+1}\)</span> can be written as</p>
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}_{i+1} = (2\mathbf{R}_i - \mathbf{R}_{i-1}) + \mathbf{a}_i \Delta t^2 + \mathcal{O}(\Delta t^4).
-\end{equation*}\]</div>
+\]</div>
 <p>Neglecting higher order terms and using the acceleration from Equation \eqref{eq:acceleration}, this expression makes up the Verlet algorithm, with a local truncation error in the order of <span class="math notranslate nohighlight">\(\Delta t^4\)</span>. The global error, however, is of second order,[cite jensen2006] due to the presence of two previous coordinates in the expression. Figure \ref{fig:verlet} shows the improvement over the Euler method.</p>
 <div class="figure align-default" id="id2">
 <img alt="../_images/MD_verlet_even.svg" src="../_images/MD_verlet_even.svg" /><p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">width: 300px
@@ -978,10 +991,10 @@ Simulation of a harmonic oscillator using Verlet integration. The integration ti
 <div class="section" id="velocity-verlet">
 <h3>Velocity Verlet<a class="headerlink" href="#velocity-verlet" title="Permalink to this headline">¶</a></h3>
 <p>In any simulation that deals with temperature, the kinetic energy of the system becomes a factor, most commonly dealt with through the atomic velocities. As the Verlet algorithm neither calculates nor uses these velocities, measurements and alterations of the temperature become difficult. For this reason, the velocity Verlet algorithm[cite swope1982] was created. This uses the Taylor expansion of Equation \eqref{eq:md1} up to the second order for the coordinates:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{R}_{i+1} = \mathbf{R}_i + \mathbf{v}_i \Delta t + \frac{1}{2} \mathbf{a}_i \Delta t^2 + \mathcal{O}(\Delta t^3).
-\end{equation*}\]</div>
+\]</div>
 <p>Differentiating this expression with respect to time gives the expression for the velocity of the next step:</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
@@ -995,25 +1008,23 @@ Simulation of a harmonic oscillator using Verlet integration. The integration ti
 \mathbf{a}_{i+1} &amp;= \mathbf{a}_i + \mathbf{j} \Delta t + \mathcal{O}(\Delta t^2).
 \end{align*}\]</div>
 <p>This can be rearranged into</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{j}_i \Delta t = \mathbf{a}_{i+1} - \mathbf{a}_i + \mathcal{O}(\Delta t^2),
-\end{equation*}\]</div>
+\]</div>
 <p>which can be inserted in Equation \eqref{eq:md6}, resulting in</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
-\label{eq:md7}
+<div class="math notranslate nohighlight">
+\[
 \mathbf{v}_{i+1} = \mathbf{v}_i + \frac{1}{2} (\mathbf{a}_i + \mathbf{a}_{i+1})\Delta t + \mathcal{O}(\Delta t^3).
-\end{equation*}\]</div>
-<p>Equations \eqref{eq:acceleration}, \eqref{eq:md5} and \eqref{eq:md7} make up the velocity Verlet algorithm. First, Equation \eqref{eq:md5} is used to calculated the coordinates of the next step, which are used in Equation \eqref{eq:acceleration} to calculate the acceleration of that step. Finally, the velocities are calculated using Equation \eqref{eq:md7}, completing the step.</p>
-<p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in Figure \ref{fig:vverlet}, where the total error of the velocity Verlet algorithm is comparable to that of the Verlet algorithm in Figure \ref{fig:verlet}.</p>
+\]</div>
+<p>This make up the velocity Verlet algorithm. First, we can calculate the coordinates of the next step, which are used to calculate the acceleration of that step. Finally, the velocities are calculated using Equation, completing the step.</p>
+<p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in the velocity Verlet figure, where the total error of the velocity Verlet algorithm is comparable to that of the Verlet algorithm in the Verlet figure.</p>
 <div class="figure align-default" id="id3">
 <img alt="../_images/MD_vverlet_even.svg" src="../_images/MD_vverlet_even.svg" /><p class="caption"><span class="caption-number">Fig. 27 </span><span class="caption-text">width: 300px
 name: fig_MD_vverlet_even
 Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<hr class="docutils" />
-<!-- #endregion --></div>
+</div>
 </div>
 </div>
 

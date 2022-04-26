@@ -1,5 +1,6 @@
+(sec:gradients)=
 # Gradients
-To add: general aspects about gradients and Hessians, numerical vs. analytical, related properties.
+%To add: general aspects about gradients and Hessians, numerical vs. analytical, related properties.
 
 In order to perform a geometry optimization and find a minimum energy structure or a transition state,
 one needs to calculate the derivative of the energy $E$ with respect to the **nuclear coordinates**.
@@ -16,6 +17,7 @@ or **analytically**. The former is usually simple to implement, but suffers from
 in numerical accuracy and computational efficiency.
 For the latter, considerable programming effort is requiered, but it has the advantages of greater speed, precision, and convenience.
 
+(sec:numerical-gradients)=
 ## Numerical Gradients
 
 The simplest method to calculate the derivative of the energy $E(\chi)$ with respect to some parameter $\chi$ is to use finite difference approximations.
@@ -51,8 +53,10 @@ where the error is approximately proportional to $\chi_0^4$ and it hence gives a
 However, since four individual energy calculations need to be performed for each perturbation,
 this expression is usually only employed for debugging of the analytical derivative expressions.
 
+
+(sec:analytical-gradients)=
 ## Analytical Gradients
-To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.
+%To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.
 
 To determine the energy gradient, we first need to identify the non-variational components of the energy functional. In the case of self-consistent field (SCF)
 methods, i.e., HF and Kohn--Sham DFT, these are the MO coefficients ($\mathbf{C}$), which exhibit an implicit dependence on the nuclear coordinates when atom-centred basis functions such as Gaussian or Slater-type orbitals are used. Considering this implicit dependence, the total energy derivative with respect to a particular nuclear coordinate $\xi$ is obtained via the chain rule {cite}`Rehn2015,Levchenko2005`:
@@ -254,7 +258,7 @@ Finally, the derivative of the total energy is obtained by adding the trivial co
 $\frac{\mathrm{d} V_{nn}}{\mathrm{d} \xi}$.
 
 #### DFT
-To be added...
+%To be added...
 
 The DFT gradient can be derived in a similar way, replacing the exact exchange integrals with the corresponding exchange--correlation functional contributions.
 The exchange-correlation functional contribution to the DFT energy and its molecular gradient is evaluated via numerical integration.
@@ -262,6 +266,7 @@ Thus, the molecular gradient includes grid point weight contributions, which ari
 Neglecting these contributions to the molecular gradient leads to the breakdown of rotation--translation invariance of the molecular gradient.
 Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can safely be neglected.
 
+(sec:mp2-gradients)=
 #### MP2
 In the case of Møller--Plesset (MP) perturbation theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient.
 These are the so-called $t$-amplitudes $\mathbf{T} = \{ t_{ijab} \}$, so the corresponding term which has to be determined is called amplitude response.
@@ -518,6 +523,7 @@ Using the density matrices and Lagrange multipliers, the analytical CIS or TDHF/
 %%%%TO ADD: note about dipole moment, relaxed (lambda) and unrelaxed (gamma) one particle density matrices.
 %%%
 
+(sec:first-order-prop)=
 ### First-order properties
 
 Not only nuclear gradients, but many other time-independent ("static") molecular properties can be calculated as derivatives of the energy {cite}`jensen2006`.

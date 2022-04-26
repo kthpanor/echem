@@ -45,17 +45,16 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -834,8 +833,7 @@
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="gradients">
-<h1>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h1>
-<p>To add: general aspects about gradients and Hessians, numerical vs. analytical, related properties.</p>
+<span id="sec-gradients"></span><h1>Gradients<a class="headerlink" href="#gradients" title="Permalink to this headline">¶</a></h1>
 <p>In order to perform a geometry optimization and find a minimum energy structure or a transition state,
 one needs to calculate the derivative of the energy <span class="math notranslate nohighlight">\(E\)</span> with respect to the <strong>nuclear coordinates</strong>.
 This is usually referred to as the <em>molecular gradient</em> and it needs to vanish at any stationary geometry.
@@ -844,24 +842,24 @@ the stationary structure, i.e., to confirm whether a true minimum or a transitio
 But not only molecular gradients and Hessians can be calculated as derivatives of the energy,
 also other properties such as permanent and induced (dipole) moments, polarizabilities, and magnetizabilites
 when taking the derivative with respect to external <strong>electromagnetic field</strong>, or NMR and EPR parameters
-when additionally <strong>nuclear magnetic moments</strong> are involved <span id="id1">[<a class="reference internal" href="refs.html#id109">Jen06</a>]</span>.</p>
+when additionally <strong>nuclear magnetic moments</strong> are involved <span id="id1">[<a class="reference internal" href="refs.html#id109" title="Frank Jensen. Introduction to computational chemistry. John Wiley &amp; Sons Ltd., second edition, 2006.">Jen06</a>]</span>.</p>
 <p>The energy derivatives themselves can either be calculated <strong>numerically</strong> by using finite differences
 or <strong>analytically</strong>. The former is usually simple to implement, but suffers from difficulties
 in numerical accuracy and computational efficiency.
 For the latter, considerable programming effort is requiered, but it has the advantages of greater speed, precision, and convenience.</p>
 <div class="section" id="numerical-gradients">
-<h2>Numerical Gradients<a class="headerlink" href="#numerical-gradients" title="Permalink to this headline">¶</a></h2>
+<span id="sec-numerical-gradients"></span><h2>Numerical Gradients<a class="headerlink" href="#numerical-gradients" title="Permalink to this headline">¶</a></h2>
 <p>The simplest method to calculate the derivative of the energy <span class="math notranslate nohighlight">\(E(\chi)\)</span> with respect to some parameter <span class="math notranslate nohighlight">\(\chi\)</span> is to use finite difference approximations.
 Choosing a small change <span class="math notranslate nohighlight">\(\chi_0\)</span> in <span class="math notranslate nohighlight">\(\chi\)</span>, a two-point estimation is given by</p>
 <div class="math notranslate nohighlight" id="equation-eq-divided-difference">
-<span class="eqno">(78)<a class="headerlink" href="#equation-eq-divided-difference" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, ,\]</div>
+<span class="eqno">(69)<a class="headerlink" href="#equation-eq-divided-difference" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, ,\]</div>
 <p>which is known as a first-order <strong>divided difference</strong> and its error to the true derivative is approximately proportional to <span class="math notranslate nohighlight">\(\chi_0\)</span>.
 The true derivative of <span class="math notranslate nohighlight">\(E\)</span> at <span class="math notranslate nohighlight">\(\chi\)</span> is given by the limit</p>
 <div class="math notranslate nohighlight" id="equation-eq-true-derivative">
-<span class="eqno">(79)<a class="headerlink" href="#equation-eq-true-derivative" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} = \lim_{\chi_0 \to 0} \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, .\]</div>
+<span class="eqno">(70)<a class="headerlink" href="#equation-eq-true-derivative" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} = \lim_{\chi_0 \to 0} \frac{E(\chi + \chi_0) - E(\chi)}{\chi_0} \, .\]</div>
 <p>Another two-point formula is the <strong>symmetric difference quotient</strong> given by</p>
 <div class="math notranslate nohighlight" id="equation-eq-symmetric-difference-quotient">
-<span class="eqno">(80)<a class="headerlink" href="#equation-eq-symmetric-difference-quotient" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi - \chi_0)}{2\chi_0} \, ,\]</div>
+<span class="eqno">(71)<a class="headerlink" href="#equation-eq-symmetric-difference-quotient" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi + \chi_0) - E(\chi - \chi_0)}{2\chi_0} \, ,\]</div>
 <p>where it can be shown that the first-order error cancels, so it is approximately proportional to <span class="math notranslate nohighlight">\(\chi_0^2\)</span>,
 which means that for small <span class="math notranslate nohighlight">\(\chi_0\)</span> this is a more accurate approximation to the true derivative
 and it is commonly used in numerical derivative codes.
@@ -869,26 +867,25 @@ However, in both cases two calculations of the energy <span class="math notransl
 the derivative with respect to one variable <span class="math notranslate nohighlight">\(\chi\)</span>.</p>
 <p>There are also higher-order methods for approximating the first derivative, such as the “five-point method” given by</p>
 <div class="math notranslate nohighlight" id="equation-eq-five-point-method">
-<span class="eqno">(81)<a class="headerlink" href="#equation-eq-five-point-method" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi - 2 \chi_0) - 8 E(\chi - \chi_0) + 8 E(\chi + \chi_0) - E(\chi + 2 \chi_0)}{12\chi_0} \, ,\]</div>
+<span class="eqno">(72)<a class="headerlink" href="#equation-eq-five-point-method" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d} E}{\mathrm{d} \chi} \approx \frac{E(\chi - 2 \chi_0) - 8 E(\chi - \chi_0) + 8 E(\chi + \chi_0) - E(\chi + 2 \chi_0)}{12\chi_0} \, ,\]</div>
 <p>where the error is approximately proportional to <span class="math notranslate nohighlight">\(\chi_0^4\)</span> and it hence gives a very accurate approximation to the gradient.
 However, since four individual energy calculations need to be performed for each perturbation,
 this expression is usually only employed for debugging of the analytical derivative expressions.</p>
 </div>
 <div class="section" id="analytical-gradients">
-<h2>Analytical Gradients<a class="headerlink" href="#analytical-gradients" title="Permalink to this headline">¶</a></h2>
-<p>To add: Introduction, approaches to derive analytical gradients; Lagrangian approach.</p>
+<span id="sec-analytical-gradients"></span><h2>Analytical Gradients<a class="headerlink" href="#analytical-gradients" title="Permalink to this headline">¶</a></h2>
 <p>To determine the energy gradient, we first need to identify the non-variational components of the energy functional. In the case of self-consistent field (SCF)
-methods, i.e., HF and Kohn–Sham DFT, these are the MO coefficients (<span class="math notranslate nohighlight">\(\mathbf{C}\)</span>), which exhibit an implicit dependence on the nuclear coordinates when atom-centred basis functions such as Gaussian or Slater-type orbitals are used. Considering this implicit dependence, the total energy derivative with respect to a particular nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> is obtained via the chain rule <span id="id2">[<a class="reference internal" href="refs.html#id83">LWK05</a>, <a class="reference internal" href="refs.html#id79">Reh15</a>]</span>:</p>
+methods, i.e., HF and Kohn–Sham DFT, these are the MO coefficients (<span class="math notranslate nohighlight">\(\mathbf{C}\)</span>), which exhibit an implicit dependence on the nuclear coordinates when atom-centred basis functions such as Gaussian or Slater-type orbitals are used. Considering this implicit dependence, the total energy derivative with respect to a particular nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> is obtained via the chain rule <span id="id2">[<a class="reference internal" href="refs.html#id83" title="S. V. Levchenko, T. Wang, and A. I. Krylov. Analytic gradients for the spin-conserving and spin-flipping equation-of-motion coupled-cluster models with single and double substitutions. J. Chem. Phys., 122(22):224106, 2005.">LWK05</a>, <a class="reference internal" href="refs.html#id79" title="D. R. Rehn. Development of quantum chemical methods for excited-state and response properties. PhD thesis, Heidelberg University, 2015.">Reh15</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-energy-functional-general">
-<span class="eqno">(82)<a class="headerlink" href="#equation-eq-energy-functional-general" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi} \, .\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is the molecular orbital matrix which transforms from a set of atomic orbitals <span class="math notranslate nohighlight">\(\{\phi_\mu\}\)</span> to a set of molecular orbitals <span class="math notranslate nohighlight">\(\{\psi_p\}\)</span> via <span class="math notranslate nohighlight">\(\psi_p=\sum_\mu C_{\mu p}\phi_\mu\)</span>. The first term, <span class="math notranslate nohighlight">\(\partial E/\partial\xi\)</span>, is the Hellman–Feynman contribution which describes the explicit dependence of the energy on the nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> through the nuclear-electron and nuclear-nuclear interaction terms of the Hamiltonian <span id="id3">[<a class="reference internal" href="refs.html#id86">HJ88</a>, <a class="reference internal" href="refs.html#id84">Lev05</a>]</span>. The second term stems from the implicit dependence of the energy on <span class="math notranslate nohighlight">\(\xi\)</span> due to the fact that the molecular orbitals are expanded in a finite atomic-centred basis set <span id="id4">[<a class="reference internal" href="refs.html#id86">HJ88</a>]</span></p>
-<p>It may seem at first surprising that the derivative <span class="math notranslate nohighlight">\({\partial E}/{\partial\mathbf{C}}\)</span> has to be computed. If the MO coefficients are obtained variationally for a specified molecular geometry, how is it that this derivative is not zero? The key to this conundrum lies in the phrase “for a specified molecular geometry”. Since the DFT energy and density are constructed using a constrained LCAO parametrization, if we perform a nuclear displacement, the “old” MO coefficients no longer correspond to the minimum energy and must be re-optimized. Thus the partial derivative with respect to the MO coefficients, as well as the derivative of the MO coefficients with respect to <span class="math notranslate nohighlight">\(\xi\)</span> are required. The explicit computation of the latter is complicated, but can be avoided by making use of a new functional, the Lagrangian, for which the partial derivative <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}\)</span> is zero and constrained to the HF/DFT configuration space by construction <span id="id5">[<a class="reference internal" href="refs.html#id87">HJO14</a>, <a class="reference internal" href="refs.html#id83">LWK05</a>]</span>:</p>
+<span class="eqno">(73)<a class="headerlink" href="#equation-eq-energy-functional-general" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi} \, .\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> is the molecular orbital matrix which transforms from a set of atomic orbitals <span class="math notranslate nohighlight">\(\{\phi_\mu\}\)</span> to a set of molecular orbitals <span class="math notranslate nohighlight">\(\{\psi_p\}\)</span> via <span class="math notranslate nohighlight">\(\psi_p=\sum_\mu C_{\mu p}\phi_\mu\)</span>. The first term, <span class="math notranslate nohighlight">\(\partial E/\partial\xi\)</span>, is the Hellman–Feynman contribution which describes the explicit dependence of the energy on the nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> through the nuclear-electron and nuclear-nuclear interaction terms of the Hamiltonian <span id="id3">[<a class="reference internal" href="refs.html#id86" title="Trygve Helgaker and Poul Jørgensen. Analytical calculation of geometrical derivatives in molecular electronic structure theory. Adv. Quantum Chem., 19:183-245, 1988.">HJ88</a>, <a class="reference internal" href="refs.html#id84" title="S. V. Levchenko. Equation-of-motion coupled-cluster model with single and double substitutions: Theory and applications. PhD thesis, University of Southern California, 2005.">Lev05</a>]</span>. The second term stems from the implicit dependence of the energy on <span class="math notranslate nohighlight">\(\xi\)</span> due to the fact that the molecular orbitals are expanded in a finite atomic-centred basis set <span id="id4">[<a class="reference internal" href="refs.html#id86" title="Trygve Helgaker and Poul Jørgensen. Analytical calculation of geometrical derivatives in molecular electronic structure theory. Adv. Quantum Chem., 19:183-245, 1988.">HJ88</a>]</span></p>
+<p>It may seem at first surprising that the derivative <span class="math notranslate nohighlight">\({\partial E}/{\partial\mathbf{C}}\)</span> has to be computed. If the MO coefficients are obtained variationally for a specified molecular geometry, how is it that this derivative is not zero? The key to this conundrum lies in the phrase “for a specified molecular geometry”. Since the DFT energy and density are constructed using a constrained LCAO parametrization, if we perform a nuclear displacement, the “old” MO coefficients no longer correspond to the minimum energy and must be re-optimized. Thus the partial derivative with respect to the MO coefficients, as well as the derivative of the MO coefficients with respect to <span class="math notranslate nohighlight">\(\xi\)</span> are required. The explicit computation of the latter is complicated, but can be avoided by making use of a new functional, the Lagrangian, for which the partial derivative <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}\)</span> is zero and constrained to the HF/DFT configuration space by construction <span id="id5">[<a class="reference internal" href="refs.html#id87" title="Trygve Helgaker, Poul Jørgensen, and Jeppe Olsen. Molecular electronic-structure theory. John Wiley &amp; Sons, 2014.">HJO14</a>, <a class="reference internal" href="refs.html#id83" title="S. V. Levchenko, T. Wang, and A. I. Krylov. Analytic gradients for the spin-conserving and spin-flipping equation-of-motion coupled-cluster models with single and double substitutions. J. Chem. Phys., 122(22):224106, 2005.">LWK05</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-lagrangian-general">
-<span class="eqno">(83)<a class="headerlink" href="#equation-eq-lagrangian-general" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C},\boldsymbol{\Lambda})=E(\mathbf{C})+\boldsymbol{\Lambda}f_c(\mathbf{C}) \, ,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> are a set of undetermined Lagrange multipliers and <span class="math notranslate nohighlight">\(f_c(\mathbf{C})=0\)</span> define the constraints for the non-variational parameters <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. These constraints ensure that we are moving only in the HF/DFT configuration space, rather than in the infinite space of all orthogonally equivalent combinations of orbital bases <span id="id6">[<a class="reference internal" href="refs.html#id86">HJ88</a>]</span>.</p>
-<p>By using the Lagrangian, we have shifted the difficult problem of computing <span class="math notranslate nohighlight">\({\mathrm{d} \mathbf{C}}/{\mathrm{d}\xi}\)</span> to the much simpler problem of determining the unknown Lagrange multipliers which satisfy <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}=0\)</span>. Equations for these are derived by imposing that the explicit form of <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}\)</span> is zero <span id="id7">[<a class="reference internal" href="refs.html#id87">HJO14</a>]</span>. Once the Lagrange multipliers have been obtained, the total derivative of the energy functional with respect to the nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> can be computed as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-7849a568-d105-4e2a-9b97-ddbf25bebbf7">
-<span class="eqno">(84)<a class="headerlink" href="#equation-7849a568-d105-4e2a-9b97-ddbf25bebbf7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<span class="eqno">(74)<a class="headerlink" href="#equation-eq-lagrangian-general" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C},\boldsymbol{\Lambda})=E(\mathbf{C})+\boldsymbol{\Lambda}f_c(\mathbf{C}) \, ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> are a set of undetermined Lagrange multipliers and <span class="math notranslate nohighlight">\(f_c(\mathbf{C})=0\)</span> define the constraints for the non-variational parameters <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. These constraints ensure that we are moving only in the HF/DFT configuration space, rather than in the infinite space of all orthogonally equivalent combinations of orbital bases <span id="id6">[<a class="reference internal" href="refs.html#id86" title="Trygve Helgaker and Poul Jørgensen. Analytical calculation of geometrical derivatives in molecular electronic structure theory. Adv. Quantum Chem., 19:183-245, 1988.">HJ88</a>]</span>.</p>
+<p>By using the Lagrangian, we have shifted the difficult problem of computing <span class="math notranslate nohighlight">\({\mathrm{d} \mathbf{C}}/{\mathrm{d}\xi}\)</span> to the much simpler problem of determining the unknown Lagrange multipliers which satisfy <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}=0\)</span>. Equations for these are derived by imposing that the explicit form of <span class="math notranslate nohighlight">\(\partial L / \partial \mathbf{C}\)</span> is zero <span id="id7">[<a class="reference internal" href="refs.html#id87" title="Trygve Helgaker, Poul Jørgensen, and Jeppe Olsen. Molecular electronic-structure theory. John Wiley &amp; Sons, 2014.">HJO14</a>]</span>. Once the Lagrange multipliers have been obtained, the total derivative of the energy functional with respect to the nuclear coordinate <span class="math notranslate nohighlight">\(\xi\)</span> can be computed as:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-38ceafc2-b672-4f7c-8529-e8a9bc4f1696">
+<span class="eqno">(75)<a class="headerlink" href="#equation-38ceafc2-b672-4f7c-8529-e8a9bc4f1696" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\mathrm{d}L}{\mathrm{d}\xi}=\frac{\partial L}{\partial\xi}\, .
 \end{equation}\]</div>
 <div class="section" id="ground-state">
@@ -898,100 +895,100 @@ methods, i.e., HF and Kohn–Sham DFT, these are the MO coefficients (<span clas
 <p>As an example, we will derive in the following the analytical expression for the Hartree–Fock (HF) energy gradient.
 The electronic ground-state energy described at the HF level of theory can be written as</p>
 <div class="math notranslate nohighlight" id="equation-eq-hf-energy-fct">
-<span class="eqno">(85)<a class="headerlink" href="#equation-eq-hf-energy-fct" title="Permalink to this equation">¶</a></span>\[E_\mathrm{HF}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}\, ,\]</div>
+<span class="eqno">(76)<a class="headerlink" href="#equation-eq-hf-energy-fct" title="Permalink to this equation">¶</a></span>\[E_\mathrm{HF}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}\, ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(f_{ij}\)</span> are Fock matrix elements, <span class="math notranslate nohighlight">\(\braket{ij||ij}\)</span> are anti-symmetrized two electron integrals in Physicist’s notation, and indices <span class="math notranslate nohighlight">\(i,j\)</span> denote occupied molecular orbitals.</p>
 <p>The Lagrangian for this energy functional is constructed as follows:</p>
 <div class="math notranslate nohighlight" id="equation-eq-hf-lagrangian">
-<span class="eqno">(86)<a class="headerlink" href="#equation-eq-hf-lagrangian" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C},\boldsymbol{\Lambda},\boldsymbol{\Omega})=E_\mathrm{HF}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right) \, ,\]</div>
+<span class="eqno">(77)<a class="headerlink" href="#equation-eq-hf-lagrangian" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C},\boldsymbol{\Lambda},\boldsymbol{\Omega})=E_\mathrm{HF}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right) \, ,\]</div>
 <p>with <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}=\{\lambda_{pq}\}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}=\{\omega_{pq}\}\)</span> being the Lagrange multipliers,
 <span class="math notranslate nohighlight">\(\mathbf{F}=\{f_{pq}\}\)</span> the Fock matrix, <span class="math notranslate nohighlight">\(\{\epsilon_p\}\)</span> the HF orbital energies, and <span class="math notranslate nohighlight">\(\mathbf{S}=\{S_{pq}\}\)</span> the overlap matrix.
 Here, the conditions for the Lagrange multipliers <span class="math notranslate nohighlight">\(\{\lambda_{pq}\}\)</span> and <span class="math notranslate nohighlight">\(\{\omega_{pq}\}\)</span> ensure that the Fock matrix is diagonal and, respectively, the overlap matrix is unity for the HF state.</p>
 <p>To calculate the total derivative of the energy with respect to <span class="math notranslate nohighlight">\(\xi\)</span> we must now only calculate the partial derivative of the Lagrangian with respect to the same variable:</p>
 <div class="math notranslate nohighlight" id="equation-eq-partial-l">
-<span class="eqno">(87)<a class="headerlink" href="#equation-eq-partial-l" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial \xi}=\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{p,q}\lambda_{pq}\frac{\partial f_{pq}}{\partial \xi}+\sum_{p,q}\omega_{pq}\frac{\partial S_{pq}}{\partial \xi}\, .\]</div>
+<span class="eqno">(78)<a class="headerlink" href="#equation-eq-partial-l" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial \xi}=\frac{\partial E_\mathrm{HF}}{\partial \xi}+\sum_{p,q}\lambda_{pq}\frac{\partial f_{pq}}{\partial \xi}+\sum_{p,q}\omega_{pq}\frac{\partial S_{pq}}{\partial \xi}\, .\]</div>
 <p>We want to re-write the above derivative of the Lagrangian in terms of effective density matrices.
 For this purpose, we express the energy in terms of the one- and two-particle density matrices, <span class="math notranslate nohighlight">\(\boldsymbol{\gamma} = \{\gamma_{pq}\}\)</span>
 and <span class="math notranslate nohighlight">\(\boldsymbol{\Gamma} = \{\Gamma_{pqrs}\}\)</span>, respectively:</p>
 <div class="math notranslate nohighlight" id="equation-eq-ehf-dm">
-<span class="eqno">(88)<a class="headerlink" href="#equation-eq-ehf-dm" title="Permalink to this equation">¶</a></span>\[E_\mathrm{HF}=\sum_{p,q}f_{pq}\gamma_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\, .\]</div>
-<p>With this definition, Eq. <a class="reference internal" href="#equation-eq-partial-l">(87)</a> becomes:</p>
+<span class="eqno">(79)<a class="headerlink" href="#equation-eq-ehf-dm" title="Permalink to this equation">¶</a></span>\[E_\mathrm{HF}=\sum_{p,q}f_{pq}\gamma_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\, .\]</div>
+<p>With this definition, Eq. <a class="reference internal" href="#equation-eq-partial-l">(78)</a> becomes:</p>
 <div class="math notranslate nohighlight" id="equation-eq-partial-l-final">
-<span class="eqno">(89)<a class="headerlink" href="#equation-eq-partial-l-final" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial L}{\partial \xi}&amp;=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) f^{(\xi)}_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^{(\xi)}+\sum_{p,q}\omega_{pq}S^{(\xi)}_{pq}\nonumber\\
+<span class="eqno">(80)<a class="headerlink" href="#equation-eq-partial-l-final" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial L}{\partial \xi}&amp;=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) f^{(\xi)}_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^{(\xi)}+\sum_{p,q}\omega_{pq}S^{(\xi)}_{pq}\nonumber\\
 &amp;=\sum_{p,q}(\lambda_{pq}+\gamma_{pq}) h^{(\xi)}_{pq}+\sum_{p,q}(\lambda_{pq}+\gamma_{pq})\sum_{i}\braket{pi||qi}^{(\xi)}+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}^{(\xi)}+\sum_{p,q}\omega_{pq}S^{(\xi)}_{pq}\,,\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(h_{pq}\)</span> represents a matrix element of the core-Hamiltonian operator. The superscript <span class="math notranslate nohighlight">\((\xi)\)</span> indicates a partial derivative with respect to variable <span class="math notranslate nohighlight">\(\xi\)</span>,
-i.e., with fixed MO coefficients <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. Explicitly, they are given by <span id="id8">[<a class="reference internal" href="refs.html#id83">LWK05</a>]</span>:</p>
+i.e., with fixed MO coefficients <span class="math notranslate nohighlight">\(\mathbf{C}\)</span>. Explicitly, they are given by <span id="id8">[<a class="reference internal" href="refs.html#id83" title="S. V. Levchenko, T. Wang, and A. I. Krylov. Analytic gradients for the spin-conserving and spin-flipping equation-of-motion coupled-cluster models with single and double substitutions. J. Chem. Phys., 122(22):224106, 2005.">LWK05</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-hpq">
-<span class="eqno">(90)<a class="headerlink" href="#equation-eq-hpq" title="Permalink to this equation">¶</a></span>\[\begin{split}h_{pq}^{(\xi)}&amp;=\frac{\partial h_{pq}}{\partial \xi}=\sum_{\mu,\nu}C_{\mu p}h^{\xi}_{\mu\nu}C_{\nu q}\, ,\\
+<span class="eqno">(81)<a class="headerlink" href="#equation-eq-hpq" title="Permalink to this equation">¶</a></span>\[\begin{split}h_{pq}^{(\xi)}&amp;=\frac{\partial h_{pq}}{\partial \xi}=\sum_{\mu,\nu}C_{\mu p}h^{\xi}_{\mu\nu}C_{\nu q}\, ,\\
 h^{\xi}_{\mu\nu}&amp;=\bra{\phi_\mu}\frac{\partial \hat{h}}{\partial \xi}\ket{\phi_\nu}+\bra{\frac{\partial\phi_\mu}{\partial \xi}}\hat{h}\ket{\phi_\nu}+\bra{\phi_\mu}\hat{h}\ket{\frac{\partial\phi_\nu}{\partial\xi}}\, ,\\\end{split}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-braket-pqrs">
-<span class="eqno">(91)<a class="headerlink" href="#equation-eq-braket-pqrs" title="Permalink to this equation">¶</a></span>\[\begin{split}\braket{pq||rs}^{(\xi)}&amp;=\frac{\partial \braket{pq||rs}}{\partial\xi}=\sum_{\mu,\nu,\theta,\sigma}C_{\mu p}C_{\nu q}\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}C_{\theta r}C_{\sigma s}\, ,\\
+<span class="eqno">(82)<a class="headerlink" href="#equation-eq-braket-pqrs" title="Permalink to this equation">¶</a></span>\[\begin{split}\braket{pq||rs}^{(\xi)}&amp;=\frac{\partial \braket{pq||rs}}{\partial\xi}=\sum_{\mu,\nu,\theta,\sigma}C_{\mu p}C_{\nu q}\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}C_{\theta r}C_{\sigma s}\, ,\\
 \braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}^{\xi}&amp;=\braket{\frac{\partial\phi_{\mu}}{\partial\xi}\phi_{\nu}||\phi_{\theta}\phi_{\sigma}}+\braket{\phi_{\mu}\frac{\partial\phi_{\nu}}{\partial\xi}||\phi_{\theta}\phi_{\sigma}}+\braket{\phi_{\mu}\phi_{\nu}||\frac{\partial\phi_{\theta}}{\partial\xi}\phi_{\sigma}}\nonumber\\
 &amp;+\braket{\phi_{\mu}\phi_{\nu}||\phi_{\theta}\frac{\partial\phi_{\sigma}}{\partial \xi}}\,\\\end{split}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-spq">
-<span class="eqno">(92)<a class="headerlink" href="#equation-eq-spq" title="Permalink to this equation">¶</a></span>\[\begin{split}S_{pq}^{(\xi)} &amp;=\frac{\partial S_{pq}}{\partial\xi}=\sum_{\mu,\nu}C_{\mu p}S_{\mu\nu}^\xi C_{\nu q}\, ,\\
+<span class="eqno">(83)<a class="headerlink" href="#equation-eq-spq" title="Permalink to this equation">¶</a></span>\[\begin{split}S_{pq}^{(\xi)} &amp;=\frac{\partial S_{pq}}{\partial\xi}=\sum_{\mu,\nu}C_{\mu p}S_{\mu\nu}^\xi C_{\nu q}\, ,\\
 S_{\mu\nu}^\xi &amp;=\braket{\frac{\partial\phi_\mu}{\partial\xi}|\phi_\nu}+\braket{\phi_\mu|\frac{\partial\phi_\nu}{\partial\xi}} \,.\end{split}\]</div>
-<p>We also made use of the definition of the Fock matrix <span id="id9">[<a class="reference internal" href="refs.html#id96">SO12</a>]</span>:</p>
+<p>We also made use of the definition of the Fock matrix <span id="id9">[<a class="reference internal" href="refs.html#id96" title="Attila Szabo and Neil S. Ostlund. Modern Quantum Chemistry: Introduction to Advanced Electronic Structure Theory. Courier Corporation, 2012.">SO12</a>]</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-fockmatel">
-<span class="eqno">(93)<a class="headerlink" href="#equation-eq-fockmatel" title="Permalink to this equation">¶</a></span>\[f_{pq}=h_{pq}+\sum_i\braket{pi||qi}\, .\]</div>
-<p>Equation <a class="reference internal" href="#equation-eq-partial-l-final">(89)</a> is the working equation to compute the partial derivative of the Lagrangian with respect to variable <span class="math notranslate nohighlight">\(\xi\)</span>,
+<span class="eqno">(84)<a class="headerlink" href="#equation-eq-fockmatel" title="Permalink to this equation">¶</a></span>\[f_{pq}=h_{pq}+\sum_i\braket{pi||qi}\, .\]</div>
+<p>Equation <a class="reference internal" href="#equation-eq-partial-l-final">(80)</a> is the working equation to compute the partial derivative of the Lagrangian with respect to variable <span class="math notranslate nohighlight">\(\xi\)</span>,
 and implicitly the equation for the total derivative of the energy with respect to the same variable.
 Two ingredients are required to calculate <span class="math notranslate nohighlight">\(\partial L/\partial\xi\)</span>: (1) the derivatives of the core-Hamiltonian matrix,
 of the anti-symmetrized two-electron integrals, and of the overlap matrix,
 and (2) finding the density matrices <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\Gamma}\)</span> as well as the Lagrange multipliers <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span>.</p>
-<p>By comparing Eq. <a class="reference internal" href="#equation-eq-ehf-dm">(88)</a> to Eq. <a class="reference internal" href="#equation-eq-hf-energy-fct">(85)</a>, we can immediately identify the nonvanishing blocks of the density matrices:</p>
+<p>By comparing Eq. <a class="reference internal" href="#equation-eq-ehf-dm">(79)</a> to Eq. <a class="reference internal" href="#equation-eq-hf-energy-fct">(76)</a>, we can immediately identify the nonvanishing blocks of the density matrices:</p>
 <div class="math notranslate nohighlight" id="equation-eq-hf-gamma-ij">
-<span class="eqno">(94)<a class="headerlink" href="#equation-eq-hf-gamma-ij" title="Permalink to this equation">¶</a></span>\[\gamma_{ij}=\delta_{ij} \, , \]</div>
+<span class="eqno">(85)<a class="headerlink" href="#equation-eq-hf-gamma-ij" title="Permalink to this equation">¶</a></span>\[\gamma_{ij}=\delta_{ij} \, , \]</div>
 <div class="math notranslate nohighlight" id="equation-eq-hf-gamma-ijkl">
-<span class="eqno">(95)<a class="headerlink" href="#equation-eq-hf-gamma-ijkl" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijkl}=-2\delta_{ik}\delta_{jl}\, .\]</div>
+<span class="eqno">(86)<a class="headerlink" href="#equation-eq-hf-gamma-ijkl" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijkl}=-2\delta_{ik}\delta_{jl}\, .\]</div>
 <p>Equations for the <span class="math notranslate nohighlight">\(\{\lambda_{pq}\}\)</span> and <span class="math notranslate nohighlight">\(\{\omega_{pq}\}\)</span> multipliers are obtained by imposing the Lagrangian to be stationary with respect to the orbital transformation matrix <span class="math notranslate nohighlight">\(\{C_{\mu t}\}\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-orbitalrspcond">
-<span class="eqno">(96)<a class="headerlink" href="#equation-eq-orbitalrspcond" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial C_{\mu t}}=0\, ,\]</div>
-<p>or the programmable version <span id="id10">[<a class="reference internal" href="refs.html#id83">LWK05</a>, <a class="reference internal" href="refs.html#id88">RD19</a>]</span> :</p>
+<span class="eqno">(87)<a class="headerlink" href="#equation-eq-orbitalrspcond" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial C_{\mu t}}=0\, ,\]</div>
+<p>or the programmable version <span id="id10">[<a class="reference internal" href="refs.html#id83" title="S. V. Levchenko, T. Wang, and A. I. Krylov. Analytic gradients for the spin-conserving and spin-flipping equation-of-motion coupled-cluster models with single and double substitutions. J. Chem. Phys., 122(22):224106, 2005.">LWK05</a>, <a class="reference internal" href="refs.html#id88" title="D. R. Rehn and A. Dreuw. Analytic nuclear gradients of the algebraic-diagrammatic construction scheme for the polarization propagator up to third order of perturbation theory. J. Chem. Phys., 150(17):174110, 2019.">RD19</a>]</span> :</p>
 <div class="math notranslate nohighlight" id="equation-eq-orbitalrspcond-program">
-<span class="eqno">(97)<a class="headerlink" href="#equation-eq-orbitalrspcond-program" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}=0\, .\]</div>
+<span class="eqno">(88)<a class="headerlink" href="#equation-eq-orbitalrspcond-program" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}=0\, .\]</div>
 <p>To calculate the partial derivative of the Lagrangian with respect to <span class="math notranslate nohighlight">\(C_{\mu t}\)</span>, we will need the following three expressions:</p>
 <div class="math notranslate nohighlight" id="equation-eq-derivfock">
-<span class="eqno">(98)<a class="headerlink" href="#equation-eq-derivfock" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial f_{pq}}{\partial C_{\mu t}}&amp;=\sum_{\mu}C_{\mu u}\left(\frac{\partial h_{pq}}{\partial C_{\mu t}}+\sum_i\frac{\partial \braket{pi||qi}}{\partial C_{\mu t}}\right)\nonumber\\
+<span class="eqno">(89)<a class="headerlink" href="#equation-eq-derivfock" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial f_{pq}}{\partial C_{\mu t}}&amp;=\sum_{\mu}C_{\mu u}\left(\frac{\partial h_{pq}}{\partial C_{\mu t}}+\sum_i\frac{\partial \braket{pi||qi}}{\partial C_{\mu t}}\right)\nonumber\\
 &amp;=h_{uq}\delta_{pt}+h_{pu}\delta_{qt}+\sum_i\braket{ui||qi}\delta_{pt}+\sum_i\braket{pi||ui}\delta_{qt}\nonumber\\
 &amp;+\sum_i\braket{pu||qi}\delta_{it}+\sum_i\braket{pi||qu}\delta_{it}\nonumber \\
 &amp;=f_{uq}\delta_{pt}+f_{pu}\delta_{qt}+\braket{pu||qt}\delta_{t\epsilon_o}+\braket{pt||qu}\delta_{t\epsilon_o} \, ,\label{eq:derivFock}\end{split}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-derivtwoel">
-<span class="eqno">(99)<a class="headerlink" href="#equation-eq-derivtwoel" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial \braket{pq||rs}}{\partial C_{\mu t}}=\braket{uq||rs}\delta_{pt}+\braket{pu||rs}\delta_{qt}+\braket{pq||us}\delta_{rt}+\braket{pq||ru}\delta_{st} \, ,\]</div>
+<span class="eqno">(90)<a class="headerlink" href="#equation-eq-derivtwoel" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial \braket{pq||rs}}{\partial C_{\mu t}}=\braket{uq||rs}\delta_{pt}+\braket{pu||rs}\delta_{qt}+\braket{pq||us}\delta_{rt}+\braket{pq||ru}\delta_{st} \, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-derivoverlap">
-<span class="eqno">(100)<a class="headerlink" href="#equation-eq-derivoverlap" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial S_{pq}}{\partial C_{\mu t}}=S_{uq}\delta_{pt}+S_{pu}\delta_{qt}\, , \label{eq:derivOverlap}\]</div>
-<p>where we have used the definitions of the Fock matrix, two-electron integrals and overlap matrix in terms of the orbital transformation matrix <span class="math notranslate nohighlight">\(\{C_{\mu p}\}\)</span> – see Eqs. <a class="reference internal" href="#equation-eq-hpq">(90)</a>, <a class="reference internal" href="#equation-eq-braket-pqrs">(91)</a>, and <a class="reference internal" href="#equation-eq-spq">(92)</a>. The Kronecker delta <span class="math notranslate nohighlight">\(\delta_{t\epsilon_\mathrm{o}}\)</span> is equal to one if <span class="math notranslate nohighlight">\(t\)</span> is an occupied orbital and is zero otherwise.</p>
+<span class="eqno">(91)<a class="headerlink" href="#equation-eq-derivoverlap" title="Permalink to this equation">¶</a></span>\[\sum_{\mu}C_{\mu u}\frac{\partial S_{pq}}{\partial C_{\mu t}}=S_{uq}\delta_{pt}+S_{pu}\delta_{qt}\, , \label{eq:derivOverlap}\]</div>
+<p>where we have used the definitions of the Fock matrix, two-electron integrals and overlap matrix in terms of the orbital transformation matrix <span class="math notranslate nohighlight">\(\{C_{\mu p}\}\)</span> – see Eqs. <a class="reference internal" href="#equation-eq-hpq">(81)</a>, <a class="reference internal" href="#equation-eq-braket-pqrs">(82)</a>, and <a class="reference internal" href="#equation-eq-spq">(83)</a>. The Kronecker delta <span class="math notranslate nohighlight">\(\delta_{t\epsilon_\mathrm{o}}\)</span> is equal to one if <span class="math notranslate nohighlight">\(t\)</span> is an occupied orbital and is zero otherwise.</p>
 <p>Using the Lagrangian expressed in terms of the density matrices:</p>
 <div class="math notranslate nohighlight" id="equation-eq-l-dms">
-<span class="eqno">(101)<a class="headerlink" href="#equation-eq-l-dms" title="Permalink to this equation">¶</a></span>\[L=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})\,,\]</div>
+<span class="eqno">(92)<a class="headerlink" href="#equation-eq-l-dms" title="Permalink to this equation">¶</a></span>\[L=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})\,,\]</div>
 <p>the partial derivative of the Lagrangian with respect to <span class="math notranslate nohighlight">\(\mathbf{C}\)</span> can be written as:</p>
 <div class="math notranslate nohighlight" id="equation-eq-orbrsp1">
-<span class="eqno">(102)<a class="headerlink" href="#equation-eq-orbrsp1" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}&amp;=\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\left[f_{uq}\delta_{pt}+f_{pu}\delta_{qt}+\braket{pu||qt}\delta_{t\epsilon_o}+\braket{pt||qu}\delta_{t\epsilon_o}\right]\nonumber \\
+<span class="eqno">(93)<a class="headerlink" href="#equation-eq-orbrsp1" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}&amp;=\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\left[f_{uq}\delta_{pt}+f_{pu}\delta_{qt}+\braket{pu||qt}\delta_{t\epsilon_o}+\braket{pt||qu}\delta_{t\epsilon_o}\right]\nonumber \\
 &amp;+\frac{1}{4}\sum_{p,q,r,s}\Gamma_{pqrs}\left[\braket{uq||rs}\delta_{pt}+\braket{pu||rs}\delta_{qt}+\braket{pq||us}\delta_{rt}+\braket{pq||ru}\delta_{st}\right]\nonumber\\
 &amp;+\sum_{p,q}\omega_{pq}\left(S_{uq}\delta_{pt}+S_{pu}\delta_{qt}\right)\, .\end{split}\]</div>
-<p>By using the conditions <span class="math notranslate nohighlight">\(f_{pq}=\epsilon_p\delta_{pq}\)</span> and <span class="math notranslate nohighlight">\(S_{pq}=\delta_{pq}\)</span>, Eq. <a class="reference internal" href="#equation-eq-orbrsp1">(102)</a> becomes:</p>
+<p>By using the conditions <span class="math notranslate nohighlight">\(f_{pq}=\epsilon_p\delta_{pq}\)</span> and <span class="math notranslate nohighlight">\(S_{pq}=\delta_{pq}\)</span>, Eq. <a class="reference internal" href="#equation-eq-orbrsp1">(93)</a> becomes:</p>
 <div class="math notranslate nohighlight" id="equation-eq-orbrsp2">
-<span class="eqno">(103)<a class="headerlink" href="#equation-eq-orbrsp2" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}&amp;=\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\left[\epsilon_u\delta_{uq}\delta_{pt}+\epsilon_u\delta_{pu}\delta_{qt}+\braket{pu||qt}\delta_{t\epsilon_o}+\braket{pt||qu}\delta_{t\epsilon_o}\right]\nonumber \\
+<span class="eqno">(94)<a class="headerlink" href="#equation-eq-orbrsp2" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}&amp;=\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\left[\epsilon_u\delta_{uq}\delta_{pt}+\epsilon_u\delta_{pu}\delta_{qt}+\braket{pu||qt}\delta_{t\epsilon_o}+\braket{pt||qu}\delta_{t\epsilon_o}\right]\nonumber \\
 &amp;+\frac{1}{4}\sum_{p,q,r,s}\Gamma_{pqrs}\left[\braket{uq||rs}\delta_{pt}+\braket{pu||rs}\delta_{qt}+\braket{pq||us}\delta_{rt}+\braket{pq||ru}\delta_{st}\right]\nonumber\\
 &amp;+\sum_{p,q}\omega_{pq}\left(\delta_{uq}\delta_{pt}+\delta_{pu}\delta_{qt}\right) \nonumber \\
 &amp;=2\left(\gamma_{ut}+\lambda_{ut}\right)\epsilon_u+2\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}\, ,\end{split}\]</div>
 <p>where we have used <span class="math notranslate nohighlight">\(\gamma_{pq}=\gamma_{qp}\)</span>, <span class="math notranslate nohighlight">\(\braket{pu||qt}=\braket{qt||pu}\)</span>, <span class="math notranslate nohighlight">\(\Gamma_{pqrs}=\Gamma_{qpsr}=\Gamma_{srpq}\)</span> (real orbitals), and we have imposed that <span class="math notranslate nohighlight">\(\lambda_{pq}=\lambda_{qp}\)</span>, and <span class="math notranslate nohighlight">\(\omega_{pq}=\omega_{qp}\)</span> (symmetric representation). Some of the indices have been renamed.</p>
 <p>To obtain equations for the orbital response Lagrange multipliers, we first have to decouple <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> from <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span> by taking the difference</p>
 <div class="math notranslate nohighlight" id="equation-eq-decouple">
-<span class="eqno">(104)<a class="headerlink" href="#equation-eq-decouple" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}-\sum_{\mu}C_{\mu t}\frac{\partial L}{\partial C_{\mu u}}&amp;=2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)\nonumber\\&amp;+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
+<span class="eqno">(95)<a class="headerlink" href="#equation-eq-decouple" title="Permalink to this equation">¶</a></span>\[\begin{split}\sum_{\mu}C_{\mu u}\frac{\partial L}{\partial C_{\mu t}}-\sum_{\mu}C_{\mu t}\frac{\partial L}{\partial C_{\mu u}}&amp;=2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)\nonumber\\&amp;+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
 &amp;+\,\,\,\,\sum_{p,q,r}\left(\Gamma_{tpqr}\braket{up||qr}-\Gamma_{upqr}\braket{tp||qr}\right).\end{split}\]</div>
 <p>The system of equations for <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> is then obtained by choosing <span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(t\)</span> from different orbital spaces in the following equation,</p>
 <div class="math notranslate nohighlight" id="equation-eq-orbrspeq">
-<span class="eqno">(105)<a class="headerlink" href="#equation-eq-orbrspeq" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
+<span class="eqno">(96)<a class="headerlink" href="#equation-eq-orbrspeq" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;2(\gamma_{ut}+\lambda_{ut})(\epsilon_u-\epsilon_t)+2\sum_{p,q}(\gamma_{pq}+\lambda_{pq})\left(\braket{pu||qt}\delta_{t\epsilon_o}-\braket{pt||qu}\delta_{u\epsilon_o}\right)\nonumber\\
 &amp;+\sum_{p,q,r}\left(\Gamma_{tpqr}\braket{up||qr}-\Gamma_{upqr}\braket{tp||qr}\right)=0\,.\end{split}\]</div>
 <p>Once <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> is determined, <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span> can be calculated in a similar way, using the following equation</p>
 <div class="math notranslate nohighlight" id="equation-eq-omega">
-<span class="eqno">(106)<a class="headerlink" href="#equation-eq-omega" title="Permalink to this equation">¶</a></span>\[2\left(\gamma_{ut}+\lambda_{ut}\right)\epsilon_u+2\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0\]</div>
+<span class="eqno">(97)<a class="headerlink" href="#equation-eq-omega" title="Permalink to this equation">¶</a></span>\[2\left(\gamma_{ut}+\lambda_{ut}\right)\epsilon_u+2\sum_{p,q}\left(\gamma_{pq}+\lambda_{pq}\right)\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0\]</div>
 <p>If we explicitly write the equations for different blocks of <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span>, we find that they are all zero. This simplifies the equation for <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span> to:</p>
 <div class="math notranslate nohighlight" id="equation-eq-omega-hf">
-<span class="eqno">(107)<a class="headerlink" href="#equation-eq-omega-hf" title="Permalink to this equation">¶</a></span>\[2\gamma_{ut}\epsilon_u+2\sum_{p,q}\gamma_{pq}\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0\]</div>
+<span class="eqno">(98)<a class="headerlink" href="#equation-eq-omega-hf" title="Permalink to this equation">¶</a></span>\[2\gamma_{ut}\epsilon_u+2\sum_{p,q}\gamma_{pq}\braket{pu||qt}\delta_{t\epsilon_o}+\sum_{p,q,r}\Gamma_{tpqr}\braket{up||qr}+2\omega_{ut}=0\]</div>
 <p>The only non-zero block of <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span> is the occupied-occupied block:</p>
 <div class="math notranslate nohighlight" id="equation-eq-omega-hf-oo">
-<span class="eqno">(108)<a class="headerlink" href="#equation-eq-omega-hf-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;u=i,\, t=j \nonumber\\
+<span class="eqno">(99)<a class="headerlink" href="#equation-eq-omega-hf-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;u=i,\, t=j \nonumber\\
 &amp;2\gamma_{ij}\,\epsilon_i+2\sum_{p,q}\gamma_{pq}\braket{pi||qj}\delta_{j\epsilon_o}+\sum_{p,q,r}\Gamma_{jpqr}\braket{ip||qr}+2\omega_{ij} = 0 \nonumber \\
 &amp;\Leftrightarrow
 2\delta_{ij}\epsilon_i+2\sum_{k,l}\delta_{kl}\braket{ki||lj}+\sum_{klm}(-2\delta_{jl}\delta_{km})\braket{ik||lm}+2\omega_{ij} =0\nonumber \\
@@ -999,14 +996,13 @@ and (2) finding the density matrices <span class="math notranslate nohighlight">
 \omega_{ij}=-\epsilon_i\delta_{ij},\end{split}\]</div>
 <p>Using the expressions for the density matrices and the non-zero Lagrange multipliers, we get the following expression for the electronic HF energy derivative:</p>
 <div class="math notranslate nohighlight" id="equation-eq-hf-grad-final">
-<span class="eqno">(109)<a class="headerlink" href="#equation-eq-hf-grad-final" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\mathrm{d}E_{\text{HF}}}{\mathrm{d}\xi}&amp;=\sum_{i,j}\delta_{ij} h^{(\xi)}_{ij}+\sum_{i,j}\delta_{ij}\sum_{k}\braket{ik||jk}^{(\xi)} - \frac{1}{2}\sum_{i,j,k,l}\delta_{ik}\delta_{jl}\braket{ij||kl}^{(\xi)}-\sum_{i,j}\epsilon_{i}\delta_{ij}S^{(\xi)}_{ij}\nonumber \\
+<span class="eqno">(100)<a class="headerlink" href="#equation-eq-hf-grad-final" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\mathrm{d}E_{\text{HF}}}{\mathrm{d}\xi}&amp;=\sum_{i,j}\delta_{ij} h^{(\xi)}_{ij}+\sum_{i,j}\delta_{ij}\sum_{k}\braket{ik||jk}^{(\xi)} - \frac{1}{2}\sum_{i,j,k,l}\delta_{ik}\delta_{jl}\braket{ij||kl}^{(\xi)}-\sum_{i,j}\epsilon_{i}\delta_{ij}S^{(\xi)}_{ij}\nonumber \\
 &amp;=\sum_{i}h^{(\xi)}_{ii}+\frac{1}{2}\sum_{i,j}\braket{ij||ij}^{(\xi)}-\sum_{i}\epsilon_{i}S^{(\xi)}_{ii}\end{split}\]</div>
-<p>Finally, the derivative of the total energy is obtained by adding the trivial contribution from the nuclear repulsion energy term <span id="id11">[<a class="reference internal" href="refs.html#id96">SO12</a>]</span>,
+<p>Finally, the derivative of the total energy is obtained by adding the trivial contribution from the nuclear repulsion energy term <span id="id11">[<a class="reference internal" href="refs.html#id96" title="Attila Szabo and Neil S. Ostlund. Modern Quantum Chemistry: Introduction to Advanced Electronic Structure Theory. Courier Corporation, 2012.">SO12</a>]</span>,
 <span class="math notranslate nohighlight">\(\frac{\mathrm{d} V_{nn}}{\mathrm{d} \xi}\)</span>.</p>
 </div>
 <div class="section" id="dft">
 <h4>DFT<a class="headerlink" href="#dft" title="Permalink to this headline">¶</a></h4>
-<p>To be added…</p>
 <p>The DFT gradient can be derived in a similar way, replacing the exact exchange integrals with the corresponding exchange–correlation functional contributions.
 The exchange-correlation functional contribution to the DFT energy and its molecular gradient is evaluated via numerical integration.
 Thus, the molecular gradient includes grid point weight contributions, which arise from the explicit dependence of the grid partitioning function on the molecular geometry.
@@ -1014,51 +1010,51 @@ Neglecting these contributions to the molecular gradient leads to the breakdown 
 Despite this, if a fine integration grid is used in practical calculations, grid point weight contribution to the molecular gradient can safely be neglected.</p>
 </div>
 <div class="section" id="mp2">
-<h4>MP2<a class="headerlink" href="#mp2" title="Permalink to this headline">¶</a></h4>
+<span id="sec-mp2-gradients"></span><h4>MP2<a class="headerlink" href="#mp2" title="Permalink to this headline">¶</a></h4>
 <p>In the case of Møller–Plesset (MP) perturbation theory, the energy functional has additional non-variational parameters that have to be considered when computing the gradient.
 These are the so-called <span class="math notranslate nohighlight">\(t\)</span>-amplitudes <span class="math notranslate nohighlight">\(\mathbf{T} = \{ t_{ijab} \}\)</span>, so the corresponding term which has to be determined is called amplitude response.</p>
 <div class="math notranslate nohighlight" id="equation-eq-energy-functional-mp">
-<span class="eqno">(110)<a class="headerlink" href="#equation-eq-energy-functional-mp" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{\mathrm{d}\mathbf{T}}{\mathrm{d}\xi} \, .\]</div>
+<span class="eqno">(101)<a class="headerlink" href="#equation-eq-energy-functional-mp" title="Permalink to this equation">¶</a></span>\[\frac{\mathrm{d}E}{\mathrm{d}\xi}=\frac{\partial E}{\partial \xi}+\frac{\partial E}{\partial\mathbf{C}}\frac{\mathrm{d}\mathbf{C}}{\mathrm{d}\xi}+\frac{\partial E}{\partial\mathbf{T}}\frac{\mathrm{d}\mathbf{T}}{\mathrm{d}\xi} \, .\]</div>
 <p>The analytic expression for the MP energy gradient is obtained in a very similar way as we have done for the SCF ground state. The difference is that the Lagrangian contains additional Lagrange multipliers and constraints for the <span class="math notranslate nohighlight">\(t\)</span>-amplitudes. After obtaining the corresponding amplitude response Lagrange multipliers, these additional contributions will be written in terms of one- and two-particle density matrices, exactly as the total energy. Let’s illustrate the procedure for the second order Møller–Plesset theory, MP2. At this level of theory, the total energy functional is written as:</p>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-energy-fct">
-<span class="eqno">(111)<a class="headerlink" href="#equation-eq-mp2-energy-fct" title="Permalink to this equation">¶</a></span>\[E_0=E_\mathrm{HF}+E_\mathrm{MP2}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}-\frac{1}{4}\sum_{i,j,a,b}\braket{ij||ab}t_{ijab}, \label{eq:MP2_energy_fct}\]</div>
+<span class="eqno">(102)<a class="headerlink" href="#equation-eq-mp2-energy-fct" title="Permalink to this equation">¶</a></span>\[E_0=E_\mathrm{HF}+E_\mathrm{MP2}=\sum_{i}f_{ii}-\frac{1}{2}\sum_{ij}\braket{ij||ij}-\frac{1}{4}\sum_{i,j,a,b}\braket{ij||ab}t_{ijab}, \label{eq:MP2_energy_fct}\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-tamplitudes">
-<span class="eqno">(112)<a class="headerlink" href="#equation-eq-mp2-tamplitudes" title="Permalink to this equation">¶</a></span>\[t_{ijab} = \frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j} \label{eq:MP2_tamplitudes}\]</div>
+<span class="eqno">(103)<a class="headerlink" href="#equation-eq-mp2-tamplitudes" title="Permalink to this equation">¶</a></span>\[t_{ijab} = \frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j} \label{eq:MP2_tamplitudes}\]</div>
 <p>are the MP2 <span class="math notranslate nohighlight">\(t\)</span>-amplitudes.</p>
 <p>The Lagrangian corresponding to this energy functional is:</p>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-lagrangian">
-<span class="eqno">(113)<a class="headerlink" href="#equation-eq-mp2-lagrangian" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C}, \mathbf{T},\boldsymbol{\Lambda},\boldsymbol{\Omega},\mathbf{\tilde{T}})=E_\mathrm{0}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right)+\sum_{i,j,a,b}\tilde{t}_{ijab}f_t(t_{ijab})\,.\]</div>
+<span class="eqno">(104)<a class="headerlink" href="#equation-eq-mp2-lagrangian" title="Permalink to this equation">¶</a></span>\[L(\mathbf{C}, \mathbf{T},\boldsymbol{\Lambda},\boldsymbol{\Omega},\mathbf{\tilde{T}})=E_\mathrm{0}+\sum_{p,q}\lambda_{pq}\left(f_{pq}-\delta_{pq}\epsilon_p\right)+\sum_{p,q}\omega_{pq}\left(S_{pq}-\delta_{pq}\right)+\sum_{i,j,a,b}\tilde{t}_{ijab}f_t(t_{ijab})\,.\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(\tilde{\mathbf{T}}=\{\tilde{t}_{ijab}\}\)</span> are the amplitude response Lagrange multipliers and <span class="math notranslate nohighlight">\(f_t(\mathbf{T})=0\)</span> is the constraint. For MP2, this is:</p>
 <div class="math notranslate nohighlight" id="equation-eq-t-condition">
-<span class="eqno">(114)<a class="headerlink" href="#equation-eq-t-condition" title="Permalink to this equation">¶</a></span>\[f_t(\mathbf{T})=t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\,  .\]</div>
+<span class="eqno">(105)<a class="headerlink" href="#equation-eq-t-condition" title="Permalink to this equation">¶</a></span>\[f_t(\mathbf{T})=t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\,  .\]</div>
 <p>The amplitude response Lagrange multipliers are determined by imposing the Lagrangian to be stationary with respect to the <span class="math notranslate nohighlight">\(t\)</span>-amplitudes.</p>
 <div class="math notranslate nohighlight" id="equation-eq-amplitude-rsp-general">
-<span class="eqno">(115)<a class="headerlink" href="#equation-eq-amplitude-rsp-general" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial \mathbf{T}}=0\,.\]</div>
+<span class="eqno">(106)<a class="headerlink" href="#equation-eq-amplitude-rsp-general" title="Permalink to this equation">¶</a></span>\[\frac{\partial L}{\partial \mathbf{T}}=0\,.\]</div>
 <p>Replacing <span class="math notranslate nohighlight">\(L\)</span> and <span class="math notranslate nohighlight">\(\mathbf{T}\)</span> in the equation above with the corresponding MP2 expressions, we get:</p>
 <div class="math notranslate nohighlight" id="equation-eq-t-cond-explicit">
-<span class="eqno">(116)<a class="headerlink" href="#equation-eq-t-cond-explicit" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial L}{\partial t_{ijab}}&amp;=\frac{\partial E_\mathrm{MP2}}{\partial t_{ijab}}+\sum_{k,l,c,d}\frac{\partial \tilde{t}_{klcd}f(t_{klcd})}{\partial t_{ijab}}\nonumber\\
+<span class="eqno">(107)<a class="headerlink" href="#equation-eq-t-cond-explicit" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial L}{\partial t_{ijab}}&amp;=\frac{\partial E_\mathrm{MP2}}{\partial t_{ijab}}+\sum_{k,l,c,d}\frac{\partial \tilde{t}_{klcd}f(t_{klcd})}{\partial t_{ijab}}\nonumber\\
 &amp;=-\frac{1}{4}\sum_{k,l,c,d}\braket{kl||cd}\frac{\partial t_{klcd}}{\partial t_{ijab}}+\sum_{k,l,c,d}\tilde{t}_{klcd}\frac{\partial t_{klcd}}{\partial t_{ijab}}\left(\epsilon_c+\epsilon_d-\epsilon_k-\epsilon_l\right)\nonumber\\
 &amp;=-\braket{ij||ab}+4\tilde{t}_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)\, , \label{eq:t_cond_explicit}\end{split}\]</div>
-<p>From Eqs. <a class="reference internal" href="#equation-eq-amplitude-rsp-general">(115)</a> and <a class="reference internal" href="#equation-eq-t-cond-explicit">(116)</a>, it follows that,</p>
+<p>From Eqs. <a class="reference internal" href="#equation-eq-amplitude-rsp-general">(106)</a> and <a class="reference internal" href="#equation-eq-t-cond-explicit">(107)</a>, it follows that,</p>
 <div class="math notranslate nohighlight" id="equation-eq-ampl-rsp-multipliers">
-<span class="eqno">(117)<a class="headerlink" href="#equation-eq-ampl-rsp-multipliers" title="Permalink to this equation">¶</a></span>\[\tilde{t}_{ijab} = \frac{1}{4}\frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j}=\frac{1}{4}t_{ijab}.\]</div>
+<span class="eqno">(108)<a class="headerlink" href="#equation-eq-ampl-rsp-multipliers" title="Permalink to this equation">¶</a></span>\[\tilde{t}_{ijab} = \frac{1}{4}\frac{\braket{ij||ab}}{\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j}=\frac{1}{4}t_{ijab}.\]</div>
 <p>From here, we can follow the same procedure as we did for the SCF gradient. We first rewrite the Lagrangian in terms of one- and two-particle density matrices:</p>
 <div class="math notranslate nohighlight" id="equation-eq-l-dms-mp">
-<span class="eqno">(118)<a class="headerlink" href="#equation-eq-l-dms-mp" title="Permalink to this equation">¶</a></span>\[\begin{split}L&amp;=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\nonumber\\
+<span class="eqno">(109)<a class="headerlink" href="#equation-eq-l-dms-mp" title="Permalink to this equation">¶</a></span>\[\begin{split}L&amp;=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\nonumber\\
 &amp;+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})+\sum_{i,j,a,b}\tilde{t}_{ijab}\left[t_{ijab}\left(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j\right)-\braket{ij||ab}\right]\nonumber\\
 &amp;=\sum_{p,q}\gamma_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma_{pqrs}\braket{pq||rs}\nonumber\\
 &amp;+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})+\sum_{p,q}\gamma^\mathrm{A}_{pq}f_{pq}+\frac{1}{4}\sum_{pqrs}\Gamma^\mathrm{A}_{pqrs}\braket{pq||rs}\,,\end{split}\]</div>
 <p>where we have written also the amplitude contribution in terms of one- and two-particle density matrices, <span class="math notranslate nohighlight">\(\gamma^\mathrm{A}_{pq}\)</span> and <span class="math notranslate nohighlight">\(\Gamma^\mathrm{A}_{pqrs}\)</span> respectively.
 Denoting <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}'=\boldsymbol{\gamma}+\boldsymbol{\gamma}^\mathrm{A}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\Gamma}'=\boldsymbol{\Gamma}+\boldsymbol{\Gamma}^\mathrm{A}\)</span>, the Lagrangian becomes:</p>
 <div class="math notranslate nohighlight" id="equation-eq-final-l-dms-mp">
-<span class="eqno">(119)<a class="headerlink" href="#equation-eq-final-l-dms-mp" title="Permalink to this equation">¶</a></span>\[L=\sum_{p,q}\gamma'_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma'_{pqrs}\braket{pq||rs}+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})\]</div>
-<p>To be able to obtain the gradient, we now must identify the density matrices and then solve the orbital response equations. The density matrices corresponding to the HF contribution are the same as in the previous section. There are additional contributions from the MP2 energy correction, as well as the amplitude response terms. The MP2 energy contribution can be easily identified from the last term of Eq. <a class="reference internal" href="#equation-eq-mp2-energy-fct">(111)</a> and gives rise to the following two-particle density matrix:</p>
+<span class="eqno">(110)<a class="headerlink" href="#equation-eq-final-l-dms-mp" title="Permalink to this equation">¶</a></span>\[L=\sum_{p,q}\gamma'_{pq}f_{pq}+\sum_{p,q}\lambda_{pq}(f_{pq}-\delta_{pq}\epsilon_p)+\frac{1}{4}\sum_{pqrs}\Gamma'_{pqrs}\braket{pq||rs}+\sum_{p,q}\omega_{pq}(S_{pq}-\delta_{pq})\]</div>
+<p>To be able to obtain the gradient, we now must identify the density matrices and then solve the orbital response equations. The density matrices corresponding to the HF contribution are the same as in the previous section. There are additional contributions from the MP2 energy correction, as well as the amplitude response terms. The MP2 energy contribution can be easily identified from the last term of Eq. <a class="reference internal" href="#equation-eq-mp2-energy-fct">(102)</a> and gives rise to the following two-particle density matrix:</p>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-2pdm-oovv">
-<span class="eqno">(120)<a class="headerlink" href="#equation-eq-mp2-2pdm-oovv" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijab} = -\frac{1}{2} t_{ijab}\,. \]</div>
+<span class="eqno">(111)<a class="headerlink" href="#equation-eq-mp2-2pdm-oovv" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijab} = -\frac{1}{2} t_{ijab}\,. \]</div>
 <p>The amplitude response (<span class="math notranslate nohighlight">\(R^\mathrm{A}_\mathrm{MP2}\)</span>) contributions are also reasonably easy to identify:</p>
 <div class="math notranslate nohighlight" id="equation-eq-ra-explicit">
-<span class="eqno">(121)<a class="headerlink" href="#equation-eq-ra-explicit" title="Permalink to this equation">¶</a></span>\[\begin{split}R^\mathrm{A}_\mathrm{MP2}&amp;=\sum_{i,j,a,b}\tilde{t}_{ijab}\left[t_{ijab}(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j)-\braket{ij||ab}\right]\nonumber\\
+<span class="eqno">(112)<a class="headerlink" href="#equation-eq-ra-explicit" title="Permalink to this equation">¶</a></span>\[\begin{split}R^\mathrm{A}_\mathrm{MP2}&amp;=\sum_{i,j,a,b}\tilde{t}_{ijab}\left[t_{ijab}(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j)-\braket{ij||ab}\right]\nonumber\\
 &amp;=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\sum_{i,j,a,b}\tilde{t}_{ijab}\left[\sum_{c}\left(\epsilon_{a}\delta_{ac}+\epsilon_b\delta_{bc}\right)t_{ijab}-\sum_k\left(\epsilon_{i}\delta_{ik}+\epsilon_j\delta_{jk}\right)t_{ijab}\right]\nonumber\\
 &amp;=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\sum_{i,j,a,b}\tilde{t}_{ijab}\left(\sum_c f_{ac}t_{ijcb}+\sum_c f_{bc}t_{ijac}-\sum_k f_{ik}t_{kjab}-\sum_k f_{jk}t_{ikab}\right)\nonumber \\
 \nonumber \\
@@ -1067,24 +1063,24 @@ R^\mathrm{A}_\mathrm{MP2}&amp;=-\sum_{i,j,a,b}\braket{ij||ab}\tilde{t}_{ijab}+\s
 &amp;-\sum_{i,j}f_{ij}\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)\,,\label{eq:RA_explicit}\end{split}\]</div>
 <p>resulting in the following density matrices:</p>
 <div class="math notranslate nohighlight" id="equation-eq-gammaa-ij">
-<span class="eqno">(122)<a class="headerlink" href="#equation-eq-gammaa-ij" title="Permalink to this equation">¶</a></span>\[\gamma_{ij}^\mathrm{A}=-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)\, ,\]</div>
+<span class="eqno">(113)<a class="headerlink" href="#equation-eq-gammaa-ij" title="Permalink to this equation">¶</a></span>\[\gamma_{ij}^\mathrm{A}=-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)\, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-gammaa-ab">
-<span class="eqno">(123)<a class="headerlink" href="#equation-eq-gammaa-ab" title="Permalink to this equation">¶</a></span>\[\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)\, ,\]</div>
+<span class="eqno">(114)<a class="headerlink" href="#equation-eq-gammaa-ab" title="Permalink to this equation">¶</a></span>\[\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)\, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-gammaa-ijab">
-<span class="eqno">(124)<a class="headerlink" href="#equation-eq-gammaa-ijab" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijab}^\mathrm{A}=-2\,\tilde{t}_{ijab} \, .\]</div>
-<p>Combining all density matrices together and replacing the amplitude response Lagrange multipliers with the expression from Eq. <a class="reference internal" href="#equation-eq-ampl-rsp-multipliers">(117)</a>, we have:</p>
+<span class="eqno">(115)<a class="headerlink" href="#equation-eq-gammaa-ijab" title="Permalink to this equation">¶</a></span>\[\Gamma_{ijab}^\mathrm{A}=-2\,\tilde{t}_{ijab} \, .\]</div>
+<p>Combining all density matrices together and replacing the amplitude response Lagrange multipliers with the expression from Eq. <a class="reference internal" href="#equation-eq-ampl-rsp-multipliers">(108)</a>, we have:</p>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-gamma-ij">
-<span class="eqno">(125)<a class="headerlink" href="#equation-eq-mp2-gamma-ij" title="Permalink to this equation">¶</a></span>\[\gamma'_{ij}=\gamma_{ij}+\gamma_{ij}^\mathrm{A}=\delta_{ij}-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)=\delta_{ij}-\frac{1}{2}\sum_{k,a,b}t_{ikab}t_{jkab} \, , \]</div>
+<span class="eqno">(116)<a class="headerlink" href="#equation-eq-mp2-gamma-ij" title="Permalink to this equation">¶</a></span>\[\gamma'_{ij}=\gamma_{ij}+\gamma_{ij}^\mathrm{A}=\delta_{ij}-\sum_{k,a,b}\left(\tilde{t}_{ikab}t_{jkab}+\tilde{t}_{jkab}t_{ikab}\right)=\delta_{ij}-\frac{1}{2}\sum_{k,a,b}t_{ikab}t_{jkab} \, , \]</div>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-gamma-ab">
-<span class="eqno">(126)<a class="headerlink" href="#equation-eq-mp2-gamma-ab" title="Permalink to this equation">¶</a></span>\[\gamma'_{ab}=\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)=\frac{1}{2}\sum_{i,j,c}t_{ijac}t_{ijbc}\, ,\]</div>
+<span class="eqno">(117)<a class="headerlink" href="#equation-eq-mp2-gamma-ab" title="Permalink to this equation">¶</a></span>\[\gamma'_{ab}=\gamma_{ab}^\mathrm{A}=\sum_{i,j,c}\left(\tilde{t}_{ijac}t_{ijbc}+\tilde{t}_{ijbc}t_{ijac}\right)=\frac{1}{2}\sum_{i,j,c}t_{ijac}t_{ijbc}\, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-gamma-ijkl">
-<span class="eqno">(127)<a class="headerlink" href="#equation-eq-mp2-gamma-ijkl" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\, ,\]</div>
+<span class="eqno">(118)<a class="headerlink" href="#equation-eq-mp2-gamma-ijkl" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-mp2-gamma-ijab">
-<span class="eqno">(128)<a class="headerlink" href="#equation-eq-mp2-gamma-ijab" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijab} = \Gamma_{ijab}+\Gamma_{ijab}^\mathrm{A}=-\frac{1}{2}t_{ijab}-2\,\tilde{t}_{ijab}=-t_{ijab} \, . \]</div>
-<p>Finally, to determine the orbital response Lagrange multipliers <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> we insert these density matrices into Eq. <a class="reference internal" href="#equation-eq-orbrspeq">(105)</a>.
+<span class="eqno">(119)<a class="headerlink" href="#equation-eq-mp2-gamma-ijab" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijab} = \Gamma_{ijab}+\Gamma_{ijab}^\mathrm{A}=-\frac{1}{2}t_{ijab}-2\,\tilde{t}_{ijab}=-t_{ijab} \, . \]</div>
+<p>Finally, to determine the orbital response Lagrange multipliers <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> we insert these density matrices into Eq. <a class="reference internal" href="#equation-eq-orbrspeq">(96)</a>.
 The only non-zero block of <span class="math notranslate nohighlight">\(\boldsymbol\Lambda\)</span> is the occupied-virtual block and the HF density matrices cancel out, so the orbital response equation is:</p>
 <div class="math notranslate nohighlight" id="equation-eq-lambda-mp2-ov">
-<span class="eqno">(129)<a class="headerlink" href="#equation-eq-lambda-mp2-ov" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;u=i,\, t=a \nonumber\\
+<span class="eqno">(120)<a class="headerlink" href="#equation-eq-lambda-mp2-ov" title="Permalink to this equation">¶</a></span>\[\begin{split}&amp;u=i,\, t=a \nonumber\\
 &amp;2\lambda_{ia}(\epsilon_i-\epsilon_a)-2\sum_{p,q}(\gamma'_{pq}+\lambda_{pq})\braket{pa||qi}\delta_{i\epsilon_o}\nonumber+\sum_{p,q,r}\left(\Gamma'_{apqr}\braket{ip||qr}-\Gamma'_{ipqr}\braket{ap||qr}\right)=0\nonumber \\
 &amp;{^{(1)}}\Leftrightarrow 2\lambda_{ia}(\epsilon_i-\epsilon_a)-2\sum_{j,k}\gamma^\mathrm{A}_{jk}\braket{ja||ki}-2\sum_{b,c}\gamma^\mathrm{A}_{bc}\braket{ba||ci}-2\sum_{j,b}\lambda_{jb}\left(\braket{ja||bi}+\braket{ba||ji}\right)\nonumber\\
 &amp;+\sum_{b,j,k}\Gamma'_{abjk}\braket{ib||jk}-\sum_{j,b,c}\Gamma'_{ijbc}\braket{aj||bc}=0\nonumber \\
@@ -1094,14 +1090,14 @@ The only non-zero block of <span class="math notranslate nohighlight">\(\boldsym
 &amp;{^{(3)}}\Leftrightarrow \lambda_{ia}(\epsilon_i-\epsilon_a)+\sum_{j,b}\lambda_{jb}\left(\braket{ib||ja}-\braket{ij||ab}\right)= \nonumber \\ 
 &amp;=\sum_{j,k}\gamma^{\mathrm{A}}_{jk}\braket{ki||ja}+\sum_{b,c}\gamma^\mathrm{A}_{bc}\braket{ic||ab}-\frac{1}{2}\sum_{b,j,k}\Gamma'_{jkab}\braket{jk||ib}-\frac{1}{2}\sum_{j,b,c}\Gamma'_{ijbc}\braket{ja||bc}\end{split}\]</div>
 <p>Once the <span class="math notranslate nohighlight">\(\boldsymbol\Lambda\)</span> multipliers are determined using an iterative technique, such as the conjugate gradient algorithm,
-the different blocks of the <span class="math notranslate nohighlight">\(\boldsymbol\Omega\)</span> multipliers can be computed using Eq. <a class="reference internal" href="#equation-eq-omega">(106)</a>. Explicitly,</p>
+the different blocks of the <span class="math notranslate nohighlight">\(\boldsymbol\Omega\)</span> multipliers can be computed using Eq. <a class="reference internal" href="#equation-eq-omega">(97)</a>. Explicitly,</p>
 <div class="math notranslate nohighlight" id="equation-eq-omega-mp2-oo">
-<span class="eqno">(130)<a class="headerlink" href="#equation-eq-omega-mp2-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}\omega_{ij} = &amp;-\delta_{ij}\epsilon_i - \gamma_{ij}^\mathrm{A}\epsilon_i - \sum_{k,l} \gamma_{kl}^\mathrm{A}\braket{ki||lj} - \sum_{k,a}\lambda_{ka}\left(\braket{ik||ja}+\braket{jk||ia}\right)\nonumber\\
+<span class="eqno">(121)<a class="headerlink" href="#equation-eq-omega-mp2-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}\omega_{ij} = &amp;-\delta_{ij}\epsilon_i - \gamma_{ij}^\mathrm{A}\epsilon_i - \sum_{k,l} \gamma_{kl}^\mathrm{A}\braket{ki||lj} - \sum_{k,a}\lambda_{ka}\left(\braket{ik||ja}+\braket{jk||ia}\right)\nonumber\\
 &amp;-\sum_{ab}\gamma_{ab}^\mathrm{A}\braket{ia||jb}-\frac{1}{2}\sum_{k,a,b}\Gamma_{jkab}^\mathrm{A}\braket{ik||ab}\,,\\\end{split}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-omega-mp2-ov">
-<span class="eqno">(131)<a class="headerlink" href="#equation-eq-omega-mp2-ov" title="Permalink to this equation">¶</a></span>\[\omega_{ia} = -\lambda_{ia}\epsilon_i-\frac{1}{2}\sum_{j,k,c}\Gamma^\mathrm{A}_{jkac}\braket{jk||ic} \,,\]</div>
+<span class="eqno">(122)<a class="headerlink" href="#equation-eq-omega-mp2-ov" title="Permalink to this equation">¶</a></span>\[\omega_{ia} = -\lambda_{ia}\epsilon_i-\frac{1}{2}\sum_{j,k,c}\Gamma^\mathrm{A}_{jkac}\braket{jk||ic} \,,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-omega-mp2-vv">
-<span class="eqno">(132)<a class="headerlink" href="#equation-eq-omega-mp2-vv" title="Permalink to this equation">¶</a></span>\[\omega_{ab} = -\gamma_{ab}^\mathrm{A}\epsilon_a-\frac{1}{2}\sum_{i,j,c}\Gamma^\mathrm{A}_{ijbc}\braket{ij||ac}\, .\]</div>
+<span class="eqno">(123)<a class="headerlink" href="#equation-eq-omega-mp2-vv" title="Permalink to this equation">¶</a></span>\[\omega_{ab} = -\gamma_{ab}^\mathrm{A}\epsilon_a-\frac{1}{2}\sum_{i,j,c}\Gamma^\mathrm{A}_{ijbc}\braket{ij||ac}\, .\]</div>
 </div>
 </div>
 <div class="section" id="excited-states">
@@ -1117,14 +1113,14 @@ the different blocks of the <span class="math notranslate nohighlight">\(\boldsy
 </ol>
 <div class="section" id="configuration-interaction-singles">
 <span id="cis-label"></span><h4>Configuration interaction singles<a class="headerlink" href="#configuration-interaction-singles" title="Permalink to this headline">¶</a></h4>
-<p>To illustrate this procedure, we will take the configuration interaction singles (CIS) method <span id="id12">[<a class="reference internal" href="refs.html#id161">FHGP92</a>]</span>
-as an example, which is equivalent to linear-response time-dependent Hartree–Fock (TDHF) theory within the Tamm-Dancoff approximation (TDA) <span id="id13">[<a class="reference internal" href="refs.html#id73">DHG05</a>]</span>.
-Note that for excitation energies and excited-state properties, CIS also yields the same results as the ADC(1) scheme <span id="id14">[<a class="reference internal" href="refs.html#id74">DW15</a>]</span>.
-Furthermore, excited-state gradients of linear-response time-dependent density functional theory (TDDFT) within the TDA <span id="id15">[<a class="reference internal" href="refs.html#id163">HHG99</a>]</span>
-can be derived in a completely analogous way, only the additional exchange-correlation terms need to be taken into account <span id="id16">[<a class="reference internal" href="refs.html#id91">FA02</a>]</span>.</p>
+<p>To illustrate this procedure, we will take the configuration interaction singles (CIS) method <span id="id12">[<a class="reference internal" href="refs.html#id161" title="James B. Foresman, M. Head-Gordon, and J. A. Pople. Toward a systematic molecular orbital theory for excited states. J. Phys. Chem., 96(1):135-149, 1992. doi:10.1021/j100180a030.">FHGP92</a>]</span>
+as an example, which is equivalent to linear-response time-dependent Hartree–Fock (TDHF) theory within the Tamm-Dancoff approximation (TDA) <span id="id13">[<a class="reference internal" href="refs.html#id73" title="Andreas Dreuw and Martin Head-Gordon. Single-reference ab initio methods for the calculation of excited states of large molecules. Chem. Rev., 105(11):4009-4037, 2005. doi:10.1021/cr0505627.">DHG05</a>]</span>.
+Note that for excitation energies and excited-state properties, CIS also yields the same results as the ADC(1) scheme <span id="id14">[<a class="reference internal" href="refs.html#id74" title="Andreas Dreuw and Michael Wormit. The algebraic diagrammatic construction scheme for the polarization propagator for the calculation of excited states. WIREs Comput. Mol. Sci., 5(1):82-95, 2015.">DW15</a>]</span>.
+Furthermore, excited-state gradients of linear-response time-dependent density functional theory (TDDFT) within the TDA <span id="id15">[<a class="reference internal" href="refs.html#id163" title="So Hirata and Martin Head-Gordon. Time-dependent density functional theory within the tamm–dancoff approximation. Chem. Phys. Lett., 314(3):291–299, 1999. URL: https://doi.org/10.1016/S0009-2614(99)01149-5.">HHG99</a>]</span>
+can be derived in a completely analogous way, only the additional exchange-correlation terms need to be taken into account <span id="id16">[<a class="reference internal" href="refs.html#id91" title="Filipp Furche and Reinhart Ahlrichs. Adiabatic time-dependent density functional methods for excited state properties. J. Chem. Phys., 117(16):7433-7447, 2002. doi:10.1063/1.1508368.">FA02</a>]</span>.</p>
 <p>In the CIS scheme, a Hermitian eigenvalue equation of the following form is solved,</p>
 <div class="math notranslate nohighlight" id="equation-eq-cis-eigenvalue-eq">
-<span class="eqno">(133)<a class="headerlink" href="#equation-eq-cis-eigenvalue-eq" title="Permalink to this equation">¶</a></span>\[  \mathbf{AX}_n = \omega_n \mathbf{X}_n \, ,\]</div>
+<span class="eqno">(124)<a class="headerlink" href="#equation-eq-cis-eigenvalue-eq" title="Permalink to this equation">¶</a></span>\[  \mathbf{AX}_n = \omega_n \mathbf{X}_n \, ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\omega_n\)</span> is the excitation energy for excited state <span class="math notranslate nohighlight">\(n\)</span> with corresponding eigenvector <span class="math notranslate nohighlight">\(\mathbf{X}_n\)</span>
 and <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the CIS matrix given by the elements
 <span class="math notranslate nohighlight">\(A_{ia,jb} = (\epsilon_i - \epsilon_a) \delta_{ij} \delta_{ab} - \braket{ja||ib}\)</span>.</p>
@@ -1132,94 +1128,94 @@ and <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the CIS 
 We therefore formally represent the excitation energy <span class="math notranslate nohighlight">\(\omega_n = \mathbf{X}_n^\dagger\mathbf{A}\mathbf{X}_n\)</span>
 in terms of one- and two-particle density matrices:</p>
 <div class="math notranslate nohighlight" id="equation-eq-excitation-energy-adc1">
-<span class="eqno">(134)<a class="headerlink" href="#equation-eq-excitation-energy-adc1" title="Permalink to this equation">¶</a></span>\[\mathbf{X}_n^\dagger\mathbf{A}\mathbf{X}_n = \sum_{p,q}\gamma^{(n)}_{pq}f_{pq} + \frac{1}{4}\sum_{p,q,r,s}\Gamma^{(n)}_{pqrs}\braket{pq||rs}\, ,\]</div>
+<span class="eqno">(125)<a class="headerlink" href="#equation-eq-excitation-energy-adc1" title="Permalink to this equation">¶</a></span>\[\mathbf{X}_n^\dagger\mathbf{A}\mathbf{X}_n = \sum_{p,q}\gamma^{(n)}_{pq}f_{pq} + \frac{1}{4}\sum_{p,q,r,s}\Gamma^{(n)}_{pqrs}\braket{pq||rs}\, ,\]</div>
 <p>where the superscript <span class="math notranslate nohighlight">\((n)\)</span> indicates that we are referring to the difference density matrices for the <span class="math notranslate nohighlight">\(n\)</span>-th excited state.
 To identify these density matrices, we carry out explicitly the matrix-vector multiplication on the left hand side,</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-identify-dms">
-<span class="eqno">(135)<a class="headerlink" href="#equation-eq-adc1-identify-dms" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{X}_n^\dagger\mathbf{A}\mathbf{X}_n &amp;= \sum_{i,a,j,b} x_{jb} \left[(\epsilon_a - \epsilon_i)\delta_{ab}\delta_{ij}-\braket{ja||ib}\right] x_{ia}\nonumber\\
+<span class="eqno">(126)<a class="headerlink" href="#equation-eq-adc1-identify-dms" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{X}_n^\dagger\mathbf{A}\mathbf{X}_n &amp;= \sum_{i,a,j,b} x_{jb} \left[(\epsilon_a - \epsilon_i)\delta_{ab}\delta_{ij}-\braket{ja||ib}\right] x_{ia}\nonumber\\
 &amp;=\sum_{i,a,j,b} \left(x_{jb}x_{ia}f_{ab}\delta_{ij} - x_{jb}x_{ia}f_{ij}\delta_{ab}-x_{jb}x_{ia}\braket{ja||ib}\right)\,, \end{split}\]</div>
 <p>where we have used the explicit form of the CIS matrix elements,
-which correspond to the sum of Eqs. <a class="reference internal" href="adc-isr.html#equation-eq-adcmat-ph-ph-0">(202)</a> and <a class="reference internal" href="adc-isr.html#equation-eq-adcmat-ph-ph-1">(203)</a> for the ADC(1) matrix elements,
+which correspond to the sum of Eqs. <a class="reference internal" href="adc-isr.html#equation-eq-adcmat-ph-ph-0">(193)</a> and <a class="reference internal" href="adc-isr.html#equation-eq-adcmat-ph-ph-1">(194)</a> for the ADC(1) matrix elements,
 and <span class="math notranslate nohighlight">\(x_{ia}\)</span> are the elements of a specific eigenvector <span class="math notranslate nohighlight">\(\mathbf{X}_n\)</span>.</p>
-<p>From Eq. <a class="reference internal" href="#equation-eq-adc1-identify-dms">(135)</a> we identify the excited-state density matrix contributions:</p>
+<p>From Eq. <a class="reference internal" href="#equation-eq-adc1-identify-dms">(126)</a> we identify the excited-state density matrix contributions:</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-oo">
-<span class="eqno">(136)<a class="headerlink" href="#equation-eq-adc1-gamma-oo" title="Permalink to this equation">¶</a></span>\[\gamma^{(n)}_{ij} = - \sum_{a}x_{ja}x_{ia}\,,\label{eq:adc1_gamma_oo}\]</div>
+<span class="eqno">(127)<a class="headerlink" href="#equation-eq-adc1-gamma-oo" title="Permalink to this equation">¶</a></span>\[\gamma^{(n)}_{ij} = - \sum_{a}x_{ja}x_{ia}\,,\label{eq:adc1_gamma_oo}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-vv">
-<span class="eqno">(137)<a class="headerlink" href="#equation-eq-adc1-gamma-vv" title="Permalink to this equation">¶</a></span>\[\gamma^{(n)}_{ab} = \sum_{i} x_{ib}x_{ia}\,,\label{eq:adc1_gamma_vv}\]</div>
+<span class="eqno">(128)<a class="headerlink" href="#equation-eq-adc1-gamma-vv" title="Permalink to this equation">¶</a></span>\[\gamma^{(n)}_{ab} = \sum_{i} x_{ib}x_{ia}\,,\label{eq:adc1_gamma_vv}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-ovov">
-<span class="eqno">(138)<a class="headerlink" href="#equation-eq-adc1-gamma-ovov" title="Permalink to this equation">¶</a></span>\[\Gamma^{(n)}_{iajb} = -x_{ib}x_{ja}\, ,\label{eq:adc1_Gamma_ovov}\]</div>
+<span class="eqno">(129)<a class="headerlink" href="#equation-eq-adc1-gamma-ovov" title="Permalink to this equation">¶</a></span>\[\Gamma^{(n)}_{iajb} = -x_{ib}x_{ja}\, ,\label{eq:adc1_Gamma_ovov}\]</div>
 <p>where the indices of the vectors in the two-particle density matrix have been renamed.</p>
 <p>To obtain the molecular gradient of the excited state <span class="math notranslate nohighlight">\({n}\)</span>, the density matrices of the ground state must also be included.
 For CIS, this is the HF reference state, so the density matrices for the excited state are:</p>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-total-oo">
-<span class="eqno">(139)<a class="headerlink" href="#equation-eq-adc1-gamma-total-oo" title="Permalink to this equation">¶</a></span>\[\gamma'_{ij} = \gamma_{ij}+ \gamma^{(n)}_{ij}= \delta_{ij} - \sum_{a}x_{ja}x_{ia}\,,\]</div>
+<span class="eqno">(130)<a class="headerlink" href="#equation-eq-adc1-gamma-total-oo" title="Permalink to this equation">¶</a></span>\[\gamma'_{ij} = \gamma_{ij}+ \gamma^{(n)}_{ij}= \delta_{ij} - \sum_{a}x_{ja}x_{ia}\,,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-total-vv">
-<span class="eqno">(140)<a class="headerlink" href="#equation-eq-adc1-gamma-total-vv" title="Permalink to this equation">¶</a></span>\[\gamma'_{ab} = \gamma^{(n)}_{ab} =\sum_{i} x_{ib}x_{ia}\,,\]</div>
+<span class="eqno">(131)<a class="headerlink" href="#equation-eq-adc1-gamma-total-vv" title="Permalink to this equation">¶</a></span>\[\gamma'_{ab} = \gamma^{(n)}_{ab} =\sum_{i} x_{ib}x_{ia}\,,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-total-ovov">
-<span class="eqno">(141)<a class="headerlink" href="#equation-eq-adc1-gamma-total-ovov" title="Permalink to this equation">¶</a></span>\[\Gamma'_{iajb} = \Gamma^{(n)}_{iajb} = -x_{ib}x_{ja}\, ,\]</div>
+<span class="eqno">(132)<a class="headerlink" href="#equation-eq-adc1-gamma-total-ovov" title="Permalink to this equation">¶</a></span>\[\Gamma'_{iajb} = \Gamma^{(n)}_{iajb} = -x_{ib}x_{ja}\, ,\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-adc1-gamma-total-oooo">
-<span class="eqno">(142)<a class="headerlink" href="#equation-eq-adc1-gamma-total-oooo" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\,.\]</div>
+<span class="eqno">(133)<a class="headerlink" href="#equation-eq-adc1-gamma-total-oooo" title="Permalink to this equation">¶</a></span>\[\Gamma'_{ijkl} = \Gamma_{ijkl} = -2\delta_{ik}\delta_{jl}\,.\]</div>
 <p>Since, when written in terms of one- and two-particle density matrices,
 the excited state Lagrangian is virtually identical to the Lagrangians written for HF and MP2,
 we leave the exercise of plugging in the expressions of the DMs into Eq. n to the reader.
 The orbital response equations are also straightforwad to derive by using the density matrices
-in Eqs. <a class="reference internal" href="#equation-eq-adc1-gamma-total-oo">(139)</a>-<a class="reference internal" href="#equation-eq-adc1-gamma-total-oooo">(142)</a> in the general orbital response equations <a class="reference internal" href="#equation-eq-orbrspeq">(105)</a> and <a class="reference internal" href="#equation-eq-omega">(106)</a>.
+in Eqs. <a class="reference internal" href="#equation-eq-adc1-gamma-total-oo">(130)</a>-<a class="reference internal" href="#equation-eq-adc1-gamma-total-oooo">(133)</a> in the general orbital response equations <a class="reference internal" href="#equation-eq-orbrspeq">(96)</a> and <a class="reference internal" href="#equation-eq-omega">(97)</a>.
 We leave the step-by-step derivation to the reader, with a note that care should be given
 to the symmetry of the two-particle density matrix <span class="math notranslate nohighlight">\(\Gamma_{pqrs}\)</span>.
 Here, we provide the final expressions for <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> (to be determined iteratively):</p>
 <div class="math notranslate nohighlight" id="equation-eq-lambda-adc1-ov">
-<span class="eqno">(143)<a class="headerlink" href="#equation-eq-lambda-adc1-ov" title="Permalink to this equation">¶</a></span>\[\begin{split}(\epsilon_i-\epsilon_a)\lambda_{ia} - \sum_{j,b}\lambda_{jb}(\braket{ji||ba}-{ja||ib}) &amp;= \sum_{j,k}\gamma^{(n)}_{jk}\braket{ji||ka} - \sum_{b,c}\gamma^{(n)}_{bc}\braket{ib||ca} \nonumber\\
+<span class="eqno">(134)<a class="headerlink" href="#equation-eq-lambda-adc1-ov" title="Permalink to this equation">¶</a></span>\[\begin{split}(\epsilon_i-\epsilon_a)\lambda_{ia} - \sum_{j,b}\lambda_{jb}(\braket{ji||ba}-{ja||ib}) &amp;= \sum_{j,k}\gamma^{(n)}_{jk}\braket{ji||ka} - \sum_{b,c}\gamma^{(n)}_{bc}\braket{ib||ca} \nonumber\\
 &amp;+ \sum_{j,k,b}\Gamma^{(n)}_{jakb}\braket{ij||kb} + \sum_{b,k,c}\Gamma_{ibkc}^{(n)}\braket{kc||ab}  \label{eq:lambda_adc1_ov}\,,\end{split}\]</div>
 <p>and <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-eq-omega-adc1-oo">
-<span class="eqno">(144)<a class="headerlink" href="#equation-eq-omega-adc1-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}\omega_{ij} = &amp;-(\delta_{ij} +\gamma^{(n)}_{ij})\epsilon_{i}-\sum_{k,l}\gamma^{(n)}_{kl}\braket{ki||lj}+\sum_{k,a}\lambda_{ka}\left(\braket{ki||ja}+\braket{kj||ia}\right) \nonumber \\
+<span class="eqno">(135)<a class="headerlink" href="#equation-eq-omega-adc1-oo" title="Permalink to this equation">¶</a></span>\[\begin{split}\omega_{ij} = &amp;-(\delta_{ij} +\gamma^{(n)}_{ij})\epsilon_{i}-\sum_{k,l}\gamma^{(n)}_{kl}\braket{ki||lj}+\sum_{k,a}\lambda_{ka}\left(\braket{ki||ja}+\braket{kj||ia}\right) \nonumber \\
 &amp;-\sum_{a,b}\gamma^{(n)}_{ab}\braket{ia||jb} - \sum_{a,k,b} \Gamma^{(n)}_{jakb}\braket{ia||kb}\label{eq:omega_adc1_oo} \,,\end{split}\]</div>
 <div class="math notranslate nohighlight" id="equation-eq-omega-adc1-ov">
-<span class="eqno">(145)<a class="headerlink" href="#equation-eq-omega-adc1-ov" title="Permalink to this equation">¶</a></span>\[\omega_{ia} = - \lambda_{ia}\epsilon_{i} + \sum_{k,b,j}\Gamma^{(n)}_{kajb}\braket{ik||jb}\label{eq:omega_adc1_ov} \,, \]</div>
+<span class="eqno">(136)<a class="headerlink" href="#equation-eq-omega-adc1-ov" title="Permalink to this equation">¶</a></span>\[\omega_{ia} = - \lambda_{ia}\epsilon_{i} + \sum_{k,b,j}\Gamma^{(n)}_{kajb}\braket{ik||jb}\label{eq:omega_adc1_ov} \,, \]</div>
 <div class="math notranslate nohighlight" id="equation-eq-omega-adc1-vv">
-<span class="eqno">(146)<a class="headerlink" href="#equation-eq-omega-adc1-vv" title="Permalink to this equation">¶</a></span>\[\omega_{ab} =-\gamma^{(n)}_{ab}\epsilon_a - \sum_{k,c,j}\Gamma^{(n)}_{kajc}\braket{kb||jc}\  \label{eq:omega_adc1_vv} \,.\]</div>
+<span class="eqno">(137)<a class="headerlink" href="#equation-eq-omega-adc1-vv" title="Permalink to this equation">¶</a></span>\[\omega_{ab} =-\gamma^{(n)}_{ab}\epsilon_a - \sum_{k,c,j}\Gamma^{(n)}_{kajc}\braket{kb||jc}\  \label{eq:omega_adc1_vv} \,.\]</div>
 <p>Using the density matrices and Lagrange multipliers, the analytical CIS or TDHF/TDA gradient can now be determined from the partial derivative of the Lagrangian with respect to <span class="math notranslate nohighlight">\(\xi\)</span>.</p>
 </div>
 </div>
 <div class="section" id="first-order-properties">
-<h3>First-order properties<a class="headerlink" href="#first-order-properties" title="Permalink to this headline">¶</a></h3>
-<p>Not only nuclear gradients, but many other time-independent (“static”) molecular properties can be calculated as derivatives of the energy <span id="id17">[<a class="reference internal" href="refs.html#id109">Jen06</a>]</span>.
+<span id="sec-first-order-prop"></span><h3>First-order properties<a class="headerlink" href="#first-order-properties" title="Permalink to this headline">¶</a></h3>
+<p>Not only nuclear gradients, but many other time-independent (“static”) molecular properties can be calculated as derivatives of the energy <span id="id17">[<a class="reference internal" href="refs.html#id109" title="Frank Jensen. Introduction to computational chemistry. John Wiley &amp; Sons Ltd., second edition, 2006.">Jen06</a>]</span>.
 For instance, the electric dipole moment can be calculated as the derivative of the energy with respect to an external electric field,
 and the magnetic dipole moment with respect to an external magnetic field.
 Second derivatives with respect to the external field give the electric polarizability and magnetizability, respectively.
 Properties that can be calculated as first derivatives of the energy are referred to as <strong>first-order properties</strong>.</p>
-<p>For exact wave functions <span class="math notranslate nohighlight">\(\ket{\Psi}\)</span> and energies <span class="math notranslate nohighlight">\(E = \langle \Psi | \hat{H} | \Psi \rangle\)</span>, the <strong>Hellmann–Feynman theorem</strong> holds <span id="id18">[<a class="reference internal" href="refs.html#id109">Jen06</a>]</span>,</p>
+<p>For exact wave functions <span class="math notranslate nohighlight">\(\ket{\Psi}\)</span> and energies <span class="math notranslate nohighlight">\(E = \langle \Psi | \hat{H} | \Psi \rangle\)</span>, the <strong>Hellmann–Feynman theorem</strong> holds <span id="id18">[<a class="reference internal" href="refs.html#id109" title="Frank Jensen. Introduction to computational chemistry. John Wiley &amp; Sons Ltd., second edition, 2006.">Jen06</a>]</span>,</p>
 <div class="math notranslate nohighlight" id="equation-eq-hellmann-feynman">
-<span class="eqno">(147)<a class="headerlink" href="#equation-eq-hellmann-feynman" title="Permalink to this equation">¶</a></span>\[  \frac{\mathrm{d} E}{\mathrm{d} \chi} = \frac{\mathrm{d}}{\mathrm{d} \chi} \langle \Psi | \hat{H} | \Psi \rangle
+<span class="eqno">(138)<a class="headerlink" href="#equation-eq-hellmann-feynman" title="Permalink to this equation">¶</a></span>\[  \frac{\mathrm{d} E}{\mathrm{d} \chi} = \frac{\mathrm{d}}{\mathrm{d} \chi} \langle \Psi | \hat{H} | \Psi \rangle
   = \langle \Psi | \frac{\mathrm{d} \hat{H}}{\mathrm{d} \chi} | \Psi \rangle \, ,\]</div>
 <p>stating that derivative of the energy with respect to an external perturbation <span class="math notranslate nohighlight">\(\chi\)</span> is identical
 to the expectation value of the perturbed Hamiltonian with the unperturbed wave function.
 The above derivative is to be taken at zero perturbation strength, <span class="math notranslate nohighlight">\(\chi = 0\)</span>.
-If the basis functions do not depend on the perturbation, Eq. <a class="reference internal" href="#equation-eq-hellmann-feynman">(147)</a>
+If the basis functions do not depend on the perturbation, Eq. <a class="reference internal" href="#equation-eq-hellmann-feynman">(138)</a>
 also holds for fully variational methods like the SCF and MCSCF schemes.</p>
-<p>Starting from a Lagrangian <span class="math notranslate nohighlight">\(L\)</span> of the form as in Eq. <a class="reference internal" href="#equation-eq-mp2-lagrangian">(113)</a>,
+<p>Starting from a Lagrangian <span class="math notranslate nohighlight">\(L\)</span> of the form as in Eq. <a class="reference internal" href="#equation-eq-mp2-lagrangian">(104)</a>,
 dipole moments are obtained from a perturbed Hamiltonian, <span class="math notranslate nohighlight">\(\hat{H}_{\mathcal{F}} = \hat{H} + \mathcal{F} \hat{\mu}\)</span>
 (where <span class="math notranslate nohighlight">\(\hat{\mu}\)</span> is the dipole operator and <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> represents the external electric field)
 in the Lagrange expression followed by differentiation,</p>
 <div class="math notranslate nohighlight" id="equation-eq-dipmom-derivative">
-<span class="eqno">(148)<a class="headerlink" href="#equation-eq-dipmom-derivative" title="Permalink to this equation">¶</a></span>\[  \boldsymbol{\mu} = \frac{\partial L}{\partial \mathcal{F}} = \frac{\partial E}{\partial \mathcal{F}}
+<span class="eqno">(139)<a class="headerlink" href="#equation-eq-dipmom-derivative" title="Permalink to this equation">¶</a></span>\[  \boldsymbol{\mu} = \frac{\partial L}{\partial \mathcal{F}} = \frac{\partial E}{\partial \mathcal{F}}
   + \boldsymbol{\Lambda} \frac{\partial f_c(\mathbf{C})}{\partial \mathcal{F}}
   + \mathbf{\tilde{T}} \frac{\partial f_t(\mathbf{T})}{\partial \mathcal{F}} \, .\]</div>
 <p>The determination of the Lagrange multipliers <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{\tilde{T}}\)</span> is identical to the procedures described above.
 The dipole moment as a derivative of the energy can then be calculated as</p>
 <div class="math notranslate nohighlight" id="equation-eq-dipmom-explicit">
-<span class="eqno">(149)<a class="headerlink" href="#equation-eq-dipmom-explicit" title="Permalink to this equation">¶</a></span>\[  \boldsymbol{\mu} = \sum_{pq} ( \gamma_{pq}' + \lambda_{pq} ) \mu_{qp} \, ,\]</div>
+<span class="eqno">(140)<a class="headerlink" href="#equation-eq-dipmom-explicit" title="Permalink to this equation">¶</a></span>\[  \boldsymbol{\mu} = \sum_{pq} ( \gamma_{pq}' + \lambda_{pq} ) \mu_{qp} \, ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}' = \boldsymbol{\gamma} + \boldsymbol{\gamma}^{\text{A}}\)</span> is the <strong>unrelaxed</strong> one-particle density matrix,
 including contributions from the amplitude response, <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}' + \boldsymbol{\Lambda}\)</span>
 is referred to as the <strong>relaxed density matrix</strong>, and <span class="math notranslate nohighlight">\(\mu_{qp}\)</span> are elements of the dipole operator in the MO basis.
-Taking all terms of Eq. <a class="reference internal" href="#equation-eq-dipmom-explicit">(149)</a> is referred to as the <em>orbital-relaxed</em> dipole moment,
+Taking all terms of Eq. <a class="reference internal" href="#equation-eq-dipmom-explicit">(140)</a> is referred to as the <em>orbital-relaxed</em> dipole moment,
 whereas neglecting <span class="math notranslate nohighlight">\(\boldsymbol{\Lambda}\)</span> yields so-called <em>orbital-unrelaxed</em> dipole moments.</p>
 <p>Another approach to one-electron properties such as dipole moments is to set out from the expectation value
 of the corresponding operator with the wave function, such as <span class="math notranslate nohighlight">\(\boldsymbol{\mu} = \langle \Psi | \hat{\mu} | \Psi \rangle\)</span>,
-see Eq. <a class="reference internal" href="#equation-eq-hellmann-feynman">(147)</a>.
+see Eq. <a class="reference internal" href="#equation-eq-hellmann-feynman">(138)</a>.
 Depending on the wave-function model, this approach can be equivalent to the orbital-unrelaxed approach,
 such as in configuration interaction, but in particular for schemes based on perturbation theory,
-all three different approaches to dipole moments differ <span id="id19">[<a class="reference internal" href="refs.html#id167">HRDH19</a>]</span>.</p>
+all three different approaches to dipole moments differ <span id="id19">[<a class="reference internal" href="refs.html#id167" title="Manuel Hodecker, Dirk R. Rehn, Andreas Dreuw, and Sebastian Höfener. Similarities and differences of the lagrange formalism and the intermediate state representation in the treatment of molecular properties. J. Chem. Phys., 150(16):164125, 2019. doi:10.1063/1.5093606.">HRDH19</a>]</span>.</p>
 </div>
 </div>
 </div>

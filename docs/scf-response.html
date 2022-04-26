@@ -45,17 +45,16 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -971,7 +970,7 @@
   <div class="tex2jax_ignore mathjax_ignore section" id="hartreefock">
 <h1>Hartree–Fock<a class="headerlink" href="#hartreefock" title="Permalink to this headline">¶</a></h1>
 <p>Compared to exact-state theory, the first and foremost difference is that, in approximate-state methods, state vectors are in general not eigenstates of the unperturbed Hamiltonian but are rather formed in terms of Slater determinants. Apart from this, the steps to be taken in the derivation of response functions are very similar in the two situations.</p>
-<p>In Hartree–Fock and Kohn–Sham density functional theory, the reference state is described by a single Slater determinant, also referred to as the self-consistent field (SCF) approximation. The detailed derivation of response functions in this approximation can be found in <span id="id1">[<a class="reference internal" href="refs.html#id52">NRS18</a>]</span> but the key steps are indicated below.</p>
+<p>In Hartree–Fock and Kohn–Sham density functional theory, the reference state is described by a single Slater determinant, also referred to as the self-consistent field (SCF) approximation. The detailed derivation of response functions in this approximation can be found in <span id="id1">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span> but the key steps are indicated below.</p>
 <div class="section" id="parameterization">
 <h2>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">¶</a></h2>
 <p>Parameterization of SCF states:</p>
@@ -981,11 +980,11 @@
   | \bar{\psi}(t) \rangle =
     e^{-i\hat{\kappa}(t)} |0\rangle ; \quad
   \hat{\kappa}(t) =
-  \sum_s^\mathrm{unocc} \sum_i^\mathrm{occ} \left[
-    \kappa_{si}(t) \hat{a}^\dagger_s \hat{a}_i + \kappa_{si}^*(t) \hat{a}^\dagger_i \hat{a}_s
+  \sum_a^\mathrm{unocc} \sum_i^\mathrm{occ} \left[
+    \kappa_{ai}(t) \hat{a}^\dagger_a \hat{a}_i + \kappa_{ai}^*(t) \hat{a}^\dagger_i \hat{a}_a
     \right] ,
 \end{equation*}\]</div>
-<p>where the creation, <span class="math notranslate nohighlight">\(\hat{a}^\dagger\)</span>, and annihilation, <span class="math notranslate nohighlight">\(\hat{a}\)</span>, operators act on unoccupied, secondary, <span class="math notranslate nohighlight">\(s\)</span> and occupied, inactive, <span class="math notranslate nohighlight">\(i\)</span> molecular orbitals.</p>
+<p>where the creation, <span class="math notranslate nohighlight">\(\hat{a}^\dagger\)</span>, and annihilation, <span class="math notranslate nohighlight">\(\hat{a}\)</span>, operators act on unoccupied, secondary, <span class="math notranslate nohighlight">\(a\)</span> and occupied, inactive, <span class="math notranslate nohighlight">\(i\)</span> molecular orbitals.</p>
 </div>
 <div class="section" id="equation-of-motion">
 <h2>Equation of motion<a class="headerlink" href="#equation-of-motion" title="Permalink to this headline">¶</a></h2>
@@ -1006,14 +1005,14 @@
 <p>We require that this equation is fulfilled for the set of time-transformed electron-transfer operators</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-    \hat{\Omega}_{si}^\dagger = 
-  e^{-i\hat{\kappa}} \, \hat{a}^\dagger_s \hat{a}_i \, e^{i\hat{\kappa}}
+    \hat{\Omega}_{ai}^\dagger = 
+  e^{-i\hat{\kappa}} \, \hat{a}^\dagger_a \hat{a}_i \, e^{i\hat{\kappa}}
 \end{equation*}\]</div>
-<p>as well as the corresponding Hermitian conjugate. There will be two equations associated with each single-electron excited determinant, so there are twice as  many equations as there are unknown <em>complex</em> parameters, <span class="math notranslate nohighlight">\(\kappa_{si}(t)\)</span>, with independent real and imaginary parts in the time-dependent phase-isolated wave function, <span class="math notranslate nohighlight">\(| \bar{\psi}(t) \rangle\)</span>.</p>
+<p>as well as the corresponding Hermitian conjugate. There will be two equations associated with each single-electron excited determinant, so there are twice as  many equations as there are unknown <em>complex</em> parameters, <span class="math notranslate nohighlight">\(\kappa_{ai}(t)\)</span>, with independent real and imaginary parts in the time-dependent phase-isolated wave function, <span class="math notranslate nohighlight">\(| \bar{\psi}(t) \rangle\)</span>.</p>
 <p>At this point, we adopt perturbation theory:</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-  \kappa_{si}(t) = \kappa_{si}^{(1)} + \kappa_{si}^{(2)} + \kappa_{si}^{(3)} + \cdots ,
+  \kappa_{ai}(t) = \kappa_{ai}^{(1)} + \kappa_{ai}^{(2)} + \kappa_{ai}^{(3)} + \cdots ,
 \end{equation*}\]</div>
 <p>which, after finding a first-order solution in the frequency domain, will eventually results in</p>
 <div class="amsmath math notranslate nohighlight">
@@ -1081,24 +1080,24 @@ E^{[2]} &amp; = &amp;
 &amp;	= &amp;
     \begin{pmatrix}
     \rule[-10pt]{0pt}{30pt}
-    \langle 0_i^s | \hat{H}_0 | 0_j^t \rangle - 
-    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{st}\delta_{ij} 
+    \langle 0_i^a | \hat{H}_0 | 0_j^b \rangle - 
+    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{ab}\delta_{ij} 
     &amp; 
-     -\langle 0_{ij}^{st} | \hat{H}_0 | 0 \rangle 
-    (1 - \delta_{ij})(1-\delta_{st}) 
+     -\langle 0_{ij}^{ab} | \hat{H}_0 | 0 \rangle 
+    (1 - \delta_{ij})(1-\delta_{ab}) 
     \\
     \rule[-10pt]{0pt}{30pt}
-    -\langle 0 | \hat{H}_0 | 0_{ij}^{st} \rangle 
-    (1 - \delta_{ij})(1-\delta_{st}) 
+    -\langle 0 | \hat{H}_0 | 0_{ij}^{ab} \rangle 
+    (1 - \delta_{ij})(1-\delta_{ab}) 
      &amp; 
-    \langle 0_j^t | \hat{H}_0 | 0_i^s \rangle - 
-    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{st}\delta_{ij} 
+    \langle 0_j^b | \hat{H}_0 | 0_i^a \rangle - 
+    \langle 0 | \hat{H}_0 | 0 \rangle \delta_{ab}\delta_{ij} 
     \\
   \end{pmatrix} 
 \end{eqnarray*}\]</div>
 <ul class="simple">
 <li><p>The Hessian matrix is Hermitian and has an internal structure in terms of the matrix blocks <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span></p></li>
-<li><p>The diagonal elements correspond to differences in energy between the single-excited determinants <span class="math notranslate nohighlight">\(|0_i^s\rangle\)</span> and the reference state <span class="math notranslate nohighlight">\(|0\rangle\)</span></p></li>
+<li><p>The diagonal elements correspond to differences in energy between the single-excited determinants <span class="math notranslate nohighlight">\(|0_i^a\rangle\)</span> and the reference state <span class="math notranslate nohighlight">\(|0\rangle\)</span></p></li>
 <li><p>The <span class="math notranslate nohighlight">\(A\)</span>-block corresponds to the CIS approximation</p></li>
 </ul>
 <p>In the Hartree–Fock approximation, the Hessian can be expressed as the differences in orbital energies corrected by an anti-symmetrized two-electron integral</p>
@@ -1107,16 +1106,16 @@ E^{[2]} &amp; = &amp;
 E^{[2]} = 
 \begin{pmatrix}
     \rule[-10pt]{0pt}{30pt}
-    F_{st} \delta_{ij} \!-\! F_{ji}\delta_{st} \!-\! \langle sj || ti
+    F_{st} \delta_{ij} \!-\! F_{ji}\delta_{ab} \!-\! \langle aj || bi
     \rangle 
     &amp; 
-    -\langle st||ij \rangle 
+    -\langle ab||ij \rangle 
     \\
     \rule[-10pt]{0pt}{30pt}
-    -\langle ij||st \rangle 
+    -\langle ij||ab \rangle 
     &amp; 
-    F_{ts} \delta_{ij}\! -\! F_{ij} \delta_{st} 
-    \! - \! \langle ti || sj \rangle 
+    F_{ts} \delta_{ij}\! -\! F_{ij} \delta_{ab} 
+    \! - \! \langle ai || bj \rangle 
     \\
 \end{pmatrix}
 \end{split}\]</div>
@@ -1162,18 +1161,18 @@ S^{[2]} &amp; = &amp;
   V^{[1]} =
   \begin{pmatrix}
     \rule[-10pt]{0pt}{20pt}
-     \langle 0 | [\hat{a}_{i}^\dagger\hat{a}_{s}, \hat{V}] | 0 \rangle
+     \langle 0 | [\hat{a}_{i}^\dagger\hat{a}_{a}, \hat{V}] | 0 \rangle
        \\
     \rule[-5pt]{0pt}{20pt}
-     \langle 0 | [\hat{a}_{s}^\dagger\hat{a}_{i}, \hat{V}] | 0 \rangle
+     \langle 0 | [\hat{a}_{a}^\dagger\hat{a}_{i}, \hat{V}] | 0 \rangle
   \\
   \end{pmatrix} =
   \begin{pmatrix}
     \rule[-5pt]{0pt}{15pt}
-     \langle 0_i^s | \hat{V} | 0 \rangle
+     \langle 0_i^a | \hat{V} | 0 \rangle
        \\
     \rule[-5pt]{0pt}{0pt}
-     -\langle 0 | \hat{V} | 0_i^s \rangle
+     -\langle 0 | \hat{V} | 0_i^a \rangle
     \\
   \end{pmatrix} =
       \begin{pmatrix}
@@ -1242,7 +1241,10 @@ S^{[2]} &amp; = &amp;
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals: 8
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 8
 Number of virtual orbitals: 18
 Dimension of A-block in E2: 144
 </pre></div>
@@ -1541,7 +1543,7 @@ alpha_zz(w=0.0656):  7.244817
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.): [0.291534]
-Transition moments (a.u.): [-1.531492  0.        0.      ]
+Transition moments (a.u.): [-1.531492 -0.       -0.      ]
 Oscillator strength: [0.455855]
 </pre></div>
 </div>
@@ -1647,8 +1649,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="transition-moments">
 <h4>Transition moments<a class="headerlink" href="#transition-moments" title="Permalink to this headline">¶</a></h4>
 <p>Since <span class="math notranslate nohighlight">\((\Omega \Lambda)^{-1} = \Lambda^{-1} \Omega^{-1}\)</span>, we can form the inverse of the RPA matrix as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5ca80208-1b72-4076-a2e1-d04d1eebe65f">
-<span class="eqno">(192)<a class="headerlink" href="#equation-5ca80208-1b72-4076-a2e1-d04d1eebe65f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-6d6890c7-84c5-4022-bf53-2127703adb7c">
+<span class="eqno">(183)<a class="headerlink" href="#equation-6d6890c7-84c5-4022-bf53-2127703adb7c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \left( E^{[2]} - \omega S^{[2]} \right)^{-1} =
   X \left[ X^\dagger \left( E^{[2]} - \omega S^{[2]} \right) X \right]^{-1} X^\dagger
 \end{equation}\]</div>
@@ -1698,7 +1700,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -1.531506
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.):  1.531506
 </pre></div>
 </div>
 </div>
@@ -1708,8 +1710,8 @@ Oscillator strength: [0.455855]
 <div class="section" id="tamm-dancoff-approximation">
 <h3>Tamm–Dancoff approximation<a class="headerlink" href="#tamm-dancoff-approximation" title="Permalink to this headline">¶</a></h3>
 <p>The Tamm–Dancoff approximation (TDA) corresponds to setting <span class="math notranslate nohighlight">\(B=0\)</span> in the electronic Hessian and diagonalize matrix block <span class="math notranslate nohighlight">\(A\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0428adff-7087-47e1-9bf0-d520cce9e5e2">
-<span class="eqno">(193)<a class="headerlink" href="#equation-0428adff-7087-47e1-9bf0-d520cce9e5e2" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
+<div class="amsmath math notranslate nohighlight" id="equation-4b2f56d3-656d-4fd4-86c3-bdabc497bea5">
+<span class="eqno">(184)<a class="headerlink" href="#equation-4b2f56d3-656d-4fd4-86c3-bdabc497bea5" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
 E^{[2]} &amp; = &amp;
 	\begin{pmatrix}
     \rule[-5pt]{0pt}{20pt}
@@ -1773,12 +1775,12 @@ E^{[2]} &amp; = &amp;
 <div class="math notranslate nohighlight">
 \[
 \bar{\phi}_\mathrm{occ} = (\ldots, \phi_i(\mathbf{r}),  \ldots)^T; \quad
-\bar{\phi}_\mathrm{unocc} = (\ldots, \phi_s(\mathbf{r}),  \ldots)^T
+\bar{\phi}_\mathrm{unocc} = (\ldots, \phi_a(\mathbf{r}),  \ldots)^T
 \]</div>
 <p>and scattering the (real) RPA eigenvector into a rectangular transition matrix <span class="math notranslate nohighlight">\(T\)</span> of dimension <span class="math notranslate nohighlight">\(n_\mathrm{occ} \times n_\mathrm{unocc}\)</span></p>
 <div class="math notranslate nohighlight">
 \[
-T_{f, is} = Z_{f, is} - Y_{f, is}
+T_{f, ia} = Z_{f, ia} - Y_{f, ia}
 \]</div>
 <p>we can write the transition moment as</p>
 <div class="amsmath math notranslate nohighlight">
@@ -1867,7 +1869,7 @@ T = U \Lambda V^T
 <div class="amsmath math notranslate nohighlight">
 \[\begin{eqnarray*}
 \phi_\mathrm{h}^1 &amp; = &amp;  \sum_{i}^\mathrm{occ} \phi_i U_{i,1} \\
-\phi_\mathrm{e}^1 &amp; = &amp;  \sum_{s}^\mathrm{unocc} \phi_s V^T_{1,s}
+\phi_\mathrm{e}^1 &amp; = &amp;  \sum_{a}^\mathrm{unocc} \phi_a V^T_{1,a}
 \end{eqnarray*}\]</div>
 <p>Inspecting the elements of the first column of <span class="math notranslate nohighlight">\(U\)</span> and the first row of <span class="math notranslate nohighlight">\(V^T\)</span> confirms that this transition is well characterized by a simple HOMO–LUMO excitation.</p>
 <div class="cell docutils container">
@@ -1879,8 +1881,8 @@ T = U \Lambda V^T
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [-0. -0.  0. -0.  0.  0.  0. -1.]
-Electron orbital no. 1: [-1.    0.   -0.    0.    0.   -0.   -0.    0.   -0.   -0.04  0.    0.    0.   -0.   -0.    0.    0.   -0.  ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0. -0.  0.  0. -0. -0. -0.  1.]
+Electron orbital no. 1: [-1.    0.    0.   -0.   -0.   -0.    0.    0.   -0.   -0.04 -0.   -0.   -0.   -0.    0.   -0.    0.   -0.  ]
 </pre></div>
 </div>
 </div>
@@ -1890,7 +1892,7 @@ Electron orbital no. 1: [-1.    0.   -0.    0.    0.   -0.   -0.    0.   -0.   -
 </div>
 <div class="section" id="complex-polarizability">
 <h2>Complex polarizability<a class="headerlink" href="#complex-polarizability" title="Permalink to this headline">¶</a></h2>
-<p>The complex polarizability is determined from the linear response function according to <span id="id3">[<a class="reference internal" href="refs.html#id52">NRS18</a>]</span></p>
+<p>The complex polarizability is determined from the linear response function according to <span id="id3">[<a class="reference internal" href="refs.html#id52" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span></p>
 <div class="math notranslate nohighlight">
 \[
 \alpha_{\alpha\beta}(\omega) = -
