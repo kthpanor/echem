@@ -77,12 +77,13 @@ Multiple lists of references are possible but not yet properly implemented.
     - 2/5: Introduction and theory
         - 9:00-10:00 Introduction, initial questionnaire (experiences, area of expertise, ...) (TF)
         - 10:00-12:00 SCF block (PN, ZR)
-        - 13:00-15:00 MP2 block (IB, XL)
+        - 13:00-15:00 MP2 block (IB, XL, MH)
         - 15:00-16:00 Wrap-up, block division (TF)
     - 3/5: Theory day
         - 11:00-12:00 Potential energy surface (gradients, Hessians, coordinates, IM) (YM, IB)
         - 13:00-16:00 Group work
         - 16:00-17:00 Wrap-up, presentations
+        - 18:00 Dinner at Cyprus(?)
     - 4/5: Tutorial day (Wednesday)
         - 9:00-12:00 Excited states: TDDFT (AD), ADC (MH), exciton coupling (XL, last)
         - 13:00-16:00 Group work
@@ -90,10 +91,9 @@ Multiple lists of references are possible but not yet properly implemented.
         
 4. Blocks and main responsible
     - Theory
-        - SCF [good shape, need exercises] (PN+ZR)
         - MCSCF (MD)
         - Structure optimization (IEB+YMR)
-        - Force field parameterization and interpolated PES (IEB+YMR)
+        - Force field parameterization, coordinate transformation, and interpolated PES (IEB+YMR)
         - TDSCF [missing TDDFT (with AD), exercises] (TF+PN)
         - ADC (MH)
     - Tutorials

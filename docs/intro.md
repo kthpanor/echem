@@ -93,7 +93,14 @@ The HPC-QC module of Gator focuses on large-scale correlated calculations on HPC
 
 ### Multi-Psi
 
-MultiPsi is a quantum chemistry program designed for multireference calculations with a special focus on spectroscopy. It currently implements a general configuration interaction solver and a multiconfigurational self-consistent field (MCSCF) method. It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods.
+```{image} ../img/MultiPsi-structure.png
+:alt: Code structure of MultiPsi.
+:align: center
+```
+
+MultiPsi is a quantum chemistry program designed for multireference calculations with a special focus on spectroscopy.
+It currently implements a general configuration interaction solver and a multiconfigurational self-consistent field (MCSCF) method, as well as some properties, in particular spectroscopy using state-averaged MCSCF.
+It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods. Some documentation is available at [https://mgdelcey.github.io/mtpman/](https://mgdelcey.github.io/mtpman/)
 
 
 <!-- #region -->
