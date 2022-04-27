@@ -1,15 +1,20 @@
 <!-- #region -->
-# Algebraic diagrammatic construction
+# Algebraic-diagrammatic construction
 
 
-The algebraic diagrammatic construction (ADC) scheme for the polarization propagator is a method to describe excited states and related properties based on the Møller-Plesset perturbation theory partition of the Hamiltonian {cite}`Dreuw2015`. The original derivation of ADC is related to many-body Green's function theory and relies on the perturbation series expansion of the polarization propagator {cite}`Dreuw2015`. This propagator describes how a perturbation of the electron density propagates through a system of interacting electrons. Such a process can be imagined as a sequence of excitation and de-excitation events, captured in the following spectral representation {cite}`Schirmer1982, Wormit2009`:
+The algebraic-diagrammatic construction (ADC) scheme for the polarization propagator is a method to describe excited states and related properties based on the Møller-Plesset perturbation theory partition of the Hamiltonian {cite}`Dreuw2015`. The original derivation of ADC is related to many-body Green's function theory and relies on the perturbation series expansion of the polarization propagator {cite}`Dreuw2015`. This propagator describes how a perturbation of the electron density propagates through a system of interacting electrons. Such a process can be imagined as a sequence of excitation and de-excitation events, captured in the following spectral representation {cite}`Schirmer1982, Wormit2009`:
 
 ```{math}
 :label: eq:ph_propagator
 \Pi_{pq,rs}(\omega)=\frac{1}{\hbar}\sum_{n>0}\left(\frac{\bra{0}\hat{a}_q^\dagger\hat{a}_p\ket{n}\bra{n}\hat{a}_r^\dagger\hat{a}_s\ket{0}}{\omega-\omega_{n0}+i\gamma_n}+\frac{\bra{0}\hat{a}_r^\dagger\hat{a}_s\ket{n}\bra{n}\hat{a}_q^\dagger\hat{a}_p\ket{0}}{-\omega-\omega_{n0}-i\gamma_n}\right)\,,%=\Pi_{+}(\omega)+\Pi_{-}(\omega)\, ,
 ```
-where $\hbar$ is the reduced Planck constant, $\hat{a}_p$ and $\hat{a}_q^\dagger$ are the annihilation and, respectively, creation operators, acting on single-electron states $\chi_p$, respectively, $\chi_q$ of the many-body ground state $\ket{0}$, or excited state $\ket{n}$. The summation is over all electronically excited states $\ket{n}$, $\omega_{n0}=(E_n-E_0)/\hbar$ is the angular frequency corresponding to the total energy difference between the excited state and the ground state, and $\gamma_n$ is the half-width broadening corresponding to the lifetime of the excited state $\ket{n}$. 
+where $\hbar$ is the reduced Planck constant, $\hat{a}_p$ and $\hat{a}_q^\dagger$ are the annihilation and, respectively, creation operators,
+acting on single-electron states $\chi_p$, respectively, $\chi_q$ of the many-body ground state $\ket{0}$, or excited state $\ket{n}$.
+The summation is over all electronically excited states $\ket{n}$,
+$\omega_{n0}=(E_n-E_0)/\hbar$ is the angular frequency corresponding to the total energy difference between the excited state and the ground state,
+and $\gamma_n$ is the half-width broadening corresponding to the finite lifetime of the excited state $\ket{n}$.
 
+(fig:propagator)=
 ```{figure} /img/adc/propagator.svg
 ---
 scale: 100%
@@ -19,7 +24,6 @@ align: left
 ```
 <!-- #endregion -->
 <!-- #region -->
-<<<<<<< HEAD
 Illustration of the propagation of an excitation in a many-electron system (inspired from {cite}`mattuck1992`): (a) a particle-hole pair is created by photon absorption; (b) the pair propagates through the system; (c) the particle and hole interact (the interaction is marked by a wiggly line); (d) the particle interacts with another particle in the system, lifting it out of its place and creating a new particle-hole pair (excitation); (e) the particle interacts with the lifted-out particle and knocks it back into the hole (de-excitation); (f) the particle and hole recombine and emit a photon. (g) Illustration of the series expansion of the polarization propagator (adapted from {cite}`Wormit2009`).
 
 

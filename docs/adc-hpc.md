@@ -1,5 +1,5 @@
 (adc-hpc:label)=
-## HPC-QC implementation
+# HPC-QC implementation
 
 To enable large-scale ADC(2) calculations on HPC systems, some considerations need to be taken into account in the implementation. Conventionally, the molecular orbital (MO) integrals, which are essentially tensors with four dimensions, are computed by integral transformation on a single compute node (or workstation). This is unfortunately not practical on HPC clusters, since a cluster node usually has moderate amount of memory which is not enough to store an object with $N^4$ elements (here $N$ is the number of orbitals). Therefore, the MO integral needs to be stored in a distributed way; in other words, each node need to store a portion of the four-dimensional MO integral. It is then natural to distribute the computation of MO integral as well, such that each node only computes part of the integral that needs to be stored locally. This leads to the so-called Fock matrix-driver integral transformation approach, where MO integrals are expressed in terms of Fock-like matrices {cite}`Hohenstein2015, gator`
 ```{math}

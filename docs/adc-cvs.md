@@ -1,5 +1,5 @@
 (cvs:label)=
-## Core--valence separation
+# Core--valence separation
 
 One way to reach the space of core-excitations (and be able to compute, for example, X-ray absorption spectra), without having to deal with an intractably large ADC matrix is provided by the core--valence separation (CVS) approximation. CVS is obtained by decoupling the core and valence excitation spaces and is motivated by the large energy separation between them {cite}`cederbaum1980`. Essentially, it consists of applying only excitation operators that involve one core electron ({numref}`Fig. {number} <fig-cvs>`a and b). This translates into keeping only those blocks of the ADC matrix which include one core orbital ({numref}`Fig. {number} <fig-cvs>`c) and significantly reduces the size of the matrix to be diagonalized ({numref}`Fig. {number} <fig-cvs>`d). The error introduced by this approximation is very small and system-independent {cite}`Herbst2020`.
 ```{figure} /img/adc/cvs_adc_matrix.svg
