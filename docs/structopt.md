@@ -8,10 +8,9 @@ The first class of special points on the PES that we will discuss are local ener
 ```
 In practical terms, the ingredients to perform a geometry optimization include: (1) the initial molecular coordinates, (2) a choice of coordinate system, (3) the energy at a specific geometry $E(\boldsymbol{\xi})$, (4) the gradient $\nabla E(\boldsymbol{\xi})$, (5) the Hessian, and (6) a procedure to update the coordinates and Hessian and move on the potential energy surface towards lower energy. 
 
-Having addressed the issue of coordinate system, the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton--Raphson, quasi-Newton). For a detailed review of minimization techniques, see Ref.~\citenum{Snyman2005}.
+Having addressed [the issue of coordinate system](coord), the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton--Raphson, quasi-Newton). For a detailed review of minimization techniques, see Ref.~\citenum{Snyman2005}.
 
 ## Gradient descent
-Notebook for gradient descent?
 
 The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient:
 %
