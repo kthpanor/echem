@@ -8,7 +8,7 @@ The first class of special points on the PES that we will discuss are local ener
 ```
 In practical terms, the ingredients to perform a geometry optimization include: (1) the initial molecular coordinates, (2) a choice of coordinate system, (3) the energy at a specific geometry $E(\boldsymbol{\xi})$, (4) the gradient $\nabla E(\boldsymbol{\xi})$, (5) the Hessian, and (6) a procedure to update the coordinates and Hessian and move on the potential energy surface towards lower energy. 
 
-Having addressed [the issue of coordinate system](coord), the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton--Raphson, quasi-Newton). For a detailed review of minimization techniques, see Ref.~\citenum{Snyman2005}.
+Having addressed [the issue of coordinate system](coord), the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton--Raphson, quasi-Newton). For a detailed review of minimization techniques, see {cite}`Snyman2005`.
 
 ## Gradient descent
 
@@ -47,7 +47,7 @@ where $\Delta \mathbf{x}$ is the Newton step used to update the coordinates:
     \mathbf{x}_\mathrm{i+1} &= \mathbf{x}_\mathrm{i}+\Delta \mathbf{x}\,.
 \end{flalign}
  %
- When redundant internal coordinates are used, it is important to ensure that the displacements are only performed in the non-redundant part of the internal coordinate space. This is achieved by applying a projector $\mathbf{P}=\mathbf{G}^{-}\mathbf{G}$ to the gradient and Hessian before constructing the Newton step \cite{orcamanual}:
+ When redundant internal coordinates are used, it is important to ensure that the displacements are only performed in the non-redundant part of the internal coordinate space. This is achieved by applying a projector $\mathbf{P}=\mathbf{G}^{-}\mathbf{G}$ to the gradient and Hessian before constructing the Newton step {cite}`orcamanual`:
  %
  \begin{flalign}
  \tilde{\mathbf{g}}_q &= \mathbf{P}\nabla E(\mathbf{q}) \, , \\
