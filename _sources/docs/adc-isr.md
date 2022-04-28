@@ -1,10 +1,10 @@
 (isr:label)=
-## Intermediate state representation
+# Intermediate state representation
 
 
-### ISR approach
+## Derivation via intermediate states
 
-As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a<b, i<j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
+As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\Psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a<b, i<j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
 ```{figure} /img/adc/isr_adc_matrix.svg
 ---
 scale: 100%
@@ -13,23 +13,23 @@ align: left
 ---
 Illustration of (a) single excitations, (b) double excitations, (c) the structure of the ADC(2) matrix. The numbers in parenthesis indicate the highest order of perturbation theory used to describe each particular block.
 ```
-The intermediate states $\ket{\tilde{\psi}_I}$ are obtained by first applying $\hat{C}_I$ to the many-body ground state:
+The intermediate states $\ket{\tilde{\Psi}_I}$ are obtained by first applying $\hat{C}_I$ to the many-body ground state:
 ```{math}
 :label: eq:precursor
-\ket{\psi_I^{0}}=\hat{C}_I\ket{0} \, , %%%-\ket{0}\bra{0}\hat{C}_I\ket{0} \, ,
+\ket{\Psi_I^{0}}=\hat{C}_I\ket{\Psi_0} \, , %%%-\ket{0}\bra{0}\hat{C}_I\ket{\Psi_0} \, ,
 ```
 and then performing a Gram--Schmidt orthogonalization procedure with respect to lower excitation classes (including the ground state)
-to obtain precursor states $\ket{\psi_I^{\#}}$, which can then be orthonormalized symmetrically according to {cite}`Wenzel2016`:
+to obtain precursor states $\ket{\Psi_I^{\#}}$, which can then be orthonormalized symmetrically according to {cite}`Wenzel2016`:
 ```{math}
 :label: eq:ISdefinition
-\ket{\tilde{\psi}_I}=\sum_J\ket{\psi_J^{\#}}S_{IJ}^{-1/2}\, ,
+\ket{\tilde{\Psi}_I}=\sum_J\ket{\Psi_J^{\#}}S_{IJ}^{-1/2}\, ,
 ```
-where $S_{IJ}=\braket{\psi_I^{\#}|\psi_J^{\#}}$ are overlap integrals of the precursor states.
+where $S_{IJ}=\braket{\Psi_I^{\#}|\Psi_J^{\#}}$ are overlap integrals of the precursor states.
 
 The elements of the ADC matrix $\mathbf{M}$ are obtained as matrix elements of the shifted Hamiltonian in the basis of the intermediate states:
 ```{math}
 :label: eq:Mdef
-M_{IJ}=\bra{\tilde{\psi}_I}\hat{H}-E_0\ket{\tilde{\psi}_J}=\sum_{K,L}S_{IK}^{-1/2}\bra{ \psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}S_{LJ}^{-1/2} \, ,
+M_{IJ}=\bra{\tilde{\Psi}_I}\hat{H}-E_0\ket{\tilde{\Psi}_J}=\sum_{K,L}S_{IK}^{-1/2}\bra{ \Psi_K^{\#}}\hat{H}-E_0\ket{\Psi_L^{\#}}S_{LJ}^{-1/2} \, ,
 ```
 where $E_0$ is the ground-state energy.
 This representation of the (shifted) Hamiltonian leads to a Hermitian eigenvalue equation,
@@ -43,16 +43,21 @@ and the corresponding excitation vectors as eigenvectors $\mathbf{Y}_n$, collect
 Having obtained an expression for the ADC matrix, we return to the series expansion of the polarization propagator. In the same way as the propagator is expanded in series, also the matrix elements can be written in terms of orders of perturbation {cite}`Wenzel2016`:
 ```{math}
 :label: eq:Mseries
-M_{IJ}^{(k+l+m)} = \sum_{K,L}\left(S_{IK}^{-1/2}\right)^{(k)}\left(\bra{\psi_K^{\#}}\hat{H}-E_0\ket{\psi_L^{\#}}\right)^{(l)}\left(S_{LJ}^{-1/2}\right)^{(m)}\, ,
+M_{IJ}^{(k+l+m)} = \sum_{K,L}\left(S_{IK}^{-1/2}\right)^{(k)}\left(\bra{\Psi_K^{\#}}\hat{H}-E_0\ket{\Psi_L^{\#}}\right)^{(l)}\left(S_{LJ}^{-1/2}\right)^{(m)}\, ,
 ```
 where $k$ and $m$ are the orders of perturbation theory used for the overlap matrices $S_{IK}$ and $S_{JL}$,
 $l$ is the order used for the matrix elements of the shifted Hamiltonian, and the sum $k + l + m = n$ represents the order of the contribution to the ADC matrix $\mathbf{M}$.
 In order to get all contributions of a given order $n$, one needs to sum $k,l,m$ over all terms for which $k+l+m = n$.
 
 
-### Explicit expressions for ADC(2)
+## Explicit expressions for ADC(2)
 
-Using Eq. {eq}`eq:Mseries` in combination with specific classes of excitation operators and truncating the series at the desired order, various levels of ADC theory are obtained. One aspect to note is that the excitation classes needed to construct a specific ADC level are directly connected to the order of perturbation theory. This can be easily seen from {numref}`Fig. {number} <fig-propagator>`, where the zeroth and first order terms are related to single excitations (only one particle-hole pair is involved), while second order terms involve double excitations (two particle-hole pairs are involved). To illustrate this further, we list the explicit expressions for the ADC matrix elements up to second order {cite}`Wenzel2016, Wormit2009`:
+Using Eq. {eq}`eq:Mseries` in combination with specific classes of excitation operators and truncating the series at the desired order, various levels of ADC theory are obtained.
+One aspect to note is that the excitation classes needed to construct a specific ADC level are directly connected to the order of perturbation theory.
+This can be easily seen from this [figure](fig:propagator),
+where the zeroth and first order terms are related to single excitations (only one particle-hole pair is involved),
+while second order terms involve double excitations (two particle-hole pairs are involved).
+To illustrate this further, we list the explicit expressions for the ADC matrix elements up to second order {cite}`Wenzel2016, Wormit2009`:
 %%% %(\textcolor{red}{not completely convinced if to include -- all of -- these})
 %%%
 ```{math}
@@ -85,12 +90,38 @@ where $\delta_{pq}$ is the Kronecker delta.
 The structure of the ADC(2) matrix is depicted in {numref}`Fig. {number} <fig-isr>`c. In principle, the ADC(2) matrix contains all the possible single and double excitations which can be constructed for the system of interest (using a particular basis set). However, except for very small molecules, to include all these excitations would make the ADC matrix intractably large and impossible to diagonalize. In practice, therefore, only the lowest $n$ excited states are ever constructed, where $n$ is the number of states requested by the user. This means that the space of valence excitations is easily accessible, but makes the space of core excitations impossible to reach, except for molecules with very few electrons. An approach to overcome this problem will be discussed in more detail in the next section.
 
 
-### Compactness and separability of the ADC/ISR 
+## Comparison to related methods
+
+The ADC scheme is related to approaches such as [configuration interaction](sec:ci) (CI) or coupled cluster (CC).
+The CI matrix $\mathbf{H}$ corresponds to a representation of the Hamiltonian $\hat{H}$ within the basis of excited HF determinants,
+$\ket{\Phi_I} = \hat{C}_I \ket{\Phi_{\text{HF}}}$, where $\hat{C}_I$ are the excitation operators used also in Eq. {eq}`eq:precursor`,
+and $\ket{\Phi_{\text{HF}}}$ is the HF ground state. The elements of $\mathbf{H}$ are thus given by
+```{math}
+:label: eq:ci_matrix_elements
+H_{IJ} = \bra{\Phi_I} \hat{H} \ket{\Phi_J} \, .
+```
+The secular matrix used in CC excited-state methods {cite}`Schirmer2010`, on the other hand, can be regarded as the representation of a non-Hermitian,
+similarity transformed Hamiltonian $\bar{H} = e^{-\hat{T}} \hat{H} e^{\hat{T}}$ within the basis of excited HF determinants,
+```{math}
+:label: eq:eomcc_matrix_elements
+\bar{H}_{IJ} = \bra{\Phi_I} e^{-\hat{T}} \hat{H} e^{\hat{T}} \ket{\Phi_J} \, ,
+```
+where $\hat{T}$ is the _cluster operator_ that generates a linear combination of singly, doubly, $\ldots$ excited determinants {cite}`Helgaker2014`.
+While [truncated CI](sec:truncated-ci) methods suffer from the [size-consistency](sec:size-consistency) problem, 
+neither ADC nor CC excited-state schemes have this issue.
+On the other hand, while the secular matrices of both ADC and CI are symmetric, this is not true for CC schemes because
+the similarity-transformed Hamiltonian $\bar{H}$ is not Hermitian, which complicates the calculation of excited-state and transition properties {cite}`Schirmer2010`.
+
+Another aspect is the so-called _compactness_ property {cite}`Mertins1996`, which means that can use smaller explicit configuration spaces than comparable CI treatments.
+Both ADC and CC methods are somewhat more compact than CI, and ADC schemes are more compact than CC approaches in odd orders of perturbation theory.
+
+Furthermore, it can be shown that the _unitary coupled-cluster_ (UCC) approach shares the same properties as the ADC/ISR such as size consistency and compactness,
+and it is in fact equivalent to ADC in low orders of perturbation theory, but differences will occur in higher orders {cite}`Hodecker2022`.
+
+%%## Compactness and separability
 
 
-### Comparison to related methods
-
-### Excited-state properties
+## Excited-state properties
 
 A distinct advantage of the ISR over the classical propagator approach is that it gives direct access to excited-state wave functions
 by expanding it in the intermediate-state basis as

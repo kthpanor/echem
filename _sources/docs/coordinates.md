@@ -13,6 +13,7 @@ There are multiple ways to define relative atomic positions. The simplest way is
 ```
 A more favourable choice is to work with internal coordinates, such as bond lengths, valence angles and dihedrals (one example is the Z-matrix). Using internal coordinates poses, however, two problems: (1) the choice of coordinates is not unique (they are redundant) and (2) internal coordinates have to be transformed back into Cartesian coordinates to compute the energy and gradient. Several ways of handling these problems are discussed below.
 
+(sec:redundant-coordinates)=
 ### Redundant coordinates
 One common choice of coordinates in molecular structure optimization are the Redundant internal coordinates (RIC) {cite}`Pulay1992`.
 
