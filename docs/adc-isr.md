@@ -2,7 +2,7 @@
 # Intermediate state representation
 
 
-## ISR approach
+## Derivation via intermediate states
 
 As the name suggest, the intermediate state representation (ISR) approach consists in constructing the ADC matrix with the help of intermediate states $\ket{\tilde{\Psi}_I}$. These are obtained by applying excitation operators to the ground state $\ket{0}$. In second quantization, the excitation operator is written as $\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a<b, i<j;... \}$, where the indices $a,b...$ refer to unoccupied orbitals, while $i,j...$ represent occupied orbitals {cite}`Schirmer1991,Mertins1996,Schirmer2004`. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC orders up to ADC(3), are depicted in {numref}`Fig. {number} <fig-isr>`a and {numref}`Fig. {number} <fig-isr>`b, respectively.
 ```{figure} /img/adc/isr_adc_matrix.svg
@@ -113,7 +113,10 @@ On the other hand, while the secular matrices of both ADC and CI are symmetric, 
 the similarity-transformed Hamiltonian $\bar{H}$ is not Hermitian, which complicates the calculation of excited-state and transition properties {cite}`Schirmer2010`.
 
 Another aspect is the so-called _compactness_ property {cite}`Mertins1996`, which means that can use smaller explicit configuration spaces than comparable CI treatments.
-Both ADC and CC methods are somewhat more compact than CI, and ADC schemes are more compact than CC approaches for odd orders of perturbation theory.
+Both ADC and CC methods are somewhat more compact than CI, and ADC schemes are more compact than CC approaches in odd orders of perturbation theory.
+
+Furthermore, it can be shown that the _unitary coupled-cluster_ (UCC) approach shares the same properties as the ADC/ISR such as size consistency and compactness,
+and it is in fact equivalent to ADC in low orders of perturbation theory, but differences will occur in higher orders {cite}`Hodecker2022`.
 
 %%## Compactness and separability
 
