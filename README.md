@@ -10,12 +10,12 @@ conda env create -f echem.yml
 Alternatively, you can manually create the environment and install the packages in several steps:
 
 ```
-conda create -n echem -c conda-forge -c veloxchem python=3.9 veloxchem
+conda create -n echem -c conda-forge -c veloxchem python=3.9 veloxchem libblas=*=*mkl
 conda activate echem
 conda install -c conda-forge jupyter-book matplotlib ghp-import py3dmol h5py k3d
-conda install -c conda-forge -c veloxchem multipsi=0.0.0=*_1
+conda install -c conda-forge -c veloxchem multipsi=0.0.1
 conda install -c conda-forge -c gator gator
-python3 -m pip install glibc pyscf
+conda install -c conda-forge -c pyscf pyscf
 ```
 
 # Publish the html-version
