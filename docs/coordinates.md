@@ -1,3 +1,4 @@
+(coord)=
 # Choice of coordinates
 A fundamental concept in quantum chemistry is the multi-dimensional potential energy surface (PES). This mathematical object captures the interplay between the electronic and nuclear degrees of freedom in a particular system (molecule, complex, etc.), where the special points on the PES are important in elucidating molecular conformations and explaining the mechanisms of chemical and photo-chemical reactions. The first and second order derivatives of the energy with respect to nuclear displacements (gradients, Hessians, respectively) are key elements in locating these special points (local minima, transition states) and determining minimum energy reaction pathways. In this section, we will discuss:
 * how the molecular geometry is defined in terms of the atomic positions (link);
