@@ -1,19 +1,19 @@
 Traceback (most recent call last):
-  File "/home/emi/.local/lib/python3.6/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
-    record_timing=False,
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 1093, in execute
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 1204, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/util.py", line 84, in wrapped
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 84, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/util.py", line 62, in just_run
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 62, in just_run
     return loop.run_until_complete(coro)
-  File "/usr/lib/python3.6/asyncio/base_events.py", line 484, in run_until_complete
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
     return future.result()
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 560, in async_execute
-    cell, index, execution_count=self.code_cells_executed + 1
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 854, in async_execute_cell
-    self._check_raise_for_error(cell, exec_reply)
-  File "/home/emi/.local/lib/python3.6/site-packages/nbclient/client.py", line 756, in _check_raise_for_error
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
@@ -27,29 +27,117 @@ O    0.000000000000        0.000000000000        0.600000000000
 """
 
 molecule = vlx.Molecule.from_xyz_string(O2_xyz)
+molecule.set_multiplicity(3)
 basis = vlx.MolecularBasis.read(molecule,"STO-3G")
 
-scfdrv = vlx.ScfRestrictedDriver()
+scfdrv = vlx.ScfUnrestrictedDriver()
 scfdrv.compute(molecule, basis)
 
-molecule.set_multiplicity(3)
-
 space=mtp.OrbSpace(molecule,scfdrv.mol_orbs)
-space.CAS(8,6)
-expansion=mtp.CIExpansion(space)
+space.FCI(nfrozen=4)
 
-CIdrv=mtp.CIDriver(molecule,basis,space)
-CIdrv.compute(1)
+expansion=mtp.CIExpansion(space)
+CIham=mtp.CIOperator(expansion) #Contains integrals and functions using them
+CIham.compute_Hints(molecule,basis)
+
+Ein= float(CIham.inEne)
+Ftu= CIham.Ftu
+tuvw= CIham.tuvw
+
+def SC_diag(occa, occb):
+    '''
+    The energy of a given SD, as a function of its list of occupied orbitals
+    '''
+    Hij=Ein #Inactive energy (inc. nuclear repulsion)
+    for i in occa:
+        Hij+=Ftu[i,i] #1-e term = inactive Fock matrix
+        for j in occa:
+            if i<j:
+                Hij+=tuvw[i,i,j,j]-tuvw[i,j,j,i] #Coulomb-Exchange
+        for j in occb:
+            Hij+=tuvw[i,i,j,j]
+    for i in occb:
+        Hij+=Ftu[i,i]
+        for j in occb:
+            if i<j:
+                Hij+=tuvw[i,i,j,j]-tuvw[i,j,j,i]
+    return Hij
+def SC_1exc(i,a,ss_occ, os_occ):
+    '''
+    Slater-Condon between a SD and a singly excited, depending on the excited orbitals (i,a)
+    and the same-spin (compared to spin of the excitated electron) and opposite-spin occupation
+    '''
+    Hij=Ftu[i,a]
+    for k in ss_occ:
+        Hij+=tuvw[i,a,k,k]-tuvw[i,k,k,a]
+    for k in os_occ:
+        Hij+=tuvw[i,a,k,k]
+    return Hij
+def SC_ss1exc(i,a,j,b):
+    '''
+    Slater-Condon between a SD and a doubly excited determinant,
+    with both excited electrons having the same spin
+    '''
+    return tuvw[i,a,j,b]-tuvw[i,b,j,a]
+def SC_os1exc(i,a,j,b):
+    '''
+    Slater-Condon between a SD and a doubly excited determinant,
+    with the excited electrons having opposite spin
+    '''
+    return tuvw[i,a,j,b]
+
+def sigma(vector):
+    result=np.zeros(expansion.nDet)
+    for idet,det in enumerate(expansion.detlist()):
+        #Diagonal term
+        result[idet]+=SC_diag(det.occ_alpha(),det.occ_beta())*vector[idet]
+        #Single excitations alpha
+        for i in det.occ_alpha():
+            for a in det.unocc_alpha():
+                phase,excdet=det.excite_alpha(i,a)
+                result[excdet.index()]+=phase*SC_1exc(i,a,det.occ_alpha(),det.occ_beta())*vector[idet]
+                #alpha-alpha excitation
+                for j in det.occ_alpha():
+                    if i>=j:
+                        continue
+                    for b in det.unocc_alpha():
+                        if a>=b:
+                            continue
+                        phase2,exc2det=excdet.excite_alpha(j,b)
+                        result[exc2det.index()]+=phase*phase2*SC_ss1exc(i,a,j,b)*vector[idet]
+                #alpha-beta excitation
+                for j in det.occ_beta():
+                    for b in det.unocc_beta():
+                        phase2,exc2det=excdet.excite_beta(j,b)
+                        result[exc2det.index()]+=phase*phase2*SC_os1exc(i,a,j,b)*vector[idet]
+        #Single excitations beta
+        for i in det.occ_beta():
+            for a in det.unocc_beta():
+                phase,excdet=det.excite_beta(i,a)
+                result[excdet.index()]+=phase*SC_1exc(i,a,det.occ_beta(),det.occ_alpha())*vector[idet]
+                #beta-beta excitation
+                for j in det.occ_beta():
+                    if i>=j:
+                        continue
+                    for b in det.unocc_beta():
+                        if a>=b:
+                            continue
+                        phase2,exc2det=excdet.excite_beta(j,b)
+                        result[exc2det.index()]+=phase*phase2*SC_ss1exc(i,a,j,b)*vector[idet]
+    return result
+
+np.set_printoptions(formatter={'float_kind':"{:.3f}".format})
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mTypeError[0m                                 Traceback (most recent call last)
-[0;32m<ipython-input-3-4c9d8af33ccb>[0m in [0;36m<module>[0;34m[0m
-[1;32m     20[0m [0mexpansion[0m[0;34m=[0m[0mmtp[0m[0;34m.[0m[0mCIExpansion[0m[0;34m([0m[0mspace[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     21[0m [0;34m[0m[0m
-[0;32m---> 22[0;31m [0mCIdrv[0m[0;34m=[0m[0mmtp[0m[0;34m.[0m[0mCIDriver[0m[0;34m([0m[0mmolecule[0m[0;34m,[0m[0mbasis[0m[0;34m,[0m[0mspace[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     23[0m [0mCIdrv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0;36m1[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+Input [0;32mIn [1][0m, in [0;36m<cell line: 21>[0;34m()[0m
+[1;32m     18[0m space[38;5;241m.[39mFCI(nfrozen[38;5;241m=[39m[38;5;241m4[39m)
+[1;32m     20[0m expansion[38;5;241m=[39mmtp[38;5;241m.[39mCIExpansion(space)
+[0;32m---> 21[0m CIham[38;5;241m=[39m[43mmtp[49m[38;5;241;43m.[39;49m[43mCIOperator[49m[43m([49m[43mexpansion[49m[43m)[49m [38;5;66;03m#Contains integrals and functions using them[39;00m
+[1;32m     22[0m CIham[38;5;241m.[39mcompute_Hints(molecule,basis)
+[1;32m     24[0m Ein[38;5;241m=[39m [38;5;28mfloat[39m(CIham[38;5;241m.[39minEne)
 
-[0;31mTypeError[0m: __init__() takes from 1 to 3 positional arguments but 4 were given
-TypeError: __init__() takes from 1 to 3 positional arguments but 4 were given
+[0;31mTypeError[0m: __init__() missing 2 required positional arguments: 'basis' and 'expansion'
+TypeError: __init__() missing 2 required positional arguments: 'basis' and 'expansion'
 

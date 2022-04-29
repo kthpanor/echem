@@ -107,9 +107,9 @@ It is also written in a Python/C++ layered fashion and interfaced on top of Velo
 <!-- #region -->
 ## Other tools
 
-
+(sec:geometric)=
 ### geomeTRIC
-[geomeTRIC](https://github.com/leeping/geomeTRIC) is a geometry optimization python-based software which makes ues of the translation-rotation internal coordinates (TRIC) system. Other coordinate systems, such as deloclaized internal coordinates (DLC), are also available. geomeTRIC requires an external software (such as veloxchem, or Gator) to provide the energy, gradient, and possibly Hessian, which are then used to carry out ground or excited state geometry optimizations, as well as transition state searches and vibrational analysis. Veloxchem includes optimization enegines which call geomeTRIC to perform structure relaxations in the ground or excited state. Additionally, analytical Hessians (or numerical Hessians based on the analytical gradient) are provided to geomeTRIC to determine vibrational frequencies and normal modes.
+[geomeTRIC](https://github.com/leeping/geomeTRIC) is a geometry optimization python-based software which makes ues of the translation-rotation internal coordinates (TRIC) system. Other coordinate systems, such as delocalized internal coordinates (DLC), are also available. geomeTRIC requires an external software (such as Veloxchem or Gator) to provide the energy, gradient, and possibly Hessian, which are then used to carry out ground- or excited-state geometry optimizations, as well as transition state searches and vibrational analyses. Veloxchem includes optimization enegines which call geomeTRIC to perform structure relaxations in the ground or excited state. Additionally, analytical Hessians (or numerical Hessians based on the analytical gradient) are provided to geomeTRIC to determine vibrational frequencies and normal modes.
 
 ### PyFrame
 
