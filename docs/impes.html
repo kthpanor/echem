@@ -45,16 +45,15 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -722,13 +721,6 @@ const thebe_selector_output = ".output, .cell_output"
     <a class="reference internal nav-link" href="#ground-state-pes-by-interpolation">
      Ground-state PES by interpolation
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#todo-wrong-find-bug">
-       TODO: wrong! find bug!
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -766,13 +758,6 @@ const thebe_selector_output = ".output, .cell_output"
     <a class="reference internal nav-link" href="#ground-state-pes-by-interpolation">
      Ground-state PES by interpolation
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#todo-wrong-find-bug">
-       TODO: wrong! find bug!
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -798,7 +783,17 @@ V(\mathbf{q}) = \sum_a w_a V_a(\mathbf{q})\,,
 \[
 V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}{2} \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{H}_a\boldsymbol{\Delta}_a\, .
 \]</div>
-<p>The vector <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> designating the position is in the internal coordinate system. The weights are provided by considering the distance between <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>, such that the weight <span class="math notranslate nohighlight">\(w_a\)</span> is larger for a data point <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span> that is closer to <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p>
+<p>The vector <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> designating the position is in the internal coordinate system. The weights are provided by considering the distance between <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>, such that the weight <span class="math notranslate nohighlight">\(w_a\)</span> is larger for a data point <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span> that is closer to <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>. The weights <span class="math notranslate nohighlight">\(w_a\)</span> are normalized weights:</p>
+<div class="math notranslate nohighlight">
+\[
+w_a = \frac{v_a}{\sum_i v_i}\,
+\]</div>
+<p>where the un-normalized weights <span class="math notranslate nohighlight">\(v_a\)</span> can be calculated in different ways, for example a simple weighting scheme is:</p>
+<div class="math notranslate nohighlight">
+\[
+v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
+\]</div>
+<p>The exponent <span class="math notranslate nohighlight">\(p\)</span> is a chosen integr.</p>
 <div class="section" id="the-ground-state-potential-energy-surface-of-water">
 <h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">¶</a></h2>
 <p>Let’s construct the ground state PES for the water molecule by interpolation. We need to carry out the following steps:</p>
@@ -810,7 +805,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </ul>
 <div class="section" id="transforming-from-cartesian-to-internal-coordinates">
 <h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">¶</a></h3>
-<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <a class="reference internal" href="coordinates.html#sec-redundant-coordinates"><span class="std std-ref">here</span></a>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian. To make things faster, we will use the <a class="reference external" href="https://xtb-docs.readthedocs.io/en/latest/contents.html">XTB</a> driver to run our calculations.</p>
+<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <a class="reference internal" href="coordinates.html#sec-redundant-coordinates"><span class="std std-ref">here</span></a>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -824,15 +819,6 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: importing &#39;simtk.openmm&#39; is deprecated.  Import &#39;openmm&#39; instead.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -843,12 +829,14 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <span class="s2">H    0.000000000000        0.000000000000        1.100000000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
+<span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
 <span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="c1"># rotate the molecule to make it easier to see</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -857,8 +845,8 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1651223931204287"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_1651223931204287" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16512346327878835"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16512346327878835" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -881,76 +869,213 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_1651223931204287 = null;
-var warn = document.getElementById("3dmolwarning_1651223931204287");
+var viewer_16512346327878835 = null;
+var warn = document.getElementById("3dmolwarning_16512346327878835");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1651223931204287 = null;
-viewergrid_1651223931204287 = $3Dmol.createViewerGrid($("#3dmolviewer_1651223931204287"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_1651223931204287 = viewergrid_1651223931204287[0][0];
-viewergrid_1651223931204287[0][0].zoomTo();	viewergrid_1651223931204287[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_1651223931204287[0][0].setStyle({"stick": {}});
-	viewergrid_1651223931204287[0][0].rotate(-90,"y");
-viewergrid_1651223931204287[0][0].render();
+var viewergrid_16512346327878835 = null;
+viewergrid_16512346327878835 = $3Dmol.createViewerGrid($("#3dmolviewer_16512346327878835"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16512346327878835 = viewergrid_16512346327878835[0][0];
+viewergrid_16512346327878835[0][0].zoomTo();	viewergrid_16512346327878835[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_16512346327878835[0][0].setStyle({"stick": {}});
+	viewergrid_16512346327878835[0][0].rotate(-90,"y");
+viewergrid_16512346327878835[0][0].render();
 });
 </script></div></div>
 </div>
 <p>Calculating the desired properties:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span> <span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
-<span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-<span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBDriver</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 
 <span class="c1"># Energy</span>
-<span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-<span class="n">xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
-<span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
 
 <span class="c1"># Gradient</span>
-<span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBGradientDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
-<span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-<span class="n">gradient</span> <span class="o">=</span> <span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
+<span class="n">scf_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">(</span><span class="n">scf_drv</span><span class="p">)</span>
+<span class="n">scf_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">gradient</span> <span class="o">=</span> <span class="n">scf_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
 
 <span class="c1"># Hessian</span>
-<span class="n">xtb_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBHessianDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
-<span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-<span class="n">hessian</span> <span class="o">=</span> <span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
+<span class="n">scf_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">scf_drv</span><span class="p">)</span>
+<span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">hessian</span> <span class="o">=</span> <span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AssertionError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="nn">Input In [3],</span> in <span class="ni">&lt;cell line: 7&gt;</span><span class="nt">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Energy</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-<span class="ne">----&gt; </span><span class="mi">7</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="c1"># Gradient</span>
-
-<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/xtbdriver.py:46,</span> in <span class="ni">_XTBDriver_compute</span><span class="nt">(self, molecule, ostream)</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span> <span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;from https://github.com/grimme-lab/xtb, set XTBHOME environment &#39;</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span> <span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;variable, and reinstall VeloxChem.&#39;</span>
-<span class="ne">---&gt; </span><span class="mi">46</span> <span class="n">assert_msg_critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_available</span><span class="p">(),</span> <span class="n">errmsg</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span> <span class="n">start_time</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span> <span class="n">ostream</span><span class="o">.</span><span class="n">print_blank</span><span class="p">()</span>
-
-<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/errorhandler.py:42,</span> in <span class="ni">assert_msg_critical</span><span class="nt">(condition, msg)</span>
-<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span><span class="sd"> Asserts that the condition is true. Otherwise terminates the program with</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span><span class="sd"> an error message.</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">     </span><span class="mi">39</span><span class="sd">     The error message.</span>
-<span class="g g-Whitespace">     </span><span class="mi">40</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="k">if</span> <span class="n">__debug__</span> <span class="ow">and</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">42</span>     <span class="k">assert</span> <span class="n">condition</span><span class="p">,</span> <span class="n">msg</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="n">vlx_assert</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-
-<span class="ne">AssertionError</span>: XTBDriver: XTB not available. Please download and install XTB from https://github.com/grimme-lab/xtb, set XTBHOME environment variable, and reinstall VeloxChem.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 8.6203186612 a.u.                                                                      
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.02 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.05 sec.                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -74.947250981137    0.0000000000      0.00006046      0.00001095      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -74.947250982655   -0.0000000001      0.00000159      0.00000036      0.00001805                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -74.947250982655   -0.0000000000      0.00000011      0.00000002      0.00000116                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.03 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :      -74.9472509827 a.u.                                              
+               Electronic Energy                  :      -83.5675696438 a.u.                                              
+               Nuclear Repulsion Energy           :        8.6203186612 a.u.                                              
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000001106 a.u.                                              
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -20.24331 a.u.                                                                  
+               (   1 O   1s  :     0.99)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.23684 a.u.                                                                  
+               (   1 O   1s  :     0.24) (   1 O   2s  :    -0.85) (   2 H   1s  :    -0.18)                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.59041 a.u.                                                                  
+               (   1 O   1p-1:    -0.41) (   1 O   1p0 :     0.44) (   2 H   1s  :    -0.45)                              
+               (   3 H   1s  :     0.43)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.43151 a.u.                                                                  
+               (   1 O   2s  :    -0.49) (   1 O   1p-1:     0.60) (   1 O   1p0 :     0.49)                              
+               (   2 H   1s  :     0.24) (   3 H   1s  :     0.35)                                                        
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.38490 a.u.                                                                  
+               (   1 O   1p+1:     1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.50463 a.u.                                                                  
+               (   1 O   2s  :    -0.69) (   1 O   1p-1:    -0.34) (   1 O   1p0 :    -0.66)                              
+               (   2 H   1s  :     0.44) (   3 H   1s  :     0.94)                                                        
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.71372 a.u.                                                                  
+               (   1 O   2s  :     0.41) (   1 O   1p-1:     0.76) (   1 O   1p0 :    -0.58)                              
+               (   2 H   1s  :    -1.08) (   3 H   1s  :     0.41)                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                   SCF Gradient Driver                                                    
+                                                  =====================                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                              Molecular Geometry (Angstroms)                                              
+                                             ================================                                             
+                                                                                                                          
+                          Atom         Coordinate X          Coordinate Y          Coordinate Z                           
+                                                                                                                          
+                           O           0.000000000000        0.000000000000        0.000000000000                         
+                           H           0.000000000000        0.895700000000       -0.316700000000                         
+                           H           0.000000000000        0.000000000000        1.100000000000                         
+                                                                                                                          
+                                                 Gradient (Hartree/Bohr)                                                  
+                                                -------------------------                                                 
+                                                                                                                          
+                          Atom           Gradient X            Gradient Y            Gradient Z                           
+                                                                                                                          
+                           O           0.000000000021        0.085297089569       -0.100972944765                         
+                           H           0.000000000028       -0.061749632579       -0.007085216552                         
+                           H          -0.000000000014       -0.023547457801        0.108058171868                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.30 sec ***                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                    SCF Hessian Driver                                                    
+                                                   ====================                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 12.35 sec ***                                   
+                                                                                                                          
+                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -1108,10 +1233,13 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </div>
 <p>Let’s write the routines which transform the gradient and the Hessian from Cartesian coordinates to internal coordinates. We have to implement the following equations:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-\mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x \\
+\[
+\mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x 
+\]</div>
+<div class="math notranslate nohighlight">
+\[
 \mathbf{H}_q = \mathbf{G}^{-}\mathbf{B}\big[ \mathbf{H}_x - \mathbf{g}_q\mathbf{B}^{(2)}\big]\mathbf{B}^\mathrm{T}\mathbf{G}^{-\mathrm{T}} 
-\end{split}\]</div>
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">):</span>
@@ -1127,6 +1255,11 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 
 <span class="n">grad_q</span> <span class="o">=</span> <span class="n">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grad_q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.0558557  0.1080581  0.0489482]
 </pre></div>
 </div>
 </div>
@@ -1147,6 +1280,13 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 
 <span class="n">hessian_q</span> <span class="o">=</span> <span class="n">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hessian_q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 0.8110741 -0.0345218  0.0289399]
+ [-0.0345218  0.3355099  0.023537 ]
+ [ 0.0289399  0.023537   0.2479082]]
 </pre></div>
 </div>
 </div>
@@ -1179,32 +1319,30 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 <span class="c1"># list for molecular configurations</span>
 <span class="n">molecules</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># to disable printout</span>
-
 <span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the energies, gradients and Hessians for... &quot;</span><span class="p">,</span> <span class="n">oh</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the energies, gradients and Hessians for OH = &quot;</span><span class="p">,</span> <span class="n">oh</span><span class="p">,</span> <span class="s2">&quot;A...&quot;</span><span class="p">)</span>
     
     <span class="c1"># Create new molecule</span>
     <span class="n">mol_str</span> <span class="o">=</span> <span class="n">mol_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;OHdist&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oh</span><span class="p">))</span>
     <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># set-up an scf driver, gradient driver and hessian driver</span>
+    <span class="n">new_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># To disable printout</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
     
-    <span class="c1"># set-up an xtb driver, gradient driver and hessian driver</span>
-    <span class="n">new_xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBDriver</span><span class="p">()</span>
-    <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+    <span class="n">new_scf_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">(</span><span class="n">new_scf_drv</span><span class="p">)</span>
+    <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
     
-    <span class="n">new_xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBGradientDriver</span><span class="p">(</span><span class="n">new_xtb_drv</span><span class="p">)</span>
-    <span class="n">new_xtb_grad_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># to disable printout</span>
-    <span class="n">new_xtb_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">)</span>
-    
-    <span class="n">new_xtb_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBHessianDriver</span><span class="p">(</span><span class="n">new_xtb_drv</span><span class="p">)</span>
-    <span class="n">new_xtb_hessian_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">new_xtb_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">)</span>
+    <span class="n">new_scf_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">new_scf_drv</span><span class="p">)</span>
+    <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
     
     <span class="c1"># save the results:</span>
-    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
-    <span class="n">cart_gradient</span> <span class="o">=</span> <span class="n">new_xtb_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
-    <span class="n">cart_hessian</span> <span class="o">=</span> <span class="n">new_xtb_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+    <span class="n">cart_gradient</span> <span class="o">=</span> <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
+    <span class="n">cart_hessian</span> <span class="o">=</span> <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
     
     <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
     <span class="n">cart_gradients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cart_gradient</span><span class="p">)</span>
@@ -1214,9 +1352,13 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for...  0.75
-Calculating the energies, gradients and Hessians for...  0.95
-Calculating the energies, gradients and Hessians for...  1.35
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.75 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.95 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  1.35 A...
 </pre></div>
 </div>
 </div>
@@ -1296,7 +1438,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-5.001312242376127
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-74.85521918007055
 </pre></div>
 </div>
 </div>
@@ -1333,8 +1475,6 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </div>
 </div>
 <p>Let’s plot the results.</p>
-<div class="section" id="todo-wrong-find-bug">
-<h4>TODO: wrong! find bug!<a class="headerlink" href="#todo-wrong-find-bug" title="Permalink to this headline">¶</a></h4>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
@@ -1352,37 +1492,44 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <img alt="../_images/impes_36_0.png" src="../_images/impes_36_0.png" />
 </div>
 </div>
-<p>Let’s use these for interpolation and compare to the PES calculated with XTB.</p>
+<p>Let’s use these for interpolation and compare to the PES calculated with HF.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_interpolated_pes</span><span class="p">(</span><span class="n">new_point</span><span class="p">,</span> <span class="n">data_points</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_interpolated_pes</span><span class="p">(</span><span class="n">new_point</span><span class="p">,</span> <span class="n">data_points</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">hessians</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
     <span class="c1"># sum of all interpolation weights -- to normalize them</span>
     <span class="n">sum_weights</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">potentials</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">q_a</span> <span class="ow">in</span> <span class="n">data_points</span><span class="p">:</span>
-        <span class="n">dist</span> <span class="o">=</span> <span class="n">new_point</span> <span class="o">-</span> <span class="n">q_a</span>
+    
+    <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
+        <span class="n">q_a</span> <span class="o">=</span> <span class="n">data_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">e_a</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">g_a</span> <span class="o">=</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">h_a</span> <span class="o">=</span> <span class="n">hessians</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">new_point</span> <span class="o">-</span> <span class="n">q_a</span><span class="p">)</span>
         <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">dist</span><span class="o">**</span><span class="n">exponent</span>
-        <span class="n">pot</span> <span class="o">=</span> <span class="n">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">],</span> <span class="n">q_a</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">],</span> <span class="n">q_a</span><span class="p">[</span><span class="s1">&#39;gradient&#39;</span><span class="p">],</span> <span class="n">q_a</span><span class="p">[</span><span class="s1">&#39;hessian&#39;</span><span class="p">],</span> <span class="n">new_point</span><span class="p">)</span>
+        <span class="n">pot</span> <span class="o">=</span> <span class="n">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">new_point</span><span class="p">)</span>
+        <span class="c1">#print(pot)</span>
         <span class="n">sum_weights</span> <span class="o">+=</span> <span class="n">weight</span>
         <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
         <span class="n">potentials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot</span><span class="p">)</span>
-        
-    <span class="n">weights</span> <span class="o">/=</span> <span class="n">sum_weights</span>
 
-    <span class="n">energy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">en</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_points</span><span class="p">)):</span>
-        <span class="n">energy</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">potentials</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">en</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_weights</span> <span class="o">*</span> <span class="n">potentials</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1">#print(en)</span>
     
-    <span class="k">return</span> <span class="n">energy</span>
+    <span class="k">return</span> <span class="n">en</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xtb_energies</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">impes_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">im_energies</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
     
@@ -1391,14 +1538,21 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
     <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
     
     <span class="c1"># set-up an xtb driver, gradient driver and hessian driver</span>
-    <span class="n">new_xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBDriver</span><span class="p">()</span>
-    <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+    <span class="n">new_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
     
     <span class="c1"># save the results:</span>
-    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
     
-    <span class="n">xtb_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    <span class="n">scf_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    
+    <span class="c1"># calculate energies by interpolation</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">new_molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    <span class="n">new_q</span> <span class="o">=</span> <span class="n">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+    <span class="n">im_energy</span> <span class="o">=</span> <span class="n">get_interpolated_pes</span><span class="p">(</span><span class="n">new_q</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">int_gradients</span><span class="p">,</span> <span class="n">int_hessians</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    
+    <span class="n">im_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">im_energy</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1407,7 +1561,8 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Energy during O-H dissociation&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">xtb_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;XTB&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">scf_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;HF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">im_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interpolated&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -1416,6 +1571,23 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <div class="cell_output docutils container">
 <img alt="../_images/impes_40_0.png" src="../_images/impes_40_0.png" />
 </div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Interpolated Energy during O-H dissociation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">im_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IM&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.75A&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.95A&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1.35A&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">ymin</span><span class="o">=-</span><span class="mf">75.1</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=-</span><span class="mf">74.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/impes_41_0.png" src="../_images/impes_41_0.png" />
 </div>
 </div>
 </div>
