@@ -29,22 +29,22 @@ molecule.set_multiplicity(2)
 basis = vlx.MolecularBasis.read(molecule,"STO-3G")
 scfdrv = vlx.ScfUnrestrictedDriver()
 scfdrv.compute(molecule, basis)
-E_OH_hf=scfdrv.get_scf_energy()
+E_OH_hf = scfdrv.get_scf_energy()
 
-space=mtp.OrbSpace(molecule,scfdrv.mol_orbs)
+space = mtp.OrbSpace(molecule,scfdrv.mol_orbs)
 space.FCI()
-CIdrv=mtp.CIDriver()
-CIdrv.compute(molecule,basis,space)
-E_OH_FCI=CIdrv.getEnergy(0)
+CIdrv = mtp.CIDriver()
+CIdrv.compute(molecule, basis, space)
+E_OH_FCI = CIdrv.getEnergy(0)
 
 
 # HF calculation of H, equivalent to CI
-mol_str="H 0.0000 0.0000 0.0000"
+mol_str = "H 0.0000 0.0000 0.0000"
 molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
 molecule.set_multiplicity(2)
 basis = vlx.MolecularBasis.read(molecule,"STO-3G")
 scfdrv.compute(molecule, basis)
-E_H_hf=scfdrv.get_scf_energy()
+E_H_hf = scfdrv.get_scf_energy()
 
 #HF and CI calculations of water with stretching of one O-H bond
 
@@ -54,17 +54,17 @@ H 0.0000 0.8957 -0.3167
 H 0.0000 0.0000  OHdist
 """
 scfdrv = vlx.ScfRestrictedDriver()
-distlist=[0.7,0.8,0.9,0.95,1.1,1.3,1.5,1.7,2,2.5,3,4,5]
-E_hf=[]
-E_FCI=[]
-NON=[]
+distlist = [0.7,0.8,0.9,0.95,1.1,1.3,1.5,1.7,2,2.5,3,4,5]
+E_hf = []
+E_FCI = []
+NON = []
 
-scf_settings = {'checkpoint_file': 'H2O.scf.h5','restart': 'yes'} #We reuse the previously converged orbitals at each step
-scfdrv.update_settings(scf_settings, {})
+#scf_settings = {'checkpoint_file': 'H2O.scf.h5','restart': 'yes'} #We reuse the previously converged orbitals at each step
+#scfdrv.update_settings(scf_settings, {})
 
 #Scan over O-H distances
 for dist in distlist:
-    mol_str=mol_template.replace("OHdist", str(dist))
+    mol_str = mol_template.replace("OHdist", str(dist))
     molecule = vlx.Molecule.read_str(mol_str, units='angstrom')
     basis = vlx.MolecularBasis.read(molecule,"STO-3G")
     scfdrv.compute(molecule, basis)
@@ -80,11 +80,11 @@ for dist in distlist:
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mTypeError[0m                                 Traceback (most recent call last)
 Input [0;32mIn [2][0m, in [0;36m<cell line: 17>[0;34m()[0m
-[1;32m     15[0m space[38;5;241m=[39mmtp[38;5;241m.[39mOrbSpace(molecule,scfdrv[38;5;241m.[39mmol_orbs)
+[1;32m     15[0m space [38;5;241m=[39m mtp[38;5;241m.[39mOrbSpace(molecule,scfdrv[38;5;241m.[39mmol_orbs)
 [1;32m     16[0m space[38;5;241m.[39mFCI()
-[0;32m---> 17[0m CIdrv[38;5;241m=[39m[43mmtp[49m[38;5;241;43m.[39;49m[43mCIDriver[49m[43m([49m[43m)[49m
-[1;32m     18[0m CIdrv[38;5;241m.[39mcompute(molecule,basis,space)
-[1;32m     19[0m E_OH_FCI[38;5;241m=[39mCIdrv[38;5;241m.[39mgetEnergy([38;5;241m0[39m)
+[0;32m---> 17[0m CIdrv [38;5;241m=[39m [43mmtp[49m[38;5;241;43m.[39;49m[43mCIDriver[49m[43m([49m[43m)[49m
+[1;32m     18[0m CIdrv[38;5;241m.[39mcompute(molecule, basis, space)
+[1;32m     19[0m E_OH_FCI [38;5;241m=[39m CIdrv[38;5;241m.[39mgetEnergy([38;5;241m0[39m)
 
 [0;31mTypeError[0m: __init__() missing 3 required positional arguments: 'molecule', 'basis', and 'molspace'
 TypeError: __init__() missing 3 required positional arguments: 'molecule', 'basis', and 'molspace'

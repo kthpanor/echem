@@ -136,16 +136,6 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="reactivity.html">
-   Catalysis and reactivity
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dichroism.html">
-   Optical activity and dichroism
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="vibrational.html">
    Vibrational spectroscopies
@@ -172,11 +162,6 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="magnetic.html">
-   Magnetic resonances
-  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="xray.html">
@@ -482,7 +467,7 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="scf-response.html">
-     Hartree–Fock
+     Time-Dependent Hartree–Fock
     </a>
    </li>
    <li class="toctree-l2">
@@ -520,6 +505,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="adc-hpc.html">
      HPC-QC implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adc-exercises.html">
+     ADC exercises
     </a>
    </li>
   </ul>
@@ -798,24 +788,25 @@ const thebe_selector_output = ".output, .cell_output"
   <div class="tex2jax_ignore mathjax_ignore section" id="potential-energy-surfaces-by-interpolation">
 <h1>Potential energy surfaces by interpolation<a class="headerlink" href="#potential-energy-surfaces-by-interpolation" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will get familiar with constructing the potential energy surface (PES) of a molecule by interpolation. The idea behind this method is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically. For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. The use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost.</p>
-<p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> (where the vector <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> designates the vector of internal coordinates) as a weighted average between a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c7b07d2a-f5d4-4cc7-a70d-7e77e08fe377">
-<span class="eqno">(169)<a class="headerlink" href="#equation-c7b07d2a-f5d4-4cc7-a70d-7e77e08fe377" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> as a weighted average between potentials defined from a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
 V(\mathbf{q}) = \sum_a w_a V_a(\mathbf{q})\,,
-\end{equation}\]</div>
-<p>where the weights <span class="math notranslate nohighlight">\(w_a\)</span> depend on the distance (<span class="math notranslate nohighlight">\(\boldsymbol{\Delta}_a\)</span>) beween the new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and configuration <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>. The potentials <span class="math notranslate nohighlight">\(V_a\)</span> are local harmonic potentials written in terms of the energy (<span class="math notranslate nohighlight">\(E_a\)</span>), gradient (<span class="math notranslate nohighlight">\(\mathbf{g}_a\)</span>) and Hessian (<span class="math notranslate nohighlight">\(\mathbf{H}_a\)</span>):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3f19dbd3-e1fa-480e-8629-bfa93b097e3e">
-<span class="eqno">(170)<a class="headerlink" href="#equation-3f19dbd3-e1fa-480e-8629-bfa93b097e3e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+\]</div>
+<p>where the weights <span class="math notranslate nohighlight">\(w_a\)</span> depend on the distance (<span class="math notranslate nohighlight">\(\boldsymbol{\Delta}_a\)</span>) beween the new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and a data configuration <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>. The potentials <span class="math notranslate nohighlight">\(V_a\)</span> are local harmonic potentials written in terms of Taylor expansions based on the energy (<span class="math notranslate nohighlight">\(E_a\)</span>), gradient (<span class="math notranslate nohighlight">\(\mathbf{g}_a\)</span>) and Hessian (<span class="math notranslate nohighlight">\(\mathbf{H}_a\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
 V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}{2} \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{H}_a\boldsymbol{\Delta}_a\, .
-\end{equation}\]</div>
+\]</div>
+<p>The vector <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> designating the position is in the internal coordinate system. The weights are provided by considering the distance between <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>, such that the weight <span class="math notranslate nohighlight">\(w_a\)</span> is larger for a data point <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span> that is closer to <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p>
 <div class="section" id="the-ground-state-potential-energy-surface-of-water">
 <h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">¶</a></h2>
 <p>Let’s construct the ground state PES for the water molecule by interpolation. We need to carry out the following steps:</p>
 <ul class="simple">
-<li><p>transform the coordinates, gradients and Hessians from Cartesian coordinates to internal coordinates,</p></li>
-<li><p>calculate the ground state energy, gradient, and Hessian for a several molecular configurations which will serve as data points for interpolation,</p></li>
-<li><p>determine the harmonic potentials and weights,</p></li>
-<li><p>perform the interpolation and determine the potential energy at new configurations <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p></li>
+<li><p>Transform the coordinates, gradients and Hessians from Cartesian coordinates to internal coordinates,</p></li>
+<li><p>Calculate the ground state energy, gradient, and Hessian for a several molecular configurations which will serve as data points for interpolation,</p></li>
+<li><p>Determine the harmonic potentials and weights,</p></li>
+<li><p>Perform the interpolation and determine the potential energy at new configurations <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p></li>
 </ul>
 <div class="section" id="transforming-from-cartesian-to-internal-coordinates">
 <h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">¶</a></h3>
@@ -851,18 +842,13 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <span class="s2">H    0.000000000000        0.895700000000       -0.316700000000                         </span>
 <span class="s2">H    0.000000000000        0.000000000000        1.100000000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
-
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
 <span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -871,8 +857,8 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1651145978287829"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_1651145978287829" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1651223931204287"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1651223931204287" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -895,38 +881,55 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_1651145978287829 = null;
-var warn = document.getElementById("3dmolwarning_1651145978287829");
+var viewer_1651223931204287 = null;
+var warn = document.getElementById("3dmolwarning_1651223931204287");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1651145978287829 = null;
-viewergrid_1651145978287829 = $3Dmol.createViewerGrid($("#3dmolviewer_1651145978287829"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_1651145978287829 = viewergrid_1651145978287829[0][0];
-viewergrid_1651145978287829[0][0].zoomTo();	viewergrid_1651145978287829[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_1651145978287829[0][0].setStyle({"stick": {}});
-viewergrid_1651145978287829[0][0].render();
+var viewergrid_1651223931204287 = null;
+viewergrid_1651223931204287 = $3Dmol.createViewerGrid($("#3dmolviewer_1651223931204287"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_1651223931204287 = viewergrid_1651223931204287[0][0];
+viewergrid_1651223931204287[0][0].zoomTo();	viewergrid_1651223931204287[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_1651223931204287[0][0].setStyle({"stick": {}});
+	viewergrid_1651223931204287[0][0].rotate(-90,"y");
+viewergrid_1651223931204287[0][0].render();
 });
 </script></div></div>
 </div>
+<p>Calculating the desired properties:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span><span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span> <span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
 <span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 <span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBDriver</span><span class="p">()</span>
+
+<span class="c1"># Energy</span>
 <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 <span class="n">xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+
+<span class="c1"># Gradient</span>
+<span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBGradientDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
+<span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">gradient</span> <span class="o">=</span> <span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
+
+<span class="c1"># Hessian</span>
+<span class="n">xtb_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBHessianDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
+<span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">hessian</span> <span class="o">=</span> <span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">AssertionError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="nn">Input In [4],</span> in <span class="ni">&lt;cell line: 5&gt;</span><span class="nt">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBDriver</span><span class="p">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<span class="nn">Input In [3],</span> in <span class="ni">&lt;cell line: 7&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Energy</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<span class="ne">----&gt; </span><span class="mi">7</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="c1"># Gradient</span>
 
 <span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/xtbdriver.py:46,</span> in <span class="ni">_XTBDriver_compute</span><span class="nt">(self, molecule, ostream)</span>
 <span class="g g-Whitespace">     </span><span class="mi">44</span> <span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;from https://github.com/grimme-lab/xtb, set XTBHOME environment &#39;</span>
@@ -948,69 +951,6 @@ viewergrid_1651145978287829[0][0].render();
 <span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="n">vlx_assert</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 
 <span class="ne">AssertionError</span>: XTBDriver: XTB not available. Please download and install XTB from https://github.com/grimme-lab/xtb, set XTBHOME environment variable, and reinstall VeloxChem.
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBGradientDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
-<span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                                   XTB Gradient Driver                                                    
-                                                  =====================                                                   
-                                                                                                                          
-                                              Molecular Geometry (Angstroms)                                              
-                                             ================================                                             
-                                                                                                                          
-                          Atom         Coordinate X          Coordinate Y          Coordinate Z                           
-                                                                                                                          
-                           O           0.000000000000        0.000000000000        0.000000000000                         
-                           H           0.000000000000        0.895700000000       -0.316700000000                         
-                           H           0.000000000000        0.000000000000        1.100000000000                         
-                                                                                                                          
-                                                 Gradient (Hartree/Bohr)                                                  
-                                                -------------------------                                                 
-                                                                                                                          
-                          Atom           Gradient X            Gradient Y            Gradient Z                           
-                                                                                                                          
-                           O           0.000000000000       -0.012614520195       -0.073538358535                         
-                           H          -0.000000000000       -0.007845540038       -0.003652454643                         
-                           H           0.000000000000        0.020460060233        0.077190813177                         
-                                                                                                                          
-                                                                                                                          
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xtb_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XTBHessianDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
-<span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                                    XTB Hessian Driver                                                    
-                                                   ====================                                                   
-                                                                                                                          
-                                   *** Time spent in Hessian calculation: 0.08 sec ***                                    
-                                                                                                                          
-                                                                                                                          
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
-<span class="n">gradient</span> <span class="o">=</span> <span class="n">xtb_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
-<span class="n">hessian</span> <span class="o">=</span> <span class="n">xtb_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
 </pre></div>
 </div>
 </div>
@@ -1041,12 +981,12 @@ viewergrid_1651145978287829[0][0].render();
 </div>
 </div>
 </div>
-<p>The internal coordinates defined through geomeTRIC have routines that allow us to calculate derivatives with respect to Cartesian coordinates (<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>), as required for constructing the Wilson <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-90063d8d-7aaa-4bb9-9690-8e6a1360ffb1">
-<span class="eqno">(171)<a class="headerlink" href="#equation-90063d8d-7aaa-4bb9-9690-8e6a1360ffb1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>The internal coordinates defined through geomeTRIC have routines that allow us to calculate derivatives with respect to Cartesian coordinates (<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>), as required for constructing the Wilson <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>-matrix:</p>
+<div class="math notranslate nohighlight">
+\[
 B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
-\end{equation}\]</div>
-<p>Let’s use these routines to get the B-matrix.</p>
+\]</div>
+<p>Let us use these routines to get the <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>-matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_b_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">):</span>
@@ -1075,13 +1015,8 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
             <span class="n">b_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">]</span> <span class="o">=</span> <span class="n">deriv_q</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">b_matrix</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_mat</span> <span class="o">=</span> <span class="n">get_b_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+
+<span class="n">b_mat</span> <span class="o">=</span> <span class="n">get_b_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1127,13 +1062,8 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
     <span class="n">g_minus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_vec</span><span class="p">,</span> <span class="n">g_val_inverse_mat</span><span class="p">,</span> <span class="n">g_vec</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
     
     <span class="k">return</span> <span class="n">g_minus</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">get_g_minus</span><span class="p">(</span><span class="n">b_mat</span><span class="p">)</span> 
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">get_g_minus</span><span class="p">(</span><span class="n">b_mat</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div>
@@ -1170,52 +1100,41 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
                              <span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_deriv_q</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="p">:,</span> <span class="n">b</span><span class="p">,</span> <span class="p">:]</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">b2_matrix</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b2_matrix</span> <span class="o">=</span> <span class="n">get_b2_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+
+<span class="n">b2_matrix</span> <span class="o">=</span> <span class="n">get_b2_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>Let’s write the routines which transform the gradient and the Hessian from Cartesian coordinates to internal coordinates. We have to implement the following equations:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-64a89894-09bf-477b-8f90-3448d434ccfd">
-<span class="eqno">(172)<a class="headerlink" href="#equation-64a89894-09bf-477b-8f90-3448d434ccfd" title="Permalink to this equation">¶</a></span>\[\begin{align}
-\mathbf{g}_q &amp;= \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x \\
-\mathbf{H}_q &amp;= \mathbf{G}^{-}\mathbf{B}\big[ \mathbf{H}_x - \mathbf{g}_q\mathbf{B}^{(2)}\big]\mathbf{B}^\mathrm{T}\mathbf{G}^{-\mathrm{T}} 
-\end{align}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x \\
+\mathbf{H}_q = \mathbf{G}^{-}\mathbf{B}\big[ \mathbf{H}_x - \mathbf{g}_q\mathbf{B}^{(2)}\big]\mathbf{B}^\mathrm{T}\mathbf{G}^{-\mathrm{T}} 
+\end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">):</span>
     <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
     <span class="c1"># reshape the Cartesian gradient to match the dimensions of the </span>
     <span class="c1"># g_minus and b_matrix</span>
     <span class="n">grad_x</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">))</span>
+    
     <span class="c1"># convert to internal coordinates</span>
     <span class="n">grad_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_minus</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">grad_x</span><span class="p">])</span>
-
     <span class="k">return</span> <span class="n">grad_q</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grad_q</span> <span class="o">=</span> <span class="n">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">)</span>
+
+<span class="n">grad_q</span> <span class="o">=</span> <span class="n">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grad_q</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.0002241  0.0720476 -0.0124905]
-</pre></div>
 </div>
-</div>
-</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Has the conversion worked correctly? How can you check?</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">):</span>
@@ -1224,23 +1143,10 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
     
     <span class="c1"># convert the Hessian from Cartesian to internal coordinates</span>
     <span class="n">hessian_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_minus</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">-</span> <span class="n">gradq_b2mat</span><span class="p">,</span> <span class="n">b_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">g_minus</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
-    
     <span class="k">return</span> <span class="n">hessian_q</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hessian_q</span> <span class="o">=</span> <span class="n">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">)</span>
+
+<span class="n">hessian_q</span> <span class="o">=</span> <span class="n">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hessian_q</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 0.5138071  0.0000668 -0.0130674]
- [ 0.0040358  0.1528011  0.0233655]
- [ 0.0327675  0.0042677  0.0700256]]
 </pre></div>
 </div>
 </div>
@@ -1342,10 +1248,10 @@ Calculating the energies, gradients and Hessians for...  1.35
 </div>
 </div>
 <p>Now that we have the gradients and Hessians in internal coordinates, let’s write a routine which constructs the harmonic potential, given a new molecular configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d7cba385-9101-42ea-a47c-7d344e383693">
-<span class="eqno">(173)<a class="headerlink" href="#equation-d7cba385-9101-42ea-a47c-7d344e383693" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="math notranslate nohighlight">
+\[
 V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}{2} \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{H}_a\boldsymbol{\Delta}_a\, .
-\end{equation}\]</div>
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">new_q</span><span class="p">):</span>
@@ -1353,8 +1259,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
     <span class="c1"># hessian have been calculated;</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">new_q</span> <span class="o">-</span> <span class="n">q_a</span>
     <span class="n">pot</span> <span class="o">=</span> <span class="n">e_a</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">g_a</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">dist</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">dist</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">pot</span>
-    
+    <span class="k">return</span> <span class="n">pot</span>    
 </pre></div>
 </div>
 </div>
@@ -1371,13 +1276,8 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
     <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">internal_coordinates</span><span class="p">:</span>
         <span class="n">q_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">cart_coords</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">q_list</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list of internal coordinates with our interpolation data points:</span>
+
+<span class="c1"># list of internal coordinates with our interpolation data points:</span>
 <span class="n">qs</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">molec</span> <span class="ow">in</span> <span class="n">molecules</span><span class="p">:</span>
@@ -1449,7 +1349,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/impes_45_0.png" src="../_images/impes_45_0.png" />
+<img alt="../_images/impes_36_0.png" src="../_images/impes_36_0.png" />
 </div>
 </div>
 <p>Let’s use these for interpolation and compare to the PES calculated with XTB.</p>
@@ -1514,7 +1414,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/impes_49_0.png" src="../_images/impes_49_0.png" />
+<img alt="../_images/impes_40_0.png" src="../_images/impes_40_0.png" />
 </div>
 </div>
 </div>

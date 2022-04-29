@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -134,16 +136,6 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="reactivity.html">
-   Catalysis and reactivity
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dichroism.html">
-   Optical activity and dichroism
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="vibrational.html">
    Vibrational spectroscopies
@@ -170,11 +162,6 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="magnetic.html">
-   Magnetic resonances
-  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="xray.html">
@@ -480,7 +467,7 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="scf-response.html">
-     Hartree–Fock
+     Time-Dependent Hartree–Fock
     </a>
    </li>
    <li class="toctree-l2">
@@ -977,16 +964,16 @@ const thebe_selector_output = ".output, .cell_output"
 <h3>One-particle density matrix<a class="headerlink" href="#one-particle-density-matrix" title="Permalink to this headline">¶</a></h3>
 <p>In this exercise, we are going to compute the one-particle density matrix for a CI wavefunction. The structure of the code is very similar to that of the energy, and actually, the energy can be computed directly from the one- and two-particle density matrix.</p>
 <p>As a reminder, the density matrix (in molecular orbital basis) is defined in second quantization as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-acb45e98-f9c0-4856-935c-139fd2c20723">
-<span class="eqno">(47)<a class="headerlink" href="#equation-acb45e98-f9c0-4856-935c-139fd2c20723" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-f66907e2-a5df-4dfc-ad0a-f304b037d7ba">
+<span class="eqno">(47)<a class="headerlink" href="#equation-f66907e2-a5df-4dfc-ad0a-f304b037d7ba" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 \end{equation}\]</div>
 <p>This is indeed very similar to the one-electron part of the <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-50d8de35-27b0-4d52-9156-3604ab4145b9">
-<span class="eqno">(48)<a class="headerlink" href="#equation-50d8de35-27b0-4d52-9156-3604ab4145b9" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-178e4561-b312-4d74-9a6e-dd15d9049e67">
+<span class="eqno">(48)<a class="headerlink" href="#equation-178e4561-b312-4d74-9a6e-dd15d9049e67" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \sigma^{(1)} = \sum_{pq} \hat{a}_p^\dagger \hat{a}_q | 0 \rangle h_{pq}
 \end{equation}\]</div>
-<p>The difference then with the sigma algorithm is that instead of adding the <span class="math notranslate nohighlight">\(h_{ia}\)</span> integral to the <span class="math notranslate nohighlight">\(\sigma\)</span> vector, we store the product of the coefficients (vector[idet] and vector[excdet.index()]) in the “i,a” position of the density matrix. Note that the diagonal term <span class="math notranslate nohighlight">\(D_{pp}\)</span> includes a loop over all occupied <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
+<p>The difference then with the sigma algorithm is that instead of adding the <span class="math notranslate nohighlight">\(h_{ia}\)</span> integral to the <span class="math notranslate nohighlight">\(\sigma\)</span> vector, we store the product of the coefficients (<code class="docutils literal notranslate"><span class="pre">vector[idet]</span></code> and <code class="docutils literal notranslate"><span class="pre">vector[excdet.index()]</span></code>) in the “i,a” position of the density matrix. Note that the diagonal term <span class="math notranslate nohighlight">\(D_{pp}\)</span> includes a loop over all occupied <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
 <p>First let’s initialize our calculations:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
@@ -1054,45 +1041,45 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
 <span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">(</span><span class="n">nfrozen</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="n">expansion</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
-<span class="n">CIham</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span> <span class="c1">#Contains integrals and functions using them</span>
+<span class="n">CIham</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span> <span class="c1">#Contains integrals and functions using them</span>
 <span class="n">CIham</span><span class="o">.</span><span class="n">compute_Hints</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
 
-<span class="n">Ein</span><span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">CIham</span><span class="o">.</span><span class="n">inEne</span><span class="p">)</span>
-<span class="n">Ftu</span><span class="o">=</span> <span class="n">CIham</span><span class="o">.</span><span class="n">Ftu</span>
-<span class="n">tuvw</span><span class="o">=</span> <span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span>
+<span class="n">Ein</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">CIham</span><span class="o">.</span><span class="n">inEne</span><span class="p">)</span>
+<span class="n">Ftu</span> <span class="o">=</span> <span class="n">CIham</span><span class="o">.</span><span class="n">Ftu</span>
+<span class="n">tuvw</span> <span class="o">=</span> <span class="n">CIham</span><span class="o">.</span><span class="n">tuvw</span>
 
 <span class="k">def</span> <span class="nf">SC_diag</span><span class="p">(</span><span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The energy of a given SD, as a function of its list of occupied orbitals</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">Hij</span><span class="o">=</span><span class="n">Ein</span> <span class="c1">#Inactive energy (inc. nuclear repulsion)</span>
+    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ein</span> <span class="c1">#Inactive energy (inc. nuclear repulsion)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#1-e term = inactive Fock matrix</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#1-e term = inactive Fock matrix</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#Coulomb-Exchange</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#Coulomb-Exchange</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-            <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
 <span class="k">def</span> <span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Slater-Condon between a SD and a singly excited, depending on the excited orbitals (i,a)</span>
+<span class="sd">    Slater-Condon between a SD and a singly excited determinant, depending on the excited orbitals (i,a)</span>
 <span class="sd">    and the same-spin (compared to spin of the excitated electron) and opposite-spin occupation</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">Hij</span><span class="o">=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
+    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ss_occ</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">os_occ</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
 <span class="k">def</span> <span class="nf">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1108,43 +1095,43 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
     <span class="k">return</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">sigma</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="n">result</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span><span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
         <span class="c1">#Diagonal term</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span><span class="o">+=</span><span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">+=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
         <span class="c1">#Single excitations alpha</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#alpha-alpha excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                             <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#alpha-beta excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
         <span class="c1">#Single excitations beta</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#beta-beta excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                             <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;float_kind&#39;</span><span class="p">:</span><span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
@@ -1155,7 +1142,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 <ul class="simple">
 <li><p>for the starting guess: to obtain the indices of the nstates lowest elements of a numpy array A, you can use the command:</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">A</span><span class="p">)[:</span><span class="n">nstates</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">A</span><span class="p">)[:</span><span class="n">nstates</span><span class="p">]</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1218,8 +1205,8 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <h3>Calculate the closed-shell MP2 energy correction<a class="headerlink" href="#calculate-the-closed-shell-mp2-energy-correction" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p>Implement the MP2 energy correction using the following equation valid for the closed-shell restricted case in spatial orbitals:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-35a76145-3983-4ce9-8cc8-73f8f6e2374c">
-<span class="eqno">(49)<a class="headerlink" href="#equation-35a76145-3983-4ce9-8cc8-73f8f6e2374c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5e0deb5a-1e4a-43fb-978c-4295225b1e23">
+<span class="eqno">(49)<a class="headerlink" href="#equation-5e0deb5a-1e4a-43fb-978c-4295225b1e23" title="Permalink to this equation">¶</a></span>\[\begin{equation}
     E_0^{(2)} = - \sum_{ijab} \frac{\langle ij | ab \rangle \langle ij | ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
     - \sum_{ijab} \frac{\langle ij | ab \rangle [ \langle ij | ab \rangle - \langle ij | ba \rangle]}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
   \end{equation}\]</div>
@@ -1267,8 +1254,8 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <div class="section" id="calculate-the-mp2-amplitudes">
 <h3>Calculate the MP2 amplitudes<a class="headerlink" href="#calculate-the-mp2-amplitudes" title="Permalink to this headline">¶</a></h3>
 <p>The MP2 <span class="math notranslate nohighlight">\(t\)</span>-amplitudes are defined as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-588ce15e-2a67-4a73-b9c5-d0f8e60ca31c">
-<span class="eqno">(50)<a class="headerlink" href="#equation-588ce15e-2a67-4a73-b9c5-d0f8e60ca31c" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c739ebbb-8776-459d-bb0e-3cd2ff86babd">
+<span class="eqno">(50)<a class="headerlink" href="#equation-c739ebbb-8776-459d-bb0e-3cd2ff86babd" title="Permalink to this equation">¶</a></span>\[\begin{align}
 t_{ijab} = \frac{\langle ij || ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j} = \frac{\langle ij | ab \rangle - \langle ij | ba \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
 \end{align}\]</div>
 <p>In the following, we need to consider different spin blocks:</p>
@@ -1308,8 +1295,8 @@ t_{ijab} = \frac{\langle ij || ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i 
 <div class="section" id="calculate-the-mp2-energy-correction-using-the-t-amplitudes">
 <h3>Calculate the MP2 energy correction using the <span class="math notranslate nohighlight">\(t\)</span> amplitudes<a class="headerlink" href="#calculate-the-mp2-energy-correction-using-the-t-amplitudes" title="Permalink to this headline">¶</a></h3>
 <p>The MP2 energy correction can also be calculated in spin orbitals as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ec237953-d823-4aca-9a1f-cccd431daac0">
-<span class="eqno">(51)<a class="headerlink" href="#equation-ec237953-d823-4aca-9a1f-cccd431daac0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-7bd0ac42-b411-4d0b-8921-7989debd0550">
+<span class="eqno">(51)<a class="headerlink" href="#equation-7bd0ac42-b411-4d0b-8921-7989debd0550" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E_\textrm{MP2} = -\frac14\sum_{ijab}t_{ijab}\langle ij || ab \rangle = -\frac14\sum_{ijab} t_{ijab}(\langle ij | ab \rangle - \langle ij | ba \rangle)
 \end{equation}\]</div>
 <ul class="simple">
@@ -1402,8 +1389,8 @@ which can be calculated as a derivative of the energy with respect to an externa
 As such, it can be calculated either <a class="reference internal" href="gradients.html#sec-numerical-gradients"><span class="std std-ref">numerically</span></a> or <a class="reference internal" href="gradients.html#sec-analytical-gradients"><span class="std std-ref">analytically</span></a>.
 In the latter case, the calculation of the electronic contribution to <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> is given by the contraction of the one-particle density matrix <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}\)</span> with the dipole integrals (<span class="math notranslate nohighlight">\(\mu_{\kappa \lambda}\)</span>), either in AO or MO basis. In order to avoid having to transform all property integrals to MO basis, one usually transforms the density matrix to AO.
 In the following, we want to look at the dipole moment calculated with different approximation schemes.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3b2ec8e0-02a7-4f0c-a5a0-5346d842d00c">
-<span class="eqno">(52)<a class="headerlink" href="#equation-3b2ec8e0-02a7-4f0c-a5a0-5346d842d00c" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-803f97cc-6ef6-4f09-9f8e-d76b3c67a29a">
+<span class="eqno">(52)<a class="headerlink" href="#equation-803f97cc-6ef6-4f09-9f8e-d76b3c67a29a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \boldsymbol{\mu} = \sum_{\kappa \lambda} \gamma_{\kappa \lambda} \mu_{\lambda \kappa}
 \end{equation}\]</div>
 <div class="section" id="hf-dipole-moment">
@@ -1424,8 +1411,8 @@ need to be taken into account.
 The occ-vir block of the MP2 density matrix is related to orbital relaxation due to the perturbation
 and has to be calculated iteratively (for more details, see <a class="reference internal" href="gradients.html#sec-mp2-gradients"><span class="std std-ref">here</span></a>).
 The occ-occ and vir-vir blocks of the second-order correction to the ground-state one-particle density matrix, on the other hand, can directly be calculated from the <span class="math notranslate nohighlight">\(t\)</span> amplitudes as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8dc75cee-d112-49b5-ac0a-ea6b6713274e">
-<span class="eqno">(53)<a class="headerlink" href="#equation-8dc75cee-d112-49b5-ac0a-ea6b6713274e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-127e259b-69ad-466f-a9e0-59165b61e652">
+<span class="eqno">(53)<a class="headerlink" href="#equation-127e259b-69ad-466f-a9e0-59165b61e652" title="Permalink to this equation">¶</a></span>\[\begin{align}
   \gamma_{ij}^{(2)} &amp;= -\frac12 \sum_{kab} t_{ikab} t_{jkab} \\
   \gamma_{ab}^{(2)} &amp;= \frac12 \sum_{ijc} t_{ijac} t_{ijbc}
 \end{align}\]</div>
@@ -1469,15 +1456,15 @@ and properties calculated with it as (orbital) unrelaxed.</p>
 in order to obtain the occupied-virtual block of the one-particle density matrix.</p></li>
 <li><p>As an approximation to that, the following equation (in spin orbitals) can be used:</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-94e2e8ee-3d86-4ecf-974e-5d768f2f9cc9">
-<span class="eqno">(54)<a class="headerlink" href="#equation-94e2e8ee-3d86-4ecf-974e-5d768f2f9cc9" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-a6318e6f-663c-4de3-b549-8869f79f8e7a">
+<span class="eqno">(54)<a class="headerlink" href="#equation-a6318e6f-663c-4de3-b549-8869f79f8e7a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \lambda_{ia} = \frac{1}{\epsilon_{a} - \epsilon_{i}} \bigg( \frac12 \sum_{jkb} t_{jkab} \langle jk || ib \rangle + \frac12 \sum_{jbc} t_{ijbc} \langle ja || bc \rangle \bigg)
 \end{equation}\]</div>
 <ul class="simple">
 <li><p>For the closed-shell restricted case, the above equation can be written in spatial orbitals as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-cccde3a4-3e13-4db6-8e54-bb2742cd3b3c">
-<span class="eqno">(55)<a class="headerlink" href="#equation-cccde3a4-3e13-4db6-8e54-bb2742cd3b3c" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0f9465d3-2558-41cd-8e00-af0bf035f82f">
+<span class="eqno">(55)<a class="headerlink" href="#equation-0f9465d3-2558-41cd-8e00-af0bf035f82f" title="Permalink to this equation">¶</a></span>\[\begin{align}
   \lambda_{ia} = \frac{1}{\epsilon_{a} - \epsilon_{i}} \bigg( \sum_{jbc} \frac{\langle ij | bc \rangle}{\epsilon_b + \epsilon_c - \epsilon_i - \epsilon_j} \big( 2 \langle ja | cb \rangle - \langle ja | bc \rangle \big) - \sum_{jkb} \frac{\langle jk | ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_j - \epsilon_k} \big( 2 \langle jk | ib \rangle - \langle kj | ib \rangle \big) \bigg)
 \end{align}\]</div>
 <div class="admonition note">
@@ -1515,8 +1502,8 @@ in order to obtain the occupied-virtual block of the one-particle density matrix
 <li><p>Then the dipole moment <span class="math notranslate nohighlight">\(\mu_z\)</span>
 can be calculated approximately as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-ff8b8838-fe7f-4b6b-b88f-061b6436b8fb">
-<span class="eqno">(56)<a class="headerlink" href="#equation-ff8b8838-fe7f-4b6b-b88f-061b6436b8fb" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-e6919a1c-12fa-49dd-bc50-5256741af51f">
+<span class="eqno">(56)<a class="headerlink" href="#equation-e6919a1c-12fa-49dd-bc50-5256741af51f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \mu_z = -\frac{\Delta E}{\Delta \mathcal{F}_z} = -\frac{E(\mathcal{F}_z) - E(-\mathcal{F}_z)}{2 \mathcal{F}_z}
 \end{equation}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF driver for positive field direction</span>

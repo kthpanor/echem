@@ -134,16 +134,6 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="reactivity.html">
-   Catalysis and reactivity
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dichroism.html">
-   Optical activity and dichroism
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="vibrational.html">
    Vibrational spectroscopies
@@ -170,11 +160,6 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="magnetic.html">
-   Magnetic resonances
-  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="xray.html">
@@ -480,7 +465,7 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="scf-response.html">
-     Hartree–Fock
+     Time-Dependent Hartree–Fock
     </a>
    </li>
    <li class="toctree-l2">
@@ -722,18 +707,18 @@ const thebe_selector_output = ".output, .cell_output"
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-scf-to-determine-the-reference-state-for-adc">
-   Run SCF to determine the reference state for ADC
+  <a class="reference internal nav-link" href="#calculate-reference-state">
+   Calculate reference state
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#contruct-the-closed-shell-restricted-adc-1-matrix">
-   Contruct the closed-shell restricted ADC(1) matrix
+  <a class="reference internal nav-link" href="#contruct-the-adc-1-matrix">
+   Contruct the ADC(1) matrix
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-an-adc-calculation-with-gator">
-   Run an ADC calculation with Gator
+  <a class="reference internal nav-link" href="#adc-calculation-in-gator">
+   ADC calculation in Gator
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -767,18 +752,18 @@ const thebe_selector_output = ".output, .cell_output"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-scf-to-determine-the-reference-state-for-adc">
-   Run SCF to determine the reference state for ADC
+  <a class="reference internal nav-link" href="#calculate-reference-state">
+   Calculate reference state
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#contruct-the-closed-shell-restricted-adc-1-matrix">
-   Contruct the closed-shell restricted ADC(1) matrix
+  <a class="reference internal nav-link" href="#contruct-the-adc-1-matrix">
+   Contruct the ADC(1) matrix
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#run-an-adc-calculation-with-gator">
-   Run an ADC calculation with Gator
+  <a class="reference internal nav-link" href="#adc-calculation-in-gator">
+   ADC calculation in Gator
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -802,24 +787,19 @@ const thebe_selector_output = ".output, .cell_output"
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="adc-exercises">
 <h1>ADC exercises<a class="headerlink" href="#adc-exercises" title="Permalink to this headline">¶</a></h1>
-<p>In this block, you will implement the closed-shell restricted ADC(1) matrix yourself and diagonalize it to obtain singlet excitation energies.
-You will use <a class="reference internal" href="intro.html#sec-gator"><span class="std std-ref">Gator</span></a> to compare your results and obtain both singlet and triplet excitation energies.
-Furthermore, you will look at the core-valence separation (CVS) approximation for the calculation of core-excited states.</p>
+<p>In this exercise, we will implement the closed-shell restricted ADC(1) matrix yourself and diagonalize it to obtain excitation energies. We will use <a class="reference internal" href="intro.html#sec-gator"><span class="std std-ref">Gator</span></a> to compare the results and obtain both singlet and triplet excitation energies. Furthermore, we will consider the core-valence separation (CVS) approximation for the calculation of core-excited states.</p>
 <p>First, we define a small molecule (lithium hydride) and minimal basis set (STO-3G).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">gator</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">veloxchem.mointsdriver</span> <span class="kn">import</span> <span class="n">MOIntegralsDriver</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># Conversion from Hartree to eV for later use</span>
 <span class="n">au2ev</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">veloxchemlib</span><span class="o">.</span><span class="n">hartree_in_ev</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">au2ev</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lithium hydride molecule</span>
+
 <span class="n">lih_xyz</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;2</span>
 
 <span class="s2">Li  0.000000   0.000000   0.000000</span>
@@ -833,13 +813,13 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lih</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="run-scf-to-determine-the-reference-state-for-adc">
-<h2>Run SCF to determine the reference state for ADC<a class="headerlink" href="#run-scf-to-determine-the-reference-state-for-adc" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF will be run by Veloxchem through Gator</span>
+<div class="section" id="calculate-reference-state">
+<h2>Calculate reference state<a class="headerlink" href="#calculate-reference-state" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF will be run by VeloxChem through Gator</span>
 <span class="n">scf</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">lih</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">conv_thresh</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Have a look at the molecular orbitals</strong></p>
+<p><strong>Look at the molecular orbitals</strong></p>
 <ul class="simple">
 <li><p>Can you assign symmetry labels to the orbitals?</p>
 <ul>
@@ -853,24 +833,25 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 </pre></div>
 </div>
 </div>
-<div class="section" id="contruct-the-closed-shell-restricted-adc-1-matrix">
-<h2>Contruct the closed-shell restricted ADC(1) matrix<a class="headerlink" href="#contruct-the-closed-shell-restricted-adc-1-matrix" title="Permalink to this headline">¶</a></h2>
-<p>The ADC(1) matrix <span class="math notranslate nohighlight">\(\mathbf{M}\)</span> in a <em>spin-orbital basis</em> is given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4b977156-c2b4-4bd5-9e0c-217ac43ade4a">
-<span class="eqno">(205)<a class="headerlink" href="#equation-4b977156-c2b4-4bd5-9e0c-217ac43ade4a" title="Permalink to this equation">¶</a></span>\[\begin{align}
-  M_{ia,jb} &amp;= (\epsilon_a - \epsilon_i) \delta_{ij} \delta_{ab} - \langle ja || ib \rangle \, ,
-\end{align}\]</div>
+<div class="section" id="contruct-the-adc-1-matrix">
+<h2>Contruct the ADC(1) matrix<a class="headerlink" href="#contruct-the-adc-1-matrix" title="Permalink to this headline">¶</a></h2>
+<p>The ADC(1) matrix <span class="math notranslate nohighlight">\(\mathbf{M}\)</span> is in a <em>spin-orbital basis</em> given by</p>
+<div class="math notranslate nohighlight">
+\[
+  M_{ia,jb} = (\epsilon_a - \epsilon_i) \delta_{ij} \delta_{ab} - \langle ja || ib \rangle \, ,
+\]</div>
 <p>which for a closed-shell restricted HF reference can be written in terms of <em>spatial</em> orbitals as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c3317907-17a1-4711-b269-ea1cc069088e">
-<span class="eqno">(206)<a class="headerlink" href="#equation-c3317907-17a1-4711-b269-ea1cc069088e" title="Permalink to this equation">¶</a></span>\[\begin{align}
-   M_{ia,jb} &amp;= (\epsilon_a - \epsilon_i) \delta_{ij} \delta_{ab} + 2 \langle i j | a b \rangle  - \langle j a | i b \rangle \, ,
-\end{align}\]</div>
+<div class="math notranslate nohighlight">
+\[
+   M_{ia,jb} = (\epsilon_a - \epsilon_i) \delta_{ij} \delta_{ab} + 2 \langle i j | a b \rangle  - \langle j a | i b \rangle \, ,
+\]</div>
 <p>where <span class="math notranslate nohighlight">\(\epsilon_p\)</span> are HF orbital energies and <span class="math notranslate nohighlight">\(\langle p q | r s \rangle\)</span> are two-electron repulsion integrals in physicists’ (“1212”) notation.</p>
 <ul class="simple">
 <li><p>We look at a very simple example of the LiH molecule in a minimal basis (STO-3G), having two occupied and four virtual orbitals</p></li>
 <li><p>The first task is to construct the closed-shell ADC(1) matrix “by hand.” For this, we need the HF orbital energies (collected in a diagonal matrix) and the two-electron integrals</p></li>
 <li><p>You can also construct the ADC(0) matrix, which consists only of the orbital-energy differences on the diagonal</p></li>
 </ul>
+<p>Extract MO energies and two-electron integrals:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># MO energies in diagonal matrix</span>
 <span class="n">mo_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">scf</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">])</span>
 
@@ -880,6 +861,7 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 <span class="n">ovov</span> <span class="o">=</span> <span class="n">moints_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">lih</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;OVOV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Construct matrix:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Number of occupied and virtual orbitals</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">lih</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">norb</span> <span class="o">=</span> <span class="n">mo_energies</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -904,15 +886,17 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
                 <span class="o">...</span>
 </pre></div>
 </div>
+<p>Reshape:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reshape the 4D into 2D matrices (and print them if you like)</span>
 <span class="n">adc0_mat2d</span> <span class="o">=</span> <span class="o">...</span>
 <span class="c1">#print(&quot;ADC(0) matrix:\n&quot;, adc0_mat2d.shape, &quot;\n&quot;, adc0_mat2d)</span>
+
 <span class="n">adc1_mat2d</span> <span class="o">=</span> <span class="o">...</span>
 <span class="c1">#print(&quot;\nclosed-shell ADC(1) matrix:\n&quot;, adc1_mat2d.shape, &quot;\n&quot;, adc1_mat2d)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Diagonalize the ADC(1) matrix using numpy</span>
-<span class="n">adc1_eigvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<p>And iagonalize the ADC(1) matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adc1_eigvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed-shell ADC(1)/STO-3G eigenvalues:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">adc1_eigvals</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -920,16 +904,16 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 <li><p>Now we want to compare the obtained eigenvalues with the results from Gator</p></li>
 </ul>
 </div>
-<div class="section" id="run-an-adc-calculation-with-gator">
-<h2>Run an ADC calculation with Gator<a class="headerlink" href="#run-an-adc-calculation-with-gator" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="adc-calculation-in-gator">
+<h2>ADC calculation in Gator<a class="headerlink" href="#adc-calculation-in-gator" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adc_results</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">lih</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;adc1&#39;</span><span class="p">,</span>
                             <span class="n">singlets</span><span class="o">=</span><span class="n">nexc</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># One can print a summary of the results</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We can print a summary of the results</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_results</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
-<span class="c1"># And even plot the absorbtion spectrum</span>
+<span class="c1"># Or plot the absorbtion spectrum</span>
 <span class="n">adc_results</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;adc(1)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -947,9 +931,13 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 <h2>Obtain and diagonalize the full ADC(1) matrix<a class="headerlink" href="#obtain-and-diagonalize-the-full-adc-1-matrix" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>One can get the full ADC(1) matrix in spin-orbital basis from Gator</p></li>
-<li><p>Confirm that it is four times as large as the closed-shell restricted one (it has <span class="math notranslate nohighlight">\(\alpha\alpha, \alpha\beta, \beta\alpha\)</span>, and <span class="math notranslate nohighlight">\(\beta\beta\)</span> blocks)</p></li>
+<li><p>Confirm that it is four times as large as the closed-shell restricted one (having <span class="math notranslate nohighlight">\(\alpha\alpha, \alpha\beta, \beta\alpha\)</span>, and <span class="math notranslate nohighlight">\(\beta\beta\)</span> blocks)</p></li>
 <li><p>The next task is to diagonalize it and have a look at the excitation energies and their degeneracies</p></li>
-<li><p>Can you assign term symbols (singlet or triplet, <span class="math notranslate nohighlight">\(\Sigma\)</span> or <span class="math notranslate nohighlight">\(\Pi\)</span> state?) to the respective excited states? (Hint: the symmetry labels of the orbitals and degeneracies should help you)</p></li>
+<li><p>Can you assign term symbols (singlet or triplet, <span class="math notranslate nohighlight">\(\Sigma\)</span> or <span class="math notranslate nohighlight">\(\Pi\)</span> state) to the respective excited states?</p>
+<ul>
+<li><p>Hint: the symmetry labels of the orbitals and degeneracies should be able to help you</p></li>
+</ul>
+</li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is the full matrix</span>
 <span class="n">gator_adc_matrix</span> <span class="o">=</span> <span class="n">adc_results</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">to_ndarray</span><span class="p">()</span>
@@ -959,11 +947,13 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Diagonalize the ADC(1) matrix from Gator to obtain excitation energies and vectors</span>
 <span class="n">gator_adc1_eigvals</span><span class="p">,</span> <span class="n">gator_adc1_eigvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Excitation energies from spin-orbital ADC(1)/STO-3G matrix:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># With gator, one can also look at the excitation vectors ...</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ph vector shape:&quot;</span><span class="p">,</span> <span class="n">adc_results</span><span class="o">.</span><span class="n">excitation_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ph</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
 <span class="c1"># ... and have it print out the most important vector amplitudes</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_results</span><span class="o">.</span><span class="n">describe_amplitudes</span><span class="p">())</span>
 </pre></div>
@@ -990,8 +980,8 @@ Furthermore, you will look at the core-valence separation (CVS) approximation fo
 <ul class="simple">
 <li><p>From the above results for the (singlet or triplet) excitation energies, you see that they can be divided into two groups (consisting of 4 excited states each):</p>
 <ul>
-<li><p>Those with an excitation energy <span class="math notranslate nohighlight">\(&lt; 0.75\)</span> Hartree (singlets) or <span class="math notranslate nohighlight">\(&lt; 0.5\)</span> Hartree (triplets)</p></li>
-<li><p>Those with an excitation energy <span class="math notranslate nohighlight">\(&gt; 2\)</span> Hartree</p></li>
+<li><p>Those with an excitation energy <span class="math notranslate nohighlight">\(&lt;\)</span>0.75 Hartree (singlets) or <span class="math notranslate nohighlight">\(&lt;\)</span>0.5 Hartree (triplets)</p></li>
+<li><p>Those with an excitation energy <span class="math notranslate nohighlight">\(&gt;\)</span>2 Hartree</p></li>
 </ul>
 </li>
 <li><p>The first group can be considered <strong>valence excitations</strong> (from the filled bonding orbital), the second group are <strong>core excitations</strong> (from the Li 1s orbital)</p></li>

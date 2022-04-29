@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -134,16 +136,6 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="reactivity.html">
-   Catalysis and reactivity
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dichroism.html">
-   Optical activity and dichroism
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="vibrational.html">
    Vibrational spectroscopies
@@ -170,11 +162,6 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="magnetic.html">
-   Magnetic resonances
-  </a>
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="xray.html">
@@ -475,12 +462,12 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="ci-response.html">
-     Configuration interaction
+     Configuration interaction and state-averaged MCSCF
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="scf-response.html">
-     Hartree–Fock
+     Time-Dependent Hartree–Fock
     </a>
    </li>
    <li class="toctree-l2">
@@ -518,6 +505,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="adc-hpc.html">
      HPC-QC implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="adc-exercises.html">
+     ADC exercises
     </a>
    </li>
   </ul>
@@ -837,7 +829,7 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
 T_s[n(\mathbf{r})] = - \frac{\hbar^2}{2 m_\mathrm{e}}
-\sum_i \int  \psi_i^*(\mathbf{r}) \nabla^2  \psi_i(\mathbf{r}) \, d^3\mathbf{r}  
+\sum_i \int  \psi_i^*(\mathbf{r}) \nabla^2  \psi_i(\mathbf{r}) \, \mathrm{d}^3\mathbf{r}  
 \end{equation*}\]</div>
 <p>where the electron density is defined as</p>
 <div class="amsmath math notranslate nohighlight">
@@ -853,7 +845,7 @@ n(\mathbf{r}) = \sum_{i} | \psi_i(\mathbf{r})|^2
 <p>To within a small residual correction, the functional <span class="math notranslate nohighlight">\(T_s\)</span> amounts to the true kinetic energy functional <span class="math notranslate nohighlight">\(T\)</span>. Correspondingly, the energy functional can be written</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-E[n(\mathbf{r})] = T_s[n(\mathbf{r})] + J[n(\mathbf{r})] + E_\mathrm{xc}[n(\mathbf{r})] + \int v(\mathbf{r}) n(\mathbf{r}) \, d^3\mathbf{r}
+E[n(\mathbf{r})] = T_s[n(\mathbf{r})] + J[n(\mathbf{r})] + E_\mathrm{xc}[n(\mathbf{r})] + \int v(\mathbf{r}) n(\mathbf{r}) \, \mathrm{d}^3\mathbf{r}
 \end{equation*}\]</div>
 <p>where the electron–electron interaction contribution is partitioned into the classical Coulomb interaction energy</p>
 <div class="math notranslate nohighlight">
@@ -864,9 +856,9 @@ J[n(\mathbf{r})]
 \frac{e^2}{4\pi\varepsilon_0}
 \int\int
 \frac{n(\mathbf{r}) n(\mathbf{r}')}{|\mathbf{r} - \mathbf{r}'|}
-\, d^3\mathbf{r} \, d^3\mathbf{r}'
+\, \mathrm{d}^3\mathbf{r} \, \mathrm{d}^3\mathbf{r}'
 \]</div>
-<p>and the exchange–correlation (XC) functional, <span class="math notranslate nohighlight">\(E_\mathrm{xc}[n(\mathbf{r})]\)</span>, accounting for the non-classical electron–electron interaction and the residual kinetic energy correction, <span class="math notranslate nohighlight">\((T[n(\mathbf{r})] - T_s[n(\mathbf{r})])\)</span>.</p>
+<p>and the exchange–correlation (xc) functional, <span class="math notranslate nohighlight">\(E_\mathrm{xc}[n(\mathbf{r})]\)</span>, accounting for the non-classical electron–electron interaction and the residual kinetic energy correction, <span class="math notranslate nohighlight">\((T[n(\mathbf{r})] - T_s[n(\mathbf{r})])\)</span>.</p>
 <p>Within the Kohn–Sham formulation of DFT, the act of minimizing the energy under the constraint of particle conservation closely follows the derivation of the <a class="reference internal" href="hartree-fock.html#hartree-fock-equation"><span class="std std-ref">Hartree–Fock equation</span></a> and the resulting equation from which the best orbitals are found is known as the Kohn–Sham equation. In its canonical form, it reads</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
@@ -879,20 +871,20 @@ J[n(\mathbf{r})]
 v_\mathrm{eff}(\mathbf{r}) = 
 \frac{e^2}{4\pi\varepsilon_0}
 \int \frac{n(\mathbf{r'})}{|\mathbf{r} - \mathbf{r}'|} 
-\, d^3\mathbf{r}' 
+\, \mathrm{d}^3\mathbf{r}' 
 + v_\mathrm{xc}(\mathbf{r})
 + v(\mathbf{r})
 \]</div>
 <p>with</p>
 <div class="math notranslate nohighlight">
 \[
-v_\mathrm{xc}(\mathbf{r}) = \frac{\delta E_{xc}}{\delta n(\mathbf{r})}
+v_\mathrm{xc}(\mathbf{r}) = \frac{\delta E_{\text{xc}}}{\delta n(\mathbf{r})}
 \]</div>
 </div>
 <div class="section" id="exchangecorrelation-functionals">
 <h2>Exchange–correlation functionals<a class="headerlink" href="#exchangecorrelation-functionals" title="Permalink to this headline">¶</a></h2>
-<p>The accuracy  of the Kohn-Sham method is determined by the capability of the XC functional to capture the non-classical electron–electron interactions in the molecular system. As the exact form of XC functional is unknown, one introduces physically justified approximations. The development of new XC functionals is an on-going process with new functionals being developed to address the inaccuracies of previous generations.</p>
-<p>The XC functionals can be classified by various criteria such as functional parameterization, arguments, etc. Here, we will describe four categories of functionals sorted by argument types and highlight the most prominent representatives of each group. We will assume the XC functional to be written in terms on an <em>energy density</em> on the form</p>
+<p>The accuracy  of the Kohn-Sham method is determined by the capability of the xc-functional to capture the non-classical electron–electron interactions in the molecular system. As the exact form of xc-functional is unknown, one introduces physically justified approximations. The development of new xc-functionals is an on-going process with new functionals being developed to address the inaccuracies of previous generations.</p>
+<p>The xc-functionals can be classified by various criteria such as functional parameterization, arguments, etc. Here, we will describe four categories of functionals sorted by argument types and highlight the most prominent representatives of each group. We will assume the xc-functional to be written in terms on an <em>energy density</em> <span class="math notranslate nohighlight">\(\varepsilon_\mathrm{xc}\)</span> on the form</p>
 <div class="math notranslate nohighlight">
 \[
 E_\mathrm{xc}[n(\mathbf{r})] = \int
@@ -916,11 +908,11 @@ v_\mathrm{xc}(\mathbf{r}) =
 </div>
 <div class="section" id="generalized-gradient-approximation-gga">
 <h3>Generalized gradient approximation (GGA)<a class="headerlink" href="#generalized-gradient-approximation-gga" title="Permalink to this headline">¶</a></h3>
-<p>Functionals of this group depend on <span class="math notranslate nohighlight">\(n(\mathbf{r})\)</span> and <span class="math notranslate nohighlight">\(\nabla n(\mathbf{r})\)</span>. The inclusion of the electron density gradient enables a more accurate description of electron-electron interactions in regions of rapidly varying density. The first attempts to develop XC functionals of this type were undertaken by Sham <span id="id4">[<a class="reference internal" href="refs.html#id143" title="L. J. Sham. Approximations of the Exchange and Correlation Potentials, pages 458–468. Springer US, Boston, MA, 1971. doi:10.1007/978-1-4684-1890-3_36.">Sha71</a>]</span> and Herman and co-workers <span id="id5">[<a class="reference internal" href="refs.html#id144" title="Frank Herman, John P. Van Dyke, and Irene B. Ortenburger. Improved statistical exchange approximation for inhomogeneous many-electron systems. Phys. Rev. Lett., 22:807–811, Apr 1969.">HVDO69</a>]</span> in the 1970s but from a performance point of view they were unsuccessful. Only in 1988, the first reliable exchange functional (B88) of this type was proposed by Becke <span id="id6">[<a class="reference internal" href="refs.html#id145" title="A D Becke. Density-functional exchange-energy approximation with correct asymptotic behavior. Phys. Rev. A, 38(6):3098–3100, 1988.">Bec88</a>]</span>. Adopting the Becke formulation, several other XC functionals have since been developed. Among these, most notable are the Lee-Yang-Parr (LYP) correlation functional <span id="id7">[<a class="reference internal" href="refs.html#id149" title="Chengteh Lee, Weitao Yang, and Robert G. Parr. Development of the colle-salvetti correlation-energy formula into a functional of the electron density. Phys. Rev. B, 37:785–789, Jan 1988.">LYP88</a>]</span> and the Perdew-Burke-Ernzerhof (PBE) XC functional <span id="id8">[<a class="reference internal" href="refs.html#id146" title="Matthias Ernzerhof and Gustavo E Scuseria. Assessment of the perdew–burke–ernzerhof exchange-correlation functional. J. Chem. Phys., 110(11):5029–5036, 1999. doi:10.1063/1.478401.">ES99</a>]</span>. The former LYP functional is an integral component of the most widely used hybrid functional (B3LYP) <span id="id9">[<a class="reference internal" href="refs.html#id147" title="Axel D. Becke. Density‐functional thermochemistry. iii. the role of exact exchange. J. Chem. Phys., 98(7):5648-5652, 1993.">Bec93</a>, <a class="reference internal" href="refs.html#id148" title="P. J. Stephens, F. J. Devlin, C. F. Chabalowski, and M. J. Frisch. Ab initio calculation of vibrational absorption and circular dichroism spectra using density functional force fields. J. Phys. Chem., 98(45):11623-11627, 1994.">SDCF94</a>]</span>, and the latter PBE functional is the most popular GGA functional in solid-state calculations.</p>
+<p>Functionals of this group depend on <span class="math notranslate nohighlight">\(n(\mathbf{r})\)</span> and <span class="math notranslate nohighlight">\(\nabla n(\mathbf{r})\)</span>. The inclusion of the electron density gradient enables a more accurate description of electron-electron interactions in regions of rapidly varying density. The first attempts to develop xc.functionals of this type were undertaken by Sham <span id="id4">[<a class="reference internal" href="refs.html#id143" title="L. J. Sham. Approximations of the Exchange and Correlation Potentials, pages 458–468. Springer US, Boston, MA, 1971. doi:10.1007/978-1-4684-1890-3_36.">Sha71</a>]</span> and Herman and co-workers <span id="id5">[<a class="reference internal" href="refs.html#id144" title="Frank Herman, John P. Van Dyke, and Irene B. Ortenburger. Improved statistical exchange approximation for inhomogeneous many-electron systems. Phys. Rev. Lett., 22:807–811, Apr 1969.">HVDO69</a>]</span> in the 1970s but from a performance point of view they were unsuccessful. Only in 1988, the first reliable exchange functional (B88) of this type was proposed by Becke <span id="id6">[<a class="reference internal" href="refs.html#id145" title="A D Becke. Density-functional exchange-energy approximation with correct asymptotic behavior. Phys. Rev. A, 38(6):3098–3100, 1988.">Bec88</a>]</span>. Adopting the Becke formulation, several other xc-functionals have since been developed. Among these, most notable are the Lee-Yang-Parr (LYP) correlation functional <span id="id7">[<a class="reference internal" href="refs.html#id149" title="Chengteh Lee, Weitao Yang, and Robert G. Parr. Development of the colle-salvetti correlation-energy formula into a functional of the electron density. Phys. Rev. B, 37:785–789, Jan 1988.">LYP88</a>]</span> and the Perdew-Burke-Ernzerhof (PBE) xc-functional <span id="id8">[<a class="reference internal" href="refs.html#id146" title="Matthias Ernzerhof and Gustavo E Scuseria. Assessment of the perdew–burke–ernzerhof exchange-correlation functional. J. Chem. Phys., 110(11):5029–5036, 1999. doi:10.1063/1.478401.">ES99</a>]</span>. The former LYP functional is an integral component of the most widely used hybrid functional (B3LYP) <span id="id9">[<a class="reference internal" href="refs.html#id147" title="Axel D. Becke. Density‐functional thermochemistry. iii. the role of exact exchange. J. Chem. Phys., 98(7):5648-5652, 1993.">Bec93</a>, <a class="reference internal" href="refs.html#id148" title="P. J. Stephens, F. J. Devlin, C. F. Chabalowski, and M. J. Frisch. Ab initio calculation of vibrational absorption and circular dichroism spectra using density functional force fields. J. Phys. Chem., 98(45):11623-11627, 1994.">SDCF94</a>]</span>, and the latter PBE functional is the most popular GGA functional in solid-state calculations.</p>
 </div>
 <div class="section" id="meta-generalized-gradient-approximation-mgga">
 <h3>Meta generalized gradient approximation (mGGA)<a class="headerlink" href="#meta-generalized-gradient-approximation-mgga" title="Permalink to this headline">¶</a></h3>
-<p>Functionals of this group depend on <span class="math notranslate nohighlight">\(n(\mathbf{r})\)</span>,  <span class="math notranslate nohighlight">\(\nabla n(\mathbf{r})\)</span>, and higher-order derivatives of the electron or/and kinetic energy densities. The development of XC functionals of this type has been actively pursued only during the last two decades and after Tao and co-workers introduced the first reliable mGGA functional in 2003 namely Tao-Perdew-Staroverov-Scuseria (TPSS) <span id="id10">[<a class="reference internal" href="refs.html#id150" title="Jianmin Tao, John P. Perdew, Viktor N. Staroverov, and Gustavo E. Scuseria. Climbing the density functional ladder: nonempirical meta–generalized gradient approximation designed for molecules and solids. Phys. Rev. Lett., 91:146401, Sep 2003.">TPSS03</a>]</span>.  Among the mGGA XC functionals, the functionals developed by the Truhlar group are the most widely used <span id="id11">[<a class="reference internal" href="refs.html#id151" title="Yan Zhao and Donald G. Truhlar. Applications and validations of the minnesota density functionals. Chem. Phys. Lett., 502(1):1 - 13, 2011.">ZT11</a>]</span>, and the revised M06-L functional <span id="id12">[<a class="reference internal" href="refs.html#id152" title="Ying Wang, Xinsheng Jin, Haoyu S. Yu, Donald G. Truhlar, and Xiao He. Revised m06-l functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics. Proc. Natl. Acad. Sci. U.S.A., 114(32):8487–8492, 2017.">WJY+17</a>]</span> offers accuracy comparable to hybrid XC functional in many situations.</p>
+<p>Functionals of this group depend on <span class="math notranslate nohighlight">\(n(\mathbf{r})\)</span>,  <span class="math notranslate nohighlight">\(\nabla n(\mathbf{r})\)</span>, and higher-order derivatives of the electron or/and kinetic energy densities. The development of xc-functionals of this type has been actively pursued only during the last two decades and after Tao and co-workers introduced the first reliable mGGA functional in 2003 namely Tao-Perdew-Staroverov-Scuseria (TPSS) <span id="id10">[<a class="reference internal" href="refs.html#id150" title="Jianmin Tao, John P. Perdew, Viktor N. Staroverov, and Gustavo E. Scuseria. Climbing the density functional ladder: nonempirical meta–generalized gradient approximation designed for molecules and solids. Phys. Rev. Lett., 91:146401, Sep 2003.">TPSS03</a>]</span>.  Among the mGGA xc-functionals, the functionals developed by the Truhlar group are the most widely used <span id="id11">[<a class="reference internal" href="refs.html#id151" title="Yan Zhao and Donald G. Truhlar. Applications and validations of the minnesota density functionals. Chem. Phys. Lett., 502(1):1 - 13, 2011.">ZT11</a>]</span>, and the revised M06-L functional <span id="id12">[<a class="reference internal" href="refs.html#id152" title="Ying Wang, Xinsheng Jin, Haoyu S. Yu, Donald G. Truhlar, and Xiao He. Revised m06-l functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics. Proc. Natl. Acad. Sci. U.S.A., 114(32):8487–8492, 2017.">WJY+17</a>]</span> offers accuracy comparable to hybrid xc-functional in many situations.</p>
 </div>
 <div class="section" id="hybrid-exchange-correlation-functionals">
 <h3>Hybrid exchange-correlation functionals<a class="headerlink" href="#hybrid-exchange-correlation-functionals" title="Permalink to this headline">¶</a></h3>
@@ -928,13 +920,13 @@ v_\mathrm{xc}(\mathbf{r}) =
 </div>
 <div class="section" id="range-separated-exchange-correlation-functionals">
 <h3>Range separated exchange-correlation functionals<a class="headerlink" href="#range-separated-exchange-correlation-functionals" title="Permalink to this headline">¶</a></h3>
-<p>Functionals of this group explicitly partition the XC contribution to the energy functional into short- and long-range parts. Typically, the same partitioning is also applied to the classical Coulomb term to ensure correct asymptotic behavior of <span class="math notranslate nohighlight">\((J[n(\mathbf{r})] + E_{xc}[n(\mathbf{r})])\)</span>. The functionals of this type are frequently employed in studies of excited states and optical properties of molecules in connection with time-dependent DFT methods. Among these functionals, the CAM-B3LYP XC functional <span id="id16">[<a class="reference internal" href="refs.html#id153" title="Takeshi Yanai, David P Tew, and Nicholas C Handy. A new hybrid exchange–correlation functional using the coulomb-attenuating method (cam-b3lyp). Chem. Phys. Lett., 393(1-3):51–57, 2004.">YTH04</a>]</span> is the most popular one, and frequently provides a valued alternative to <em>ab initio</em> methods in studies of molecular systems with charge-transfer character.</p>
+<p>Functionals of this group explicitly partition the xc-contribution to the energy functional into short- and long-range parts. Typically, the same partitioning is also applied to the classical Coulomb term to ensure correct asymptotic behavior of <span class="math notranslate nohighlight">\((J[n(\mathbf{r})] + E_{\text{xc}}[n(\mathbf{r})])\)</span>. The functionals of this type are frequently employed in studies of excited states and optical properties of molecules in connection with time-dependent DFT methods. Among these functionals, the CAM-B3LYP xc-functional <span id="id16">[<a class="reference internal" href="refs.html#id153" title="Takeshi Yanai, David P Tew, and Nicholas C Handy. A new hybrid exchange–correlation functional using the coulomb-attenuating method (cam-b3lyp). Chem. Phys. Lett., 393(1-3):51–57, 2004.">YTH04</a>]</span> is the most popular one, and frequently provides a valued alternative to <em>ab initio</em> methods in studies of molecular systems with charge-transfer character.</p>
 </div>
 <div class="section" id="known-deficiencies">
 <h3>Known deficiencies<a class="headerlink" href="#known-deficiencies" title="Permalink to this headline">¶</a></h3>
-<p>After introducing the most popular classes of XC functionals, it is important to mention some of their known deficiencies.</p>
-<p>First, we recognize the inherent inability of standard XC functionals to describe van der Waals interactions. This issue has been addressed in recent years by adding empirical dispersion corrections or by incorporating dispersion corrections via a kinetic-energy density dependent contribution. The former strategy has been adopted by Grimme and co-workers <span id="id17">[<a class="reference internal" href="refs.html#id155" title="Eike Caldeweyher, Sebastian Ehlert, Andreas Hansen, Hagen Neugebauer, Sebastian Spicher, Christoph Bannwarth, and Stefan Grimme. A generally applicable atomic-charge dependent london dispersion correction. J. Chem. Phys., 150(15):154122, 2019.">CEH+19</a>, <a class="reference internal" href="refs.html#id154" title="Stefan Grimme, Jens Antony, Stephan Ehrlich, and Helge Krieg. A consistent and accurate ab initio parametrization of density functional dispersion correction (dft-d) for the 94 elements h-pu. J. Chem. Phys., 132(15):154104, 2010.">GAEK10</a>]</span>, who introduced empirical D3 and D4 models of dispersion interactions and successfully combined these models with several XC functionals. As a result, the B3LYP+D3 XC functional became a new standard for structure optimizations of both weakly and strongly bonded molecular systems. Truhlar and co-workers have adopted the latter strategy to develop the Minnesota functional family <span id="id18">[<a class="reference internal" href="refs.html#id152" title="Ying Wang, Xinsheng Jin, Haoyu S. Yu, Donald G. Truhlar, and Xiao He. Revised m06-l functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics. Proc. Natl. Acad. Sci. U.S.A., 114(32):8487–8492, 2017.">WJY+17</a>, <a class="reference internal" href="refs.html#id151" title="Yan Zhao and Donald G. Truhlar. Applications and validations of the minnesota density functionals. Chem. Phys. Lett., 502(1):1 - 13, 2011.">ZT11</a>]</span>, and these functionals provide a viable alternative to the D3- or D4-corrected standard functionals.</p>
-<p>Second, we draw attention to the fact that there is an amount of self interaction built into the treatment of the electrons as due to the non-exact form of the XC functional. In Hartree–Fock theory, there is a perfect cancellation of the self-interaction terms in between the Coulomb and exchange contributions to the energy, but in DFT this symmetry is broken.</p>
+<p>After introducing the most popular classes of xc-functionals, it is important to mention some of their known deficiencies.</p>
+<p>First, we recognize the inherent inability of standard xc-functionals to describe van der Waals interactions. This issue has been addressed in recent years by adding empirical dispersion corrections or by incorporating dispersion corrections via a kinetic-energy density dependent contribution. The former strategy has been adopted by Grimme and co-workers <span id="id17">[<a class="reference internal" href="refs.html#id155" title="Eike Caldeweyher, Sebastian Ehlert, Andreas Hansen, Hagen Neugebauer, Sebastian Spicher, Christoph Bannwarth, and Stefan Grimme. A generally applicable atomic-charge dependent london dispersion correction. J. Chem. Phys., 150(15):154122, 2019.">CEH+19</a>, <a class="reference internal" href="refs.html#id154" title="Stefan Grimme, Jens Antony, Stephan Ehrlich, and Helge Krieg. A consistent and accurate ab initio parametrization of density functional dispersion correction (dft-d) for the 94 elements h-pu. J. Chem. Phys., 132(15):154104, 2010.">GAEK10</a>]</span>, who introduced empirical D3 and D4 models of dispersion interactions and successfully combined these models with several xc-functionals. As a result, the B3LYP+D3 xc-functional became a new standard for structure optimizations of both weakly and strongly bonded molecular systems. Truhlar and co-workers have adopted the latter strategy to develop the Minnesota functional family <span id="id18">[<a class="reference internal" href="refs.html#id152" title="Ying Wang, Xinsheng Jin, Haoyu S. Yu, Donald G. Truhlar, and Xiao He. Revised m06-l functional for improved accuracy on chemical reaction barrier heights, noncovalent interactions, and solid-state physics. Proc. Natl. Acad. Sci. U.S.A., 114(32):8487–8492, 2017.">WJY+17</a>, <a class="reference internal" href="refs.html#id151" title="Yan Zhao and Donald G. Truhlar. Applications and validations of the minnesota density functionals. Chem. Phys. Lett., 502(1):1 - 13, 2011.">ZT11</a>]</span>, and these functionals provide a viable alternative to the D3- or D4-corrected standard functionals.</p>
+<p>Second, we draw attention to the fact that there is an amount of self interaction built into the treatment of the electrons as due to the non-exact form of the xc-functional. In Hartree–Fock theory, there is an exact cancellation of the self-interaction terms in between the Coulomb and exchange contributions to the energy, but in DFT this symmetry is broken.</p>
 </div>
 </div>
 </div>

@@ -17,19 +17,34 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-method_settings = {'xtb':'gfn2'}
+method_settings = {'xtb': 'gfn2'}
 ostream = vlx.OutputStream(sys.stdout)
 xtb_drv = vlx.XTBDriver()
+
+# Energy
 xtb_drv.set_method(method_settings['xtb'].lower())
 xtb_drv.compute(molecule, ostream)
+energy = xtb_drv.get_energy()
+
+# Gradient
+xtb_grad_drv = vlx.XTBGradientDriver(xtb_drv)
+xtb_grad_drv.compute(molecule)
+gradient = xtb_grad_drv.gradient
+
+# Hessian
+xtb_hessian_drv = vlx.XTBHessianDriver(xtb_drv)
+xtb_hessian_drv.compute(molecule)
+hessian = xtb_hessian_drv.hessian
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mAssertionError[0m                            Traceback (most recent call last)
-Input [0;32mIn [4][0m, in [0;36m<cell line: 5>[0;34m()[0m
-[1;32m      3[0m xtb_drv [38;5;241m=[39m vlx[38;5;241m.[39mXTBDriver()
-[1;32m      4[0m xtb_drv[38;5;241m.[39mset_method(method_settings[[38;5;124m'[39m[38;5;124mxtb[39m[38;5;124m'[39m][38;5;241m.[39mlower())
-[0;32m----> 5[0m [43mxtb_drv[49m[38;5;241;43m.[39;49m[43mcompute[49m[43m([49m[43mmolecule[49m[43m,[49m[43m [49m[43mostream[49m[43m)[49m
+Input [0;32mIn [3][0m, in [0;36m<cell line: 7>[0;34m()[0m
+[1;32m      5[0m [38;5;66;03m# Energy[39;00m
+[1;32m      6[0m xtb_drv[38;5;241m.[39mset_method(method_settings[[38;5;124m'[39m[38;5;124mxtb[39m[38;5;124m'[39m][38;5;241m.[39mlower())
+[0;32m----> 7[0m [43mxtb_drv[49m[38;5;241;43m.[39;49m[43mcompute[49m[43m([49m[43mmolecule[49m[43m,[49m[43m [49m[43mostream[49m[43m)[49m
+[1;32m      8[0m energy [38;5;241m=[39m xtb_drv[38;5;241m.[39mget_energy()
+[1;32m     10[0m [38;5;66;03m# Gradient[39;00m
 
 File [0;32m~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/xtbdriver.py:46[0m, in [0;36m_XTBDriver_compute[0;34m(self, molecule, ostream)[0m
 [1;32m     44[0m errmsg [38;5;241m+[39m[38;5;241m=[39m [38;5;124m'[39m[38;5;124mfrom https://github.com/grimme-lab/xtb, set XTBHOME environment [39m[38;5;124m'[39m
