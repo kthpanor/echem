@@ -45,16 +45,17 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script>
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -833,9 +834,9 @@ const thebe_selector_output = ".output, .cell_output"
 <span id="sec-ci"></span><h1>Configuration interaction<a class="headerlink" href="#configuration-interaction" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="general-theory">
 <h2>General theory<a class="headerlink" href="#general-theory" title="Permalink to this headline">¶</a></h2>
-<p>One of the conceptually (but not computationally) simplest way to solve the Schrödinger equation is to simply expand our many-body wavefunction on a n-electron basis set (not to be confused with the 1-electron basis functions used to expand orbitals):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3a8ccb87-b1e1-462e-8c3e-ddfa3c58cb38">
-<span class="eqno">(5)<a class="headerlink" href="#equation-3a8ccb87-b1e1-462e-8c3e-ddfa3c58cb38" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<p>One of the conceptually (but not computationally) simplest way to solve the Schrödinger equation is to simply expand our many-body wavefunction on a <span class="math notranslate nohighlight">\(N\)</span>-electron basis set (not to be confused with the 1-electron basis functions used to expand orbitals):</p>
+<div class="amsmath math notranslate nohighlight" id="equation-080fefd6-b774-4f24-9845-ff1a89010f9e">
+<span class="eqno">(5)<a class="headerlink" href="#equation-080fefd6-b774-4f24-9845-ff1a89010f9e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_{\text{CI}} \rangle = \sum_k c_k | \mathbf{k} \rangle 
 \end{equation}\]</div>
 <p>with energy:</p>
@@ -843,18 +844,18 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="eqno">(6)<a class="headerlink" href="#equation-eq-ciene" title="Permalink to this equation">¶</a></span>\[E_{\text{CI}} = \frac{\langle \Psi_{\text{CI}} | \hat{H} | \Psi_{\text{CI}} \rangle}{\langle \Psi_{\text{CI}} | \Psi_{\text{CI}} \rangle} \]</div>
 <p>We will discuss in the next section the choice of the basis, but in all cases, as the size of this basis set increases, the solution converges to the exact solution of the Schrödinger equation.</p>
 <p>There is a redundancy in the parameters <span class="math notranslate nohighlight">\(c_k\)</span> as multiplying them all by a constant does not change the energy. We thus add the constraint that the wavefunction should be normalised <span class="math notranslate nohighlight">\(\langle \Psi_{\text{CI}} | \Psi_{\text{CI}} \rangle = \sum_k c_k^2 = 1\)</span>. To minimize the wavefunction subject to this constraint, we write a Lagrangian:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2cb74fd4-1ebc-49ef-8f8d-f7fa999cd6cc">
-<span class="eqno">(7)<a class="headerlink" href="#equation-2cb74fd4-1ebc-49ef-8f8d-f7fa999cd6cc" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-4cd4ab6f-7b4d-474f-a971-93d162361730">
+<span class="eqno">(7)<a class="headerlink" href="#equation-4cd4ab6f-7b4d-474f-a971-93d162361730" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 L = E - \epsilon(\sum_k c_k^2 -1)
 \end{equation}\]</div>
 <p>To define our minimisation we set the gradient of our Lagrangian to 0 and obtain:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f0d2f60f-522d-457a-bade-ed101864f8f1">
-<span class="eqno">(8)<a class="headerlink" href="#equation-f0d2f60f-522d-457a-bade-ed101864f8f1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-179764d9-3767-481e-ac8d-5aaeacddcd86">
+<span class="eqno">(8)<a class="headerlink" href="#equation-179764d9-3767-481e-ac8d-5aaeacddcd86" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \frac{\mathrm{d}L}{\mathrm{d} c_k} =  \sum_i \langle \mathbf{i} | \hat{H} | \mathbf{k} \rangle c_i - \epsilon c_k + cc.= 0
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(cc.\)</span> the complex conjugate of the expression. This can finally be recast in the familiar form:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a94b6f43-9bcd-4ac0-ae46-2065c74a7e1e">
-<span class="eqno">(9)<a class="headerlink" href="#equation-a94b6f43-9bcd-4ac0-ae46-2065c74a7e1e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-970dfee7-b7c6-4a59-8f85-cb82b94557c0">
+<span class="eqno">(9)<a class="headerlink" href="#equation-970dfee7-b7c6-4a59-8f85-cb82b94557c0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{H} \mathbf{c} = \epsilon \mathbf{c}
 \end{equation}\]</div>
 <p>showing that minimising the the energy in Eq. <a class="reference internal" href="#equation-eq-ciene">(6)</a> is equivalent to diagonalising the Hamiltonian matrix in our chosen basis, with the eigenvalues being the energies of all possible states in the system. The ground state simply corresponds to the lowest eigenvalue.</p>
@@ -862,8 +863,8 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 <div class="section" id="the-n-electron-basis">
 <h2>The <span class="math notranslate nohighlight">\(N\)</span>-electron basis<a class="headerlink" href="#the-n-electron-basis" title="Permalink to this headline">¶</a></h2>
 <p>There are in principle an infinite number of possible <span class="math notranslate nohighlight">\(N\)</span>-electron basis to choose from, but we ideally want the expansion to converge quickly (compact expansion) and the functions to be easily manipulatable to efficiently compute the Hamiltonian elements. Naturally, these two criteria often go opposite.</p>
-<p>As electron correlation depends on the distance between electrons, it would be natural to use functions that depend explicitely on this distance, the same way as our gaussian or Slater 1-electron basis depends explicitely on the distance between electron and nuclei. Wavefunction having this properties are typically called explicitly correlated wavefunctions, but this interelectronic distance makes the calculation of integrals very difficult as it couples multiple electrons together.</p>
-<p>We often drop this explicit dependence and instead use a wavefunction that is simply formed from products of one-electron functions, i.e., product of orbitals. The simplest of these basis functions is the Hartree product, but since we know the wavefunction should be antisymmetric with respect to the exchange of two electrons, we instead use the antisymmetrised version of the Hartree product: Slater determinants (SDs). As each SD represents a different electronic configuration, the resulting method is called configuration interaction (CI). As discussed in the previous sections, this basis of SD constitutes a complete basis within a specified one-electron basis set, and thus the solution obtained by minimizing the energy of this wavefunction is the exact ground state within that one-electron basis.</p>
+<p>As electron correlation depends on the distance between electrons, it would be natural to use functions that depend explicitly on this distance, the same way as our gaussian or Slater 1-electron basis depends explicitly on the distance between electron and nuclei. Wavefunctions having these properties are typically called explicitly correlated wavefunctions, but this interelectronic distance makes the calculation of integrals very difficult as it couples multiple electrons together.</p>
+<p>We often drop this explicit dependence and instead use a wavefunction that is simply formed from products of one-electron functions, i.e., product of orbitals. The simplest of these basis functions is the Hartree product, but since we know the wavefunction should be antisymmetric with respect to the exchange of two electrons, we instead use the antisymmetrised version of the Hartree product: Slater determinants (SDs). As each SD represents a different electronic configuration, the resulting method is called configuration interaction (CI). As discussed in the previous sections, this basis of SDs constitutes a complete basis within a specified one-electron basis set, and thus the solution obtained by minimizing the energy of this wavefunction is the exact ground state within that one-electron basis.</p>
 <p>In some codes, configuration state functions (CSF) are used instead of SDs. CSF are fixed linear combinations of SDs but with the attractive properties that they are also eigenfunctions of the <span class="math notranslate nohighlight">\(\hat{S}^2\)</span> spin operator. This spin constraints means that the resulting wavefunction will always be spin-adapted and also that CSF are less numerous than Slater determinants, which has advantages on a computational standpoint. However, SDs can be expressed as ordered “strings” of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> creating operators, and this separation of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> electrons allows for efficient computer implementations, outweighing the benefits of the slightly smaller expansion of CSF.</p>
 <p>Having chosen SDs as our basis functions, we now need an efficient way to create our expansion, i.e., a direct link between a given index in our expansion and the corresponding occupation of the SDs. This link should work both ways, matching a given occupation to the corresponding index in the expansion. A common choice is the so-called lexical ordering or the reverse lexical ordering. The details are beyond the scope of this page, but fortunately, the MultiPsi package provides the tools to do this.</p>
 <p>Let’s start by initialising a calculation for O<span class="math notranslate nohighlight">\(_2\)</span>. We will first run a Hartree-Fock calculation to generate starting orbitals. The ground state of this molecule is a triplet, so we will use unrestricted HF. Note that full CI is exact and does not depend on the actual shape of the orbitals, so we could have run a singlet calculation instead without changing the result.</p>
@@ -888,11 +889,10 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning: importing &#39;simtk.openmm&#39; is deprecated.  Import &#39;openmm&#39; instead.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Setting MKL_INTERFACE_LAYER to &quot;GNU,LP64&quot;.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Setting MKL_THREADING_LAYER to &quot;GNU&quot;.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -912,7 +912,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                                                                                                                           
 * Info * Nuclear repulsion energy: 28.2227845815 a.u.                                                                     
                                                                                                                           
-* Info * Overlap matrix computed in 0.01 sec.                                                                             
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
@@ -920,7 +920,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.01 sec.                                                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.02 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -929,7 +929,7 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -147.633452768035 a.u. Time: 0.05 sec.                                 
+* Info * ...done. SCF energy in reduced basis set: -147.633452768035 a.u. Time: 0.04 sec.                                 
                                                                                                                           
 </pre></div>
 </div>
@@ -978,32 +978,30 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.72085 a.u.                                                                  
-               (   1 O   1p+1:     0.64) (   1 O   1p-1:     0.15) (   2 O   1p+1:     0.64)                              
-               (   2 O   1p-1:     0.15)                                                                                  
+               (   1 O   1p+1:    -0.63) (   1 O   1p-1:    -0.20) (   2 O   1p+1:    -0.63)                              
+               (   2 O   1p-1:    -0.20)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.72085 a.u.                                                                  
-               (   1 O   1p+1:     0.15) (   1 O   1p-1:    -0.64) (   2 O   1p+1:     0.15)                              
-               (   2 O   1p-1:    -0.64)                                                                                  
+               (   1 O   1p+1:    -0.20) (   1 O   1p-1:     0.63) (   2 O   1p+1:    -0.20)                              
+               (   2 O   1p-1:     0.63)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.61135 a.u.                                                                  
-               (   1 O   2s  :    -0.32) (   1 O   1p0 :     0.62) (   2 O   2s  :    -0.32)                              
-               (   2 O   1p0 :    -0.62)                                                                                  
+               (   1 O   2s  :     0.32) (   1 O   1p0 :    -0.62) (   2 O   2s  :     0.32)                              
+               (   2 O   1p0 :     0.62)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.41143 a.u.                                                                  
-               (   1 O   1p+1:    -0.54) (   1 O   1p-1:     0.55) (   2 O   1p+1:     0.54)                              
-               (   2 O   1p-1:    -0.55)                                                                                  
+               (   1 O   1p+1:     0.76) (   2 O   1p+1:    -0.76)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.41143 a.u.                                                                  
-               (   1 O   1p+1:     0.55) (   1 O   1p-1:     0.54) (   2 O   1p+1:    -0.55)                              
-               (   2 O   1p-1:    -0.54)                                                                                  
+               (   1 O   1p-1:    -0.76) (   2 O   1p-1:     0.76)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -1017,8 +1015,8 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -1.49800 a.u.                                                                  
-               (   1 O   1s  :    -0.17) (   1 O   2s  :     0.56) (   1 O   1p0 :     0.19)                              
-               (   2 O   1s  :    -0.17) (   2 O   2s  :     0.56) (   2 O   1p0 :    -0.19)                              
+               (   1 O   1s  :     0.17) (   1 O   2s  :    -0.56) (   1 O   1p0 :    -0.19)                              
+               (   2 O   1s  :     0.17) (   2 O   2s  :    -0.56) (   2 O   1p0 :     0.19)                              
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
@@ -1029,32 +1027,30 @@ L = E - \epsilon(\sum_k c_k^2 -1)
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.55786 a.u.                                                                  
-               (   1 O   2s  :     0.35) (   1 O   1p0 :    -0.61) (   2 O   2s  :     0.35)                              
-               (   2 O   1p0 :     0.61)                                                                                  
+               (   1 O   2s  :    -0.35) (   1 O   1p0 :     0.61) (   2 O   2s  :    -0.35)                              
+               (   2 O   1p0 :    -0.61)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.44994 a.u.                                                                  
-               (   1 O   1p+1:     0.59) (   1 O   1p-1:    -0.29) (   2 O   1p+1:     0.59)                              
-               (   2 O   1p-1:    -0.29)                                                                                  
+               (   1 O   1p+1:    -0.60) (   1 O   1p-1:    -0.26) (   2 O   1p+1:    -0.60)                              
+               (   2 O   1p-1:    -0.26)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.44994 a.u.                                                                  
-               (   1 O   1p+1:     0.29) (   1 O   1p-1:     0.59) (   2 O   1p+1:     0.29)                              
-               (   2 O   1p-1:     0.59)                                                                                  
+               (   1 O   1p+1:     0.26) (   1 O   1p-1:    -0.60) (   2 O   1p+1:     0.26)                              
+               (   2 O   1p-1:    -0.60)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
-               Occupation: 1.000 Energy:    0.27474 a.u.                                                                  
-               (   1 O   1p+1:    -0.15) (   1 O   1p-1:     0.75) (   2 O   1p+1:     0.15)                              
-               (   2 O   1p-1:    -0.75)                                                                                  
+               Occupation: 0.000 Energy:    0.27474 a.u.                                                                  
+               (   1 O   1p+1:     0.76) (   2 O   1p+1:    -0.76)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
-               Occupation: 1.000 Energy:    0.27474 a.u.                                                                  
-               (   1 O   1p+1:    -0.75) (   1 O   1p-1:    -0.15) (   2 O   1p+1:     0.75)                              
-               (   2 O   1p-1:     0.15)                                                                                  
+               Occupation: 0.000 Energy:    0.27474 a.u.                                                                  
+               (   1 O   1p-1:    -0.76) (   2 O   1p-1:     0.76)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -1239,7 +1235,7 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 <div class="section" id="the-ci-hamiltonian">
 <h2>The CI Hamiltonian<a class="headerlink" href="#the-ci-hamiltonian" title="Permalink to this headline">¶</a></h2>
 <p>Now that we have the list of determinants, we only need to form the CI Hamiltonian. For this, we need to be able to calculate the matrix elements.</p>
-<p>MultiPsi also provides a function to do that. For this we need to initialise the CIOperator class, which computes the  integrals in the molecular basis and provides several functions to use them in a CI calculation.</p>
+<p>MultiPsi also provides a function to do that. For this, we need to initialise the CIOperator class, which computes the  integrals in the molecular basis and provides several functions to use them in a CI calculation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CIham</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span> <span class="c1">#Contains integrals and functions using them</span>
@@ -1247,19 +1243,8 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">Input In [5],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">CIham</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span> <span class="c1">#Contains integrals and functions using them</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">CIham</span><span class="o">.</span><span class="n">compute_Hints</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
-
-<span class="ne">TypeError</span>: __init__() missing 2 required positional arguments: &#39;basis&#39; and &#39;expansion&#39;
-</pre></div>
 </div>
-</div>
-</div>
-<p>We can now compute the Hamiltonian. The easiest is to simply do a double loop over SD and then computing the matrix element using the Hij function of CIOperator:</p>
+<p>We can now compute the Hamiltonian. The easiest is to simply do a double loop over SD and then compute the matrix element using the Hij function of CIOperator:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ham</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">,</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">))</span>
@@ -1307,7 +1292,7 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 </div>
-<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree-Fock level. This comes both from electron correlation and from using the correct triplet multiplicity. However, it is important to note that some of the states obtained here are not actually triplet but have a higher multiplicity. As we discussed in the previous section, the basis of Slater Determinant is not spin-adapted.  The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electron than <span class="math notranslate nohighlight">\(\beta\)</span>. This excludes singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
+<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree-Fock level. This comes both from electron correlation and from using the correct triplet multiplicity. However, it is important to note that some of the states obtained here are not actually triplet but have a higher multiplicity. As we discussed in the previous section, the basis of Slater Determinant is not spin-adapted.  The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electrons than <span class="math notranslate nohighlight">\(\beta\)</span>. This excludes singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
 <p>We can also print the first eigenvector:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1317,17 +1302,17 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.969 0.000 0.000 -0.000 0.000 0.000 -0.000 0.000 -0.000 -0.176 0.000
- -0.000 0.000 -0.072 -0.007 0.000 -0.007 0.072 -0.000 0.000 0.000 0.000
- -0.000 -0.000 0.000 -0.000 0.000 -0.004 -0.000 0.000 -0.000 -0.000 0.000
- 0.000 -0.000 0.000 0.000 -0.000 -0.000 -0.000 0.000 -0.000 0.000 -0.000
- 0.000 0.000 -0.000 -0.000 0.004 -0.000 0.000 0.000 -0.000 -0.000 0.000
- -0.000 -0.000 -0.000 0.000 0.000 0.000 0.000 0.077 0.007 -0.000 0.007
- -0.077 0.000 0.000 0.000 0.066 -0.000 0.000 0.000 -0.000 -0.000 0.000
- -0.000 0.000 0.036 -0.000 0.009 -0.000 0.000 0.001 -0.000 0.000 -0.000
- -0.000 -0.000 -0.000 0.019 -0.000 -0.000 0.000 -0.000 -0.000 -0.000
- -0.000 -0.000 -0.000 0.001 0.000 -0.000 -0.009 0.000 -0.000 -0.000 0.000
- -0.000 0.000 -0.000 0.019 0.000 -0.000 -0.000 -0.000 -0.000 -0.000 0.000]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.969 0.000 0.000 -0.000 0.000 -0.000 -0.000 0.000 0.000 -0.176 -0.000
+ 0.000 -0.000 0.013 -0.071 -0.000 0.071 0.013 0.000 -0.000 0.000 0.000
+ 0.000 0.000 -0.000 -0.000 -0.000 0.001 -0.004 -0.000 -0.000 0.000 0.000
+ 0.000 -0.000 0.000 0.000 0.000 0.000 0.000 0.000 -0.000 -0.000 0.000
+ -0.000 -0.000 -0.000 0.004 0.001 0.000 0.000 0.000 -0.000 0.000 0.000
+ 0.000 -0.000 -0.000 0.000 0.000 -0.000 0.000 -0.014 0.077 0.000 -0.077
+ -0.014 -0.000 -0.000 -0.000 -0.066 -0.000 0.000 0.000 -0.000 0.000 -0.000
+ -0.000 0.000 0.036 0.000 -0.002 -0.000 0.000 -0.009 -0.000 -0.000 0.000
+ -0.000 -0.000 -0.000 -0.019 0.000 -0.000 -0.000 -0.000 0.000 0.000 -0.000
+ 0.000 0.000 0.009 0.000 -0.000 -0.002 0.000 0.000 -0.000 -0.000 -0.000
+ 0.000 -0.000 -0.019 -0.000 -0.000 -0.000 -0.000 -0.000 0.000 -0.000]
 </pre></div>
 </div>
 </div>
@@ -1336,23 +1321,23 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 <p>You may be curious as to what happens in the Hij function, that is, how we compute the <span class="math notranslate nohighlight">\(\langle i | H | j \rangle \)</span> matrix elements. The answer to this is the Slater-Condon rules, see the section on <a class="reference internal" href="slater.html#sec-slater"><span class="std std-ref">Slater Determinants</span></a>. This rules define the matrix elements in terms of molecular integrals, depending on the difference in occupation between the 2 determinants. The difference in occupation is easily formulated in terms of excitations, with different rules depending on if <span class="math notranslate nohighlight">\(|j \rangle\)</span> is singly or doubly excited compared to <span class="math notranslate nohighlight">\(|i \rangle\)</span>. Any higher excitation will simply lead to 0.</p>
 <p>These rules are relatively easy to derive, both in standard and second quantization formulation. The idea is that the Hamiltonian has to “reconcile” the excitations. Being a two-electron operator, the Hamiltonian can reconcile at most two excitations.</p>
 <p>First we need to obtain the necessary integrals. Those are the standard 1 and 2 electron integrals but in the molecular orbital basis as the expressions are simpler in this basis. Since we are leaving some occupied orbitals outside of the CI space (the s orbitals), also called inactive orbitals, we also need to include their interaction with the electrons in our CI. This is done by replacing the 1 electron integrals by the inactive Fock matrix defined as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-38ae8fc1-3ab1-4122-9372-1c6fe28162c0">
-<span class="eqno">(10)<a class="headerlink" href="#equation-38ae8fc1-3ab1-4122-9372-1c6fe28162c0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-4bd58200-8cc3-4ed7-ac9a-0b5c89b951d1">
+<span class="eqno">(10)<a class="headerlink" href="#equation-4bd58200-8cc3-4ed7-ac9a-0b5c89b951d1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 F^I_{pq} = h_{pq} + \sum_{i \in \mathrm{inactive}} 2 (ii|pq) - (ip|iq) 
 \end{equation}\]</div>
 <p>To compute the total energy, we also need to include the inactive energy, which is simply the energy of the inactive electrons and the nuclear-nuclear repulsion term.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4e335b36-665d-499b-84e3-f963d6cc85f7">
-<span class="eqno">(11)<a class="headerlink" href="#equation-4e335b36-665d-499b-84e3-f963d6cc85f7" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-d18e69e8-d405-4010-8b86-501176a45f75">
+<span class="eqno">(11)<a class="headerlink" href="#equation-d18e69e8-d405-4010-8b86-501176a45f75" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E^I = V_{NN} + \sum_{i \in \mathrm{inactive}} 2 ( h_{ii} + F^I_{ii} )
 \end{equation}\]</div>
 <p>or using the AO matrices</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bec5d8b9-8fec-4010-b803-2496116ece29">
-<span class="eqno">(12)<a class="headerlink" href="#equation-bec5d8b9-8fec-4010-b803-2496116ece29" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-2af061c1-b3de-44c5-9b34-36d951349d35">
+<span class="eqno">(12)<a class="headerlink" href="#equation-2af061c1-b3de-44c5-9b34-36d951349d35" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 E^I = V_{NN} + \sum_{pq} D^I_{pq} ( h_{pq} + F^I_{pq} )
 \end{equation}\]</div>
 <p>with the inactive density defined from the MO coefficients <span class="math notranslate nohighlight">\(C^i_p\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-684950f2-5648-4912-8453-1c463a005046">
-<span class="eqno">(13)<a class="headerlink" href="#equation-684950f2-5648-4912-8453-1c463a005046" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-1aaf83dd-9f2e-4f09-a63b-0df8307b799d">
+<span class="eqno">(13)<a class="headerlink" href="#equation-1aaf83dd-9f2e-4f09-a63b-0df8307b799d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 \end{equation}\]</div>
 <div class="cell docutils container">
@@ -1394,7 +1379,7 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <span class="n">Fin</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">Jin</span> <span class="o">-</span> <span class="n">Kin</span>
     
 <span class="c1"># Transform to MO basis</span>
-<span class="n">Ftu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pq,qu, pt-&gt;tu&quot;</span><span class="p">,</span> <span class="n">Fin</span>   <span class="p">,</span> <span class="n">Cact</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
+<span class="n">Ftu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pq,qu, pt-&gt;tu&quot;</span><span class="p">,</span> <span class="n">Fin</span><span class="p">,</span> <span class="n">Cact</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
     
 <span class="c1">#Inactive energy:</span>
 <span class="n">Ein</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;&#39;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">Fin</span><span class="p">,</span> <span class="n">Din</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
@@ -1425,37 +1410,37 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The energy of a given SD, as a function of its list of occupied orbitals</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">Hij</span><span class="o">=</span><span class="n">Ein</span> <span class="c1">#Inactive energy (inc. nuclear repulsion)</span>
+    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ein</span> <span class="c1">#Inactive energy (inc. nuclear repulsion)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#1-e term = inactive Fock matrix</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#1-e term = inactive Fock matrix</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#Coulomb-Exchange</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="c1">#Coulomb-Exchange</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-            <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
-<span class="k">def</span> <span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Slater-Condon between a SD and a singly excited, depending on the excited orbitals (i,a)</span>
+<span class="sd">    Slater-Condon between a SD and a singly excited determinant, depending on the excited orbitals (i,a)</span>
 <span class="sd">    and the same-spin (compared to spin of the excitated electron) and opposite-spin occupation</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">Hij</span><span class="o">=</span><span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
+    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ss_occ</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">os_occ</span><span class="p">:</span>
-        <span class="n">Hij</span><span class="o">+=</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Hij</span>
 <span class="k">def</span> <span class="nf">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Slater-Condon between a SD and a doubly excited determinant,</span>
 <span class="sd">    with both excited electrons having the same spin</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">]</span>
 <span class="k">def</span> <span class="nf">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Slater-Condon between a SD and a doubly excited determinant,</span>
@@ -1466,47 +1451,47 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 </div>
 </div>
 </div>
-<p>The difficult part is to make sure that the occupations of the Slater determinants are brought to maximum concordance. The expansion produced by lexical ordering may not have this property, but one can switch electrons until we reach this maximum concordance, introducing a negative phase factor at each electron exchange. Again, MultiPsi provides a convenient way to achieve this. The idea is to explicitely create the singly excitated determinant (or doubly excited by applying the operation twice) and then keep track of the number of exchanges to bring it to natural ordering. The excite_alpha and excite_beta functions do this, providing both the excited determinant and the phase factor. The index() function of the determinants then provides the index of the given determinant in the expansion, in order to associate the energy to the correct position in the Hamiltonian.</p>
-<p>With this new tools and our Slater-Condon functions, we can now rewrite the above code. We replace the double loop by a simple loop and then an explicit construction of all singly and doubly excited determinants. The resulting code looks more complex but is relatively easy to follow.</p>
+<p>The difficult part is to make sure that the occupations of the Slater determinants are brought to maximum concordance. The expansion produced by lexical ordering may not have this property, but one can switch electrons until we reach this maximum concordance, introducing a negative phase factor at each electron exchange. Again, MultiPsi provides a convenient way to achieve this. The idea is to explicitly create the singly excitated determinant (or doubly excited by applying the operation twice) and then keep track of the number of exchanges to bring it to natural ordering. The excite_alpha and excite_beta functions do this, providing both the excited determinant and the phase factor. The index() function of the determinants then provides the index of the given determinant in the expansion, in order to associate the energy to the correct position in the Hamiltonian.</p>
+<p>With these new tools and our Slater-Condon functions, we can now rewrite the above code. We replace the double loop by a simple loop and then an explicit construction of all singly and doubly excited determinants. The resulting code looks more complex but is relatively easy to follow.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ham</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">,</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">idet</span><span class="p">,</span><span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ham</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">,</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
     <span class="c1">#Diagonal term</span>
-    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">idet</span><span class="p">]</span><span class="o">=</span><span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">idet</span><span class="p">]</span> <span class="o">=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
     <span class="c1">#Single excitations alpha</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-            <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+            <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
             <span class="c1">#alpha-alpha excitation</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                         <span class="k">continue</span>
-                    <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
             <span class="c1">#alpha-beta excitation</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                    <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
     <span class="c1">#Single excitations beta</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-            <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span>
+            <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span>
             <span class="c1">#beta-beta excitation</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                         <span class="k">continue</span>
-                    <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> 
+                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> 
 </pre></div>
 </div>
 </div>
@@ -1530,64 +1515,64 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <h2>Direct CI<a class="headerlink" href="#direct-ci" title="Permalink to this headline">¶</a></h2>
 <p>As we saw, the number of SDs <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}\)</span> grows extremely rapidly with the size of the system. The Hamiltonian matrix grows even faster, with size <span class="math notranslate nohighlight">\(N_{\mathrm{SD}}^2\)</span>. For example, for a singlet with 6 electron in 6 orbitals, the number of SD is 210, growing to 31 878 for 10 electrons in 10 orbitals and 82 824 885 for 16 in 16. At this scale, the Hamiltonian matrix would take nearly 7000 TB of storage on a computer. Most of the matrix elements are zero, but even using sparse storage, the memory footprint is enormous.</p>
 <p>Fortunately, we are rarely if ever interested in the entire list of excited states, usually only the ground state and/or a couple of excited states. In this case, one can replace the diagonalisation of the Hamiltonian by an iterative process where we progressively optimise a couple of states. In this case, we do not need to store the entire Hamiltonian matrix, but we only need to know its effect on a vector, the so-called <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9da39e3f-a695-4eed-a97f-dae2c3612544">
-<span class="eqno">(14)<a class="headerlink" href="#equation-9da39e3f-a695-4eed-a97f-dae2c3612544" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c3b12ab3-0e1b-46e4-ba9a-666ffdbf2c2e">
+<span class="eqno">(14)<a class="headerlink" href="#equation-c3b12ab3-0e1b-46e4-ba9a-666ffdbf2c2e" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{\sigma} = \mathbf{H} \mathbf{c}
 \end{equation}\]</div>
 <p>In order to solve <span class="math notranslate nohighlight">\( \mathbf{H} \mathbf{c} = \epsilon \mathbf{c} \)</span>, we can use a method similar to the conjugate gradient optimisation, which in this context is called the Davidson method. At each iteration, a new trial vector is constructed according to:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-448b60cd-aa8c-445f-970c-fc527f8e5d60">
-<span id="eq-cidav"></span><span class="eqno">(15)<a class="headerlink" href="#equation-448b60cd-aa8c-445f-970c-fc527f8e5d60" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-98f621ef-380c-4560-857d-1bb53be6aafd">
+<span id="eq-cidav"></span><span class="eqno">(15)<a class="headerlink" href="#equation-98f621ef-380c-4560-857d-1bb53be6aafd" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \label{cidav}
 \mathbf{c_{\mathrm{dav}}} = (\mathbf{H_0} - \epsilon)^{-1} \mathbf{r}
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{H_0}\)</span> the preconditioner, typically the diagonal of the Hamiltonian and <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> the residual vector defined as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d825e183-e828-41ec-9048-02ee8e3ed41a">
-<span class="eqno">(16)<a class="headerlink" href="#equation-d825e183-e828-41ec-9048-02ee8e3ed41a" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-55b5a8dd-db7f-4484-aa17-83600d7036fd">
+<span class="eqno">(16)<a class="headerlink" href="#equation-55b5a8dd-db7f-4484-aa17-83600d7036fd" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \mathbf{r} = (\mathbf{H} - \epsilon) \mathbf{c} = \mathbf{\sigma} - \epsilon \mathbf{c}
 \end{equation}\]</div>
-<p>To compute the improved CI vector, one typically creates and diagonalise a small Hamiltonian matrix in the basis of <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{c_{\mathrm{dav}}}\)</span>, sometimes including also the vectors at previous iterations to improve convergence.</p>
+<p>To compute the improved CI vector, one typically creates and diagonalises a small Hamiltonian matrix in the basis of <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{c_{\mathrm{dav}}}\)</span>, sometimes including also the vectors at previous iterations to improve convergence.</p>
 <p>Thus, only quantities with sizes equal to the number of SD are needed, and expansion up to up to hundreds of millions of determinant can be computed on a standard computer.</p>
 <p>The code we had to compute the Hamiltonian can be trivially modified to compute the sigma vector:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sigma</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="n">result</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span><span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
         <span class="c1">#Diagonal term</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span><span class="o">+=</span><span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">+=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
         <span class="c1">#Single excitations alpha</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#alpha-alpha excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                             <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#alpha-beta excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
         <span class="c1">#Single excitations beta</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span><span class="o">=</span><span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                <span class="n">phase</span><span class="p">,</span><span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
                 <span class="c1">#beta-beta excitation</span>
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span><span class="o">&gt;=</span><span class="n">j</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
                             <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span><span class="n">exc2det</span><span class="o">=</span><span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span><span class="o">+=</span><span class="n">phase</span><span class="o">*</span><span class="n">phase2</span><span class="o">*</span><span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
+                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 </div>
@@ -1596,10 +1581,10 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <p>We can check that we get the same result as using the explicit Hamiltonian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vec0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span> <span class="c1">#Create a random vector</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vec0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span> <span class="c1">#Create a random vector</span>
 
 <span class="c1">#Check that one gets the same result with this new function as doing explicitely H.C</span>
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ham</span><span class="p">,</span><span class="n">vec0</span><span class="p">),</span><span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ham</span><span class="p">,</span> <span class="n">vec0</span><span class="p">),</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1608,68 +1593,79 @@ D^I_{pq}= \sum_{i \in \mathrm{inactive}} C^i_pC^i_q
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Compute Hdiag</span>
-<span class="n">Hdiag</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
+<span class="n">Hdiag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">idet</span><span class="p">,</span><span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
-    <span class="n">Hdiag</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span><span class="o">=</span><span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+    <span class="n">Hdiag</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
     
-<span class="n">vec0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
+<span class="n">vec0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
 <span class="n">lowest_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">Hdiag</span><span class="p">)</span>
- 
-<span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">lowest_state</span><span class="p">)</span>
-<span class="n">vec0</span><span class="p">[</span><span class="n">lowest_state</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span> <span class="c1">#Initialise to the HF reference</span>
 
-<span class="n">resnorm</span><span class="o">=</span><span class="mi">1</span>
-<span class="n">istep</span><span class="o">=</span><span class="mi">0</span>
-<span class="k">while</span> <span class="n">resnorm</span><span class="o">&gt;</span><span class="mf">0.0001</span><span class="p">:</span> <span class="c1">#As long as the residual norm is large</span>
-    <span class="n">istep</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">vec0</span><span class="p">[</span><span class="n">lowest_state</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#Initialise to the HF reference</span>
+
+<span class="n">resnorm</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">istep</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">resnorm</span> <span class="o">&gt;</span> <span class="mf">0.0001</span><span class="p">:</span> <span class="c1">#As long as the residual norm is large</span>
+    <span class="n">istep</span> <span class="o">+=</span> <span class="mi">1</span>
     
-    <span class="n">sigvec0</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span> <span class="c1">#Note that this technically does not need to be recomputed from scratch at each iteration</span>
-    <span class="n">energy</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span><span class="n">sigvec0</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Energy at step&quot;</span><span class="p">,</span><span class="n">istep</span><span class="p">,</span><span class="s2">&quot;=&quot;</span><span class="p">,</span><span class="n">energy</span><span class="p">)</span>
+    <span class="n">sigvec0</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span> <span class="c1">#Note that this technically does not need to be recomputed from scratch at each iteration</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span><span class="n">sigvec0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Energy at step&quot;</span><span class="p">,</span> <span class="n">istep</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="n">energy</span><span class="p">)</span>
     
     <span class="c1">#Compute residual and its norm</span>
-    <span class="n">residual</span><span class="o">=</span><span class="n">sigvec0</span><span class="o">-</span><span class="n">energy</span><span class="o">*</span><span class="n">vec0</span>
-    <span class="n">resnorm</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span>
+    <span class="n">residual</span> <span class="o">=</span> <span class="n">sigvec0</span><span class="o">-</span><span class="n">energy</span><span class="o">*</span><span class="n">vec0</span>
+    <span class="n">resnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span>
     
     <span class="c1">#Compute Davidson update</span>
-    <span class="n">preconditioner</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">Hdiag</span><span class="o">-</span><span class="n">energy</span><span class="o">+</span><span class="mf">0.0001</span><span class="p">)</span> <span class="c1">#0.0001 to prevent divergence</span>
-    <span class="n">vec1</span><span class="o">=</span><span class="n">preconditioner</span><span class="o">*</span><span class="n">residual</span>
+    <span class="n">preconditioner</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">Hdiag</span> <span class="o">-</span> <span class="n">energy</span> <span class="o">+</span> <span class="mf">0.0001</span><span class="p">)</span> <span class="c1">#0.0001 to prevent divergence</span>
+    <span class="n">vec1</span> <span class="o">=</span> <span class="n">preconditioner</span> <span class="o">*</span> <span class="n">residual</span>
     
     <span class="c1">#Orthonormalize with vec0</span>
-    <span class="n">vec1</span><span class="o">-=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span><span class="n">vec0</span><span class="p">)</span><span class="o">*</span><span class="n">vec0</span>
+    <span class="n">vec1</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec0</span><span class="p">)</span> <span class="o">*</span> <span class="n">vec0</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
-    <span class="n">vec1</span><span class="o">*=</span> <span class="mi">1</span><span class="o">/</span><span class="n">norm</span>
-    <span class="n">sigvec1</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
+    <span class="n">vec1</span> <span class="o">*=</span> <span class="mi">1</span><span class="o">/</span><span class="n">norm</span>
+    <span class="n">sigvec1</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
     
     <span class="c1">#Create small hamiltonian</span>
-    <span class="n">smallHam</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">energy</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span><span class="n">sigvec1</span><span class="p">)</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span><span class="n">sigvec0</span><span class="p">)</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span><span class="n">sigvec1</span><span class="p">)</span>
+    <span class="n">smallHam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span><span class="n">sigvec1</span><span class="p">)</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span><span class="n">sigvec0</span><span class="p">)</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span><span class="n">sigvec1</span><span class="p">)</span>
     
     <span class="c1">#Form the updated CI vector using the eigenvector</span>
-    <span class="n">w</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">smallHam</span><span class="p">)</span>
-    <span class="n">vec0</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">vec0</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">vec1</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">smallHam</span><span class="p">)</span>
+    <span class="n">vec0</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec0</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec1</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span>
-    <span class="n">vec0</span><span class="o">*=</span> <span class="mi">1</span><span class="o">/</span><span class="n">norm</span>
-    
+    <span class="n">vec0</span> <span class="o">*=</span> <span class="mi">1</span><span class="o">/</span><span class="n">norm</span>    
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0 3 5]
-0
-Energy at step 1 = -147.6295384002184
-Energy at step 2 = -147.71975516781848
-Energy at step 3 = -147.72322555667864
-Energy at step 4 = -147.7233753928992
-Energy at step 5 = -147.72338989104009
-Energy at step 6 = -147.72339157003782
-Energy at step 7 = -147.7233918692957
-Energy at step 8 = -147.7233919243908
-Energy at step 9 = -147.72339193502944
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.62953840021828
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.7197104759479
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.7232206754027
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.72337455315147
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.7233897544859
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.7233915450753
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.7233918647037
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.72339192354275
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 9 = -147.72339193487264
 </pre></div>
 </div>
 </div>
@@ -1677,11 +1673,11 @@ Energy at step 9 = -147.72339193502944
 <p>We can compare this to the CI optimisation of MultiPsi:</p>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CIdrv</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CIdrv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
 <span class="c1">#By default, the guess is done by diagonalising a small segment of the full Hamiltonian</span>
 <span class="c1">#here set the dimension of this Hamiltonian to 1, which corresponds to simply starting from a single SD</span>
-<span class="n">CIdrv</span><span class="o">.</span><span class="n">nguess</span><span class="o">=</span><span class="mi">1</span>
-<span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">space</span><span class="p">)</span>
+<span class="n">CIdrv</span><span class="o">.</span><span class="n">nguess</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1705,20 +1701,34 @@ Number of determinants:      120
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -147.629538400     0.0e+00      1.6e-01   0:00:00
-        2     -147.719755247    -9.0e-02      8.1e-03   0:00:00
-        3     -147.723359951    -3.6e-03      3.9e-05   0:00:00
-        4     -147.723390808    -3.1e-05      1.6e-06   0:00:00
-        5     -147.723391934    -1.1e-06      5.3e-09   0:00:00
-        6     -147.723391938    -3.9e-09      3.4e-11   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -147.629538400     0.0e+00      1.6e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -147.719710556    -9.0e-02      8.1e-03   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -147.723358281    -3.6e-03      4.1e-05   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -147.723390761    -3.2e-05      1.6e-06   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -147.723391934    -1.2e-06      5.4e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -147.723391938    -3.9e-09      3.9e-11   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 6 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -147.72339193756017
+- Energy: -147.7233919375574
 - S^2   : 2.00  (multiplicity = 3.0 )
 - Natural orbitals
 1.96583 1.95550 1.95550 1.04380 1.04380 0.03557
@@ -1730,20 +1740,20 @@ Number of determinants:      120
 </div>
 <div class="section" id="density-matrices-and-natural-orbitals">
 <h2>Density matrices and natural orbitals<a class="headerlink" href="#density-matrices-and-natural-orbitals" title="Permalink to this headline">¶</a></h2>
-<p>In order to compute expectation values, useful for properties, but also as an intermediate for some additional electronic structure methods (such as MCSCF see later chapters), we often need to compute density matrices.</p>
+<p>In order to compute expectation values, useful for properties, but also as an intermediate for some additional electronic structure methods (such as <a class="reference internal" href="mcscf.html#sec-static-correlation"><span class="std std-ref">MCSCF</span></a>), we often need to compute density matrices.</p>
 <p>The one-particle density matrix (in molecular orbital basis) is defined in second quantization as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e50edc26-31fd-4527-b1ba-0b5db7d06ea3">
-<span class="eqno">(17)<a class="headerlink" href="#equation-e50edc26-31fd-4527-b1ba-0b5db7d06ea3" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-979219b3-398c-42aa-81e7-8402d642b8b1">
+<span class="eqno">(17)<a class="headerlink" href="#equation-979219b3-398c-42aa-81e7-8402d642b8b1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 \end{equation}\]</div>
 <p>It is easy to see that for a single Slater Determinant, this simplifies to:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4453ad1b-3d42-42bc-9ee4-771f2d963eb6">
-<span class="eqno">(18)<a class="headerlink" href="#equation-4453ad1b-3d42-42bc-9ee4-771f2d963eb6" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-ee6fdfef-9744-41b3-819b-0b738b908f60">
+<span class="eqno">(18)<a class="headerlink" href="#equation-ee6fdfef-9744-41b3-819b-0b738b908f60" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm{HF} \rangle = \delta_{pq}
 \end{equation}\]</div>
 <p>for <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> occupied, and 0 otherwise.</p>
-<p>However, for CI wavefunction, the resulting equation is more complex. In the exercises, we will try to implement this using a similar structure as the code for the <span class="math notranslate nohighlight">\(\sigma\)</span> vector.</p>
-<p>One of the uses of the 1-particle density matrix is that it allows an intuitive look at the correlated wavefunction by looking at the occupation number of the so-called natural orbitals. Indeed, while orbitals are originally born out of a mean-field theory and are technically not appropriate representations of a real (i.e. correlated) wavefunction, their intuitive power is undeniable. Natural orbitals generalize the concept of orbitals to correlated wavefunctions. The occupation numbers are now non-integer between 2 and 0, representing a sort of weighted average of the occupation across all configurations. By doing so, the occupation number offer an measure of correlation: occupations far from an integer value reflecting significant deviations from the mean-field picture, and thus significant correlation effects. Further discussion of these natural orbitals is included in the chapter on multiconfigurational methods.</p>
+<p>However, for CI wavefunctions, the resulting equation is more complex. In these exercises, we will try to implement this using a similar structure as the code for the <span class="math notranslate nohighlight">\(\sigma\)</span> vector.</p>
+<p>One of the uses of the one-particle density matrix is that it allows an intuitive look at the correlated wavefunction by looking at the occupation number of the so-called natural orbitals. Indeed, while orbitals are originally born out of a mean-field theory and are technically not appropriate representations of a real (i.e. correlated) wavefunction, their intuitive power is undeniable. Natural orbitals generalize the concept of orbitals to correlated wavefunctions. The occupation numbers are now non-integer between 2 and 0, representing a sort of weighted average of the occupation across all configurations. By doing so, the occupation number offer a measure of correlation: occupations far from an integer value reflecting significant deviations from the mean-field picture, and thus significant correlation effects. Further discussion of these natural orbitals is included in the chapter on multiconfigurational methods.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Dpq</span> <span class="o">=</span> <span class="n">CIdrv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#Get the density for state 0</span>
@@ -1764,7 +1774,7 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 <span id="sec-truncated-ci"></span><h2>Truncated CI<a class="headerlink" href="#truncated-ci" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="restricting-the-excitations">
 <h3>Restricting the excitations<a class="headerlink" href="#restricting-the-excitations" title="Permalink to this headline">¶</a></h3>
-<p>This full CI method is only useful conceptually or for very small molecules as a benchmark reference. The issue is  that the  number of determinants  grow very  fast (factorially) with the size of the system.  For example, a simple water molecule in a polarization double zeta basis, corresponding to 10 electrons and 24 orbitals, would require 903.316.260 determinants. While such calculation is possible, it is very expensive, and it should be obvious from this example that fullCI cannot be used on any real size system.</p>
+<p>This full CI method is only useful conceptually or for very small molecules as a benchmark reference. The issue is  that the  number of determinants  grows very  fast (factorially) with the size of the system.  For example, a simple water molecule in a polarization double zeta basis, corresponding to 10 electrons and 24 orbitals, would require 903.316.260 determinants. While such a calculation is possible, it is very expensive, and it should be obvious from this example that full CI cannot be used on any real size system.</p>
 <p>From here, different directions can be taken to turn CI into a useful computational tool. The first one is to restrict excitations, and thus the number of determinants involved  in  the  calculation. After all, a single  SD  turned  out to be  a reasonable approximation in most cases. As a the Hamiltonian is a two-electron operator, a determinant only interacts directly with at most doubly excitated determinants, which suggests that those are those which would contribute the most to the energy. This can easily be tested on a small molecule like water.</p>
 <div class="cell tag_hide_output docutils container">
 <div class="cell_input docutils container">
@@ -1786,11 +1796,11 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="n">E_hf</span><span class="o">=</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
-<span class="n">Energies</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">E_hf</span> <span class="o">=</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+<span class="n">Energies</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">CIdrv</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">CIdrv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">excitations</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">space</span><span class="o">.</span><span class="n">CI</span><span class="p">(</span><span class="n">excitations</span><span class="p">)</span>    <span class="c1">#Compute CIS, CISD, CISDT and CISDTQ</span>
@@ -1799,7 +1809,7 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 
 <span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">()</span>   <span class="c1">#Compute fullCI</span>
 <span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">space</span><span class="p">)</span>
-<span class="n">E_FCI</span><span class="o">=</span><span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">E_FCI</span> <span class="o">=</span> <span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1827,32 +1837,54 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * SAD initial guess computed in 0.00 sec.                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
-* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.983338616414 a.u. Time: 0.06 sec.                                  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983338616414 a.u. Time: 0.03 sec.                                  
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
                   1       -75.983338639967    0.0000000000      0.00025895      0.00005820      0.00000000                
-                  2       -75.983338647052   -0.0000000071      0.00006338      0.00001527      0.00006095                
-                  3       -75.983338648327   -0.0000000013      0.00000770      0.00000104      0.00005132                
-                  4       -75.983338648340   -0.0000000000      0.00000056      0.00000014      0.00000520                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -75.983338647052   -0.0000000071      0.00006338      0.00001527      0.00006095                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -75.983338648327   -0.0000000013      0.00000770      0.00000104      0.00005132                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -75.983338648340   -0.0000000000      0.00000056      0.00000014      0.00000520                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.03 sec.                                                         
                                                                                                                           
-               *** SCF converged in 4 iterations. Time: 0.07 sec.                                                         
-                                                                                                                          
-               Spin-Restricted Hartree-Fock:                                                                              
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
                -----------------------------                                                                              
                Total Energy                       :      -75.9833386483 a.u.                                              
                Electronic Energy                  :      -85.3269768060 a.u.                                              
@@ -1874,12 +1906,12 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.   1:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:  -20.55797 a.u.                                                                  
-               (   1 O   1s  :    -1.00)                                                                                  
+               (   1 O   1s  :     1.00)                                                                                  
                                                                                                                           
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.36562 a.u.                                                                  
-               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.47) (   1 O   3s  :    -0.47)                              
+               (   1 O   1s  :    -0.21) (   1 O   2s  :     0.47) (   1 O   3s  :     0.47)                              
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -1896,19 +1928,19 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50264 a.u.                                                                  
-               (   1 O   1p+1:    -0.64) (   1 O   2p+1:    -0.51)                                                        
+               (   1 O   1p+1:     0.64) (   1 O   2p+1:     0.51)                                                        
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
-               (   1 O   3s  :     1.21) (   1 O   1p0 :     0.23) (   1 O   2p0 :     0.47)                              
-               (   2 H   2s  :    -1.00) (   3 H   2s  :    -1.00)                                                        
+               (   1 O   3s  :    -1.21) (   1 O   1p0 :    -0.23) (   1 O   2p0 :    -0.47)                              
+               (   2 H   2s  :     1.00) (   3 H   2s  :     1.00)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30383 a.u.                                                                  
-               (   1 O   1p-1:    -0.33) (   1 O   2p-1:    -0.83) (   2 H   2s  :     1.42)                              
-               (   3 H   2s  :    -1.42)                                                                                  
+               (   1 O   1p-1:     0.33) (   1 O   2p-1:     0.83) (   2 H   2s  :    -1.42)                              
+               (   3 H   2s  :     1.42)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
@@ -1924,11 +1956,12 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.20359 a.u.                                                                  
-               (   1 O   1p0 :    -0.98) (   1 O   2p0 :     0.92) (   2 H   1s  :     0.32)                              
-               (   2 H   2s  :    -0.38) (   3 H   1s  :     0.32) (   3 H   2s  :    -0.38)                              
+               (   1 O   1p0 :     0.98) (   1 O   2p0 :    -0.92) (   2 H   1s  :    -0.32)                              
+               (   2 H   2s  :     0.38) (   3 H   1s  :    -0.32) (   3 H   2s  :     0.38)                              
                                                                                                                           
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              13
@@ -1953,20 +1986,25 @@ Number of determinants:      41
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -75.983338648     0.0e+00      3.0e-28   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -75.983338648     0.0e+00      6.2e-28   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 1 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -75.98333864834025
+- Energy: -75.98333864834035
 - S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 2.00000 2.00000 2.00000 2.00000 2.00000 0.00000 0.00000 0.00000 0.00000 -0.00000 -0.00000 -0.00000 -0.00000
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              13
@@ -1991,26 +2029,43 @@ Number of determinants:      1141
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -76.014423579     0.0e+00      3.9e-01   0:00:00
-        2     -76.107798367    -9.3e-02      1.1e-02   0:00:00
-        3     -76.112076800    -4.3e-03      3.1e-04   0:00:00
-        4     -76.112174941    -9.8e-05      9.8e-06   0:00:00
-        5     -76.112178184    -3.2e-06      2.5e-07   0:00:00
-        6     -76.112178271    -8.7e-08      6.4e-09   0:00:00
-        7     -76.112178273    -2.0e-09      1.5e-10   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -76.014423579     0.0e+00      3.9e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.107798367    -9.3e-02      1.1e-02   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.112076800    -4.3e-03      3.1e-04   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.112174941    -9.8e-05      9.8e-06   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.112178184    -3.2e-06      2.5e-07   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.112178271    -8.7e-08      6.4e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.112178273    -2.0e-09      1.5e-10   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 7 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -76.11217827267349
+- Energy: -76.11217827267336
 - S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.99996 1.98987 1.98365 1.97674 1.97379 0.02305 0.02163 0.01537 0.01055 0.00272 0.00192 0.00044 0.00032
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              13
@@ -2035,27 +2090,46 @@ Number of determinants:      12901
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -76.014301638     0.0e+00      3.9e-01   0:00:00
-        2     -76.108272037    -9.4e-02      1.4e-02   0:00:00
-        3     -76.112888914    -4.6e-03      8.5e-04   0:00:00
-        4     -76.113100065    -2.1e-04      5.1e-05   0:00:00
-        5     -76.113115749    -1.6e-05      4.0e-06   0:00:00
-        6     -76.113116930    -1.2e-06      2.3e-07   0:00:00
-        7     -76.113117002    -7.1e-08      1.6e-08   0:00:00
-        8     -76.113117006    -4.4e-09      1.1e-09   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -76.014301638     0.0e+00      3.9e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.108272037    -9.4e-02      1.4e-02   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.112888914    -4.6e-03      8.5e-04   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.113100065    -2.1e-04      5.1e-05   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.113115749    -1.6e-05      4.0e-06   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.113116930    -1.2e-06      2.3e-07   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.113117002    -7.1e-08      1.6e-08   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -76.113117006    -4.4e-09      1.1e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 8 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -76.11311700623534
+- Energy: -76.11311700623546
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.99996 1.98967 1.98336 1.97603 1.97292 0.02367 0.02214 0.01556 0.01071 0.00292 0.00205 0.00057 0.00043
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              13
@@ -2080,28 +2154,49 @@ Number of determinants:      74991
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -76.014301638     0.0e+00      4.0e-01   0:00:01
-        2     -76.110607450    -9.6e-02      3.9e-02   0:00:01
-        3     -76.118135033    -7.5e-03      1.8e-03   0:00:01
-        4     -76.118558135    -4.2e-04      1.4e-04   0:00:01
-        5     -76.118588052    -3.0e-05      1.2e-05   0:00:01
-        6     -76.118590669    -2.6e-06      8.8e-07   0:00:01
-        7     -76.118590880    -2.1e-07      6.7e-08   0:00:00
-        8     -76.118590897    -1.6e-08      6.1e-09   0:00:00
-        9     -76.118590898    -1.4e-09      5.0e-10   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -76.014301638     0.0e+00      4.0e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.110607450    -9.6e-02      3.9e-02   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.118135033    -7.5e-03      1.8e-03   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.118558135    -4.2e-04      1.4e-04   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.118588052    -3.0e-05      1.2e-05   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.118590669    -2.6e-06      8.8e-07   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.118590880    -2.1e-07      6.7e-08   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -76.118590897    -1.6e-08      6.1e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -76.118590898    -1.4e-09      5.0e-10   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 9 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -76.11859089816336
+- Energy: -76.11859089816343
 - S^2   : -0.02  (multiplicity = 1.0 )
 - Natural orbitals
 1.99996 1.98843 1.98094 1.97294 1.96967 0.02673 0.02505 0.01788 0.01208 0.00310 0.00218 0.00059 0.00045
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              13
@@ -2120,26 +2215,48 @@ Number of determinants:      828828
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -76.014301638     0.0e+00      4.0e-01   0:00:00
-        2     -76.110607578    -9.6e-02      3.9e-02   0:00:00
-        3     -76.118212201    -7.6e-03      2.7e-03   0:00:00
-        4     -76.118715939    -5.0e-04      1.8e-04   0:00:00
-        5     -76.118749591    -3.4e-05      2.4e-05   0:00:00
-        6     -76.118753576    -4.0e-06      1.6e-06   0:00:00
-        7     -76.118753856    -2.8e-07      1.6e-07   0:00:00
-        8     -76.118753885    -2.9e-08      1.7e-08   0:00:00
-        9     -76.118753888    -2.8e-09      1.7e-09   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -76.014301638     0.0e+00      4.0e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.110607578    -9.6e-02      3.9e-02   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.118212201    -7.6e-03      2.7e-03   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.118715939    -5.0e-04      1.8e-04   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.118749591    -3.4e-05      2.4e-05   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.118753576    -4.0e-06      1.6e-06   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.118753856    -2.8e-07      1.6e-07   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -76.118753885    -2.9e-08      1.7e-08   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -76.118753888    -2.8e-09      1.7e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 9 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -76.11875388797048
+- Energy: -76.1187538879723
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
-1.99996 1.98835 1.98082 1.97278 1.96949 0.02688 0.02519 0.01800 0.01215 0.00312 0.00219 0.00060 0.00046
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.99996 1.98835 1.98082 1.97278 1.96949 0.02688 0.02519 0.01800 0.01215 0.00312 0.00219 0.00060 0.00046
 </pre></div>
 </div>
 </div>
@@ -2148,18 +2265,18 @@ Number of determinants:      828828
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">Energies</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Energies</span><span class="p">)</span> <span class="c1">#Create a numpy array from the energies</span>
+<span class="n">Energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Energies</span><span class="p">)</span> <span class="c1">#Create a numpy array from the energies</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="n">Energies</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">E_FCI</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;CI energies&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">Energies</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">E_FCI</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;CI energies&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Convergence of correlation&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CIS&#39;</span><span class="p">,</span> <span class="s1">&#39;CISD&#39;</span><span class="p">,</span> <span class="s1">&#39;CISDT&#39;</span><span class="p">,</span> <span class="s1">&#39;CISDTQ&#39;</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">% o</span><span class="s2">f correlation&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Percentage of electron correlation recovered: &quot;</span><span class="p">,(</span><span class="n">Energies</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">E_FCI</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Percentage of electron correlation recovered: &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Energies</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">E_FCI</span><span class="o">-</span><span class="n">E_hf</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2175,11 +2292,11 @@ Number of determinants:      828828
 </div>
 <div class="section" id="size-consistency">
 <span id="sec-size-consistency"></span><h3>Size-consistency<a class="headerlink" href="#size-consistency" title="Permalink to this headline">¶</a></h3>
-<p>The main issue with those truncated CI methods is that as the system grows larger, the importance of higher excitations increase, and thus truncated CI capture a smaller and smaller fraction of the correlation.</p>
+<p>The main issue with those truncated CI methods is that as the system grows larger, the importance of higher excitations increases, and thus truncated CI captures a smaller and smaller fraction of the correlation.</p>
 <p>This is very well illustrated when taking two identical molecules at large distance. One would normally expect the energy of this non-interacting dimer to be exactly twice that of the monomer. Let’s verify it on our water molecule:</p>
 <div class="cell tag_hide_output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">CIdrv</span> <span class="c1">#Unsure why I need to do this to not mess everything up</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#del CIdrv #Unsure why I need to do this to not mess everything up</span>
 
 <span class="c1">#Two water molecules, 100Å apart, CISD.</span>
 <span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
@@ -2199,13 +2316,12 @@ Number of determinants:      828828
 <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="n">space</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">CISD</span><span class="p">()</span>
 
-<span class="n">CIdrv</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-<span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">space</span><span class="p">)</span>
+<span class="n">CIdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 
-<span class="n">E_2h20</span><span class="o">=</span><span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">E_2h20</span> <span class="o">=</span> <span class="n">CIdrv</span><span class="o">.</span><span class="n">getEnergies</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -2233,32 +2349,54 @@ Number of determinants:      828828
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * SAD initial guess computed in 0.00 sec.                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
-* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -151.966677073119 a.u. Time: 0.12 sec.                                 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -151.966677073119 a.u. Time: 0.06 sec.                                 
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1      -151.966677120244    0.0000000000      0.00036635      0.00005778      0.00000000                
-                  2      -151.966677134422   -0.0000000142      0.00008963      0.00001523      0.00008622                
-                  3      -151.966677136972   -0.0000000025      0.00001089      0.00000104      0.00007257                
-                  4      -151.966677136999   -0.0000000000      0.00000079      0.00000011      0.00000736                
+                  1      -151.966677120244    0.0000000000      0.00036635      0.00005433      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2      -151.966677134423   -0.0000000142      0.00008963      0.00001513      0.00008622                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3      -151.966677136972   -0.0000000025      0.00001089      0.00000103      0.00007257                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4      -151.966677136999   -0.0000000000      0.00000079      0.00000013      0.00000736                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.07 sec.                                                         
                                                                                                                           
-               *** SCF converged in 4 iterations. Time: 0.11 sec.                                                         
-                                                                                                                          
-               Spin-Restricted Hartree-Fock:                                                                              
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
                -----------------------------                                                                              
                Total Energy                       :     -151.9666771370 a.u.                                              
                Electronic Energy                  :     -171.1831219862 a.u.                                              
@@ -2280,69 +2418,72 @@ Number of determinants:      828828
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.71725 a.u.                                                                  
-               (   1 O   1p-1:     0.50) (   1 O   2p-1:     0.26) (   2 H   1s  :     0.26)                              
-               (   3 H   1s  :    -0.26)                                                                                  
+               (   1 O   1p-1:     0.41) (   1 O   2p-1:     0.22) (   2 H   1s  :     0.22)                              
+               (   3 H   1s  :    -0.22) (   4 O   1p-1:    -0.29) (   4 O   2p-1:    -0.15)                              
+               (   5 H   1s  :    -0.15) (   6 H   1s  :     0.15)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.56447 a.u.                                                                  
-               (   1 O   1p0 :    -0.18) (   4 O   2s  :     0.17) (   4 O   3s  :     0.30)                              
-               (   4 O   1p0 :    -0.52) (   4 O   2p0 :    -0.38)                                                        
+               (   1 O   1p0 :     0.16) (   4 O   2s  :     0.17) (   4 O   3s  :     0.30)                              
+               (   4 O   1p0 :    -0.53) (   4 O   2p0 :    -0.38)                                                        
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.56447 a.u.                                                                  
-               (   1 O   2s  :     0.17) (   1 O   3s  :     0.30) (   1 O   1p0 :    -0.52)                              
-               (   1 O   2p0 :    -0.38) (   4 O   1p0 :     0.18)                                                        
+               (   1 O   2s  :    -0.17) (   1 O   3s  :    -0.30) (   1 O   1p0 :     0.53)                              
+               (   1 O   2p0 :     0.38) (   4 O   1p0 :     0.16)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50264 a.u.                                                                  
-               (   1 O   1p+1:    -0.61) (   1 O   2p+1:    -0.48) (   4 O   1p+1:    -0.21)                              
-               (   4 O   2p+1:    -0.17)                                                                                  
+               (   1 O   1p+1:     0.19) (   1 O   2p+1:     0.15) (   4 O   1p+1:     0.61)                              
+               (   4 O   2p+1:     0.49)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50264 a.u.                                                                  
-               (   1 O   1p+1:     0.21) (   1 O   2p+1:     0.17) (   4 O   1p+1:    -0.61)                              
-               (   4 O   2p+1:    -0.48)                                                                                  
+               (   1 O   1p+1:    -0.61) (   1 O   2p+1:    -0.49) (   4 O   1p+1:     0.19)                              
+               (   4 O   2p+1:     0.15)                                                                                  
                                                                                                                           
                Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
-               (   1 O   3s  :     0.39) (   1 O   2p0 :     0.15) (   2 H   2s  :    -0.33)                              
-               (   3 H   2s  :    -0.33) (   4 O   3s  :     1.14) (   4 O   1p0 :     0.21)                              
-               (   4 O   2p0 :     0.45) (   5 H   2s  :    -0.95) (   6 H   2s  :    -0.95)                              
+               (   1 O   3s  :    -0.36) (   2 H   2s  :     0.30) (   3 H   2s  :     0.30)                              
+               (   4 O   3s  :     1.15) (   4 O   1p0 :     0.22) (   4 O   2p0 :     0.45)                              
+               (   5 H   2s  :    -0.96) (   6 H   2s  :    -0.96)                                                        
                                                                                                                           
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20696 a.u.                                                                  
-               (   1 O   3s  :     1.14) (   1 O   1p0 :     0.21) (   1 O   2p0 :     0.45)                              
-               (   2 H   2s  :    -0.95) (   3 H   2s  :    -0.95) (   4 O   3s  :    -0.39)                              
-               (   4 O   2p0 :    -0.15) (   5 H   2s  :     0.33) (   6 H   2s  :     0.33)                              
+               (   1 O   3s  :     1.15) (   1 O   1p0 :     0.22) (   1 O   2p0 :     0.45)                              
+               (   2 H   2s  :    -0.96) (   3 H   2s  :    -0.96) (   4 O   3s  :     0.36)                              
+               (   5 H   2s  :    -0.30) (   6 H   2s  :    -0.30)                                                        
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30383 a.u.                                                                  
-               (   1 O   2p-1:     0.30) (   2 H   2s  :    -0.52) (   3 H   2s  :     0.52)                              
-               (   4 O   1p-1:    -0.31) (   4 O   2p-1:    -0.77) (   5 H   2s  :     1.32)                              
-               (   6 H   2s  :    -1.32)                                                                                  
+               (   1 O   1p-1:     0.24) (   1 O   2p-1:     0.59) (   2 H   2s  :    -1.01)                              
+               (   3 H   2s  :     1.01) (   4 O   1p-1:    -0.23) (   4 O   2p-1:    -0.58)                              
+               (   5 H   2s  :     1.00) (   6 H   2s  :    -1.00)                                                        
                                                                                                                           
                Molecular Orbital No.  14:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.30383 a.u.                                                                  
-               (   1 O   1p-1:    -0.31) (   1 O   2p-1:    -0.77) (   2 H   2s  :     1.32)                              
-               (   3 H   2s  :    -1.32) (   4 O   2p-1:    -0.30) (   5 H   2s  :     0.52)                              
-               (   6 H   2s  :    -0.52)                                                                                  
+               (   1 O   1p-1:     0.23) (   1 O   2p-1:     0.58) (   2 H   2s  :    -1.00)                              
+               (   3 H   2s  :     1.00) (   4 O   1p-1:     0.24) (   4 O   2p-1:     0.59)                              
+               (   5 H   2s  :    -1.01) (   6 H   2s  :     1.01)                                                        
                                                                                                                           
                Molecular Orbital No.  15:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.05847 a.u.                                                                  
-               (   4 O   2p-1:     0.83) (   5 H   1s  :    -0.97) (   5 H   2s  :     0.43)                              
-               (   6 H   1s  :     0.97) (   6 H   2s  :    -0.43)                                                        
+               (   2 H   1s  :     0.17) (   3 H   1s  :    -0.17) (   4 O   2p-1:    -0.82)                              
+               (   5 H   1s  :     0.96) (   5 H   2s  :    -0.42) (   6 H   1s  :    -0.96)                              
+               (   6 H   2s  :     0.42)                                                                                  
                                                                                                                           
-
-          Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          Active space definition:
           ------------------------
 Number of inactive (occupied) orbitals: 0
 Number of active orbitals:              26
@@ -2367,22 +2508,40 @@ Number of determinants:      18441
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm |   Time
      ----------------------------------------------------------
-        1     -151.967862366     0.0e+00      9.7e-01   0:00:00
-        2     -152.206185417    -2.4e-01      2.7e-02   0:00:00
-        3     -152.214821945    -8.6e-03      1.1e-03   0:00:00
-        4     -152.215170953    -3.5e-04      6.8e-05   0:00:00
-        5     -152.215192048    -2.1e-05      3.1e-06   0:00:00
-        6     -152.215193135    -1.1e-06      2.3e-07   0:00:00
-        7     -152.215193214    -7.9e-08      1.2e-08   0:00:00
-        8     -152.215193218    -4.6e-09      1.1e-09   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -151.968287861     0.0e+00      9.7e-01   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -152.205713132    -2.4e-01      2.8e-02   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -152.214825945    -9.1e-03      1.1e-03   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -152.215171615    -3.5e-04      6.7e-05   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -152.215192062    -2.0e-05      3.3e-06   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -152.215193130    -1.1e-06      2.5e-07   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -152.215193212    -8.2e-08      1.8e-08   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -152.215193218    -6.1e-09      1.6e-09   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 8 iterations
                                                                                                                           
         Final results
         -------------
                                                                                                                           
 * State 1
-- Energy: -152.21519321841836
+- Energy: -152.21519321826614
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.99996 1.99996 1.99076 1.99076 1.98529 1.98529 1.97942 1.97942 1.97684 1.97684 0.02034 0.02034 0.01909 0.01909 0.01388 0.01388 0.00957 0.00957 0.00245 0.00245 0.00175 0.00175 0.00038 0.00038 0.00027 0.00027
@@ -2392,36 +2551,36 @@ Number of determinants:      18441
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CI Energy of 2 water molecules&quot;</span><span class="p">,</span><span class="n">E_2h20</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Twice the energy of 1 water molecule&quot;</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">E_FCI</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CI Energy of 2 water molecules&quot;</span><span class="p">,</span> <span class="n">E_2h20</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Twice the energy of 1 water molecule&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E_FCI</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI Energy of 2 water molecules -152.21519321841836
-Twice the energy of 1 water molecule -152.23750777594097
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CI Energy of 2 water molecules -152.21519321826614
+Twice the energy of 1 water molecule -152.2375077759446
 </pre></div>
 </div>
 </div>
 </div>
 <p>The calculation for the dimer found the energy to be higher than twice the monomer, and not equal as one would expect. This systematic failure of truncated CI is called size consistency error. In general, the truncated CI energy of two molecules far apart from each other is not the same as the sum of the truncated CI energy of each molecule.</p>
 <p>To understand this, let’s assume a molecule <span class="math notranslate nohighlight">\(A\)</span> whose CI expansion consists only of 2 SD, the HF reference and a SD generated by exciting 2 electrons from orbitals <span class="math notranslate nohighlight">\(i, j\)</span> to <span class="math notranslate nohighlight">\(a, b\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-51f94927-bede-473f-a7e5-16e166917a40">
-<span class="eqno">(19)<a class="headerlink" href="#equation-51f94927-bede-473f-a7e5-16e166917a40" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-3ed2d636-a37d-4777-89b8-0c4c60a6c3ed">
+<span class="eqno">(19)<a class="headerlink" href="#equation-3ed2d636-a37d-4777-89b8-0c4c60a6c3ed" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_A \rangle = c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle
 \end{equation}\]</div>
 <p>Now let’s assume a second molecule <span class="math notranslate nohighlight">\(B\)</span> with also 2 SD, the second one being generated from a <span class="math notranslate nohighlight">\(klcd\)</span> excitation from the reference:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-811de1a6-3ddf-41db-8091-b097b13edf85">
-<span class="eqno">(20)<a class="headerlink" href="#equation-811de1a6-3ddf-41db-8091-b097b13edf85" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-26490ba4-4556-4185-a8fb-94ad30fa7089">
+<span class="eqno">(20)<a class="headerlink" href="#equation-26490ba4-4556-4185-a8fb-94ad30fa7089" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 | \Psi_B \rangle = c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle
 \end{equation}\]</div>
 <p>In a correct calculation, since the two systems are far apart, they should be independent, and thus, their combined wavefunction can be expressed as a product of their individual ones:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-16ff7578-5823-4353-a695-21d748f4a673">
-<span class="eqno">(21)<a class="headerlink" href="#equation-16ff7578-5823-4353-a695-21d748f4a673" title="Permalink to this equation">¶</a></span>\[\begin{eqnarray}
-| \Psi_{AB} \rangle &amp;= | \Psi_A \Psi B \rangle \\
-                    &amp;= (c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle)(c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle) \\
+<div class="amsmath math notranslate nohighlight" id="equation-14a9dc95-3269-424d-8bf1-ae7e1ebab640">
+<span class="eqno">(21)<a class="headerlink" href="#equation-14a9dc95-3269-424d-8bf1-ae7e1ebab640" title="Permalink to this equation">¶</a></span>\[\begin{align}
+| \Psi_{AB} \rangle &amp;= | \Psi_A \Psi_B \rangle \\
+                    &amp;= \Big( c_{0} | ... ij ...\rangle + c_{ijab} | ... ab ...\rangle \Big) \Big(c'_{0} | ... kl ...\rangle + c'_{klcd} | ... cd ...\rangle \Big) \\
                     &amp;= c_0 c'_0 | ... ij...kl ...\rangle + c_{0}c'_{klcd} | ... ij...cd ...\rangle + c_{ijab}c'_{0} | ... ab...kl ...\rangle + c_{ijab}c'_{klcd} | ... ab...cd ...\rangle   \\
-\end{eqnarray}\]</div>
+\end{align}\]</div>
 <p>The last term corresponds to a quadruple excitation from the first one (the HF reference). Since these quadruple excitations are excluded from CISD, it is clear the method cannot describe the combined system as well as it can describe the individual subsystems.</p>
 <p>While some approximate corrections exist, truncated CI have for the most part disappeared from the quantum chemistry landscape as more efficient and/or more accurate methods supplanted them.</p>
 </div>
