@@ -830,7 +830,7 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># to view the molecules</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">fluoroethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">chloroethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
@@ -845,14 +845,11 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings for SCF and gradient drivers</span>
 <span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span><span class="mf">1e-6</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">grad_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numerical&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run SCF for ethene</span>
-<span class="n">ethene_scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> 
-<span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">)</span>
+<span class="n">ethene_scfdrv</span> <span class="o">=</span> <span class="o">...</span>
+<span class="o">...</span>
 
 <span class="c1"># Run SCF for fluoroethene</span>
 <span class="n">fluoroethene_scfdrv</span> <span class="o">=</span> <span class="o">...</span>
@@ -864,9 +861,7 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up the gradient and optimization dirvers:</span>
-<span class="n">ethene_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">(</span><span class="n">ethene_scfdrv</span><span class="p">)</span>
-<span class="n">ethene_grad_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">grad_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">ethene_opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">ethene_grad_drv</span><span class="p">)</span>
+<span class="n">ethene_grad_drv</span> <span class="o">=</span> <span class="o">...</span>
 
 <span class="n">fluoroethene_grad_drv</span> <span class="o">=</span> <span class="o">...</span>
 <span class="o">...</span>
@@ -875,13 +870,13 @@
 <span class="o">...</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Either optimize the geometries</span>
-<span class="n">opt_ethene</span> <span class="o">=</span> <span class="n">ethene_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimize the geometries</span>
+<span class="n">opt_ethene</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">opt_fluoroethene</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">opt_chloroethene</span> <span class="o">=</span> <span class="o">...</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get optimized coordinates and write xyz</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get optimized coordinates as xyz string</span>
 <span class="k">def</span> <span class="nf">get_xyz</span><span class="p">(</span><span class="n">molecule</span><span class="p">):</span>
     <span class="n">natm</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
     <span class="n">elements</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
@@ -892,48 +887,25 @@
     <span class="k">return</span> <span class="n">txt</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Or read optimized geometries from file:</span>
-<span class="n">opt_ethene_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_ethene.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-<span class="n">opt_fluoroethene_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_fluoroethene.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-<span class="n">opt_chloroethene_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../xyz/ir_raman/opt_chloroethene.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-
-<span class="n">opt_ethene</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">opt_ethene_xyz</span><span class="p">)</span>
-<span class="n">ethene_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">opt_ethene</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
-
-<span class="n">opt_fluoroethene</span> <span class="o">=</span> <span class="o">...</span>
-<span class="n">fluoroethene_basis</span> <span class="o">=</span> <span class="o">...</span>
-
-<span class="n">opt_chloroethene</span> <span class="o">=</span> <span class="o">...</span>
-<span class="n">chloroethene_basis</span> <span class="o">=</span> <span class="o">...</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the molecules</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">opt_ethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">opt_fluoroethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">opt_chloroethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
-<span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
-<span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the optimized structures</span>
+<span class="o">...</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute SCF with the optimized geometries of all molecules</span>
-<span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">opt_ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">)</span>
 <span class="o">...</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="hessians">
 <h2>Hessians<a class="headerlink" href="#hessians" title="Permalink to this headline">¶</a></h2>
-<p>Now, let’s calculate the IR and Raman spectra for these optimized geometries</p>
+<p>Now, we can calculate the IR and Raman spectra for these optimized geometries.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings for Hessian calculation</span>
-<span class="n">hessian_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numerical&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;do_raman&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;print_depolarization_ratio&#39;</span><span class="p">:</span><span class="s1">&#39;no&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;numerical_grad&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;do_print_hessian&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;do_four_point&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
+<span class="n">hessian_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;do_raman&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;print_depolarization_ratio&#39;</span><span class="p">:</span><span class="s1">&#39;no&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Hessian driver and update settings</span>
-<span class="n">ethene_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfhessiandriver</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">ethene_scfdrv</span><span class="p">)</span>
-<span class="n">ethene_hessian_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">hessian_settings</span><span class="p">)</span>
+<span class="n">ethene_hessian_drv</span> <span class="o">=</span> <span class="o">...</span>
+<span class="o">...</span>
 
 <span class="n">fluoroethene_hessian_drv</span> <span class="o">=</span> <span class="o">...</span>
 <span class="o">...</span>
@@ -943,65 +915,24 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the Hessians:</span>
-<span class="n">ethene_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="o">...</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Or read them from file:</span>
-<span class="kn">import</span> <span class="nn">h5py</span>
-
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;../h5files/ir_raman/ethenes.h5&#39;</span>
-<span class="n">hf</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ethene&#39;</span><span class="p">,</span> <span class="s1">&#39;fluoroethene&#39;</span><span class="p">,</span> <span class="s1">&#39;chloroethene&#39;</span><span class="p">]</span>
-
-<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>   
-<span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ethene_hessian_drv</span><span class="p">,</span> <span class="n">fluoroethene_hessian_drv</span><span class="p">,</span> <span class="n">chloroethene_hessian_drv</span><span class="p">]:</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    
-    <span class="n">driver</span><span class="o">.</span><span class="n">hessian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;_hessian&#39;</span><span class="p">))</span> 
-    <span class="n">driver</span><span class="o">.</span><span class="n">dipole_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;_dipolegrad&#39;</span><span class="p">))</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">polarizability_gradient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;_polgrad&#39;</span><span class="p">))</span> 
-    
-    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-<span class="n">hf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="o">...</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Broadening function</span>
 <span class="k">def</span> <span class="nf">add_broadening</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">,</span> <span class="n">list_osci_strength</span><span class="p">,</span> <span class="n">line_profile</span><span class="o">=</span><span class="s1">&#39;Lorentzian&#39;</span><span class="p">,</span> <span class="n">line_param</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">)</span> <span class="o">-</span> <span class="mi">50</span>
-        <span class="n">x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">)</span> <span class="o">+</span> <span class="mi">50</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-        <span class="c1">#print(x)</span>
-        <span class="c1">#print(y)</span>
 
-        <span class="c1"># go through the frames and calculate the spectrum for each frame</span>
-        <span class="k">for</span> <span class="n">xp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">list_ex_energy</span><span class="p">,</span> <span class="n">list_osci_strength</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">line_profile</span> <span class="o">==</span> <span class="s1">&#39;Gaussian&#39;</span><span class="p">:</span>
-                    <span class="n">y</span><span class="p">[</span><span class="n">xp</span><span class="p">]</span> <span class="o">+=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span>
-                        <span class="p">(</span><span class="n">e</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">xp</span><span class="p">])</span> <span class="o">/</span> <span class="n">line_param</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">line_profile</span> <span class="o">==</span> <span class="s1">&#39;Lorentzian&#39;</span><span class="p">:</span>
-                    <span class="n">y</span><span class="p">[</span><span class="n">xp</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line_param</span> <span class="o">*</span> <span class="n">f</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span>
-                        <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">xp</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">line_param</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+    <span class="o">...</span>
+    
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
         
 <span class="c1"># To animate the normal mode we will need both the geometry and the displacements </span>
 <span class="k">def</span> <span class="nf">get_normal_mode</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">normal_mode</span><span class="p">):</span>
-    <span class="n">elements</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span> <span class="c1"># To transform from au to A</span>
-    <span class="n">natm</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
-    <span class="n">vib_xyz</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">natm</span>
-    <span class="n">nm</span> <span class="o">=</span> <span class="n">normal_mode</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">natm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natm</span><span class="p">):</span>
-        <span class="c1"># add coordinates:</span>
-        <span class="n">vib_xyz</span> <span class="o">+=</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-        <span class="c1"># add displacements:</span>
-        <span class="n">vib_xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">nm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="o">...</span>
+    
     <span class="k">return</span> <span class="n">vib_xyz</span>
 </pre></div>
 </div>
@@ -1015,6 +946,7 @@
 <span class="o">...</span>
 </pre></div>
 </div>
+<p>Think about the dipole moment of these molecules and consider the Hydrogen stretching modes. How do you expect the IR spectra to look like? Which molecule do you expect will have more intense IR-peaks?</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the IR spectra</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 
@@ -1045,7 +977,7 @@
 <span class="n">chloroethene_h1</span> <span class="o">=</span> <span class="n">get_normal_mode</span><span class="p">(</span><span class="n">chloroethene</span><span class="p">,</span> <span class="n">chloroethene_hessian_drv</span><span class="o">.</span><span class="n">normal_modes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the vibration</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Animate the vibration</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ethene_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
@@ -1057,7 +989,50 @@
 </div>
 <div class="section" id="ir-intensities-and-raman-activities">
 <h2>IR intensities and Raman activities<a class="headerlink" href="#ir-intensities-and-raman-activities" title="Permalink to this headline">¶</a></h2>
-<p>To rationalize why the IR and Raman spectra look as they do, let’s calculate how the dipole moment and polarizability change during particular vibrational motions.</p>
+<p>To rationalize why the IR and Raman spectra look as they do, calculate how the dipole moment and polarizability change during particular vibrational motions. Look at the Hydrogen stretching modes and select a mode which is IR-active in ethene, but is suppressed in fluoroethene or chloroethene. What is the dipole moment in the optimized molecule? How does the dipole moment change during the vibration?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the dipole moment of the optimized molecules</span>
+<span class="c1"># For this we will use the FirstOrderProperties class from veloxchem</span>
+<span class="n">ethene_prop</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">firstorderprop</span><span class="o">.</span><span class="n">FirstOrderProperties</span><span class="p">()</span>
+<span class="n">ethene_prop</span><span class="o">.</span><span class="n">compute_scf_prop</span><span class="p">(</span><span class="n">opt_ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">,</span> <span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">ethene_dipole_moment</span> <span class="o">=</span> <span class="n">ethene_prop</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;dipole moment&#39;</span><span class="p">)</span>
+<span class="o">...</span>
+
+<span class="c1"># Select normal mode and get the array of atomic displacements</span>
+<span class="o">...</span>
+
+<span class="c1"># Use the atomic displacement array to construct several new molecular configurations</span>
+<span class="c1"># along the vibrational mode, e.g. -0.75, -0.5, -0.25, 0.25, 0.5, 0.75 displacement </span>
+<span class="o">...</span>
+
+<span class="c1"># Calculate the dipole moment for the new configurations</span>
+<span class="o">...</span>
+
+<span class="c1"># Plot as a function of displacement</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Now select a mode which is Raman-active in ethene, but is suppressed in fluoroethene or chloroethene. Calculate the polarizability of the optimized molecule. How does the polarizability change during the vibration?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the polarizability of the optimized molecules</span>
+<span class="c1"># For this, we need to run a linear response calculation</span>
+<span class="n">ethene_lrdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">lrsolver</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
+<span class="n">ethene_pol_dict</span> <span class="o">=</span> <span class="n">ethene_lrdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">opt_ethene</span><span class="p">,</span> <span class="n">ethene_basis</span><span class="p">,</span> <span class="n">ethene_scfdrv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">ethene_polarizability</span> <span class="o">=</span> <span class="n">ethene_pol_dict</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">]</span>
+<span class="o">...</span>
+
+<span class="c1"># Select normal mode and get the array of atomic displacements</span>
+<span class="o">...</span>
+
+<span class="c1"># Use the atomic displacement array to construct several new molecular configurations</span>
+<span class="c1"># along the vibrational mode, e.g. -0.75, -0.5, -0.25, 0.25, 0.5, 0.75 displacement </span>
+<span class="o">...</span>
+
+<span class="c1"># Calculate the polarizability for the new configurations</span>
+<span class="o">...</span>
+
+<span class="c1"># Plot component or norm as a function of displacement</span>
+<span class="o">...</span>
+</pre></div>
+</div>
 </div>
 </div>
 
