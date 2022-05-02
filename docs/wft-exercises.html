@@ -494,6 +494,11 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="adc-pp.html">
+     Polarization propagator
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="adc-isr.html">
      Intermediate state representation
     </a>
@@ -965,13 +970,13 @@
 <h3>One-particle density matrix<a class="headerlink" href="#one-particle-density-matrix" title="Permalink to this headline">¶</a></h3>
 <p>In this exercise, we are going to compute the one-particle density matrix for a CI wavefunction. The structure of the code is very similar to that of the energy, and actually, the energy can be computed directly from the one- and two-particle density matrix.</p>
 <p>As a reminder, the density matrix (in molecular orbital basis) is defined in second quantization as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c4c57396-090b-4060-9da3-be8a1ebc72a1">
-<span class="eqno">(47)<a class="headerlink" href="#equation-c4c57396-090b-4060-9da3-be8a1ebc72a1" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-66fb7856-ea65-4c44-bbb9-61aa5b9f4022">
+<span class="eqno">(47)<a class="headerlink" href="#equation-66fb7856-ea65-4c44-bbb9-61aa5b9f4022" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 \end{equation}\]</div>
 <p>This is indeed very similar to the one-electron part of the <span class="math notranslate nohighlight">\(\sigma\)</span> vector:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9e80a712-4a99-4d5c-ad2d-def485a8b3e0">
-<span class="eqno">(48)<a class="headerlink" href="#equation-9e80a712-4a99-4d5c-ad2d-def485a8b3e0" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-617d23e0-fc6f-4ae6-8583-c4642a7fc436">
+<span class="eqno">(48)<a class="headerlink" href="#equation-617d23e0-fc6f-4ae6-8583-c4642a7fc436" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 \sigma^{(1)} = \sum_{pq} \hat{a}_p^\dagger \hat{a}_q | 0 \rangle h_{pq}
 \end{equation}\]</div>
 <p>The difference then with the sigma algorithm is that instead of adding the <span class="math notranslate nohighlight">\(h_{ia}\)</span> integral to the <span class="math notranslate nohighlight">\(\sigma\)</span> vector, we store the product of the coefficients (<code class="docutils literal notranslate"><span class="pre">vector[idet]</span></code> and <code class="docutils literal notranslate"><span class="pre">vector[excdet.index()]</span></code>) in the “i,a” position of the density matrix. Note that the diagonal term <span class="math notranslate nohighlight">\(D_{pp}\)</span> includes a loop over all occupied <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
@@ -1184,8 +1189,9 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Some of the following variables will be useful later</span>
 
 <span class="c1"># Number of orbitals, orbital energies, MO coefficients, ERIs in spatial MO basis (physicists&#39; notation)</span>
+<span class="n">N_MO</span> <span class="o">=</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C_alpha&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">N_O</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">number_of_electrons</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
-<span class="n">N_V</span> <span class="o">=</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="o">.</span><span class="n">number_mos</span><span class="p">()</span> <span class="o">-</span> <span class="n">N_O</span>
+<span class="n">N_V</span> <span class="o">=</span> <span class="n">N_MO</span> <span class="o">-</span> <span class="n">N_O</span>
 <span class="n">epsilon</span> <span class="o">=</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
 <span class="c1"># epsilon_a - epsilon_i (as a 2D matrix)</span>
 <span class="n">epsilon_ov</span> <span class="o">=</span> <span class="n">epsilon</span><span class="p">[</span><span class="n">N_O</span><span class="p">:]</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">[:</span><span class="n">N_O</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1206,11 +1212,11 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <h3>Calculate the closed-shell MP2 energy correction<a class="headerlink" href="#calculate-the-closed-shell-mp2-energy-correction" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p>Implement the MP2 energy correction using the following equation valid for the closed-shell restricted case in spatial orbitals:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3d3e9084-e1a5-4164-a7dc-862fcc2f2a84">
-<span class="eqno">(49)<a class="headerlink" href="#equation-3d3e9084-e1a5-4164-a7dc-862fcc2f2a84" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
     E_0^{(2)} = - \sum_{ijab} \frac{\langle ij | ab \rangle \langle ij | ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
     - \sum_{ijab} \frac{\langle ij | ab \rangle [ \langle ij | ab \rangle - \langle ij | ba \rangle]}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
-  \end{equation}\]</div>
+  \end{equation*}\]</div>
 </li>
 <li><p>The first term corresponds to the <em>opposite-spin</em>, the second one to the <em>same-spin</em> contribution</p></li>
 </ul>
@@ -1255,10 +1261,10 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <div class="section" id="calculate-the-mp2-amplitudes">
 <h3>Calculate the MP2 amplitudes<a class="headerlink" href="#calculate-the-mp2-amplitudes" title="Permalink to this headline">¶</a></h3>
 <p>The MP2 <span class="math notranslate nohighlight">\(t\)</span>-amplitudes are defined as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-37a7347a-0a0d-4ab8-8acc-5a741f20c505">
-<span class="eqno">(50)<a class="headerlink" href="#equation-37a7347a-0a0d-4ab8-8acc-5a741f20c505" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
 t_{ijab} = \frac{\langle ij || ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j} = \frac{\langle ij | ab \rangle - \langle ij | ba \rangle}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}
-\end{align}\]</div>
+\end{align*}\]</div>
 <p>In the following, we need to consider different spin blocks:</p>
 <ul class="simple">
 <li><p>For the <span class="math notranslate nohighlight">\(\alpha\alpha\alpha\alpha\)</span> block, both integrals survive</p></li>
@@ -1296,10 +1302,10 @@ t_{ijab} = \frac{\langle ij || ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_i 
 <div class="section" id="calculate-the-mp2-energy-correction-using-the-t-amplitudes">
 <h3>Calculate the MP2 energy correction using the <span class="math notranslate nohighlight">\(t\)</span> amplitudes<a class="headerlink" href="#calculate-the-mp2-energy-correction-using-the-t-amplitudes" title="Permalink to this headline">¶</a></h3>
 <p>The MP2 energy correction can also be calculated in spin orbitals as:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8c5ea835-d451-48bd-9795-fd490d7c327d">
-<span class="eqno">(51)<a class="headerlink" href="#equation-8c5ea835-d451-48bd-9795-fd490d7c327d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-E_\textrm{MP2} = -\frac14\sum_{ijab}t_{ijab}\langle ij || ab \rangle = -\frac14\sum_{ijab} t_{ijab}(\langle ij | ab \rangle - \langle ij | ba \rangle)
-\end{equation}\]</div>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+E_0^{(2)} = -\frac14\sum_{ijab}t_{ijab}\langle ij || ab \rangle = -\frac14\sum_{ijab} t_{ijab}(\langle ij | ab \rangle - \langle ij | ba \rangle)
+\end{equation*}\]</div>
 <ul class="simple">
 <li><p>Use your function to get the <span class="math notranslate nohighlight">\(t\)</span> amplitudes and use them to calculate the MP2 energy correction</p></li>
 <li><p>Remember that you use spatial orbitals, so take care of the different spin blocks</p></li>
@@ -1317,7 +1323,8 @@ E_\textrm{MP2} = -\frac14\sum_{ijab}t_{ijab}\langle ij || ab \rangle = -\frac14\
 <span class="n">mp2driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">e_mp2_vlx</span> <span class="o">=</span> <span class="n">mp2driver</span><span class="o">.</span><span class="n">e_mp2</span>
 
-<span class="c1"># calculate the difference between the energy correction from Vlx and your own implementation</span>
+<span class="c1"># calculate the (absolute) difference between the energy correction from Vlx and your own implementation</span>
+<span class="o">...</span>
 </pre></div>
 </div>
 </div>
@@ -1327,7 +1334,7 @@ E_\textrm{MP2} = -\frac14\sum_{ijab}t_{ijab}\langle ij || ab \rangle = -\frac14\
 MP2 represents a significant improvement over the HF energy around the equilibrium bond length.
 At longer bond lengths, however, some occupied and virtual orbitals become closer in energy to each other.
 This makes the orbital-energy denominator of the MP2 correction smaller, and hence <span class="math notranslate nohighlight">\(E_0^{(2)}\)</span> larger and larger (in magnitude).
-The correlation energy will thus be overestimated at some point and the dissociation curve will become non-physical</p>
+The correlation energy will thus be overestimated at some point and the dissociation curve will become non-physical.</p>
 <ul class="simple">
 <li><p>Take the following molecule template and calculate the MP2 energy for a series of different bond lengths</p></li>
 <li><p>Plot the potential energy curve for RHF and MP2</p></li>
@@ -1390,10 +1397,10 @@ which can be calculated as a derivative of the energy with respect to an externa
 As such, it can be calculated either <a class="reference internal" href="gradients.html#sec-numerical-gradients"><span class="std std-ref">numerically</span></a> or <a class="reference internal" href="gradients.html#sec-analytical-gradients"><span class="std std-ref">analytically</span></a>.
 In the latter case, the calculation of the electronic contribution to <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> is given by the contraction of the one-particle density matrix <span class="math notranslate nohighlight">\(\boldsymbol{\gamma}\)</span> with the dipole integrals (<span class="math notranslate nohighlight">\(\mu_{\kappa \lambda}\)</span>), either in AO or MO basis. In order to avoid having to transform all property integrals to MO basis, one usually transforms the density matrix to AO.
 In the following, we want to look at the dipole moment calculated with different approximation schemes.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c8d0aba6-ec8c-4af4-b94f-5aadfe25401f">
-<span class="eqno">(52)<a class="headerlink" href="#equation-c8d0aba6-ec8c-4af4-b94f-5aadfe25401f" title="Permalink to this equation">¶</a></span>\[\begin{equation}
-  \boldsymbol{\mu} = \sum_{\kappa \lambda} \gamma_{\kappa \lambda} \mu_{\lambda \kappa}
-\end{equation}\]</div>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  \boldsymbol{\mu} = \sum_{\kappa \lambda} \gamma_{\kappa \lambda} \, \mu_{\lambda \kappa}
+\end{equation*}\]</div>
 <div class="section" id="hf-dipole-moment">
 <h4>HF dipole moment<a class="headerlink" href="#hf-dipole-moment" title="Permalink to this headline">¶</a></h4>
 <p>In order to obtain the dipole moment at the HF level, we only have to get the total SCF density and provide it to the <code class="docutils literal notranslate"><span class="pre">FirstOrderProperties</span></code> driver, which takes care of the rest (contraction with the dipole integrals and adding the nuclear contribution).</p>
@@ -1407,16 +1414,16 @@ In the following, we want to look at the dipole moment calculated with different
 </div>
 <div class="section" id="unrelaxed-mp2-dipole-moment">
 <h4>Unrelaxed MP2 dipole moment<a class="headerlink" href="#unrelaxed-mp2-dipole-moment" title="Permalink to this headline">¶</a></h4>
-<p>At the MP2 level, additional contributions to all blocks (occ-occ, vir-vir, and occ-vir) of the one-particle density matrix
+<p>At the MP2 level, additional contributions to all blocks (occupied-occupied, virtual-virtual, and occupied-virtual) of the one-particle density matrix
 need to be taken into account.
-The occ-vir block of the MP2 density matrix is related to orbital relaxation due to the perturbation
+The occupied-virtual block of the MP2 density matrix is related to orbital relaxation due to the perturbation
 and has to be calculated iteratively (for more details, see <a class="reference internal" href="gradients.html#sec-mp2-gradients"><span class="std std-ref">here</span></a>).
-The occ-occ and vir-vir blocks of the second-order correction to the ground-state one-particle density matrix, on the other hand, can directly be calculated from the <span class="math notranslate nohighlight">\(t\)</span> amplitudes as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2a616a7f-df39-4180-8b50-ca3b9e10a83e">
-<span class="eqno">(53)<a class="headerlink" href="#equation-2a616a7f-df39-4180-8b50-ca3b9e10a83e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+The occupied-occupied and virtual-virtual blocks of the second-order correction to the ground-state one-particle density matrix, on the other hand, can directly be calculated from the <span class="math notranslate nohighlight">\(t\)</span> amplitudes as</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
   \gamma_{ij}^{(2)} &amp;= -\frac12 \sum_{kab} t_{ikab} t_{jkab} \\
   \gamma_{ab}^{(2)} &amp;= \frac12 \sum_{ijc} t_{ijac} t_{ijbc}
-\end{align}\]</div>
+\end{align*}\]</div>
 <p>Considering only these two blocks (and hence neglecting orbital relaxation effects) is often referred to as the <em>unrelaxed density matrix</em>
 and properties calculated with it as (orbital) unrelaxed.</p>
 <ul class="simple">
@@ -1457,26 +1464,27 @@ and properties calculated with it as (orbital) unrelaxed.</p>
 in order to obtain the occupied-virtual block of the one-particle density matrix.</p></li>
 <li><p>As an approximation to that, the following equation (in spin orbitals) can be used:</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-3ee7ea77-3fce-4c76-b32c-1c84a2b85fcf">
-<span class="eqno">(54)<a class="headerlink" href="#equation-3ee7ea77-3fce-4c76-b32c-1c84a2b85fcf" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
   \lambda_{ia} = \frac{1}{\epsilon_{a} - \epsilon_{i}} \bigg( \frac12 \sum_{jkb} t_{jkab} \langle jk || ib \rangle + \frac12 \sum_{jbc} t_{ijbc} \langle ja || bc \rangle \bigg)
-\end{equation}\]</div>
+\end{equation*}\]</div>
 <ul class="simple">
 <li><p>For the closed-shell restricted case, the above equation can be written in spatial orbitals as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-a790af46-1317-4c06-a1bd-d421e56e04cb">
-<span class="eqno">(55)<a class="headerlink" href="#equation-a790af46-1317-4c06-a1bd-d421e56e04cb" title="Permalink to this equation">¶</a></span>\[\begin{align}
-  \lambda_{ia} = \frac{1}{\epsilon_{a} - \epsilon_{i}} \bigg( \sum_{jbc} \frac{\langle ij | bc \rangle}{\epsilon_b + \epsilon_c - \epsilon_i - \epsilon_j} \big( 2 \langle ja | cb \rangle - \langle ja | bc \rangle \big) - \sum_{jkb} \frac{\langle jk | ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_j - \epsilon_k} \big( 2 \langle jk | ib \rangle - \langle kj | ib \rangle \big) \bigg)
-\end{align}\]</div>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+  \lambda_{ia} &amp;= \frac{1}{\epsilon_{a} - \epsilon_{i}} \bigg( \sum_{jbc} \frac{\langle ij | bc \rangle}{\epsilon_b + \epsilon_c - \epsilon_i - \epsilon_j} \big( 2 \langle ja | cb \rangle - \langle ja | bc \rangle \big) \\
+  &amp;\ \ - \sum_{jkb} \frac{\langle jk | ab \rangle}{\epsilon_a + \epsilon_b - \epsilon_j - \epsilon_k} \big( 2 \langle jk | ib \rangle - \langle kj | ib \rangle \big) \bigg)
+\end{align*}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
 <li><p>Note that the “<span class="math notranslate nohighlight">\(t\)</span> amplitudes” above (without anti-symmetrized integrals) correspond to the <span class="math notranslate nohighlight">\(\alpha\beta\alpha\beta\)</span> block of the normal ones</p></li>
-<li><p>Both the occ-vir and vir-occ blocks of <span class="math notranslate nohighlight">\(\lambda\)</span> are needed, but one is the transpose of the other</p></li>
+<li><p>Both the occ-vir and vir-occ blocks of <span class="math notranslate nohighlight">\(\boldsymbol{\lambda}\)</span> are needed, but one is the transpose of the other</p></li>
 </ul>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the first term</span>
-<span class="n">term1</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijbc,jacb-&gt;ia&#39;</span><span class="p">,</span> <span class="n">t2</span><span class="p">[</span><span class="s1">&#39;abab&#39;</span><span class="p">],</span> <span class="n">eri_ovvv</span><span class="p">)</span> <span class="o">-</span> <span class="o">...</span>
+<span class="n">term1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijbc,jacb-&gt;ia&#39;</span><span class="p">,</span> <span class="n">t2</span><span class="p">[</span><span class="s1">&#39;abab&#39;</span><span class="p">],</span> <span class="n">eri_ovvv</span><span class="p">)</span> <span class="o">-</span> <span class="o">...</span>
 
 <span class="c1"># Calculate the second term</span>
 <span class="n">term2</span> <span class="o">=</span> <span class="o">...</span>
@@ -1498,13 +1506,13 @@ in order to obtain the occupied-virtual block of the one-particle density matrix
 <div class="section" id="numerical-mp2-dipole-moment">
 <h4>Numerical MP2 Dipole Moment<a class="headerlink" href="#numerical-mp2-dipole-moment" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p>Calculate the <span class="math notranslate nohighlight">\(z\)</span> component of the MP2 dipole moment as a numerical derivative with respect to an external electric field.</p></li>
+<li><p>Calculate the <span class="math notranslate nohighlight">\(z\)</span> component of the MP2 dipole moment as a numerical derivative with respect to an external electric field <span class="math notranslate nohighlight">\(\mathcal{F}_z\)</span></p></li>
 <li><p>Apply an electric field in <span class="math notranslate nohighlight">\(z\)</span> direction with a strength of <span class="math notranslate nohighlight">\(\mathcal{F}_z = 10^{-5}\)</span> a.u. for the SCF calculation, then calculate the MP2 energy with that result</p></li>
 <li><p>Then the dipole moment <span class="math notranslate nohighlight">\(\mu_z\)</span>
 can be calculated approximately as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-1177fee2-8609-4d77-aa5d-0344907c0926">
-<span class="eqno">(56)<a class="headerlink" href="#equation-1177fee2-8609-4d77-aa5d-0344907c0926" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-eb493935-aacc-4230-8cf9-fdc76756ba89">
+<span class="eqno">(49)<a class="headerlink" href="#equation-eb493935-aacc-4230-8cf9-fdc76756ba89" title="Permalink to this equation">¶</a></span>\[\begin{equation}
   \mu_z = -\frac{\Delta E}{\Delta \mathcal{F}_z} = -\frac{E(\mathcal{F}_z) - E(-\mathcal{F}_z)}{2 \mathcal{F}_z}
 \end{equation}\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF driver for positive field direction</span>
@@ -1532,6 +1540,9 @@ can be calculated approximately as</p></li>
 <span class="o">...</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>If possible/desired, you can also calculate the other dipole components <span class="math notranslate nohighlight">\(\mu_x\)</span> and <span class="math notranslate nohighlight">\(\mu_y\)</span> numerically</p></li>
+</ul>
 </div>
 </div>
 </div>
@@ -1540,7 +1551,7 @@ can be calculated approximately as</p></li>
 <h1>MCSCF<a class="headerlink" href="#mcscf" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ozone">
 <h2>Ozone<a class="headerlink" href="#ozone" title="Permalink to this headline">¶</a></h2>
-<p>Compute the CASSCF energy of ozone with a cc-pvdz basis, using a reasonable active space (that you can motivate). Use the orbital viewer to select the orbitals and at the end of the calculation to check the result. The geometry is provided below:</p>
+<p>Compute the CASSCF energy of ozone with a cc-pVDZ basis, using a reasonable active space (that you can motivate). Use the orbital viewer to select the orbitals and at the end of the calculation to check the result. The geometry is provided below:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">O</span>         <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">0.00000</span>    <span class="mf">0.16276</span>
 <span class="n">O</span>         <span class="mf">0.00000</span>    <span class="mf">1.09078</span>    <span class="mf">0.83863</span>
 <span class="n">O</span>         <span class="mf">0.00000</span>   <span class="o">-</span><span class="mf">1.09078</span>    <span class="mf">0.83863</span>
