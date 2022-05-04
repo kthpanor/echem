@@ -144,6 +144,13 @@ $ conda env list
 
 The activated environment will be marked with an asterisk. Using such an environment enables the local installation of different software packages without interfering with the `base` (default) environment, and can often be used on HPC services where permissions to install programs in the default environment may not be permitted. 
 
+In order to use our orbital viewer, you also need to run the commands:
+
+```
+$ jupyter nbextension install --py --user k3d
+$ jupyter nbextension enable --py --user k3d
+```
+
 You should now be ready to start a Jupyter notebook with the command
 
 ```
