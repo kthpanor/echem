@@ -50,57 +50,6 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 Multiple lists of references are possible but not yet properly implemented.
 
 
-# Course plans:
-
-1. To do
-    - Come up with suitable exercises for your section(s)
-        - Place exercises at end of subchapters/individual pages
-        - PN wants to try that we have solutions just after exercises, for now
-    - MD+TF: continue planning course
-    - Standardize our Notebooks - see `standards.md`
-    - Integrate visualization tools in respective sections
-        - Need to get it to run better... Maybe use static images
-    - Send out e-mail to potential participants (TF+MD)
-    - Meta-lock notebook on week 22, followed by peer review
-    - Idea: echem.org
-
-2. General aspects
-    - Number of participants (10-15)
-    - Expecting participants to install software before
-    - Exercises partially run at HPC resources?
-    - Questionnaires using Google Forms (?)
-    - Might move Wednesday to Thursday (time to reflect, Mickael's schedule)
-    - 	Check with Mikael and Markus
-    - Worth 1.5 points
-
-3. Schedule: 2/5 - 4/5
-    - 2/5: Introduction and theory
-        - 9:00-10:00 Introduction, initial questionnaire (experiences, area of expertise, ...) (TF)
-        - 10:00-12:00 SCF block (PN, ZR)
-        - 13:00-15:00 MP2 block (IB, XL, MH)
-        - 15:00-16:00 Wrap-up, block division (TF)
-    - 3/5: Theory day
-        - 11:00-12:00 Potential energy surface (gradients, Hessians, coordinates, IM) (YM, IB)
-        - 13:00-16:00 Group work
-        - 16:00-17:00 Wrap-up, presentations
-        - 18:00 Dinner at Cyprus(?)
-    - 4/5: Tutorial day (Wednesday)
-        - 9:00-12:00 Excited states: TDDFT (AD), ADC (MH), exciton coupling (XL, last)
-        - 13:00-16:00 Group work
-        - 16:00-17:00 Wrap-up, end questionnaire
-        
-4. Blocks and main responsible
-    - Theory
-        - MCSCF (MD)
-        - Structure optimization (IEB+YMR)
-        - Force field parameterization, coordinate transformation, and interpolated PES (IEB+YMR)
-        - TDSCF [missing TDDFT (with AD), exercises] (TF+PN)
-        - ADC (MH)
-    - Tutorials
-        - UV/vis (MD+TF)
-        - IR/Raman (IEB+MH)
-        - X-ray [mainly missing exercises] (MD+TF)
-
 # General status:
 0. Intro
 	- Missing: description of Respondo (AD)
