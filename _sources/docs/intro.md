@@ -1,16 +1,10 @@
 # Getting started
+
 ## Our vision
 
-> For the things we have to learn before we can do them, we learn by doing them.
->
-> -Aristotle
+Quantum chemistry is a powerful tool. It is now possible to model complex chemical processes even on a laptop getting insights into matter at its fundamental scale.
 
-Quantum chemistry is a powerful tool.
-It is now possible to model complex chemical processes even on a laptop
-getting insights into matter at its fundamental scale.
-
-But quantum chemistry is also very complex. Answering a chemical question requires selecting parameters among a wide variety of choices.
-Choosing a model system, an electronic structure method, a basis set, a set of properties, and a wide array of parameters which can affect the results in small but sometimes meaningful way... It can be a very daunting task, even for veterans of the field.
+But quantum chemistry is also very complex. Answering a chemical question requires selecting parameters among a wide variety of choices. Choosing a model system, an electronic structure method, a basis set, a set of properties, and a wide array of parameters which can affect the results in small but sometimes meaningful way... It can be a very daunting task, even for veterans of the field.
 
 ```{figure} /img/cover.png
 :scale: 100%
