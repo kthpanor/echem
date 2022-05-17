@@ -6,15 +6,9 @@ Quantum chemistry is a powerful tool. It is now possible to model complex chemic
 
 But quantum chemistry is also very complex. Answering a chemical question requires selecting parameters among a wide variety of choices. Choosing a model system, an electronic structure method, a basis set, a set of properties, and a wide array of parameters which can affect the results in small but sometimes meaningful way... It can be a very daunting task, even for veterans of the field.
 
-```{figure} /img/cover.png
-:scale: 100%
-:align: left
-```
-
 Similarly, for those who wish to get a deeper understanding of a method, going through the pages of equation often riddled with inconsistent notations and formulations is very challenging. And at the end, the link between the equation and the computer implementation found in existing softwares can be vague at best.
 
 We believe that a core issue is that humans are not good at learning in abstract terms. We can get very far with a lecture or a textbook, but we will never build as much intuition about how a clock work as by simply breaking one apart and rebuilding it from scratch.
-
 
 This is exactly the aim of this page, allowing a hands-on approach to computational chemistry.
 Together we will dismantle the black box that a computational chemistry code often seems to be, 
@@ -76,13 +70,7 @@ Gator is an open source quantum chemistry software which uses real and complex p
 
 As illustrated in the figure, Gator requires a Hartree--Fock reference state that can be provided from VeloxChem. It then uses this reference state to generate perturbative corrections (ground state) and construct the ADC matrix at a specified order of perturbation theory (excited states). The excited states and related transition properties (excitation energies, oscillator strengths, absorption cross-sections, etc.) are obtained by diagonalizing the ADC matrix.
 
-
-#### Adcc
-
 [Adc-connect](https://adc-connect.org), or adcc for short, is a Python-based module of Gator which enables interactive ADC calculations via the jupyter notebook. Adcc can also be used as a stand-alone code, taking the SCF referece state from veloxchem, pycf or psi4. The code capabilities include UV-vis, X-ray absorption and X-ray emission calculations at variuos ADC orders, up to ADC(3). Various excited state properties are available, including transition dipole moments, transition amplitudes, excited state dipole moments, and excited state gradients (to be included in the next release).
-
-#### Respondo
-#### HPC-QC
 
 The HPC-QC module of Gator focuses on large-scale correlated calculations on HPC clusters. Based on Fock matrix-driven integrals transformation, the HPC-QC module enables MP2 and ADC(2) calculations in a fully distributed and parallel manner that makes efficient use of both the computational power and the aggregated memory on HPC systems. As such, ADC(2) calculations can be carried out efficiently on cluster nodes with only moderate amounts of memory. The HPC-QC module is written in pure Python.
 
@@ -98,7 +86,6 @@ It currently implements a general configuration interaction solver and a multico
 It is also written in a Python/C++ layered fashion and interfaced on top of VeloxChem. It fits in the same design idea of offering a powerful platform for high performance scientific computing, as well as a platform for teaching and developing new methods. Some documentation is available at [https://mgdelcey.github.io/mtpman/](https://mgdelcey.github.io/mtpman/)
 
 
-<!-- #region -->
 ## Other tools
 
 (sec:geometric)=
@@ -109,9 +96,6 @@ It is also written in a Python/C++ layered fashion and interfaced on top of Velo
 
 The workflow integration between QM and MM/MD
 
-<!-- #endregion -->
-
-<!-- #region -->
 ## Installation
 
 ### Required software packages
@@ -195,4 +179,3 @@ $ jupyter-book build .
 ```
 
 ...and you can see the resulting book by navigating to `/_build/html` and opening `index.html`.
-<!-- #endregion -->

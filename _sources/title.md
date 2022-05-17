@@ -5,7 +5,7 @@
 > For the things we have to learn before we can do them, we learn by doing them.
 > -[*Aristotle*](https://en.wikipedia.org/wiki/Aristotle)
 
-```{figure} /img/echem-cover-2fkw.png
+```{figure} /img/echem-cover-correct-ret.png
 :scale: 23%
 :align: center
 ```
