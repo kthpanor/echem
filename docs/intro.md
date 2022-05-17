@@ -92,13 +92,18 @@ It is also written in a Python/C++ layered fashion and interfaced on top of Velo
 ### geomeTRIC
 [geomeTRIC](https://github.com/leeping/geomeTRIC) is a geometry optimization python-based software which makes ues of the translation-rotation internal coordinates (TRIC) system. Other coordinate systems, such as delocalized internal coordinates (DLC), are also available. geomeTRIC requires an external software (such as Veloxchem or Gator) to provide the energy, gradient, and possibly Hessian, which are then used to carry out ground- or excited-state geometry optimizations, as well as transition state searches and vibrational analyses. Veloxchem includes optimization enegines which call geomeTRIC to perform structure relaxations in the ground or excited state. Additionally, analytical Hessians (or numerical Hessians based on the analytical gradient) are provided to geomeTRIC to determine vibrational frequencies and normal modes.
 
-### PyFrame
 
-The workflow integration between QM and MM/MD
+### xTB
+
+The [extended tight-binding (xTB)](https://xtb-docs.readthedocs.io/en/latest/contents.html) program package uses a semi-empirical model for rapid calculation of structures and noncovalent binding energies. 
+
+
+### OpenMM
+
+[OpenMM](https://openmm.org/) is a high-performance toolkit for molecular simulation, with a focus on extensibility and flexibility.
+
 
 ## Installation
-
-### Required software packages
 
 Conda is an open-source package and environment management system that runs on Windows, MacOS, and Linux. The conda repository contains a large number of open-source certified packages enabling scientific work. It is recommended that you install the minimal installer for conda named [miniconda](https://docs.conda.io/en/latest/miniconda.html) that includes only conda, Python, the packages they depend on, and a small number of other useful packages, including pip, zlib and a few others. 
 
@@ -145,24 +150,6 @@ which should open in your default web browser. With this, the various modules in
 Jupyter only has permission to go down in the file tree from where it was initiated, so make sure to initiate it sufficiently high up.
 ```
 
-Alternatively, if not all the software packages are needed or desired, you can install only a few specific ones using `conda`. First, create and activate an (empty) environment
-
-```
-$ conda create -n echem
-$ conda activate echem
-```
-
-
-
-Then install the desired software packages, using instructions found on the respective homepages, or usually found when searching th [anaconda](https://anaconda.org/) webpage. For example, in order to install `veloxchem`:
-
-```
-$ conda install -c veloxchem veloxchem 
-```
-
-```{note}
-You can install packages while creating the environment, if so desired.
-```
 
 ### Compiling a local eChem book
 
