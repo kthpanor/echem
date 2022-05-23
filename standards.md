@@ -1,4 +1,3 @@
-<!-- #region -->
 ## Make the book as consistent as reasonable
 
 Need to be a bit flexible, as full consistency is not always preferable
@@ -9,17 +8,6 @@ Need to be a bit flexible, as full consistency is not always preferable
 - Add any points you think we need to standardize
 - Figure out reasonable linking to other parts of book
 - Figure out cheap(er) visualizations
-
-
-### Exercises
-
-- As its own subsection at the end of each section, for example:
-    - X-ray spectroscopy
-        - Calculating
-        - Analysis
-        - Exercises
-
-- Solutions on the same page (for starters - might change)
 
 
 ### Equations
@@ -110,5 +98,4 @@ year = {1993}
 - **Bold** or *italics* for introducing terms
 - Link between sections
 - Static images and Python cells if too expensive
-
-<!-- #endregion -->
+- Figures in png 300 dpi or svg
