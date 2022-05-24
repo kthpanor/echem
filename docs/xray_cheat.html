@@ -51,8 +51,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -933,7 +931,16 @@ const thebe_selector_output = ".output, .cell_output"
 <p>While it is not recommended for any production calculations, a unrelaxed estimate of ionization energies can be obtained from <a class="reference internal" href="xray_calc.html#sec-xray-calc-iekoop"><span class="std std-ref">Koopmans’ theorem</span></a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="c1"># for vlx</span>
+<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
+<span class="c1"># au to eV conversion factor</span>
+<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
+
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
 <span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
@@ -965,7 +972,11 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Substantially improved ionization energies are obtained using <a class="reference internal" href="xray_calc.html#sec-xray-calc-dscf"><span class="std std-ref"><span class="math notranslate nohighlight">\(\Delta\)</span>-methods</span></a>, where the energy difference of the ground state and core-hole state is used to estimate the IE:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span>
+
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
 <span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
@@ -1004,10 +1015,15 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3327121e-12  2S+1 = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3415939e-12  2S+1 = 1
 converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
-E(UMP2) = -76.113048395549  E_corr = -0.129178012829711
-E(UMP2) = -56.1523709631034  E_corr = -0.076892016016965
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.113048395549  E_corr = -0.129178012829712
+E(UMP2) = -56.1523709631035  E_corr = -0.076892016016965
 HF ionization energy: 541.73 eV
 MP2 ionzation energy: 543.16 eV
 </pre></div>
@@ -1023,7 +1039,10 @@ MP2 ionzation energy: 543.16 eV
 <p>Absorption spectra can be calculated using <a class="reference internal" href="xray_calc.html#sec-xray-calc-cvsadc"><span class="std std-ref">CVS-ADC</span></a>:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">gator</span>
+
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
 <span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
@@ -1083,7 +1102,13 @@ MP2 ionzation energy: 543.16 eV
 <p>With <a class="reference internal" href="xray_calc.html#sec-xray-calc-xesadc"><span class="std std-ref">ADC</span></a>:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span>
+<span class="kn">import</span> <span class="nn">adcc</span>
+
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
 <span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
@@ -1117,16 +1142,21 @@ MP2 ionzation energy: 543.16 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3389294e-12  2S+1 = 1
-converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.331824e-12  2S+1 = 1
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
 Starting adc2  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
-  1     8       0.77768   1.6s  [-19.29082067 -19.19940205 -18.96181907 -18.3637012 ]
-  2    16     0.0010764  214ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
-  3    24    4.4301e-07  302ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
+  1     8       0.77768   1.8s  [-19.29082067 -19.19940205 -18.96181907 -18.3637012 ]
+  2    16     0.0010764  194ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
+  3    24    4.4301e-07  215ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             2s 114ms
+    Total solver time:             2s 221ms
 </pre></div>
 </div>
 </div>
