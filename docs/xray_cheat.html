@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -243,6 +245,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="operators.html">
      Operators and matrix elements
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="spin.html">
+     Electron spin
     </a>
    </li>
    <li class="toctree-l2">
@@ -874,56 +881,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li><p>Maybe change to static calculations, instead</p></li>
 </ul>
 <p>Here we consider the calculation of X-ray spectra of gaseous water, using different methods.</p>
-<div class="cell tag_hide-input tag_remove-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-
-<span class="c1"># QC software suites and functionalities</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">gator</span>
-<span class="kn">import</span> <span class="nn">adcc</span>
-<span class="c1">#from veloxchem.rsplinabscross import LinearAbsorptionCrossSection</span>
-
-<span class="c1"># for vlx</span>
-<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-
-<span class="c1"># au to eV conversion factor</span>
-<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
-
-<span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Lorentzian broadening function</span>
-<span class="sd">    </span>
-<span class="sd">    Call: xi,yi = lorentzian(energies, intensities, start energy, end energy, energy step, gamma)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
-            <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
-
-<span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Gaussian broadening function</span>
-<span class="sd">    </span>
-<span class="sd">    Call: xi,yi = gaussian(energies, intensities, start energy, end energy, energy step, gamma)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span> 
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="ies-and-xps">
 <h2>IEs and XPS<a class="headerlink" href="#ies-and-xps" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="koopmans-theorem">
@@ -933,9 +890,11 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+
 <span class="c1"># for vlx</span>
 <span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
 <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
 <span class="c1"># au to eV conversion factor</span>
 <span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
@@ -947,21 +906,24 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Create veloxchem mol and basis objects</span>
-<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span> 
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span> 
+<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
 <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies</span>
-<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1s E from Koopmans</span><span class="se">\&#39;</span><span class="s1"> theorem:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1s E from Koopmans&#39; theorem:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1s E from Koopmans&#39; theorem: -559.5 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+* Warning * Setting MKL_THREADING_LAYER to &quot;GNU&quot;.
+1s E from Koopmans&#39; theorem: -559.5 eV
 </pre></div>
 </div>
 </div>
@@ -972,9 +934,10 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Substantially improved ionization energies are obtained using <a class="reference internal" href="xray_calc.html#sec-xray-calc-dscf"><span class="std std-ref"><span class="math notranslate nohighlight">\(\Delta\)</span>-methods</span></a>, where the energy difference of the ground state and core-hole state is used to estimate the IE:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">scf</span>
 
 <span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
@@ -985,7 +948,7 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -998,7 +961,7 @@ const thebe_selector_output = ".output, .cell_output"
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
 <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    
+
 <span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
 <span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
@@ -1009,20 +972,26 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="n">mp_ion</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MP2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HF ionization energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MP2 ionzation energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">mp_ion</span><span class="o">.</span><span class="n">e_tot</span> <span class="o">-</span> <span class="n">mp_res</span><span class="o">.</span><span class="n">e_tot</span><span class="p">),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;HF ionization energy:&quot;</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;MP2 ionzation energy:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">mp_ion</span><span class="o">.</span><span class="n">e_tot</span> <span class="o">-</span> <span class="n">mp_res</span><span class="o">.</span><span class="n">e_tot</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3415939e-12  2S+1 = 1
-converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827192  &lt;S^2&gt; = 6.3353767e-12  2S+1 = 1
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.113048395549  E_corr = -0.129178012829712
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
+E(UMP2) = -76.1130483955489  E_corr = -0.129178012829713
 E(UMP2) = -56.1523709631035  E_corr = -0.076892016016965
 HF ionization energy: 541.73 eV
 MP2 ionzation energy: 543.16 eV
@@ -1039,8 +1008,8 @@ MP2 ionzation energy: 543.16 eV
 <p>Absorption spectra can be calculated using <a class="reference internal" href="xray_calc.html#sec-xray-calc-cvsadc"><span class="std std-ref">CVS-ADC</span></a>:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">gator</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gator</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
@@ -1050,13 +1019,15 @@ MP2 ionzation energy: 543.16 eV
 
 <span class="c1"># Construct structure and basis objects</span>
 <span class="n">struct</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
-<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cvs-adc2x&#39;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span>
+    <span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1066,7 +1037,7 @@ MP2 ionzation energy: 543.16 eV
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print information on eigenstates</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_res</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="c1"># Convolute using functionalities available in gator and adcc</span>
 <span class="n">adc_res</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1086,7 +1057,7 @@ MP2 ionzation energy: 543.16 eV
 +--------------------------------------------------------------+
 </pre></div>
 </div>
-<img alt="../_images/xray_cheat_8_1.png" src="../_images/xray_cheat_8_1.png" />
+<img alt="../_images/xray_cheat_7_1.png" src="../_images/xray_cheat_7_1.png" />
 </div>
 </div>
 </div>
@@ -1102,11 +1073,12 @@ MP2 ionzation energy: 543.16 eV
 <p>With <a class="reference internal" href="xray_calc.html#sec-xray-calc-xesadc"><span class="std std-ref">ADC</span></a>:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">copy</span>
+
 <span class="kn">import</span> <span class="nn">adcc</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">scf</span>
 
 <span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
@@ -1117,7 +1089,7 @@ MP2 ionzation energy: 543.16 eV
 <span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -1137,26 +1109,21 @@ MP2 ionzation energy: 543.16 eV
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Perform ADC calculation</span>
-<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.331824e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3380412e-12  2S+1 = 1
+converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
 Starting adc2  Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
   1     8       0.77768   1.8s  [-19.29082067 -19.19940205 -18.96181907 -18.3637012 ]
-  2    16     0.0010764  194ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
-  3    24    4.4301e-07  215ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
+  2    16     0.0010764  219ms  [-19.44427093 -19.36689642 -19.16826546 -18.57947501]
+  3    24    4.4301e-07  582ms  [-19.44429764 -19.3669284  -19.16831914 -18.57954987]
 === Converged ===
     Number of matrix applies:    24
-    Total solver time:             2s 221ms
+    Total solver time:             2s 656ms
 </pre></div>
 </div>
 </div>
@@ -1166,7 +1133,7 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print information on eigenstates</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_xes</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="c1"># Convolute using functionalities available in gator and adcc</span>
 <span class="n">adc_xes</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1186,7 +1153,7 @@ Niter n_ss  max_residual  time  Ritz values
 +--------------------------------------------------------------+
 </pre></div>
 </div>
-<img alt="../_images/xray_cheat_11_1.png" src="../_images/xray_cheat_11_1.png" />
+<img alt="../_images/xray_cheat_10_1.png" src="../_images/xray_cheat_10_1.png" />
 </div>
 </div>
 </div>

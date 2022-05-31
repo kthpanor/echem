@@ -248,6 +248,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="spin.html">
+     Electron spin
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="integrals.html">
      Integral evaluation
     </a>
@@ -739,8 +744,8 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ie-s-from-koopmans-theorem">
-     IE:s from Koopmans’ theorem
+    <a class="reference internal nav-link" href="#ies-from-koopmans-theorem">
+     IEs from Koopmans’ theorem
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -749,11 +754,12 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ie-s-from-delta-textrm-scf">
+    <a class="reference internal nav-link" href="#ie-s-from-deltascf">
      IE:s from
      <span class="math notranslate nohighlight">
-      \(\Delta\textrm{SCF}\)
+      \(\Delta\)
      </span>
+     SCF
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -853,8 +859,8 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ie-s-from-koopmans-theorem">
-     IE:s from Koopmans’ theorem
+    <a class="reference internal nav-link" href="#ies-from-koopmans-theorem">
+     IEs from Koopmans’ theorem
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -863,11 +869,12 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ie-s-from-delta-textrm-scf">
+    <a class="reference internal nav-link" href="#ie-s-from-deltascf">
      IE:s from
      <span class="math notranslate nohighlight">
-      \(\Delta\textrm{SCF}\)
+      \(\Delta\)
      </span>
+     SCF
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -957,49 +964,61 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard Python modules and functions</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 
-<span class="c1"># QC software suites and functionalities</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">cc</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">gator</span>
 <span class="kn">import</span> <span class="nn">adcc</span>
-<span class="c1">#from veloxchem.rsplinabscross import LinearAbsorptionCrossSection</span>
+<span class="kn">import</span> <span class="nn">gator</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+
+<span class="c1"># QC software suites and functionalities</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">cc</span><span class="p">,</span> <span class="n">gto</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">scf</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+
+<span class="c1"># from veloxchem.rsplinabscross import LinearAbsorptionCrossSection</span>
 
 <span class="c1"># for vlx</span>
 <span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
 <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
 
 <span class="c1"># au to eV conversion factor</span>
 <span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
 
+
 <span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Lorentzian broadening function</span>
-<span class="sd">    </span>
-<span class="sd">    Call: xi,yi = lorentzian(energies, intensities, start energy, end energy, energy step, gamma)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
+
+<span class="sd">    Call: xi,yi = lorentzian(energies, intensities, start energy,</span>
+<span class="sd">                                    end energy, energy step, gamma)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">)</span>
+    <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
-            <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
+            <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">/</span> <span class="p">((</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span>
+
 
 <span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gaussian broadening function</span>
-<span class="sd">    </span>
+
 <span class="sd">    Call: xi,yi = gaussian(energies, intensities, start energy, end energy, energy step, gamma)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span> 
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">)</span>
+    <span class="n">yi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>
+            <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span>
 </pre></div>
 </div>
 </div>
@@ -1007,8 +1026,8 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="section" id="x-ray-photoemission-spectroscopy">
 <span id="sec-xray-calc-xps"></span><h2>X-ray photoemission spectroscopy<a class="headerlink" href="#x-ray-photoemission-spectroscopy" title="Permalink to this headline">¶</a></h2>
 <p>In XPS the photoemission of electrons is measured, yielding information on core-electron binding energies. Here we focus on the calculation of ionization energies (IE:s), from which the isotropic photoemission spectrum is formed by giving each IE the same intensity and then broadening with an appropriate convolution function. It is possible to go beyond such a simple approach using Dyson orbitals, but it typically does not make much of a difference <span id="id2">[<a class="reference internal" href="refs.html#id28" title="M. L. Vidal, A. I. Krylov, and S. Coriani. Dyson orbitals within the fc-CVS-EOM-CCSD framework: theory and application to x-ray photoelectron spectroscopy of ground and excited states. Phys. Chem. Chem. Phys., 22:2693, 2019. URL: https://doi.org/10.1039/C9CP03695D.">VKC19</a>]</span>.</p>
-<div class="section" id="ie-s-from-koopmans-theorem">
-<span id="sec-xray-calc-iekoop"></span><h3>IE:s from Koopmans’ theorem<a class="headerlink" href="#ie-s-from-koopmans-theorem" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="ies-from-koopmans-theorem">
+<span id="sec-xray-calc-iekoop"></span><h3>IEs from Koopmans’ theorem<a class="headerlink" href="#ies-from-koopmans-theorem" title="Permalink to this headline">¶</a></h3>
 <p>A simple model for calculating ionization energies and electron affinities is by using Koopmans’ theorem, where they are estimated from the MO energies. For water, we then obtain a <span class="math notranslate nohighlight">\(1s\)</span> IE of:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1019,16 +1038,16 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Create veloxchem mol and basis objects</span>
-<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span> 
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span> 
+<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
 <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies</span>
-<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1s E from Koopmans</span><span class="se">\&#39;</span><span class="s1"> theorem:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1s E from Koopmans&#39; theorem:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1077,15 +1096,15 @@ C_{cj}^{old}.
 <p>We currently use <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> for the calculations involving explicit core-holes, as <code class="docutils literal notranslate"><span class="pre">veloxchem</span></code> presently lacks MOM.</p>
 </div>
 </div>
-<div class="section" id="ie-s-from-delta-textrm-scf">
-<span id="sec-xray-calc-dscf"></span><h3>IE:s from <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span><a class="headerlink" href="#ie-s-from-delta-textrm-scf" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="ie-s-from-deltascf">
+<span id="sec-xray-calc-dscf"></span><h3>IE:s from <span class="math notranslate nohighlight">\(\Delta\)</span>SCF<a class="headerlink" href="#ie-s-from-deltascf" title="Permalink to this headline">¶</a></h3>
 <p>The IE of water using <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span> is now computed as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -1098,14 +1117,18 @@ C_{cj}^{old}.
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
 <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    
+
 <span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
 <span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ionization energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1130,7 +1153,7 @@ Ionization energy: 541.73 eV
 <span class="n">mp_ion</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MP2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ionization energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">mp_ion</span><span class="o">.</span><span class="n">e_tot</span> <span class="o">-</span> <span class="n">mp_res</span><span class="o">.</span><span class="n">e_tot</span><span class="p">),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">mp_ion</span><span class="o">.</span><span class="n">e_tot</span> <span class="o">-</span> <span class="n">mp_res</span><span class="o">.</span><span class="n">e_tot</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1147,7 +1170,7 @@ Ionization energy: 543.16 eV
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform unrestricted SCF calculation</span>
 <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>
+<span class="n">scf_gs</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Copy molecular orbitals</span>
@@ -1156,15 +1179,19 @@ Ionization energy: 543.16 eV
 
 <span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
 <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    
+
 <span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
 <span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
 <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ionization energy:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1193,27 +1220,27 @@ Ionization energy: 542.47 eV
 <h3>Spectra from <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span><a class="headerlink" href="#spectra-from-delta-textrm-scf" title="Permalink to this headline">¶</a></h3>
 <p>The X-ray photoemission spectrum can be formed by computing all relavant core-electron binding energies (IE:s), giving each unique ionization equal intensity, and broadening over the result with an appropriate convolution function.</p>
 <p>We here consider ethyl trifluoroacetate( (CF<span class="math notranslate nohighlight">\(_3\)</span>-CO-O-CH<span class="math notranslate nohighlight">\(_2\)</span>-CH<span class="math notranslate nohighlight">\(_3\)</span>), also known as the <a class="reference external" href="https://doi.org/10.1016/j.elspec.2012.05.009">‘ESCA’ molecule</a>, which possess very illustrative shifts in XPS features of the carbon <span class="math notranslate nohighlight">\(K\)</span>-edge due to interactions with the very electronegative oxygen and fluorine atoms. We calculate the four carbon 1s IE:s with <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">esca_xyz</span>   <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">C         1.1183780041   -0.3449927563    0.0140172822</span>
-<span class="s1">C         0.2599020293    0.9430366372   -0.0248385056</span>
-<span class="s1">F         2.4019839124   -0.0408200726   -0.0368443870</span>
-<span class="s1">F         0.8399255955   -1.1560630574   -1.0169777359</span>
-<span class="s1">F         0.8945563482   -1.0267696528    1.1485539196</span>
-<span class="s1">O         0.7954196415    2.0187110930    0.0011424145</span>
-<span class="s1">O        -1.0675509573    0.8144007049   -0.0614767265</span>
-<span class="s1">C        -1.7486063992   -0.4602333713   -0.1739210991</span>
-<span class="s1">C        -3.1986940727   -0.1850294900    0.1302033614</span>
-<span class="s1">H        -1.3268717284   -1.1720377773    0.5289059043</span>
-<span class="s1">H        -1.6185520565   -0.8344576449   -1.1859838788</span>
-<span class="s1">H        -3.3116641442    0.1959612359    1.1419001202</span>
-<span class="s1">H        -3.7716619472   -1.1057672384    0.0380096706</span>
-<span class="s1">H        -3.6012985602    0.5468300237   -0.5651778685            </span>
-<span class="s1">&#39;&#39;&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">esca_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">C         1.1183780041   -0.3449927563    0.0140172822</span>
+<span class="s2">C         0.2599020293    0.9430366372   -0.0248385056</span>
+<span class="s2">F         2.4019839124   -0.0408200726   -0.0368443870</span>
+<span class="s2">F         0.8399255955   -1.1560630574   -1.0169777359</span>
+<span class="s2">F         0.8945563482   -1.0267696528    1.1485539196</span>
+<span class="s2">O         0.7954196415    2.0187110930    0.0011424145</span>
+<span class="s2">O        -1.0675509573    0.8144007049   -0.0614767265</span>
+<span class="s2">C        -1.7486063992   -0.4602333713   -0.1739210991</span>
+<span class="s2">C        -3.1986940727   -0.1850294900    0.1302033614</span>
+<span class="s2">H        -1.3268717284   -1.1720377773    0.5289059043</span>
+<span class="s2">H        -1.6185520565   -0.8344576449   -1.1859838788</span>
+<span class="s2">H        -3.3116641442    0.1959612359    1.1419001202</span>
+<span class="s2">H        -3.7716619472   -1.1057672384    0.0380096706</span>
+<span class="s2">H        -3.6012985602    0.5468300237   -0.5651778685            </span>
+<span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">esca_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -1222,9 +1249,9 @@ Ionization energy: 542.47 eV
 
 <span class="c1"># Perform core-hole calculation for each carbon atom (MOs 5-8)</span>
 <span class="n">esca_ies</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]:</span>
     <span class="c1"># Copy molecular orbitals</span>
-    <span class="n">mo0</span>  <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+    <span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
     <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
     <span class="c1"># Create 1s core-hole by setting alpha_n population to zero</span>
     <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1233,7 +1260,7 @@ Ionization energy: 542.47 eV
     <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
     <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
     <span class="c1"># Append resulting IE:s to an array</span>
-    <span class="n">esca_ies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()))</span>
+    <span class="n">esca_ies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()))</span>
 </pre></div>
 </div>
 <div class="cell docutils container">
@@ -1242,13 +1269,15 @@ Ionization energy: 542.47 eV
 <span class="n">esca_ies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">302.187</span><span class="p">,</span> <span class="mf">299.362</span><span class="p">,</span> <span class="mf">295.405</span><span class="p">,</span> <span class="mf">293.277</span><span class="p">]</span>
 
 <span class="c1"># Broaden with a Lorenztian and plot</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">esca_ies</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">esca_ies</span><span class="p">)))</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.5</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">esca_ies</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">esca_ies</span><span class="p">)))</span>
+<span class="c1"># Lorentzian function takes energies, intensities, energy range, step-size, and a broadening parameter</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Photon energy [eV]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Intensity [arb. units]&quot;</span><span class="p">)</span>
-<span class="c1"># Lorentzian function takes energies, intensities, energy range, step-size, and a broadening parameter</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1303,13 +1332,15 @@ Ionization energy: 542.47 eV
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct structure and basis objects</span>
 <span class="n">struct</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
-<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cvs-adc2x&#39;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span>
+    <span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1440,9 +1471,7 @@ Ionization energy: 542.47 eV
                (   1 O   2p0 :     0.22) (   2 H   1s  :    -0.84) (   2 H   2s  :     0.55)                              
                (   3 H   1s  :    -0.84) (   3 H   2s  :     0.55)                                                        
                                                                                                                           
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF converged in 4 iterations.
+SCF converged in 4 iterations.
 Total Energy: -75.9838703758 au
 Starting cvs-adc2x singlet Jacobi-Davidson ...
 Niter n_ss  max_residual  time  Ritz values
@@ -1468,18 +1497,22 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print information on eigenstates</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_res</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="c1"># Convolute using functionalities available in gator and adcc</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Built-in broadening&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Built-in broadening&quot;</span><span class="p">)</span>
 <span class="n">adc_res</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">()</span>
 
 <span class="c1"># Manually convoluted using excitation energies and oscillator strengths</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Custom broadening (0.5 eV)&#39;</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span>  <span class="o">=</span> <span class="n">au2ev</span><span class="o">*</span><span class="n">adc_res</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">533</span><span class="p">,</span><span class="mi">543</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.5</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Custom broadening (0.5 eV)&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">oscillator_strength</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">533</span><span class="p">,</span> <span class="mi">543</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Photon energy [eV]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cross section [au]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1526,57 +1559,61 @@ Niter n_ss  max_residual  time  Ritz values
 
 <span class="c1"># SCF settings and SCF optimization</span>
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
-<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;b3lyp&#39;</span><span class="p">}</span>
+<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;conv_thresh&quot;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;b3lyp&quot;</span><span class="p">}</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Define spectrum region to be resolved</span>
-<span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">515.0</span><span class="p">,</span><span class="mf">525.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span><span class="o">/</span><span class="n">au2ev</span>
+<span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">515.0</span><span class="p">,</span> <span class="mf">525.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">/</span> <span class="n">au2ev</span>
 <span class="n">freqs_str</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">freqs</span><span class="p">]</span>
 
 <span class="c1"># Calculate the response</span>
-<span class="n">cpp_prop</span> <span class="o">=</span> <span class="n">LinearAbsorptionCrossSection</span><span class="p">({</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">freqs_str</span><span class="p">),</span> <span class="s1">&#39;damping&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="o">/</span><span class="n">au2ev</span><span class="p">},</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">cpp_prop</span> <span class="o">=</span> <span class="n">LinearAbsorptionCrossSection</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;frequencies&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">freqs_str</span><span class="p">),</span> <span class="s2">&quot;damping&quot;</span><span class="p">:</span> <span class="mf">0.3</span> <span class="o">/</span> <span class="n">au2ev</span><span class="p">},</span> <span class="n">method_settings</span>
+<span class="p">)</span>
 <span class="n">cpp_prop</span><span class="o">.</span><span class="n">init_driver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">cpp_prop</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 
 <span class="c1"># Extract the imaginary part of the complex response function and convert to absorption cross section</span>
 <span class="n">sigma</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">freqs</span><span class="p">:</span>
-    <span class="n">axx</span> <span class="o">=</span> <span class="o">-</span> <span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
-    <span class="n">ayy</span> <span class="o">=</span> <span class="o">-</span> <span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
-    <span class="n">azz</span> <span class="o">=</span> <span class="o">-</span> <span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
+    <span class="n">axx</span> <span class="o">=</span> <span class="o">-</span><span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s2">&quot;response_functions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
+    <span class="n">ayy</span> <span class="o">=</span> <span class="o">-</span><span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s2">&quot;response_functions&quot;</span><span class="p">][(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
+    <span class="n">azz</span> <span class="o">=</span> <span class="o">-</span><span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s2">&quot;response_functions&quot;</span><span class="p">][(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
     <span class="n">alpha_bar</span> <span class="o">=</span> <span class="p">(</span><span class="n">axx</span> <span class="o">+</span> <span class="n">ayy</span> <span class="o">+</span> <span class="n">azz</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span>
     <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="n">alpha_bar</span> <span class="o">/</span> <span class="mf">137.035999</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Resulting spectra can be plotted as raw, or splined for smoother figures:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make figure with panels of 3:1 width</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 
 <span class="c1"># Raw results for the full region</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="s1">&#39;bx-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;bx-&quot;</span><span class="p">)</span>
 
 <span class="c1"># Raw results for a zoomed-in region</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="s1">&#39;bx-&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">519.5</span><span class="p">,</span><span class="mf">520.5</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;bx-&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">519.5</span><span class="p">,</span> <span class="mf">520.5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">))</span>
 
 <span class="c1"># Raw and splined spectra for the full region</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="s1">&#39;bx&#39;</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">),</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s1">&#39;Raw&#39;</span><span class="p">,</span><span class="s1">&#39;Splined&#39;</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;bx&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s2">&quot;Raw&quot;</span><span class="p">,</span> <span class="s2">&quot;Splined&quot;</span><span class="p">))</span>
 
 <span class="c1"># Raw and splined spectra for a zoomed-in region</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="n">freqs</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="s1">&#39;bx&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">519.5</span><span class="p">,</span><span class="mf">520.5</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;bx&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">519.5</span><span class="p">,</span> <span class="mf">520.5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1620,7 +1657,7 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -1640,7 +1677,7 @@ Niter n_ss  max_residual  time  Ritz values
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Perform ADC calculation</span>
-<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1676,18 +1713,22 @@ Niter n_ss  max_residual  time  Ritz values
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print information on eigenstates</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_xes</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="c1"># Convolute using functionalities available in gator and adcc</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Built-in broadening [note negative energies]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Built-in broadening [note negative energies]&quot;</span><span class="p">)</span>
 <span class="n">adc_xes</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">()</span>
 
 <span class="c1"># Convoluted using information on excitation energies and oscillator strengths</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Custom broadening&#39;</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_xes</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_xes</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">519</span><span class="p">,</span><span class="mi">531</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.5</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Custom broadening&quot;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xes</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_xes</span><span class="o">.</span><span class="n">oscillator_strength</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">519</span><span class="p">,</span> <span class="mi">531</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Photon energy [eV]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cross section [au]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1742,42 +1783,47 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 
 <span class="c1"># SCF settings and calculation</span>
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
-<span class="n">method_settings</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;b3lyp&#39;</span><span class="p">}</span>
+<span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;conv_thresh&quot;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;b3lyp&quot;</span><span class="p">}</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies and number of occupied MOs</span>
-<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+<span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Occupied MO energies:&#39;</span><span class="p">,</span><span class="n">au2ev</span><span class="o">*</span><span class="n">orbital_energies</span><span class="p">[:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Occupied MO energies:&quot;</span><span class="p">,</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">orbital_energies</span><span class="p">[:</span><span class="n">nocc</span><span class="p">])</span>
 
 <span class="c1"># Define probed core MO and calculate energy differences</span>
 <span class="n">n_core</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">energy_diff</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">n_mo</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n_mo</span> <span class="o">!=</span> <span class="n">n_core</span><span class="p">:</span>
-        <span class="n">energy_diff</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span><span class="o">*</span><span class="p">(</span><span class="n">orbital_energies</span><span class="p">[</span><span class="n">n_mo</span><span class="p">]</span><span class="o">-</span><span class="n">orbital_energies</span><span class="p">[</span><span class="n">n_core</span><span class="p">]))</span>
+        <span class="n">energy_diff</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">orbital_energies</span><span class="p">[</span><span class="n">n_mo</span><span class="p">]</span> <span class="o">-</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="n">n_core</span><span class="p">]))</span>
 
 <span class="c1"># Extract MO coefficients</span>
-<span class="n">mo_C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span>
-         
+<span class="n">mo_C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+
 <span class="c1"># Load drivers for transition dipole moment</span>
 <span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
 
 <span class="c1"># Calculated transition dipole moments and convert to MO basis</span>
 <span class="n">dipole_matrices</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-<span class="n">x_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">();</span> <span class="n">x_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
-<span class="n">y_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">();</span> <span class="n">y_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">y_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
-<span class="n">z_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">();</span> <span class="n">z_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
+<span class="n">x_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
+<span class="n">x_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
+<span class="n">y_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span>
+<span class="n">y_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">y_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
+<span class="n">z_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span>
+<span class="n">z_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mo_C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">z_ao</span><span class="p">,</span> <span class="n">mo_C</span><span class="p">))</span>
 
 <span class="c1"># Construct oscillator strengths</span>
-<span class="n">xx</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">zz</span><span class="p">,</span><span class="n">sigma</span> <span class="o">=</span> <span class="p">[],[],[],[]</span>
+<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">n_mo</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n_mo</span> <span class="o">!=</span> <span class="n">n_core</span><span class="p">:</span>
-        <span class="n">x_tmp</span><span class="p">,</span><span class="n">y_tmp</span><span class="p">,</span><span class="n">z_tmp</span> <span class="o">=</span> <span class="n">x_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span><span class="n">n_mo</span><span class="p">],</span><span class="n">y_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span><span class="n">n_mo</span><span class="p">],</span><span class="n">z_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span><span class="n">n_mo</span><span class="p">]</span>
-        <span class="n">xx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_tmp</span><span class="p">);</span> <span class="n">yy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_tmp</span><span class="p">);</span> <span class="n">zz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_tmp</span><span class="p">)</span>
-        <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_tmp</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y_tmp</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">z_tmp</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">x_tmp</span><span class="p">,</span> <span class="n">y_tmp</span><span class="p">,</span> <span class="n">z_tmp</span> <span class="o">=</span> <span class="n">x_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span> <span class="n">n_mo</span><span class="p">],</span> <span class="n">y_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span> <span class="n">n_mo</span><span class="p">],</span> <span class="n">z_mo</span><span class="p">[</span><span class="n">n_core</span><span class="p">,</span> <span class="n">n_mo</span><span class="p">]</span>
+        <span class="n">xx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_tmp</span><span class="p">)</span>
+        <span class="n">yy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_tmp</span><span class="p">)</span>
+        <span class="n">zz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_tmp</span><span class="p">)</span>
+        <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_tmp</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_tmp</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">z_tmp</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1791,18 +1837,22 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print results as a table</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Energy   Osc. str.   x-component   y-component   z-component&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Energy   Osc. str.   x-component   y-component   z-component&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energy_diff</span><span class="p">)):</span>
-    <span class="n">e</span><span class="p">,</span><span class="n">os</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">energy_diff</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">xx</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">yy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">zz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.3f}</span><span class="s1">  </span><span class="si">{:8.5f}</span><span class="s1">     </span><span class="si">{:8.5f}</span><span class="s1">      </span><span class="si">{:8.5f}</span><span class="s1">      </span><span class="si">{:8.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">os</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+    <span class="n">e</span><span class="p">,</span> <span class="n">os</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">energy_diff</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xx</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">yy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">zz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">  </span><span class="si">{:8.5f}</span><span class="s2">     </span><span class="si">{:8.5f}</span><span class="s2">      </span><span class="si">{:8.5f}</span><span class="s2">      </span><span class="si">{:8.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">os</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    <span class="p">)</span>
 
 <span class="c1"># Plot X-ray emission spectrum</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span>   <span class="o">=</span> <span class="n">energy_diff</span><span class="p">,</span><span class="n">sigma</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">energy_diff</span><span class="p">,</span> <span class="n">sigma</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Photon energy [eV]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Intensity [arb. units]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">504</span><span class="p">,</span><span class="mi">514</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">504</span><span class="p">,</span> <span class="mi">514</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1840,7 +1890,7 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform restricted SCF calculation</span>
@@ -1858,9 +1908,9 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 <span class="c1"># Calculate resonant X-ray emission spectrum</span>
 <span class="c1">#   for states where the core-electron is moved to LUMO or LUMO+1</span>
 <span class="n">adc_rxes</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]:</span>
     <span class="c1"># Copy molecular orbitals</span>
-    <span class="n">mo0</span>  <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
+    <span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
     <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
     <span class="c1"># Move 1s electron to LUMO / LUMO+1</span>
     <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1877,47 +1927,48 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adc_rixs</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Probing LUMO and LUMO+1</span>
-<span class="k">for</span> <span class="n">indx</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">indx</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
     <span class="c1"># From XAS calculation</span>
-    <span class="n">E_xas</span> <span class="o">=</span> <span class="n">au2ev</span><span class="o">*</span><span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
+    <span class="n">E_xas</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
     <span class="n">I_xas</span> <span class="o">=</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">oscillator_strength</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
     <span class="c1"># From XES calculation</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adc_rxes</span><span class="p">[</span><span class="n">indx</span><span class="p">])):</span>
-        <span class="n">E_xes</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_rxes</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">E_xes</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">I_xes</span> <span class="o">=</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span><span class="o">.</span><span class="n">oscillator_strength</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">adc_rixs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">E_xas</span><span class="p">,</span> <span class="n">E_xes</span><span class="p">,</span> <span class="n">I_xas</span><span class="o">*</span><span class="n">I_xes</span><span class="p">])</span>
+        <span class="n">adc_rixs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">E_xas</span><span class="p">,</span> <span class="n">E_xes</span><span class="p">,</span> <span class="n">I_xas</span> <span class="o">*</span> <span class="n">I_xes</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>And the RIXS plane can then be plotted:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="c1"># Plot absorption spectrum</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">222</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span>   <span class="o">=</span> <span class="n">au2ev</span><span class="o">*</span><span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span><span class="n">xi</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">oscillator_strength</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">)</span>
 
 <span class="c1"># Plot emission specta, with vertical shift from absorbed energy</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">223</span><span class="p">)</span>
 <span class="c1"># LUMO</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span>   <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mf">5.</span><span class="o">*</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">+</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">oscillator_strength</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">+</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="c1"># LUMO+1</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span>   <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span><span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mf">5.</span><span class="o">*</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="o">+</span><span class="n">au2ev</span><span class="o">*</span><span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_rxes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">oscillator_strength</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">+</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xas</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="c1"># Plot RIXS plane, here with marker size scaling with intensity</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">221</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adc_rixs</span><span class="p">)):</span>
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">adc_rixs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">10000</span><span class="o">*</span><span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;ok&quot;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10000</span> <span class="o">*</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
 <span class="c1"># Zooming in to region spanned by XAS and XES projections</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">519</span><span class="p">,</span><span class="mi">530</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">536</span><span class="p">,</span><span class="mi">544</span><span class="p">))</span>
-    
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">519</span><span class="p">,</span> <span class="mi">530</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">536</span><span class="p">,</span> <span class="mi">544</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="figure align-default" id="adc-2st-rixs">

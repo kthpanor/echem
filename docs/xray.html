@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -243,6 +245,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="operators.html">
      Operators and matrix elements
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="spin.html">
+     Electron spin
     </a>
    </li>
    <li class="toctree-l2">
@@ -996,13 +1003,15 @@ const thebe_selector_output = ".output, .cell_output"
 <p><a class="reference internal" href="xray_calc.html#sec-xray-calc-cvsadc"><span class="std std-ref">CVS-ADC(2)-x</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct structure and basis objects</span>
 <span class="n">struct</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s1">&#39;6-31G&#39;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
-<span class="n">adc_xas</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cvs-adc2x&#39;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">adc_xas</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span>
+    <span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1012,7 +1021,7 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;6-31G&#39;</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="c1"># Perform unrestricted SCF calculation</span>
@@ -1032,14 +1041,14 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
 <span class="c1"># Perform ADC calculation</span>
-<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ie">
 <h4>IE<a class="headerlink" href="#ie" title="Permalink to this headline">¶</a></h4>
 <p>Use the results we already have, using <a class="reference internal" href="xray_calc.html#sec-xray-calc-dscf"><span class="std std-ref"><span class="math notranslate nohighlight">\(\Delta\)</span>-methods</span></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ie</span> <span class="o">=</span> <span class="n">adc_xas</span><span class="o">.</span> <span class="o">-</span> <span class="n">adc_xes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ie</span> <span class="o">=</span> <span class="n">adc_xas</span> <span class="o">-</span> <span class="n">adc_xes</span>
 </pre></div>
 </div>
 </div>
