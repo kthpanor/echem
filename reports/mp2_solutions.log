@@ -1,0 +1,46 @@
+Traceback (most recent call last):
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# occ-occ block
+gamma_ij = - (np.einsum('ikab,jkab->ij', t2[0], t2[0]) + np.einsum('ikab,jkab->ij', t2[1], t2[1]) + np.einsum('ikab,jkab->ij', t2[2], t2[2]))
+
+# vir-vir block
+gamma_ab = np.einsum('ijac,ijbc->ab', t2[0], t2[0]) + np.einsum('ijac,ijbc->ab', t2[1], t2[1]) + np.einsum('ijac,ijbc->ab', t2[2], t2[2])
+
+# Transform to AO basis
+gamma_ao = np.linalg.multi_dot([C_occ, gamma_ij, C_occ.T]) + np.linalg.multi_dot([C_vir, gamma_ab, C_vir.T])
+
+# Add SCF density and calculate dipole moment
+unrelaxed_density = scf_density + gamma_ao
+prop.compute(mol, basis, unrelaxed_density)
+ur_mp2_dipole_moment = prop.get_property('dipole moment')
+prop.print_properties(molecule, 'Unrelaxed MP2 dipole moment')
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+Input [0;32mIn [18][0m, in [0;36m<cell line: 2>[0;34m()[0m
+[1;32m      1[0m [38;5;66;03m# occ-occ block[39;00m
+[0;32m----> 2[0m gamma_ij [38;5;241m=[39m [38;5;241m-[39m (np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mikab,jkab->ij[39m[38;5;124m'[39m, [43mt2[49m[43m[[49m[38;5;241;43m0[39;49m[43m][49m, t2[[38;5;241m0[39m]) [38;5;241m+[39m np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mikab,jkab->ij[39m[38;5;124m'[39m, t2[[38;5;241m1[39m], t2[[38;5;241m1[39m]) [38;5;241m+[39m np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mikab,jkab->ij[39m[38;5;124m'[39m, t2[[38;5;241m2[39m], t2[[38;5;241m2[39m]))
+[1;32m      4[0m [38;5;66;03m# vir-vir block[39;00m
+[1;32m      5[0m gamma_ab [38;5;241m=[39m np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mijac,ijbc->ab[39m[38;5;124m'[39m, t2[[38;5;241m0[39m], t2[[38;5;241m0[39m]) [38;5;241m+[39m np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mijac,ijbc->ab[39m[38;5;124m'[39m, t2[[38;5;241m1[39m], t2[[38;5;241m1[39m]) [38;5;241m+[39m np[38;5;241m.[39meinsum([38;5;124m'[39m[38;5;124mijac,ijbc->ab[39m[38;5;124m'[39m, t2[[38;5;241m2[39m], t2[[38;5;241m2[39m])
+
+[0;31mKeyError[0m: 0
+KeyError: 0
+
