@@ -1,33 +1,35 @@
-<!-- #region -->
 ## Make the book as consistent as reasonable
 
 Need to be a bit flexible, as full consistency is not always preferable
 
 ### To do
 
-- Add a spell-checker
 - Add any points you think we need to standardize
 - Figure out reasonable linking to other parts of book
 - Figure out cheap(er) visualizations
 
+### Code formatting
 
-### Exercises
+- Install and use the JupyterLab Code Formatter running under `jupyter-lab` but not `jupyter-notebook`
 
-- As its own subsection at the end of each section, for example:
-    - X-ray spectroscopy
-        - Calculating
-        - Analysis
-        - Exercises
+```
+conda install -c conda-forge jupyterlab_code_formatter black isort
+```
 
-- Solutions on the same page (for starters - might change)
+### Spell-checking
+
+- Install and use the JupyterLab Spell-Checker
+
+```
+conda install -c conda-forge jupyterlab-spellchecker
+```
 
 
 ### Equations
 
-- Suppress spin, so $\psi(\mathbf{r},t)$, not $\psi(\mathbf{x},t)$.
+- Use spinors for spin $\psi^\dagger(\mathbf{r})$ and not $\psi^\ast(\mathbf{x})$.
 
-- Number equations
-    - Prefer not
+- Avoid numbered equations
 
 - MO indices
     - $ij...$ (occupied)
@@ -60,16 +62,6 @@ import adcc
 import gator
 from pyscf import gto, scf
 ```
-
-### Object names and code layout
-
-- Largelly follow Patrick's convention (space around `=` and between variables etc)
-```
-struct = gator.get_molecule(water_xyz)
-basis = gator.get_molecular_basis(struct, '6-31G')
-scf_drv = vlx.ScfRestrictedDriver()
-```
-- Has to be quite flexible
 
 ### References
 
@@ -110,5 +102,4 @@ year = {1993}
 - **Bold** or *italics* for introducing terms
 - Link between sections
 - Static images and Python cells if too expensive
-
-<!-- #endregion -->
+- Figures in png 300 dpi or svg
