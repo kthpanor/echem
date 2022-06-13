@@ -1,3 +1,4 @@
+(sec:vibrational-spec)=
 Vibrational spectroscopies
 ==========================
 General aspects on calculating ground-state [infrared (IR)](sec:ir-tutorial) and [Raman](sec:raman-tutorial) spectra of molecules are discussed in this section. The theoretical foundations on which these types of calculations are based are discussed in details in the section on [Hessians](hessians:label).
