@@ -166,3 +166,18 @@ $ jupyter-book build .
 ```
 
 ...and you can see the resulting book by navigating to `/_build/html` and opening `index.html`.
+
+## New to Python/Jupyter?
+
+We have chosen to use [Python](https://www.python.org/) as the high-level programming and interfacing layer on account of its flexibility, ease of use, and extensive ecosystem. As the framework for carrying out the calculation and analysis, as well as enabling the intermingling of calculation and text, we use [Jupyter](https://jupyter.org/try). If you are unfamiliar in the use of these software packages, there is a wealth of resources which can help you get better accomodated with these tools, such as:
+
+- For Python you can start with [W3Schools](https://www.w3schools.com/python/), which hosts comprehensive tutorials for a large number of programming languages and modules, or the [tutorial](https://docs.python.org/3/tutorial/) from the Python project.
+- For Jupyter you can find [examples](https://jupyter-notebook.readthedocs.io/en/latest/examples/Notebook/examples_index.html) or [test](https://jupyter.org/try) on the project page, prepared [lessons](https://coderefinery.github.io/jupyter/), and [video tutorials](https://www.youtube.com/watch?v=HW29067qVWk).
+- The construction of Jupyter books is documented on the [host site](https://jupyterbook.org/en/stable/intro.html), which also contains a [gallery](https://executablebooks.org/en/latest/gallery.html) of different e-books, such as [this one](https://weisscharlesj.github.io/SciCompforChemists/intro.html) dedicated to teaching scientific computing for chemists (describing the use Python, Jupyter, and more).
+- The use of [JupyterHub](https://jupyter.org/hub) for serving Jupyter notebooks for multiple users is described on the [project page](https://jupyterhub.readthedocs.io/en/stable/), with instructions on how to deploy it on a cloud found [here](https://zero-to-jupyterhub.readthedocs.io/en/latest/).
+- For visualization there are examples and tutorials for using `matplotlib` on the [project page](https://matplotlib.org/stable/tutorials/index.html) and [W3Schools](https://www.w3schools.com/python/matplotlib_intro.asp), and you can also look at [tutorials](https://seaborn.pydata.org/tutorial.html) for the high-level [seaborn](https://seaborn.pydata.org/) visualization library.
+
+Additionally, this e-book and our software makes use of `einsum` as a simple tool for performing [Einstein summation](https://en.wikipedia.org/wiki/Einstein_notation), and in order to better understand how this works we would recommend the [manual](https://numpy.org/doc/stable/reference/generated/numpy.einsum.html) and this [introduction](https://ajcr.net/Basic-guide-to-einsum/).
+
+
+
