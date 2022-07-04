@@ -53,6 +53,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -855,6 +857,46 @@ const thebe_selector_output = ".output, .cell_output"
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameterization-of-dihedral-angles">
+   Parameterization of dihedral angles
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up">
+     Set up
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#original-gaff-force-field">
+     Original GAFF force field
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fitting-to-qm-potential">
+     Fitting to QM potential
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improvement-weighted-fitting">
+     Improvement: Weighted fitting
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improvement-exclude-problematic-angles">
+     Improvement: Exclude problematic angles
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -867,6 +909,46 @@ const thebe_selector_output = ".output, .cell_output"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameterization-of-dihedral-angles">
+   Parameterization of dihedral angles
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up">
+     Set up
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#original-gaff-force-field">
+     Original GAFF force field
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fitting-to-qm-potential">
+     Fitting to QM potential
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improvement-weighted-fitting">
+     Improvement: Weighted fitting
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#improvement-exclude-problematic-angles">
+     Improvement: Exclude problematic angles
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -875,8 +957,469 @@ const thebe_selector_output = ".output, .cell_output"
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="force-field-parameterization">
 <h1>Force field parameterization<a class="headerlink" href="#force-field-parameterization" title="Permalink to this headline">¶</a></h1>
-<p>There exist several online tools enabling the generation of force-field parameters for a given molecule, e.g., the Automated Topology Builder (ATB) and Repository [cite ATB]. However, the quality of a generated force field must always be checked with respect to QM calculations. Another way to generate an initial force field is to start from a Gaussian calculation and follow the procedure describe in the Amber tutorial[cite amber] to obtain parameters for the General Amber Force Field (GAFF). You will then need to convert your Amber force field to a Gromacs force field using the ACPYPE Python module [cite actype]. For the present exercise, we will use the standard GAFF force field as well as a refined force field where parameters for bonds, angles, and dihedrals have been modified.</p>
-<p>More to be added.</p>
+<p>The fundamental approach of molecular mechanics (MM) is to describe the potential energy of a system approximately as an analytical function of the atomic coordinates. The explicit form of the total energy function, referred to as force field, contains contributions for bond stretching, angle bending, torsion, van der Waals interactions and electrostatic interactions. Organic and bioorganic systems can then be well described by, <em>e.g.</em> the simple functional form of Amber force fields:</p>
+<div class="math notranslate nohighlight">
+\[
+E_\mathrm{pair} = \sum_\mathrm{bonds} k_r (r-r_{eq})^2 + \sum_\mathrm{angles} k_\theta (\theta-\theta_{eq})^2 + \sum_\mathrm{dihedrals} k_\phi [ 1 + \mathrm{cos}(n\phi - \gamma) ] + \sum_{i&lt;j} \bigl[ \frac{A_{ij}}{R_{ij}^{12}} - \frac{B_{ij}}{R_{ij}^6} + \frac{q_i q_j}{\varepsilon R_{ij}} \bigr]
+\]</div>
+<p>with the equilibrium structural parameters <span class="math notranslate nohighlight">\(r_{eq}\)</span> and <span class="math notranslate nohighlight">\(\theta_{eq}\)</span> that can be either taken from an optimized structure or from the data according to the atom types. The assignment of the correct atom types is based on the element type, hybridization, aromaticity, and chemical environment. In the same way, the force constants <span class="math notranslate nohighlight">\(k_r\)</span>, <span class="math notranslate nohighlight">\(k_\theta\)</span> and <span class="math notranslate nohighlight">\(k_\phi\)</span>, the multiplicity <span class="math notranslate nohighlight">\(n\)</span>, the dihedral phase angle <span class="math notranslate nohighlight">\(\gamma\)</span> and the Lennard-Jones parameters <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are taken from the data. In case of the general Amber force field (GAFF) the partial charges <span class="math notranslate nohighlight">\(q\)</span> are assigned using the restrained electrostatic potential (RESP) charge model.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ForceFieldGenerator</span></code> class in <code class="docutils literal notranslate"><span class="pre">VeloxChem</span></code> provides a number of functions to interact with <code class="docutils literal notranslate"><span class="pre">OpenMM</span></code> and manipulate topology files. As an example, we consider the optimization of the force field for two dihedral angles of a thiophene-based optical ligands named HS-276.</p>
+<div class="section" id="parameterization-of-dihedral-angles">
+<h2>Parameterization of dihedral angles<a class="headerlink" href="#parameterization-of-dihedral-angles" title="Permalink to this headline">¶</a></h2>
+<p>We here consider two dihedral angles of HS-276, <span class="math notranslate nohighlight">\(\phi_1\)</span> and <span class="math notranslate nohighlight">\(\phi_2\)</span>, as shown here:</p>
+<div class="figure align-default" id="fig-hs">
+<a class="reference internal image-reference" href="../_images/hs276.png"><img alt="../_images/hs276.png" src="../_images/hs276.png" style="width: 600px;" /></a>
+</div>
+<p>The dihedral potential curves will be plotted using force field parameters from the general amber forcefield (GAFF) database, as compared to QM results. The force field will then be changed to better fit this potential.</p>
+<div class="section" id="set-up">
+<h3>Set up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h3>
+<p>We first load the required modules and the equilibrium geometry, and initialize a (empty) force field object:</p>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># load B3LYP optimized geometry in the xyz format</span>
+<span class="n">xyz_filename</span> <span class="o">=</span> <span class="s1">&#39;../xyz/md/hs276.xyz&#39;</span>  
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz</span><span class="p">(</span><span class="n">xyz_filename</span><span class="p">)</span>
+<span class="n">ff_gen</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ForceFieldGenerator</span><span class="p">()</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">scan_dih_angles</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">scan_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">scan_geometries</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">target_dihedrals</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The QM scans of the two dihedrals is read and put in the <code class="docutils literal notranslate"><span class="pre">ff_gen</span></code> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ff_gen</span><span class="o">.</span><span class="n">read_qm_scan_xyz_files</span><span class="p">([</span><span class="s1">&#39;../xyz/md/1_14_15_16.xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;../xyz/md/27_22_21_16.xyz&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Furthermore, RESP chargeds are provided:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resp_chg</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mf">0.014967</span><span class="p">,</span> <span class="mf">0.224409</span><span class="p">,</span> <span class="mf">0.089489</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.551618</span><span class="p">,</span> <span class="mf">0.153050</span><span class="p">,</span> <span class="mf">0.106847</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.315042</span><span class="p">,</span>
+    <span class="mf">0.165854</span><span class="p">,</span> <span class="mf">0.206441</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.425163</span><span class="p">,</span> <span class="mf">0.225816</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.039099</span><span class="p">,</span> <span class="mf">0.179377</span><span class="p">,</span> <span class="mf">0.002119</span><span class="p">,</span>
+    <span class="mf">0.014483</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.043666</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.230202</span><span class="p">,</span> <span class="mf">0.165960</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.071404</span><span class="p">,</span> <span class="mf">0.188598</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.044661</span><span class="p">,</span>
+    <span class="mf">0.088786</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.173586</span><span class="p">,</span> <span class="mf">0.175730</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.089376</span><span class="p">,</span> <span class="mf">0.164515</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.118573</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.150541</span><span class="p">,</span>
+    <span class="mf">0.736497</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.570770</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.273724</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.144051</span><span class="p">,</span> <span class="mf">0.112846</span><span class="p">,</span> <span class="mf">0.112846</span><span class="p">,</span> <span class="mf">0.112846</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we provide atom types and (initial) force field files and topology:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ff_gen</span><span class="o">.</span><span class="n">molecule_name</span> <span class="o">=</span> <span class="s1">&#39;hs276&#39;</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">molecule</span> <span class="o">=</span> <span class="n">molecule</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">atom_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;h4&#39;</span><span class="p">,</span> <span class="s1">&#39;nb&#39;</span><span class="p">,</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;h4&#39;</span><span class="p">,</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;h4&#39;</span><span class="p">,</span> <span class="s1">&#39;na&#39;</span><span class="p">,</span> <span class="s1">&#39;cc&#39;</span><span class="p">,</span> <span class="s1">&#39;ss&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;cc&#39;</span><span class="p">,</span> <span class="s1">&#39;cc&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;ss&#39;</span><span class="p">,</span> <span class="s1">&#39;cc&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;os&#39;</span><span class="p">,</span> <span class="s1">&#39;c3&#39;</span><span class="p">,</span> <span class="s1">&#39;h1&#39;</span><span class="p">,</span> <span class="s1">&#39;h1&#39;</span><span class="p">,</span> <span class="s1">&#39;h1&#39;</span><span class="p">]</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">force_field_data</span> <span class="o">=</span> <span class="s1">&#39;../data/md/gaff-2.11.dat&#39;</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">force_field_data_extension</span> <span class="o">=</span> <span class="s1">&#39;../data/md/gaff-2.11_extension.dat&#39;</span>
+
+<span class="n">original_itp_file</span> <span class="o">=</span> <span class="s1">&#39;../data/md/hs276_00.itp&#39;</span>
+<span class="n">original_top_file</span> <span class="o">=</span> <span class="s1">&#39;../data/md/hs276_00.top&#39;</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">write_original_itp</span><span class="p">(</span><span class="n">original_itp_file</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">ff_gen</span><span class="o">.</span><span class="n">atom_types</span><span class="p">),</span> <span class="n">resp_chg</span><span class="p">)</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="n">original_top_file</span><span class="p">,</span> <span class="n">original_itp_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond length 10-12 (cd-cd) to 0.137 nm                                                                    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 1-9-10 (ca-ca-cd) to 107.2 deg                                                                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 1-14-15 (ca-na-cc) to 126.6 deg                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 2-1-14 (ca-ca-na) to 131.7 deg                                                                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 7-9-10 (ca-ca-cd) to 135.3 deg                                                                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 9-1-14 (ca-ca-na) to 107.6 deg                                                                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 14-15-17 (na-cc-cd) to 128.3 deg                                                              
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 19-21-22 (cd-cc-cc) to 129.2 deg                                                              
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Updated bond angle 21-22-23 (cc-cc-cd) to 128.6 deg                                                              
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="original-gaff-force-field">
+<h3>Original GAFF force field<a class="headerlink" href="#original-gaff-force-field" title="Permalink to this headline">¶</a></h3>
+<p>The performance of the original GAFF force field is evaluated by calculating the energy at each dihedral angle from the scan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res_phi1</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">original_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">res_phi2</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">original_top_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Note:</em> These calculations are not executed in the compilation of the book, and the results are instead loaded below.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_phi1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>  <span class="mf">90.0</span><span class="p">,</span>
+                      <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>  <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.38636858</span><span class="p">,</span>  <span class="mf">0.48247293</span><span class="p">,</span>  <span class="mf">1.27570957</span><span class="p">,</span>  <span class="mf">3.36342458</span><span class="p">,</span>  <span class="mf">6.98809449</span><span class="p">,</span>
+        <span class="mf">12.13142224</span><span class="p">,</span> <span class="mf">18.5303525</span> <span class="p">,</span> <span class="mf">25.62885098</span><span class="p">,</span> <span class="mf">32.54192822</span><span class="p">,</span> <span class="mf">37.58017715</span><span class="p">,</span>
+        <span class="mf">31.99637207</span><span class="p">,</span> <span class="mf">25.07828961</span><span class="p">,</span> <span class="mf">17.94691688</span><span class="p">,</span> <span class="mf">11.36067857</span><span class="p">,</span>  <span class="mf">5.91695371</span><span class="p">,</span>
+         <span class="mf">2.06323565</span><span class="p">,</span>  <span class="mf">0.07655332</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.51503683</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">7.68483744</span><span class="p">,</span> <span class="mf">7.04159003</span><span class="p">,</span> <span class="mf">5.23524628</span><span class="p">,</span> <span class="mf">3.25299405</span><span class="p">,</span> <span class="mf">1.80634375</span><span class="p">,</span>
+        <span class="mf">1.14209234</span><span class="p">,</span> <span class="mf">1.24448683</span><span class="p">,</span> <span class="mf">1.88248324</span><span class="p">,</span> <span class="mf">2.57298965</span><span class="p">,</span> <span class="mf">2.70951563</span><span class="p">,</span>
+        <span class="mf">2.2185472</span> <span class="p">,</span> <span class="mf">1.34950681</span><span class="p">,</span> <span class="mf">0.50672143</span><span class="p">,</span> <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.13652598</span><span class="p">,</span>
+        <span class="mf">1.11846285</span><span class="p">,</span> <span class="mf">2.99044409</span><span class="p">,</span> <span class="mf">5.39540176</span><span class="p">,</span> <span class="mf">6.79216757</span><span class="p">])}</span>
+<span class="n">res_phi2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>
+  <span class="mf">90.0</span><span class="p">,</span>  <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>  <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>  <span class="mf">6.73698578</span><span class="p">,</span>   <span class="mf">8.89934543</span><span class="p">,</span>  <span class="mf">15.06049153</span><span class="p">,</span>  <span class="mf">24.88538725</span><span class="p">,</span>
+         <span class="mf">37.83422214</span><span class="p">,</span>  <span class="mf">53.18780112</span><span class="p">,</span>  <span class="mf">70.07821906</span><span class="p">,</span>  <span class="mf">87.530094</span>  <span class="p">,</span>
+        <span class="mf">104.49431502</span><span class="p">,</span> <span class="mf">115.61424453</span><span class="p">,</span>  <span class="mf">99.4539796</span> <span class="p">,</span>  <span class="mf">81.95008328</span><span class="p">,</span>
+         <span class="mf">64.11898505</span><span class="p">,</span>  <span class="mf">46.92700085</span><span class="p">,</span>  <span class="mf">31.30870369</span><span class="p">,</span>  <span class="mf">18.13606105</span><span class="p">,</span>
+          <span class="mf">8.16882884</span><span class="p">,</span>   <span class="mf">1.99828301</span><span class="p">,</span>   <span class="mf">0.</span>        <span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.83585497</span><span class="p">,</span>  <span class="mf">3.39214553</span><span class="p">,</span>  <span class="mf">3.07446008</span><span class="p">,</span>  <span class="mf">3.05870708</span><span class="p">,</span>  <span class="mf">3.79647248</span><span class="p">,</span>
+         <span class="mf">5.41640576</span><span class="p">,</span>  <span class="mf">7.76097693</span><span class="p">,</span> <span class="mf">10.36547258</span><span class="p">,</span> <span class="mf">12.46062129</span><span class="p">,</span> <span class="mf">13.21413969</span><span class="p">,</span>
+        <span class="mf">12.26370882</span><span class="p">,</span>  <span class="mf">9.96902213</span><span class="p">,</span>  <span class="mf">7.13610802</span><span class="p">,</span>  <span class="mf">4.45022189</span><span class="p">,</span>  <span class="mf">2.31569068</span><span class="p">,</span>
+         <span class="mf">0.94255437</span><span class="p">,</span>  <span class="mf">0.29405596</span><span class="p">,</span>  <span class="mf">0.08664149</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">])}</span>
+<span class="n">res_phi1_fit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>  <span class="mf">90.0</span><span class="p">,</span>
+                       <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>  <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">8.85550424</span><span class="p">,</span> <span class="mf">6.54628496</span><span class="p">,</span> <span class="mf">3.92072292</span><span class="p">,</span> <span class="mf">2.18977189</span><span class="p">,</span> <span class="mf">1.42619785</span><span class="p">,</span>
+        <span class="mf">1.39217696</span><span class="p">,</span> <span class="mf">1.69310874</span><span class="p">,</span> <span class="mf">1.93478451</span><span class="p">,</span> <span class="mf">1.92300116</span><span class="p">,</span> <span class="mf">1.69520266</span><span class="p">,</span>
+        <span class="mf">1.40178731</span><span class="p">,</span> <span class="mf">1.13081008</span><span class="p">,</span> <span class="mf">0.84304392</span><span class="p">,</span> <span class="mf">0.45899866</span><span class="p">,</span> <span class="mf">0.0506388</span> <span class="p">,</span>
+        <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.9624034</span> <span class="p">,</span> <span class="mf">3.60078571</span><span class="p">,</span> <span class="mf">9.49198035</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">7.68483744</span><span class="p">,</span> <span class="mf">7.04159003</span><span class="p">,</span> <span class="mf">5.23524628</span><span class="p">,</span> <span class="mf">3.25299405</span><span class="p">,</span> <span class="mf">1.80634375</span><span class="p">,</span>
+        <span class="mf">1.14209234</span><span class="p">,</span> <span class="mf">1.24448683</span><span class="p">,</span> <span class="mf">1.88248324</span><span class="p">,</span> <span class="mf">2.57298965</span><span class="p">,</span> <span class="mf">2.70951563</span><span class="p">,</span>
+        <span class="mf">2.2185472</span> <span class="p">,</span> <span class="mf">1.34950681</span><span class="p">,</span> <span class="mf">0.50672143</span><span class="p">,</span> <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.13652598</span><span class="p">,</span>
+        <span class="mf">1.11846285</span><span class="p">,</span> <span class="mf">2.99044409</span><span class="p">,</span> <span class="mf">5.39540176</span><span class="p">,</span> <span class="mf">6.79216757</span><span class="p">])}</span>
+<span class="n">res_phi2_fit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>
+                       <span class="mf">90.0</span><span class="p">,</span>  <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>
+                       <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.77011661</span><span class="p">,</span>  <span class="mf">3.4340386</span> <span class="p">,</span>  <span class="mf">2.92616752</span><span class="p">,</span>  <span class="mf">2.82307531</span><span class="p">,</span>  <span class="mf">3.59515264</span><span class="p">,</span>
+         <span class="mf">5.37149162</span><span class="p">,</span>  <span class="mf">7.85506128</span><span class="p">,</span> <span class="mf">10.40900493</span><span class="p">,</span> <span class="mf">12.28767184</span><span class="p">,</span> <span class="mf">12.91265169</span><span class="p">,</span>
+        <span class="mf">12.0771715</span> <span class="p">,</span>  <span class="mf">9.9999376</span> <span class="p">,</span>  <span class="mf">7.22496312</span><span class="p">,</span>  <span class="mf">4.41920009</span><span class="p">,</span>  <span class="mf">2.14773038</span><span class="p">,</span>
+         <span class="mf">0.71490743</span><span class="p">,</span>  <span class="mf">0.09502842</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.07651008</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.83585497</span><span class="p">,</span>  <span class="mf">3.39214553</span><span class="p">,</span>  <span class="mf">3.07446008</span><span class="p">,</span>  <span class="mf">3.05870708</span><span class="p">,</span>  <span class="mf">3.79647248</span><span class="p">,</span>
+         <span class="mf">5.41640576</span><span class="p">,</span>  <span class="mf">7.76097693</span><span class="p">,</span> <span class="mf">10.36547258</span><span class="p">,</span> <span class="mf">12.46062129</span><span class="p">,</span> <span class="mf">13.21413969</span><span class="p">,</span>
+        <span class="mf">12.26370882</span><span class="p">,</span>  <span class="mf">9.96902213</span><span class="p">,</span>  <span class="mf">7.13610802</span><span class="p">,</span>  <span class="mf">4.45022189</span><span class="p">,</span>  <span class="mf">2.31569068</span><span class="p">,</span>
+         <span class="mf">0.94255437</span><span class="p">,</span>  <span class="mf">0.29405596</span><span class="p">,</span>  <span class="mf">0.08664149</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">])}</span>
+<span class="n">res_phi1_fit_imp1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>
+                     <span class="mf">90.0</span><span class="p">,</span>  <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>
+                       <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.50209112</span><span class="p">,</span>  <span class="mf">8.02223957</span><span class="p">,</span>  <span class="mf">4.94590657</span><span class="p">,</span>  <span class="mf">2.64652847</span><span class="p">,</span>  <span class="mf">1.39729309</span><span class="p">,</span>
+         <span class="mf">1.11813384</span><span class="p">,</span>  <span class="mf">1.46934483</span><span class="p">,</span>  <span class="mf">1.98405593</span><span class="p">,</span>  <span class="mf">2.2847002</span> <span class="p">,</span>  <span class="mf">2.21777892</span><span class="p">,</span>
+         <span class="mf">1.82680422</span><span class="p">,</span>  <span class="mf">1.2450606</span> <span class="p">,</span>  <span class="mf">0.62448599</span><span class="p">,</span>  <span class="mf">0.12913038</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>
+         <span class="mf">0.61013567</span><span class="p">,</span>  <span class="mf">2.4092184</span> <span class="p">,</span>  <span class="mf">5.72247507</span><span class="p">,</span> <span class="mf">11.88358653</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">7.68483744</span><span class="p">,</span> <span class="mf">7.04159003</span><span class="p">,</span> <span class="mf">5.23524628</span><span class="p">,</span> <span class="mf">3.25299405</span><span class="p">,</span> <span class="mf">1.80634375</span><span class="p">,</span>
+        <span class="mf">1.14209234</span><span class="p">,</span> <span class="mf">1.24448683</span><span class="p">,</span> <span class="mf">1.88248324</span><span class="p">,</span> <span class="mf">2.57298965</span><span class="p">,</span> <span class="mf">2.70951563</span><span class="p">,</span>
+        <span class="mf">2.2185472</span> <span class="p">,</span> <span class="mf">1.34950681</span><span class="p">,</span> <span class="mf">0.50672143</span><span class="p">,</span> <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.13652598</span><span class="p">,</span>
+        <span class="mf">1.11846285</span><span class="p">,</span> <span class="mf">2.99044409</span><span class="p">,</span> <span class="mf">5.39540176</span><span class="p">,</span> <span class="mf">6.79216757</span><span class="p">])}</span>
+<span class="n">res_phi2_fit_imp1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>  <span class="mf">90.0</span><span class="p">,</span>
+                       <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>  <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.77380665</span><span class="p">,</span>  <span class="mf">3.45659839</span><span class="p">,</span>  <span class="mf">2.97075626</span><span class="p">,</span>  <span class="mf">2.89168948</span><span class="p">,</span>  <span class="mf">3.68036836</span><span class="p">,</span>
+         <span class="mf">5.45413796</span><span class="p">,</span>  <span class="mf">7.90762789</span><span class="p">,</span> <span class="mf">10.40597509</span><span class="p">,</span> <span class="mf">12.22095797</span><span class="p">,</span> <span class="mf">12.80156411</span><span class="p">,</span>
+        <span class="mf">11.96438867</span><span class="p">,</span>  <span class="mf">9.93400376</span><span class="p">,</span>  <span class="mf">7.23618755</span><span class="p">,</span>  <span class="mf">4.5020705</span> <span class="p">,</span>  <span class="mf">2.26598738</span><span class="p">,</span>
+         <span class="mf">0.81664548</span><span class="p">,</span>  <span class="mf">0.14546155</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.06206884</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.83585497</span><span class="p">,</span>  <span class="mf">3.39214553</span><span class="p">,</span>  <span class="mf">3.07446008</span><span class="p">,</span>  <span class="mf">3.05870708</span><span class="p">,</span>  <span class="mf">3.79647248</span><span class="p">,</span>
+         <span class="mf">5.41640576</span><span class="p">,</span>  <span class="mf">7.76097693</span><span class="p">,</span> <span class="mf">10.36547258</span><span class="p">,</span> <span class="mf">12.46062129</span><span class="p">,</span> <span class="mf">13.21413969</span><span class="p">,</span>
+        <span class="mf">12.26370882</span><span class="p">,</span>  <span class="mf">9.96902213</span><span class="p">,</span>  <span class="mf">7.13610802</span><span class="p">,</span>  <span class="mf">4.45022189</span><span class="p">,</span>  <span class="mf">2.31569068</span><span class="p">,</span>
+         <span class="mf">0.94255437</span><span class="p">,</span>  <span class="mf">0.29405596</span><span class="p">,</span>  <span class="mf">0.08664149</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">])}</span>
+<span class="n">res_phi1_fit_imp2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>  <span class="mf">90.0</span><span class="p">,</span>  <span class="mf">100.0</span><span class="p">,</span>
+                       <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>  <span class="mf">170.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.4234754</span> <span class="p">,</span> <span class="mf">2.89034555</span><span class="p">,</span> <span class="mf">1.44738438</span><span class="p">,</span> <span class="mf">1.07147175</span><span class="p">,</span> <span class="mf">1.42615159</span><span class="p">,</span>
+        <span class="mf">2.00013673</span><span class="p">,</span> <span class="mf">2.36625897</span><span class="p">,</span> <span class="mf">2.32952195</span><span class="p">,</span> <span class="mf">1.92383912</span><span class="p">,</span> <span class="mf">1.30083734</span><span class="p">,</span>
+        <span class="mf">0.63897763</span><span class="p">,</span> <span class="mf">0.1232948</span> <span class="p">,</span> <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.63355979</span><span class="p">,</span> <span class="mf">2.46041641</span><span class="p">,</span>
+        <span class="mf">5.81462796</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.23524628</span><span class="p">,</span> <span class="mf">3.25299405</span><span class="p">,</span> <span class="mf">1.80634375</span><span class="p">,</span> <span class="mf">1.14209234</span><span class="p">,</span> <span class="mf">1.24448683</span><span class="p">,</span>
+        <span class="mf">1.88248324</span><span class="p">,</span> <span class="mf">2.57298965</span><span class="p">,</span> <span class="mf">2.70951563</span><span class="p">,</span> <span class="mf">2.2185472</span> <span class="p">,</span> <span class="mf">1.34950681</span><span class="p">,</span>
+        <span class="mf">0.50672143</span><span class="p">,</span> <span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.13652598</span><span class="p">,</span> <span class="mf">1.11846285</span><span class="p">,</span> <span class="mf">2.99044409</span><span class="p">,</span>
+        <span class="mf">5.39540176</span><span class="p">])}</span>
+<span class="n">res_phi2_fit_imp2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">27</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+ <span class="s1">&#39;dihedral_angles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span>  <span class="mf">20.0</span><span class="p">,</span>  <span class="mf">30.0</span><span class="p">,</span>  <span class="mf">40.0</span><span class="p">,</span>  <span class="mf">50.0</span><span class="p">,</span>  <span class="mf">60.0</span><span class="p">,</span>  <span class="mf">70.0</span><span class="p">,</span>  <span class="mf">80.0</span><span class="p">,</span>
+                       <span class="mf">90.0</span><span class="p">,</span>  <span class="mf">100.0</span><span class="p">,</span>  <span class="mf">110.0</span><span class="p">,</span>  <span class="mf">120.0</span><span class="p">,</span>  <span class="mf">130.0</span><span class="p">,</span>  <span class="mf">140.0</span><span class="p">,</span>  <span class="mf">150.0</span><span class="p">,</span>  <span class="mf">160.0</span><span class="p">,</span>
+                       <span class="mf">170.0</span><span class="p">,</span>  <span class="mf">180.0</span><span class="p">],</span>
+ <span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.76614678</span><span class="p">,</span>  <span class="mf">3.44072374</span><span class="p">,</span>  <span class="mf">2.93298698</span><span class="p">,</span>  <span class="mf">2.82649038</span><span class="p">,</span>  <span class="mf">3.59577269</span><span class="p">,</span>
+         <span class="mf">5.37198654</span><span class="p">,</span>  <span class="mf">7.8574572</span> <span class="p">,</span> <span class="mf">10.41314745</span><span class="p">,</span> <span class="mf">12.29166455</span><span class="p">,</span> <span class="mf">12.91538952</span><span class="p">,</span>
+        <span class="mf">12.07832096</span><span class="p">,</span> <span class="mf">10.00124395</span><span class="p">,</span>  <span class="mf">7.22794208</span><span class="p">,</span>  <span class="mf">4.42314879</span><span class="p">,</span>  <span class="mf">2.15221843</span><span class="p">,</span>
+         <span class="mf">0.71672128</span><span class="p">,</span>  <span class="mf">0.09418956</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.08373556</span><span class="p">]),</span>
+ <span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">3.83585497</span><span class="p">,</span>  <span class="mf">3.39214553</span><span class="p">,</span>  <span class="mf">3.07446008</span><span class="p">,</span>  <span class="mf">3.05870708</span><span class="p">,</span>  <span class="mf">3.79647248</span><span class="p">,</span>
+         <span class="mf">5.41640576</span><span class="p">,</span>  <span class="mf">7.76097693</span><span class="p">,</span> <span class="mf">10.36547258</span><span class="p">,</span> <span class="mf">12.46062129</span><span class="p">,</span> <span class="mf">13.21413969</span><span class="p">,</span>
+        <span class="mf">12.26370882</span><span class="p">,</span>  <span class="mf">9.96902213</span><span class="p">,</span>  <span class="mf">7.13610802</span><span class="p">,</span>  <span class="mf">4.45022189</span><span class="p">,</span>  <span class="mf">2.31569068</span><span class="p">,</span>
+         <span class="mf">0.94255437</span><span class="p">,</span>  <span class="mf">0.29405596</span><span class="p">,</span>  <span class="mf">0.08664149</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">])}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The resulting potentials can be illustrated using functionalities available in VeloxChem:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ff_gen</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">res_phi1</span><span class="p">)</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">res_phi2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/md_ffs_11_0.png" src="../_images/md_ffs_11_0.png" />
+<img alt="../_images/md_ffs_11_1.png" src="../_images/md_ffs_11_1.png" />
+</div>
+</div>
+<p>Alternatively, we can construct custom plotting scripts by first checking the contents of the results dictionaries:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">res_phi1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;dihedral_indices&#39;: [1, 14, 15, 16], &#39;dihedral_angles&#39;: [0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0, 150.0, 160.0, 170.0, 180.0], &#39;mm_scan_kJpermol&#39;: array([ 0.38636858,  0.48247293,  1.27570957,  3.36342458,  6.98809449,
+       12.13142224, 18.5303525 , 25.62885098, 32.54192822, 37.58017715,
+       31.99637207, 25.07828961, 17.94691688, 11.36067857,  5.91695371,
+        2.06323565,  0.07655332,  0.        ,  1.51503683]), &#39;qm_scan_kJpermol&#39;: array([7.68483744, 7.04159003, 5.23524628, 3.25299405, 1.80634375,
+       1.14209234, 1.24448683, 1.88248324, 2.57298965, 2.70951563,
+       2.2185472 , 1.34950681, 0.50672143, 0.        , 0.13652598,
+       1.11846285, 2.99044409, 5.39540176, 6.79216757])}
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we then define our own plotting routines:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_plot</span><span class="p">(</span><span class="n">res1</span><span class="p">,</span><span class="n">title1</span><span class="p">,</span><span class="n">res2</span><span class="p">,</span><span class="n">title2</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res1</span><span class="p">[</span><span class="s1">&#39;dihedral_angles&#39;</span><span class="p">],</span><span class="n">res1</span><span class="p">[</span><span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">],</span><span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res1</span><span class="p">[</span><span class="s1">&#39;dihedral_angles&#39;</span><span class="p">],</span><span class="n">res1</span><span class="p">[</span><span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">],</span><span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s1">&#39;QM&#39;</span><span class="p">,</span><span class="s1">&#39;MM&#39;</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;E in kJ/mol&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Dihedral angle: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">res1</span><span class="p">[</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">])))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res2</span><span class="p">[</span><span class="s1">&#39;dihedral_angles&#39;</span><span class="p">],</span><span class="n">res2</span><span class="p">[</span><span class="s1">&#39;qm_scan_kJpermol&#39;</span><span class="p">],</span><span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res2</span><span class="p">[</span><span class="s1">&#39;dihedral_angles&#39;</span><span class="p">],</span><span class="n">res2</span><span class="p">[</span><span class="s1">&#39;mm_scan_kJpermol&#39;</span><span class="p">],</span><span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Dihedral angle: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">res2</span><span class="p">[</span><span class="s1">&#39;dihedral_indices&#39;</span><span class="p">])))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi1</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$&#39;</span><span class="p">,</span><span class="n">res_phi2</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/md_ffs_15_0.png" src="../_images/md_ffs_15_0.png" />
+</div>
+</div>
+<p>As is clear, the dihedral angle of the original force field is very poor, and we will now improve this by fitting to the QM potential.</p>
+</div>
+<div class="section" id="fitting-to-qm-potential">
+<h3>Fitting to QM potential<a class="headerlink" href="#fitting-to-qm-potential" title="Permalink to this headline">¶</a></h3>
+<p>Correct original GAFF force field by fitting to QM potential;</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target_top_file</span> <span class="o">=</span> <span class="n">original_top_file</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ff_gen</span><span class="o">.</span><span class="n">target_dihedrals</span><span class="p">)):</span>
+    <span class="n">target_top_file</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">dihedral_correction</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+<span class="n">res_phi1_fit</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">res_phi2_fit</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi1</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, original&#39;</span><span class="p">,</span><span class="n">res_phi1_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, fitted&#39;</span><span class="p">)</span>
+<span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi2</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, original&#39;</span><span class="p">,</span><span class="n">res_phi2_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, fitted&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/md_ffs_17_0.png" src="../_images/md_ffs_17_0.png" />
+<img alt="../_images/md_ffs_17_1.png" src="../_images/md_ffs_17_1.png" />
+</div>
+</div>
+<p>This leads to substantial improvement, but there are still some discrepancies, in particular for the <span class="math notranslate nohighlight">\(\phi_1\)</span> dihedral. We will not investigate two different improvements on this.</p>
+</div>
+<div class="section" id="improvement-weighted-fitting">
+<h3>Improvement: Weighted fitting<a class="headerlink" href="#improvement-weighted-fitting" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target_top_file</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">dihedral_correction</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kT</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+<span class="n">target_top_file</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">dihedral_correction</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kT</span><span class="o">=</span><span class="mf">12.0</span><span class="p">)</span>
+
+<span class="n">res_phi1_fit_imp1</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">res_phi2_fit_imp1</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi1_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, fitted&#39;</span><span class="p">,</span><span class="n">res_phi1_fit_imp1</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, improved&#39;</span><span class="p">)</span>
+<span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi2_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, fitted&#39;</span><span class="p">,</span><span class="n">res_phi2_fit_imp1</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, improved&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/md_ffs_19_0.png" src="../_images/md_ffs_19_0.png" />
+<img alt="../_images/md_ffs_19_1.png" src="../_images/md_ffs_19_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="improvement-exclude-problematic-angles">
+<h3>Improvement: Exclude problematic angles<a class="headerlink" href="#improvement-exclude-problematic-angles" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ff_gen</span><span class="o">.</span><span class="n">update_dihedral_range</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ff_gen</span><span class="o">.</span><span class="n">scan_dih_angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">([</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">,</span> <span class="mf">70.0</span><span class="p">,</span> <span class="mf">80.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="mf">110.0</span><span class="p">,</span> <span class="mf">120.0</span><span class="p">,</span> <span class="mf">130.0</span><span class="p">,</span> <span class="mf">140.0</span><span class="p">,</span> <span class="mf">150.0</span><span class="p">,</span> <span class="mf">160.0</span><span class="p">,</span> <span class="mf">170.0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0, 150.0, 160.0, 170.0]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ff_gen</span><span class="o">.</span><span class="n">target_dihedrals</span><span class="p">)):</span>
+    <span class="n">target_top_file</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">dihedral_correction</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+<span class="n">res_phi1_fit_imp2</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">res_phi2_fit_imp2</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi1_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, fitted&#39;</span><span class="p">,</span><span class="n">res_phi1_fit_imp2</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_1$, improved&#39;</span><span class="p">)</span>
+<span class="n">custom_plot</span><span class="p">(</span><span class="n">res_phi2_fit</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, fitted&#39;</span><span class="p">,</span><span class="n">res_phi2_fit_imp2</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;$\phi_2$, improved&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/md_ffs_23_0.png" src="../_images/md_ffs_23_0.png" />
+<img alt="../_images/md_ffs_23_1.png" src="../_images/md_ffs_23_1.png" />
+</div>
+</div>
+<p>Clear that fit is improved.</p>
+<div class="cell tag_hide-input tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dummy run to make sure fitting works properly</span>
+<span class="c1"># (above scripts are static, to save computational resources)</span>
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">read_qm_scan_xyz_files</span><span class="p">([</span><span class="s1">&#39;../xyz/md/1_14_15_16_short.xyz&#39;</span><span class="p">])</span>
+
+<span class="n">target_top_file</span> <span class="o">=</span> <span class="n">original_top_file</span> <span class="o">=</span> <span class="s1">&#39;../data/md/hs276_00.top&#39;</span>
+<span class="n">target_top_file</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">dihedral_correction</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kT</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+<span class="n">result_dummy</span> <span class="o">=</span> <span class="n">ff_gen</span><span class="o">.</span><span class="n">validate_force_field</span><span class="p">(</span><span class="n">target_top_file</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ff_gen</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">result_dummy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading QM scan from file...                                                                                     
+* Info *   ../xyz/md/1_14_15_16_short.xyz                                                                                 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * Fitting dihedral angle 1-14-15-16...                                                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       Dihedral           MM energy                                                                               
+* Info *   --------------------------------                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *        0.0 deg       42.355 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       30.0 deg       31.484 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       60.0 deg       24.529 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       90.0 deg       23.282 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      120.0 deg       24.045 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      150.0 deg       28.932 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      180.0 deg       43.484 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * ...done.                                                                                                         
+                                                                                                                          
+* Info * Generated new topology file: hs276_01.top                                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Validating hs276_01.top ...                                                                                      
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Target dihedral angle: 1-14-15-16                                                                              
+                                                                                                                          
+* Info *       Dihedral           MM energy                                                                               
+* Info *   --------------------------------                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *        0.0 deg       34.622 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       30.0 deg       25.120 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       60.0 deg       24.352 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *       90.0 deg       24.793 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      120.0 deg       23.512 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      150.0 deg       23.581 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *      180.0 deg       32.231 kJ/mol                                                                               
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info *       Dihedral      MM energy(rel)      QM energy(rel)       diff                                                
+* Info *   ---------------------------------------------------------------                                                
+* Info *        0.0 deg       11.110 kJ/mol        7.178 kJ/mol      3.932                                                
+* Info *       30.0 deg        1.609 kJ/mol        2.746 kJ/mol     -1.138                                                
+* Info *       60.0 deg        0.840 kJ/mol        0.738 kJ/mol      0.103                                                
+* Info *       90.0 deg        1.281 kJ/mol        2.203 kJ/mol     -0.922                                                
+* Info *      120.0 deg        0.000 kJ/mol        0.000 kJ/mol      0.000                                                
+* Info *      150.0 deg        0.070 kJ/mol        0.612 kJ/mol     -0.542                                                
+* Info *      180.0 deg        8.719 kJ/mol        6.285 kJ/mol      2.434                                                
+                                                                                                                          
+</pre></div>
+</div>
+<img alt="../_images/md_ffs_25_21.png" src="../_images/md_ffs_25_21.png" />
+</div>
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">

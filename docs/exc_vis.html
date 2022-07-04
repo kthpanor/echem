@@ -51,15 +51,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Reduced particle densities" href="dens_vis.html" />
-    <link rel="prev" title="Orbitals" href="orb_vis.html" />
+    <link rel="prev" title="Orbitals and densities" href="orb_vis.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -726,7 +724,7 @@ const thebe_selector_output = ".output, .cell_output"
   <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="orb_vis.html">
-     Orbitals
+     Orbitals and densities
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -918,31 +916,26 @@ const thebe_selector_output = ".output, .cell_output"
 <li><p><a class="reference internal" href="#sec-vis-ntos"><span class="std std-ref">Natural transition orbitals</span></a> (NTOs), which constructs a compact, transition-dependent description of specific excitations</p></li>
 <li><p><a class="reference internal" href="#sec-vis-attach-det"><span class="std std-ref">Attachment and detachment densities</span></a>, which are based on the one-particle density matrix and considers the density change involved in an excitation</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is to be expanded, including more theory and other methods.</p>
-</div>
-<p>As an illustration, we will consider the first valence-excited state of water, as calculated using ADC(2):</p>
+<p>As an illustration, we consider the first valence-excited state of water, as calculated using ADC(2):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">water_geom</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.1187290000     0.0000000000</span>
 <span class="s2">H      -0.7532010000    -0.4749160000    -0.0000000000</span>
 <span class="s2">H       0.7532010000    -0.4749160000     0.0000000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="c1"># Prepare molecule object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_geom</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
-<span class="c1"># SCF calculation</span>
 <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">HF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 <span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 
-<span class="c1"># ADC(2) calculation of the first two states</span>
 <span class="n">adc_state</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># Print results</span>
+</pre></div>
+</div>
+<p>Printing the results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print results</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_state</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
 <span class="c1"># Print dominant amplitudes</span>
@@ -1062,7 +1055,7 @@ const thebe_selector_output = ".output, .cell_output"
 \mathbf{UTV}^{\dagger} = \mathbf{\Lambda}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> are the transformation matrices correspoding to the hole and electron, respectively, and <span class="math notranslate nohighlight">\(\mathbf{\Lambda}\)</span> is a diagonal matrix measuring the relative importance of each pair of NTOs.</p>
-<p>We will not construct the first pair of NTOs for the first excitation:</p>
+<p>The first pair of NTOs for the first excitation can now be constructed as:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The following scripts are not executed, and static image are instead loaded. This is merely for improved loading time of the webpage and to save disk space.</p>
@@ -1110,8 +1103,12 @@ Relative importance: 0.97
 </div>
 <div class="section" id="attachment-and-detachment-densities">
 <span id="sec-vis-attach-det"></span><h2>Attachment and detachment densities<a class="headerlink" href="#attachment-and-detachment-densities" title="Permalink to this headline">¶</a></h2>
-<p>A different method for visualizing the transitions is to consider the attachment (A) and detachment (D) densities, which are constructed to show the density change related to an excitation. These densities, which corresponds to the hole/where electrons go from and an electron/where they go to, can then be used to look at properties such as hole and electron size, distance between the centroid (and thus level of charge-transfer), and more. For a simple HOMO-LUMO transition they would simply correspond to the square of the dominant NTOs.</p>
-<p>D/A densities are constructed from the one-particle difference density matrix (1DDM), which is simply the difference between the on-particle density matrices of the initial and final state:</p>
+<p>A different method for visualizing the transitions is to consider the attachment (A) and detachment (D) densities, which are constructed to show the density change related to an excitation. For a simple HOMO-LUMO transition they would simply correspond to the square of the dominant NTOs, with meaning:</p>
+<ul class="simple">
+<li><p>Hole/detachment density representing where electrons go from</p></li>
+<li><p>Electron/attachment density representing where electrons go to</p></li>
+</ul>
+<p>These densities can then be used to look at properties such as hole and electron size, distance between the centroid (and thus level of charge-transfer), and more. D/A densities are constructed from the one-particle difference density matrix (1DDM), which is simply the difference between the on-particle density matrices of the initial and final state:</p>
 <div class="math notranslate nohighlight">
 \[
 \rho_{\Delta} = \rho_f - \rho_i
@@ -1121,7 +1118,7 @@ Relative importance: 0.97
 \[
 \mathbf{U} \rho_{\Delta} \mathbf{U}^{\dagger} = \delta
 \]</div>
-<p>The attachment and detachment densities are constructed by considering the negative and positive eigenvalues. For a discussion on NTOs and D/A densities, see, <em>e.g.</em>, <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/jcc.23975">this paper</a>.</p>
+<p>The attachment and detachment densities are constructed by considering the negative and positive eigenvalues.</p>
 <p>Looking at the attachment and detachment density of the first excited state:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load transition density matrix, combine alpha and beta, and transform to numpy</span>
 <span class="n">p_state</span> <span class="o">=</span> <span class="n">adc_state</span><span class="o">.</span><span class="n">state_diffdm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">to_ao_basis</span><span class="p">()</span>
@@ -1151,7 +1148,7 @@ Relative importance: 0.97
 <div class="figure align-default" id="water-att-det-dens">
 <img alt="../_images/water-att-det-dens.png" src="../_images/water-att-det-dens.png" />
 </div>
-<p>We see that these states are more compact (as we are looking on <em>densities</em>) than above NTOs.</p>
+<p>We see that these states are more compact (as we are looking on <em>densities</em>) than above NTOs. For a discussion on NTOs and D/A densities, see, <em>e.g.</em>, <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/jcc.23975">this paper</a>.</p>
 </div>
 </div>
 
@@ -1184,7 +1181,7 @@ Relative importance: 0.97
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Orbitals</p>
+            <p class="prev-next-title">Orbitals and densities</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="dens_vis.html" title="next page">
