@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Intermediate state representation &#8212; Computational Chemistry from  Laptop to HPC</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +20,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -39,18 +37,21 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -65,7 +66,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -74,9 +89,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -573,17 +589,39 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="mr-response.html">
-   Multi-reference
+   Multireference response
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
+  <label for="toctree-checkbox-16">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="ci-response.html">
+     CI response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="sa-mcscf.html">
+     State-averaged MCSCF
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="mr-response-exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="adc.html">
    ADC
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
-  <label for="toctree-checkbox-16">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
+  <label for="toctree-checkbox-17">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -619,8 +657,8 @@ const thebe_selector_output = ".output, .cell_output"
   <a class="reference internal" href="excoupl.html">
    Exciton coupling model
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
-  <label for="toctree-checkbox-17">
+  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <label for="toctree-checkbox-18">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -643,8 +681,8 @@ const thebe_selector_output = ".output, .cell_output"
   <a class="reference internal" href="localprop.html">
    Localized properties
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
-  <label for="toctree-checkbox-18">
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <label for="toctree-checkbox-19">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -670,8 +708,8 @@ const thebe_selector_output = ".output, .cell_output"
   <a class="reference internal" href="pe.html">
    Polarizable embedding
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
-  <label for="toctree-checkbox-19">
+  <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
+  <label for="toctree-checkbox-20">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -694,8 +732,8 @@ const thebe_selector_output = ".output, .cell_output"
   <a class="reference internal" href="vis_structure.html">
    Molecular structure and dynamics
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
-  <label for="toctree-checkbox-20">
+  <input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/>
+  <label for="toctree-checkbox-21">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -716,15 +754,15 @@ const thebe_selector_output = ".output, .cell_output"
   <a class="reference internal" href="elec_vis.html">
    Electronic structure
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/>
-  <label for="toctree-checkbox-21">
+  <input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/>
+  <label for="toctree-checkbox-22">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="orb_vis.html">
-     Orbitals
+     Orbitals and densities
     </a>
    </li>
    <li class="toctree-l2">
@@ -759,107 +797,209 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/adc-isr.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/kthpanor/echem"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/adc-isr.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/adc-isr.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
-        
-        
-        
-        
-    </div>
-</div>
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/adc-isr.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/kthpanor/echem"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/adc-isr.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/docs/adc-isr.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#derivation-via-intermediate-states">
    Derivation via intermediate states
@@ -887,12 +1027,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Intermediate state representation</h1>
@@ -936,18 +1075,21 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="intermediate-state-representation">
-<span id="isr-label"></span><h1>Intermediate state representation<a class="headerlink" href="#intermediate-state-representation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="derivation-via-intermediate-states">
-<h2>Derivation via intermediate states<a class="headerlink" href="#derivation-via-intermediate-states" title="Permalink to this headline">¶</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="intermediate-state-representation">
+<span id="isr-label"></span><h1>Intermediate state representation<a class="headerlink" href="#intermediate-state-representation" title="Permalink to this headline">#</a></h1>
+<section id="derivation-via-intermediate-states">
+<h2>Derivation via intermediate states<a class="headerlink" href="#derivation-via-intermediate-states" title="Permalink to this headline">#</a></h2>
 <p>As the name suggest, the intermediate state representation (ISR) approach consists of constructing the ADC matrix with the help of intermediate states <span class="math notranslate nohighlight">\(\ket{\tilde{\Psi}_I}\)</span>, obtained by applying excitation operators to the ground state <span class="math notranslate nohighlight">\(\ket{0}\)</span>. In <a class="reference internal" href="secondquant.html"><span class="doc std std-doc">second quantization</span></a>, the excitation operator is written as <span class="math notranslate nohighlight">\(\hat{C}_I=\{ \hat{a}_a^\dagger\hat{a}_i;\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i, a&lt;b, i&lt;j;... \}\)</span>, where the indices <span class="math notranslate nohighlight">\(a,b...\)</span> refer to unoccupied orbitals, while <span class="math notranslate nohighlight">\(i,j...\)</span> represent occupied orbitals <span id="id1">[<a class="reference internal" href="refs.html#id77" title="F. Mertins and J. Schirmer. Algebraic propagator approaches and intermediate-state representations. I. The biorthogonal and unitary coupled-cluster methods. Phys. Rev. A, 53(4):2140-2152, 1996. doi:10.1103/PhysRevA.53.2140.">MS96</a>, <a class="reference internal" href="refs.html#id78" title="J. Schirmer. Closed-form intermediate representations of many-body propagators and resolvent matrices. Phys. Rev. A, 43(9):4647-4659, 1991. doi:10.1103/PhysRevA.43.4647.">Sch91</a>, <a class="reference internal" href="refs.html#id79" title="J. Schirmer and A.B. Trofimov. Intermediate state representation approach to physical properties of electronically excited molecules. J. Chem. Phys., 120(24):11449-11464, 2004. doi:10.1063/1.1752875.">ST04</a>]</span>. Schematic representations of single and double excitations, which are the only two excitation classes that are needed for ADC up to third order in perturbation theory, are depicted in below figure:</p>
-<div class="figure align-left" id="fig-isr">
+<figure class="align-left" id="fig-isr">
 <a class="reference internal image-reference" href="../_images/isr_adc_matrix.svg"><img alt="../_images/isr_adc_matrix.svg" height="238" src="../_images/isr_adc_matrix.svg" width="483" /></a>
-<p class="caption"><span class="caption-number">Fig. 28 </span><span class="caption-text">Illustration of (a) single excitations, (b) double excitations, (c) the structure of the ADC(2) matrix. The numbers in parenthesis indicate the highest order of perturbation theory used to describe each particular block.</span><a class="headerlink" href="#fig-isr" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 28 </span><span class="caption-text">Illustration of (a) single excitations, (b) double excitations, (c) the structure of the ADC(2) matrix. The numbers in parenthesis indicate the highest order of perturbation theory used to describe each particular block.</span><a class="headerlink" href="#fig-isr" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <p>The intermediate states <span class="math notranslate nohighlight">\(\ket{\tilde{\Psi}_I}\)</span> are obtained by first applying <span class="math notranslate nohighlight">\(\hat{C}_I\)</span> to the many-body ground state:</p>
 <div class="math notranslate nohighlight" id="eq-adc-prec">
 \[
@@ -987,9 +1129,9 @@ f_{I,pq} = \bra{\tilde{\Psi}_{I}} \hat{a}_p^\dagger \hat{a}_q \ket{\Psi_0}
 \]</div>
 <p>and the transition amplitudes <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> by contracting with the eigenvectors,
 <span class="math notranslate nohighlight">\(\mathbf{x} = \mathbf{Y}^\dagger \mathbf{f}\)</span>.</p>
-</div>
-<div class="section" id="structure-of-the-adc-matrix">
-<h2>Structure of the ADC matrix<a class="headerlink" href="#structure-of-the-adc-matrix" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="structure-of-the-adc-matrix">
+<h2>Structure of the ADC matrix<a class="headerlink" href="#structure-of-the-adc-matrix" title="Permalink to this headline">#</a></h2>
 <p>As is shown <a class="reference internal" href="adc-hpc.html#adc-hpc-label"><span class="std std-ref">here</span></a>, the ADC eigenvalue equation in the space of single (S) and double (D) excitations can be written as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1015,14 +1157,16 @@ for ADC(<span class="math notranslate nohighlight">\(n\)</span>) schemes up to t
 ADC(2)-x represents an <em>ad hoc</em> extension of ADC(2), where the first-order terms in the doubles-doubles block
 from ADC(3) are taken into account in order to improve the description of doubly excited states.
 However, this generally leads to an imbalanced description of singly and doubly excited states <span id="id4">[<a class="reference internal" href="refs.html#id76" title="Andreas Dreuw and Michael Wormit. The algebraic diagrammatic construction scheme for the polarization propagator for the calculation of excited states. WIREs Comput. Mol. Sci., 5(1):82-95, 2015.">DW15</a>]</span>.</p>
-<div class="figure align-left" id="fig-adcmatrices">
+<figure class="align-left" id="fig-adcmatrices">
 <a class="reference internal image-reference" href="../_images/adc_matrices_0_to_3.svg"><img alt="../_images/adc_matrices_0_to_3.svg" height="238" src="../_images/adc_matrices_0_to_3.svg" width="823" /></a>
-<p class="caption"><span class="caption-number">Fig. 29 </span><span class="caption-text">Structure of the ADC(<span class="math notranslate nohighlight">\(n\)</span>) matrix at different orders <span class="math notranslate nohighlight">\(n\)</span>. The numbers indicate the orders of perturbation theory used to expand
-the corresponding block.</span><a class="headerlink" href="#fig-adcmatrices" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-<div class="section" id="explicit-expressions-for-adc-2">
-<h2>Explicit expressions for ADC(2)<a class="headerlink" href="#explicit-expressions-for-adc-2" title="Permalink to this headline">¶</a></h2>
+<figcaption>
+<p><span class="caption-number">Fig. 29 </span><span class="caption-text">Structure of the ADC(<span class="math notranslate nohighlight">\(n\)</span>) matrix at different orders <span class="math notranslate nohighlight">\(n\)</span>. The numbers indicate the orders of perturbation theory used to expand
+the corresponding block.</span><a class="headerlink" href="#fig-adcmatrices" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="explicit-expressions-for-adc-2">
+<h2>Explicit expressions for ADC(2)<a class="headerlink" href="#explicit-expressions-for-adc-2" title="Permalink to this headline">#</a></h2>
 <p>Using above expansion of <span class="math notranslate nohighlight">\(M_{IJ}\)</span> in combination with specific classes of excitation operators and truncating the series at the desired order, various levels of ADC theory are obtained. One aspect to note is that the excitation classes needed to construct a specific ADC level are directly connected to the order of perturbation theory. This can be easily seen in <a class="reference internal" href="adc-pp.html#fig-propagator"><span class="std std-numref">Fig. 27</span></a>, where the zeroth and first order terms are related to single excitations (only one particle-hole pair is involved), while second order terms involve double excitations (two particle-hole pairs are involved). To illustrate this further, we list the explicit expressions for the ADC matrix elements in spin-orbitals up to second order <span id="id5">[<a class="reference internal" href="refs.html#id80" title="Jan Wenzel. Development and Implementation of Theoretical Methods for the Description of Electronically Core-Excited States. PhD thesis, Heidelberg University, 2016.">Wen16</a>, <a class="reference internal" href="refs.html#id83" title="Michael Wormit. Development and Application of Reliable Methods for the Calculation of Excited States: From Light-Harvesting Complexes to Medium-Sized Molecules. PhD thesis, Goethe University Frankfurt, 2009.">Wor09</a>]</span>:</p>
 <span class="target" id="adcmat-phph"></span><div class="math notranslate nohighlight">
 \[
@@ -1061,9 +1205,9 @@ M_{ijab,klcd}^{(0)}=(\epsilon_a+\epsilon_b-\epsilon_i-\epsilon_j)\delta_{ac}\del
 <span class="math notranslate nohighlight">\(\delta_{pq}\)</span> is the Kronecker delta.</p>
 <p>The structure of the ADC(2) matrix is depicted in <a class="reference internal" href="#fig-isr"><span class="std std-numref">Fig. 28</span></a>(c). In principle, the ADC(2) matrix contains all the possible single and double excitations which can be constructed for the system of interest (using a particular basis set). However, to calculate all these excitations would be computationally very expensive  or practically impossible for all but the smallest of systems.
 In practice, therefore, only the lowest <span class="math notranslate nohighlight">\(n\)</span> excited states are ever calculated by means of iterative diagonalization algorithms, where <span class="math notranslate nohighlight">\(n\)</span> is the number of states requested by the user. This means that the space of valence excitations is easily accessible, but makes the space of core excitations impossible to reach, except for molecules with very few electrons. An approach to overcome this problem will be discussed in more detail in the <a class="reference internal" href="adc-cvs.html"><span class="doc std std-doc">next section</span></a>.</p>
-</div>
-<div class="section" id="comparison-to-related-methods">
-<h2>Comparison to related methods<a class="headerlink" href="#comparison-to-related-methods" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="comparison-to-related-methods">
+<h2>Comparison to related methods<a class="headerlink" href="#comparison-to-related-methods" title="Permalink to this headline">#</a></h2>
 <p>The ADC scheme is related to approaches such as <a class="reference internal" href="ci.html#sec-ci"><span class="std std-ref">configuration interaction</span></a> (CI) or coupled cluster (CC). The CI matrix <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> corresponds to a representation of the Hamiltonian <span class="math notranslate nohighlight">\(\hat{H}\)</span> within the basis of excited HF determinants, <span class="math notranslate nohighlight">\(\ket{\Phi_I} = \hat{C}_I \ket{\Phi_{\text{HF}}}\)</span>, where <span class="math notranslate nohighlight">\(\hat{C}_I\)</span> are the excitation operators used also in the <a class="reference internal" href="#eq-adc-prec"><span class="std std-ref">precursor expression</span></a>, and <span class="math notranslate nohighlight">\(\ket{\Phi_{\text{HF}}}\)</span> is the HF ground state. The elements of <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> are thus given by</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1077,9 +1221,9 @@ H_{IJ} = \bra{\Phi_I} \hat{H} \ket{\Phi_J} \, .
 <p>where <span class="math notranslate nohighlight">\(\hat{T}\)</span> is the <em>cluster operator</em> that generates a linear combination of singly, doubly, <span class="math notranslate nohighlight">\(\ldots\)</span> excited determinants <span id="id8">[<a class="reference internal" href="refs.html#id89" title="Trygve Helgaker, Poul Jørgensen, and Jeppe Olsen. Molecular electronic-structure theory. John Wiley &amp; Sons, 2014.">HJO14</a>]</span>. While <a class="reference internal" href="ci.html#sec-truncated-ci"><span class="std std-ref">truncated CI</span></a> methods suffer from the <a class="reference internal" href="ci.html#sec-size-consistency"><span class="std std-ref">size-consistency</span></a> problem, neither ADC nor CC excited-state schemes have this issue. On the other hand, while the secular matrices of both ADC and CI are symmetric, this is not true for CC schemes because the similarity-transformed Hamiltonian <span class="math notranslate nohighlight">\(\bar{H}\)</span> is not Hermitian, which complicates the calculation of excited-state and transition properties <span id="id9">[<a class="reference internal" href="refs.html#id167" title="J. Schirmer and F. Mertins. Review of biorthogonal coupled cluster representations for electronic excitation. Theor. Chem. Acc., 125(3):145-172, 2010. doi:10.1007/s00214-009-0597-x.">SM10</a>]</span>.</p>
 <p>Another aspect is the so-called <em>compactness</em> property <span id="id10">[<a class="reference internal" href="refs.html#id77" title="F. Mertins and J. Schirmer. Algebraic propagator approaches and intermediate-state representations. I. The biorthogonal and unitary coupled-cluster methods. Phys. Rev. A, 53(4):2140-2152, 1996. doi:10.1103/PhysRevA.53.2140.">MS96</a>]</span>, which means that can use smaller explicit configuration spaces than comparable CI treatments. Both ADC and CC methods are somewhat more compact than CI, and ADC schemes are more compact than CC approaches in odd orders of perturbation theory.</p>
 <p>Furthermore, it can be shown that the <em>unitary coupled-cluster</em> (UCC) approach shares the same properties as the ADC/ISR such as size consistency and compactness, and it is in fact equivalent to ADC in low orders of perturbation theory, but differences will occur in higher orders <span id="id11">[<a class="reference internal" href="refs.html#id171" title="Manuel Hodecker, Adrian L. Dempwolff, Jochen Schirmer, and Andreas Dreuw. Theoretical analysis and comparison of unitary coupled-cluster and algebraic-diagrammatic construction methods for ionization. J. Chem. Phys., 156(7):074104, 2022. doi:10.1063/5.0070967.">HDSD22</a>]</span>.</p>
-</div>
-<div class="section" id="excited-state-properties">
-<h2>Excited-state properties<a class="headerlink" href="#excited-state-properties" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="excited-state-properties">
+<h2>Excited-state properties<a class="headerlink" href="#excited-state-properties" title="Permalink to this headline">#</a></h2>
 <p>A distinct advantage of the ISR over the classical propagator approach is that it gives direct access to excited-state wave functions by expanding it in the intermediate-state basis as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1105,8 +1249,8 @@ the effective transition moments <span class="math notranslate nohighlight">\(\m
 Combining the eigenvectors <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span> (and eigenvalues) of the ADC(3) matrix together with the second-order descriptions of
 <span class="math notranslate nohighlight">\(\mathbf{f}\)</span> and <span class="math notranslate nohighlight">\(\tilde{\mathbf{D}}\)</span> yields transition moments, oscillator strengths and other properties at a level
 referred to as “ADC(3/2)” <span id="id15">[<a class="reference internal" href="refs.html#id79" title="J. Schirmer and A.B. Trofimov. Intermediate state representation approach to physical properties of electronically excited molecules. J. Chem. Phys., 120(24):11449-11464, 2004. doi:10.1063/1.1752875.">ST04</a>]</span>.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1130,9 +1274,11 @@ referred to as “ADC(3/2)” <span id="id15">[<a class="reference internal" hre
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="adc-pp.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -1148,24 +1294,28 @@ referred to as “ADC(3/2)” <span id="id15">[<a class="reference internal" hre
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The eChem team<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
     
-      By The eChem team<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
