@@ -1,0 +1,48 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/miniconda3/envs/echem/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+    return future.result()
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 664, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Number of excited states for H2O, twice as many for LiH, thrice for composite system
+nexc = 3
+
+# Calculate ADC(1) and ADC(2) excitation energies with Gator
+adc1_drv = gator.adconedriver.AdcOneDriver(scf_lih.comm)
+adc1_drv.conv_thresh = 1e-5
+adc1_results_h2o = adc1_drv.compute(h2o, basis_h2o, scf_h2o.scf_tensors)
+adc1_drv.nstates = 2 * nexc
+adc1_results_lih = adc1_drv.compute(lih, basis_lih, scf_lih.scf_tensors)
+
+adc2_drv = gator.adctwodriver.AdcTwoDriver(scf_lih.comm)
+adc2_drv.conv_thresh = 1e-5
+adc2_results_h2o = adc2_drv.compute(h2o, basis_h2o, scf_h2o.scf_tensors)
+adc2_drv.nstates = 2 * nexc
+adc2_results_lih = adc2_drv.compute(lih, basis_lih, scf_lih.scf_tensors)
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+[0;32m/var/folders/ky/5h8mb6gs32nbvf3w8cyqwrhm0000gn/T/ipykernel_36035/2508961916.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      3[0m [0;34m[0m[0m
+[1;32m      4[0m [0;31m# Calculate ADC(1) and ADC(2) excitation energies with Gator[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 5[0;31m [0madc1_drv[0m [0;34m=[0m [0mgator[0m[0;34m.[0m[0madconedriver[0m[0;34m.[0m[0mAdcOneDriver[0m[0;34m([0m[0mscf_lih[0m[0;34m.[0m[0mcomm[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      6[0m [0madc1_drv[0m[0;34m.[0m[0mconv_thresh[0m [0;34m=[0m [0;36m1e-5[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      7[0m [0madc1_results_h2o[0m [0;34m=[0m [0madc1_drv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mh2o[0m[0;34m,[0m [0mbasis_h2o[0m[0;34m,[0m [0mscf_h2o[0m[0;34m.[0m[0mscf_tensors[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mAttributeError[0m: module 'gator' has no attribute 'adconedriver'
+AttributeError: module 'gator' has no attribute 'adconedriver'
+
