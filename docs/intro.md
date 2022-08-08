@@ -46,7 +46,7 @@ and as a modern and very efficient code to perform large-scale calculations on h
 
 ### VeloxChem
 
-VeloxChem{cite}`veloxchem` is a quantum chemistry program for the calculation of spectroscopic properties of molecular systems. It implements real and complex linear and nonlinear response theory at the level of Kohn--Sham density functional theory (DFT). The code is open source and may be downloaded from [https://veloxchem.org](https://veloxchem.org). Documentation and reference manual are available at [https://docs.veloxchem.org](https://docs.veloxchem.org).
+VeloxChem{cite}`veloxchem` is a quantum chemistry program for the calculation of spectroscopic properties of molecular systems. It implements real and complex linear and nonlinear response theory at the level of Kohn--Sham density functional theory (DFT). The code is open source and may be downloaded from [https://veloxchem.org](https://veloxchem.org)m which also contains documentation and reference manual.
 
 VeloxChem is designed with a C++ layer of highly optimized code for modern hardware infrastructures and a high-level Python layer that allows for ease of development and experimentation. The C++ layer uses hybrid parallel techniques using OpenMP within a multi-core node and MPI across nodes.
 
