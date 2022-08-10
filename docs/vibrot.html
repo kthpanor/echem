@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -974,7 +976,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p>where <span class="math notranslate nohighlight">\(K\)</span> and <span class="math notranslate nohighlight">\(k\)</span> are indices identifying the electronic and rovibrational levels, respectively. For a diatomic system, the rovibrational wave function is in turn separated into its vibrational, <span class="math notranslate nohighlight">\(\psi\)</span>, and rotational, <span class="math notranslate nohighlight">\(\psi_\mathrm{r}\)</span>, components</p>
 <div class="math notranslate nohighlight">
 \[
-\Phi_{K;k}(R) =  \psi_k(R) \psi_{\mathrm{r}; k}(\theta,\phi) 
+\Phi_{K;k}(\mathbf{R}) =  \psi_k(R) \psi_{\mathrm{r}; k}(\theta,\phi) 
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(k\)</span> is understood as a compound index uniquely identifying a given rotational level of a given vibrational state.</p>
 <div class="section" id="rotational-schrodinger-equation">
@@ -991,7 +993,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p>or, equivalently,</p>
 <div class="math notranslate nohighlight">
 \[
-\frac{\hat{L}^2\psi_\mathrm{r}((\theta,\phi)}{2\mu R_0^2} = E \, \psi_\mathrm{r}(\theta,\phi)
+\frac{\hat{L}^2\psi_\mathrm{r}(\theta,\phi)}{2\mu R_0^2} = E \, \psi_\mathrm{r}(\theta,\phi)
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\hat{L}^2\)</span> is the square of the total angular moment operator. The angles <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> describe the orientation of the diatomic molecule with respect to a laboratory-fixed coordinate system and <span class="math notranslate nohighlight">\(\mu\)</span> is the reduced mass defined as</p>
 <div class="math notranslate nohighlight">
@@ -1034,13 +1036,21 @@ k^{2} (x) = \dfrac {2\mu} {\hbar^{2}} [ E - V (x) ]
 <p>The values of the wave function in three equidistant points separated by <span class="math notranslate nohighlight">\(h\)</span> are related as</p>
 <div class="math notranslate nohighlight">
 \[ 
-\psi \left( x _ {i + 1} \right) = \dfrac{\psi \left( x _ {i} \right) \left( 2 + \dfrac {10 h^{2}} {12} k^{2} \left( x _ {i} \right) \right) - \psi \left( x _ {i - 1} \right) \left( 1 - \dfrac {h^{2}} {12} k^{2} \left( x _ {i - 1} \right) \right)}{1 - \dfrac {h^{2}} {12} k^{2} \left( x _ {i + 1} \right)} 
+\psi(x_{i+1}) = 
+\dfrac{
+    \psi(x_{i}) 
+    \left( 2 + \dfrac {10 h^{2}} {12} k^{2}(x_{i}) \right) - 
+    \psi(x_{i-1}) 
+    \left( 1 - \dfrac {h^{2}} {12} k^{2}(x_{i-1}) \right)
+    }{
+    1 - \dfrac {h^{2}} {12} k^{2}(x_{i+1})
+    } 
 \]</div>
 <p>from which solutions are found by the algorithm</p>
 <ol class="simple">
 <li><p>Guess the energy <span class="math notranslate nohighlight">\(E_\mathrm{guess}\)</span></p></li>
 <li><p>For <span class="math notranslate nohighlight">\(E_\mathrm{guess}\)</span>, determine the classically allowed interval [<span class="math notranslate nohighlight">\(x_a,x_b\)</span>] inside <span class="math notranslate nohighlight">\(V(x)\)</span></p></li>
-<li><p>Pick two points <span class="math notranslate nohighlight">\(x_\mathrm{min}\)</span> and <span class="math notranslate nohighlight">\(x_\mathrm{max}]\)</span> far into the classically forbidden region and impose the wave function to be zero at these points</p></li>
+<li><p>Pick two points <span class="math notranslate nohighlight">\(x_\mathrm{min}\)</span> and <span class="math notranslate nohighlight">\(x_\mathrm{max}\)</span> far into the classically forbidden region and impose the wave function to be zero at these points</p></li>
 <li><p>Determine iteratively the wave functions inside the interval <span class="math notranslate nohighlight">\([x_\mathrm{min}, x_\mathrm{max}]\)</span>:</p>
 <ol class="simple">
 <li><p>If <span class="math notranslate nohighlight">\(\psi(x_a)&lt;\epsilon\)</span> and <span class="math notranslate nohighlight">\(\psi(x_b)&lt;\epsilon\)</span>, accept the wave function</p></li>
@@ -1189,13 +1199,13 @@ k^{2} (x) = \dfrac {2\mu} {\hbar^{2}} [ E - V (x) ]
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 0 converged in 117 iterations                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 1 converged in 172 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 1 converged in 162 iterations                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 2 converged in 157 iterations                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 3 converged in 169 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 3 converged in 174 iterations                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1208,13 +1218,13 @@ k^{2} (x) = \dfrac {2\mu} {\hbar^{2}} [ E - V (x) ]
                            Excitation energy    Oscillator strength                                                       
                P Branch                                                                                                   
                                 2613.48 cm-1            3.94259e-09                                                       
-                                2593.84 cm-1            5.43630e-09                                                       
+                                2593.84 cm-1            5.43629e-09                                                       
                                 2574.19 cm-1            5.72716e-09                                                       
                                 2554.55 cm-1            5.03997e-09                                                       
                                 2534.91 cm-1            3.83494e-09                                                       
                                 2515.27 cm-1            2.56641e-09                                                       
                                 2495.63 cm-1            1.52520e-09                                                       
-                                2475.99 cm-1            8.09790e-10                                                       
+                                2475.99 cm-1            8.09789e-10                                                       
                                 2456.35 cm-1            3.85657e-10                                                       
                Q Branch                                                                                                   
                                 2633.12 cm-1            5.85360e-08                                                       
@@ -1420,13 +1430,13 @@ I = \frac{m_a m_b}{m_a + m_b} R^2
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 0 converged in 121 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 0 converged in 118 iterations                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 1 converged in 168 iterations                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 2 converged in 165 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 2 converged in 162 iterations                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1434,13 +1444,13 @@ I = \frac{m_a m_b}{m_a + m_b} R^2
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 0 converged in 103 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 0 converged in 95 iterations                                                            
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 1 converged in 136 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 1 converged in 144 iterations                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 2 converged in 139 iterations                                                           
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Vibronic state 2 converged in 141 iterations                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          

@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.png"/>
@@ -915,13 +917,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dispersion">
-   Dispersion
+  <a class="reference internal nav-link" href="#poles-of-response-functions">
+   Poles of response functions
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#poles-of-response-functions">
-   Poles of response functions
+  <a class="reference internal nav-link" href="#dispersion">
+   Dispersion
   </a>
  </li>
 </ul>
@@ -987,13 +989,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dispersion">
-   Dispersion
+  <a class="reference internal nav-link" href="#poles-of-response-functions">
+   Poles of response functions
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#poles-of-response-functions">
-   Poles of response functions
+  <a class="reference internal nav-link" href="#dispersion">
+   Dispersion
   </a>
  </li>
 </ul>
@@ -1256,32 +1258,34 @@ E_a &amp; 0 \\
 </div>
 </div>
 </div>
-<div class="section" id="dispersion">
-<h2>Dispersion<a class="headerlink" href="#dispersion" title="Permalink to this headline">¶</a></h2>
-<p>The variations of response functions with optical frequencies are known as dispersions and values for non-oscillating fields (<span class="math notranslate nohighlight">\(\omega = 0\)</span>) are known as static values.</p>
-</div>
 <div class="section" id="poles-of-response-functions">
 <h2>Poles of response functions<a class="headerlink" href="#poles-of-response-functions" title="Permalink to this headline">¶</a></h2>
 <p>Response functions have poles at transition energies and the associated residues are products of transition moments.</p>
 <p>Most excited state methods in computational chemistry are based on the principle of identifying excitation energies and spectrum intensities from a residue analysis of response functions.</p>
+</div>
+<div class="section" id="dispersion">
+<h2>Dispersion<a class="headerlink" href="#dispersion" title="Permalink to this headline">¶</a></h2>
+<p>The variations of response functions with optical frequencies are known as dispersions and values for non-oscillating fields (<span class="math notranslate nohighlight">\(\omega = 0\)</span>) are known as static values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.02</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">wa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Eba</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
 <span class="n">wb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Eba</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
 
-<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">wa</span><span class="p">,</span> <span class="n">wb</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-<span class="n">alpha</span> <span class="o">=</span> <span class="n">muab</span> <span class="o">*</span> <span class="n">muba</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">-</span> <span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">+</span> <span class="n">W</span><span class="p">))</span>
+<span class="n">alpha_wa</span> <span class="o">=</span> <span class="n">muab</span> <span class="o">*</span> <span class="n">muba</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">-</span> <span class="n">wa</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">+</span> <span class="n">wa</span><span class="p">))</span>
+<span class="n">alpha_wb</span> <span class="o">=</span> <span class="n">muab</span> <span class="o">*</span> <span class="n">muba</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">-</span> <span class="n">wb</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">Eba</span> <span class="o">+</span> <span class="n">wb</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wa</span><span class="p">,</span> <span class="n">alpha_wa</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wb</span><span class="p">,</span> <span class="n">alpha_wb</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">Eba</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\alpha(\omega)$ (a.u.)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega$ (a.u.)&quot;</span><span class="p">)</span>
@@ -1290,14 +1294,14 @@ E_a &amp; 0 \\
     <span class="s2">&quot;Static value&quot;</span><span class="p">,</span>
     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
     <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
-    <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+    <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
     <span class="s2">&quot;Pole&quot;</span><span class="p">,</span>
     <span class="p">(</span><span class="n">Eba</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-    <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+    <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -1307,7 +1311,29 @@ E_a &amp; 0 \\
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/response_19_0.png" src="../_images/response_19_0.png" />
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">Input In [8],</span> in <span class="ni">&lt;cell line: 11&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\alpha(\omega)$ (a.u.)&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega$ (a.u.)&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span>     <span class="s2">&quot;Static value&quot;</span><span class="p">,</span>
+<span class="ne">---&gt; </span><span class="mi">13</span>     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span>     <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span>     <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">},</span>
+<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">19</span>     <span class="s2">&quot;Pole&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="p">(</span><span class="n">Eba</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span>     <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="g g-Whitespace">     </span><span class="mi">22</span>     <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;headwidth&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;headlength&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">},</span>
+<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">25</span> <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;alpha&#39; is not defined
+</pre></div>
+</div>
+<img alt="../_images/response_19_1.png" src="../_images/response_19_1.png" />
 </div>
 </div>
 </div>
