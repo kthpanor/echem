@@ -1,0 +1,1993 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constructing the PES by interpolation &#8212; Computational Chemistry from  Laptop to HPC</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Molecular dynamics" href="md.html" />
+    <link rel="prev" title="PES interpolation techniques" href="impes.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Computational Chemistry from  Laptop to HPC</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials and workflows
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/vib_ir.html">
+   Vibrational spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_calc.html">
+     IR spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_raman.html">
+     Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/uv_vis.html">
+   UV/vis spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_calc.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_analysis.html">
+     Spectrum analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/xray.html">
+   X-ray spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_calc.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_analysis.html">
+     Spectrum analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_aspects.html">
+     Special aspects
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_large.html">
+     Larger systems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_nonstandard.html">
+     Non-standard calculations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_cheatsheet.html">
+     Cheat sheet
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Electronic ground states
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/elstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/orbitals.html">
+     Orbitals and basis sets
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/slater.html">
+     Many-electron wave functions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/operators.html">
+     Operators and matrix elements
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/integrals.html">
+     Integral evaluation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/spin.html">
+     Electron spin
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/correlation.html">
+     Electron correlation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/pt.html">
+     Rayleigh–Schrödinger perturbation theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/second_quant.html">
+     Second quantization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/wft.html">
+   Wave function theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hartree-fock.html">
+     Hartree–Fock theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/ci.html">
+     Configuration interaction
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mp2.html">
+     Møller–Plesset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mcscf.html">
+     Multiconfigurational methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/wft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/dft.html">
+   Density functional theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hohenberg.html">
+     Hohenberg–Kohn theorems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kohn-sham.html">
+     Kohn–Sham method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kernel_int.html">
+     Kernel integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dft_scf.html">
+     SCF optimization of a closed-shell state
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Molecular structure and dynamics
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="molstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="coordinates.html">
+     Choice of coordinates
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="forcefields.html">
+     Force fields
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="gradients.html">
+   Gradients
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="energy_grad.html">
+     Energy gradients
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="property_grad.html">
+     Property gradients
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="hessians_vib.html">
+   Hessians and vibrations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+  <label for="toctree-checkbox-9">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="hessians.html">
+     Molecular Hessians
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="vibrations.html">
+     Vibrational analysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="opt.html">
+   Structure optimization
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+  <label for="toctree-checkbox-10">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="opt_struct.html">
+     Optimization methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="opt_gs.html">
+     Ground-state structure optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="tst.html">
+   Transition-state theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="tst_gen.html">
+     Transition state geometry optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="impes.html">
+   PES interpolation techniques
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+  <label for="toctree-checkbox-12">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Constructing the PES by interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="md.html">
+   Molecular dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
+  <label for="toctree-checkbox-13">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="md_ffs.html">
+     Force field parameterization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="md_setup.html">
+     Ensembles and time integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="md_run.html">
+     Running a simulation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spectra and properties
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/spectra_aspects.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <label for="toctree-checkbox-14">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/vibrot.html">
+     Rovibronic states
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/response.html">
+     Responses to external fields
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/tddft.html">
+   TDDFT
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
+  <label for="toctree-checkbox-15">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_basics.html">
+     Foundations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_rpa.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/mr_response.html">
+   Multireference response
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
+  <label for="toctree-checkbox-16">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/ci_response.html">
+     CI response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/sa_mcscf.html">
+     State-averaged MCSCF
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mr_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/adc.html">
+   ADC
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
+  <label for="toctree-checkbox-17">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_pp.html">
+     Polarization propagator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_isr.html">
+     Intermediate state representation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_cvs.html">
+     Core-valence separation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_hpc.html">
+     HPC-QC implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/excoupl.html">
+   Exciton coupling model
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <label for="toctree-checkbox-18">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/excoupl_impl.html">
+     Implementation of the exciton coupling model
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Environment
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../env/localprop.html">
+   Localized properties
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <label for="toctree-checkbox-19">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/esp.html">
+     ESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/resp.html">
+     RESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/loprop.html">
+     LoProp charges and polarisabilities
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../env/pe.html">
+   Polarizable embedding
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
+  <label for="toctree-checkbox-20">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/pe_basics.html">
+     General aspects
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Visualization
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/mol_struct.html">
+   Molecular structure and dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/>
+  <label for="toctree-checkbox-21">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/struct_vis.html">
+     Molecular structure
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/md_vis.html">
+     MD trajectories
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/opt_vib_vis.html">
+     Optimization and normal modes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/elec_struct.html">
+   Electronic structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/>
+  <label for="toctree-checkbox-22">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/orb_vis.html">
+     Orbitals and densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/exc_vis.html">
+     Excited states
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/dens_vis.html">
+     Reduced particle densities
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Bibliography
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cite.html">
+   How to cite
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../refs.html">
+   References
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/docs/mol_struct/impes_calc.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/kthpanor/echem"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/mol_struct/impes_calc.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/mol_struct/impes_calc.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-ground-state-potential-energy-surface-of-water">
+   The ground state potential energy surface of water
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#transforming-from-cartesian-to-internal-coordinates">
+     Transforming from Cartesian to internal coordinates
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ground-state-pes-by-interpolation">
+     Ground-state PES by interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Constructing the PES by interpolation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-ground-state-potential-energy-surface-of-water">
+   The ground state potential energy surface of water
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#transforming-from-cartesian-to-internal-coordinates">
+     Transforming from Cartesian to internal coordinates
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ground-state-pes-by-interpolation">
+     Ground-state PES by interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="constructing-the-pes-by-interpolation">
+<h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Permalink to this headline">¶</a></h1>
+<p>The idea behind PES interpolation techniques is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically (QM). For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. On the other hand, the use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost <span id="id1">[<a class="reference internal" href="../refs.html#id173" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116(8):573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
+<p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> as a weighted average between potentials defined from a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+V(\mathbf{q}) = \sum_a w_a V_a(\mathbf{q})\,,
+\]</div>
+<p>where the weights <span class="math notranslate nohighlight">\(w_a\)</span> depend on the distance (<span class="math notranslate nohighlight">\(\boldsymbol{\Delta}_a\)</span>) beween the new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and a data configuration <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>. The potentials <span class="math notranslate nohighlight">\(V_a\)</span> are local harmonic potentials written in terms of Taylor expansions based on the energy (<span class="math notranslate nohighlight">\(E_a\)</span>), gradient (<span class="math notranslate nohighlight">\(\mathbf{g}_a\)</span>) and Hessian (<span class="math notranslate nohighlight">\(\mathbf{H}_a\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
+V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}{2} \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{H}_a\boldsymbol{\Delta}_a\, .
+\]</div>
+<p>The vector <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> designating the position is in the internal coordinate system. The weights are provided by considering the distance between <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>, such that the weight <span class="math notranslate nohighlight">\(w_a\)</span> is larger for a data point <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span> that is closer to <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>. The weights <span class="math notranslate nohighlight">\(w_a\)</span> are normalized weights:</p>
+<div class="math notranslate nohighlight">
+\[
+w_a = \frac{v_a}{\sum_i v_i}\,
+\]</div>
+<p>where the un-normalized weights <span class="math notranslate nohighlight">\(v_a\)</span> can be calculated in different ways, for example a simple weighting scheme is:</p>
+<div class="math notranslate nohighlight">
+\[
+v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
+\]</div>
+<p>The exponent <span class="math notranslate nohighlight">\(2p\)</span> determines how fast the algorithm switches between data points <span id="id2">[<a class="reference internal" href="../refs.html#id174" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the fenna–matthews–olson complex. J. Chem. Theory Comput., 12(11):5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>.</p>
+<p>Another approach to determine the un-normalized weights is the Shepard weighting scheme <span id="id3">[<a class="reference internal" href="../refs.html#id174" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the fenna–matthews–olson complex. J. Chem. Theory Comput., 12(11):5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2q} \right]^{-1},
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(r_a\)</span> is the confidence radius for <span class="math notranslate nohighlight">\(\mathbf{q_a}\)</span>.</p>
+<p>For a good overview of potential energy surfaces by interpolation, see <span id="id4">[<a class="reference internal" href="../refs.html#id173" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116(8):573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
+<p>In this tutorial we will get familiar with constructing the ground state potential energy surface (PES) of a molecule by interpolation.</p>
+<div class="section" id="the-ground-state-potential-energy-surface-of-water">
+<h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">¶</a></h2>
+<p>Let’s construct the ground state PES for the water molecule by interpolation. We need to carry out the following steps:</p>
+<ul class="simple">
+<li><p>Transform the coordinates, gradients and Hessians from Cartesian coordinates to internal coordinates,</p></li>
+<li><p>Calculate the ground state energy, gradient, and Hessian for a several molecular configurations which will serve as data points for interpolation,</p></li>
+<li><p>Determine the harmonic potentials and weights,</p></li>
+<li><p>Perform the interpolation and determine the potential energy at new configurations <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p></li>
+</ul>
+<div class="section" id="transforming-from-cartesian-to-internal-coordinates">
+<h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">¶</a></h3>
+<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <a class="reference internal" href="coordinates.html#sec-redundant-coordinates"><span class="std std-ref">here</span></a>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
+<div class="cell tag_hide-output tag_no-warnings docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+<span class="kn">import</span> <span class="nn">geometric</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
+* Warning * Setting OMP_NUM_THREADS to 4.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Setting MKL_THREADING_LAYER to &quot;GNU&quot;.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+<span class="s2">water                                                                                                                          </span>
+<span class="s2">O    0.000000000000        0.000000000000        0.000000000000                         </span>
+<span class="s2">H    0.000000000000        0.895700000000       -0.316700000000                         </span>
+<span class="s2">H    0.000000000000        0.000000000000        1.100000000000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
+<span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="c1"># rotate the molecule to make it easier to see</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
+</pre></div>
+</div>
+<div class="output text_html"><div id="3dmolviewer_16605696655066888"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16605696655066888" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_16605696655066888 = null;
+var warn = document.getElementById("3dmolwarning_16605696655066888");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16605696655066888 = null;
+viewergrid_16605696655066888 = $3Dmol.createViewerGrid($("#3dmolviewer_16605696655066888"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16605696655066888 = viewergrid_16605696655066888[0][0];
+viewergrid_16605696655066888[0][0].zoomTo();	viewergrid_16605696655066888[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_16605696655066888[0][0].setStyle({"stick": {}});
+	viewergrid_16605696655066888[0][0].rotate(-90,"y");
+viewergrid_16605696655066888[0][0].render();
+});
+</script></div></div>
+</div>
+<p>Calculating the desired properties:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+
+<span class="c1"># Energy</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+
+<span class="c1"># Gradient</span>
+<span class="n">scf_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">(</span><span class="n">scf_drv</span><span class="p">)</span>
+<span class="n">scf_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">gradient</span> <span class="o">=</span> <span class="n">scf_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
+
+<span class="c1"># Hessian</span>
+<span class="n">scf_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">scf_drv</span><span class="p">)</span>
+<span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">hessian</span> <span class="o">=</span> <span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 8.6203186612 a.u.                                                                      
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.02 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.06 sec.                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -74.947250981138    0.0000000000      0.00006046      0.00001095      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -74.947250982655   -0.0000000001      0.00000159      0.00000036      0.00001805                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -74.947250982655   -0.0000000000      0.00000011      0.00000002      0.00000116                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.03 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :      -74.9472509827 a.u.                                              
+               Electronic Energy                  :      -83.5675696438 a.u.                                              
+               Nuclear Repulsion Energy           :        8.6203186612 a.u.                                              
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000001106 a.u.                                              
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -20.24331 a.u.                                                                  
+               (   1 O   1s  :     0.99)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.23684 a.u.                                                                  
+               (   1 O   1s  :     0.24) (   1 O   2s  :    -0.85) (   2 H   1s  :    -0.18)                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.59041 a.u.                                                                  
+               (   1 O   1p-1:    -0.41) (   1 O   1p0 :     0.44) (   2 H   1s  :    -0.45)                              
+               (   3 H   1s  :     0.43)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.43151 a.u.                                                                  
+               (   1 O   2s  :    -0.49) (   1 O   1p-1:     0.60) (   1 O   1p0 :     0.49)                              
+               (   2 H   1s  :     0.24) (   3 H   1s  :     0.35)                                                        
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.38490 a.u.                                                                  
+               (   1 O   1p+1:     1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.50463 a.u.                                                                  
+               (   1 O   2s  :    -0.69) (   1 O   1p-1:    -0.34) (   1 O   1p0 :    -0.66)                              
+               (   2 H   1s  :     0.44) (   3 H   1s  :     0.94)                                                        
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.71372 a.u.                                                                  
+               (   1 O   2s  :    -0.41) (   1 O   1p-1:    -0.76) (   1 O   1p0 :     0.58)                              
+               (   2 H   1s  :     1.08) (   3 H   1s  :    -0.41)                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                   SCF Gradient Driver                                                    
+                                                  =====================                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                              Molecular Geometry (Angstroms)                                              
+                                             ================================                                             
+                                                                                                                          
+                          Atom         Coordinate X          Coordinate Y          Coordinate Z                           
+                                                                                                                          
+                           O           0.000000000000        0.000000000000        0.000000000000                         
+                           H           0.000000000000        0.895700000000       -0.316700000000                         
+                           H           0.000000000000        0.000000000000        1.100000000000                         
+                                                                                                                          
+                                                 Gradient (Hartree/Bohr)                                                  
+                                                -------------------------                                                 
+                                                                                                                          
+                          Atom           Gradient X            Gradient Y            Gradient Z                           
+                                                                                                                          
+                           O           0.000000000000        0.085297089633       -0.100972944693                         
+                           H           0.000000000007       -0.061749632579       -0.007085216623                         
+                           H           0.000000000000       -0.023547457808        0.108058171840                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.48 sec ***                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                    SCF Hessian Driver                                                    
+                                                   ====================                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 15.75 sec ***                                   
+                                                                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now that we have an energy, gradient and Hessian, let’s define the Z-matrix for the water molecule and write the routines required to transform from Cartesian coordinates to the internal coordinates defined by the Z-matrix. We will use geomeTRIC to set up the internal coordinates.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#            O-H1    O-H2   H1-O-H2</span>
+<span class="n">z_matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
+
+<span class="n">internal_coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">z_matrix</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># define a bond distance object</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">internal</span><span class="o">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="c1"># define a bond angle object</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">internal</span><span class="o">.</span><span class="n">Angle</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># define a dihedral angle object</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">internal</span><span class="o">.</span><span class="n">Dihedral</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        
+    <span class="n">internal_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The internal coordinates defined through geomeTRIC have routines that allow us to calculate derivatives with respect to Cartesian coordinates (<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>), as required for constructing the Wilson <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>-matrix:</p>
+<div class="math notranslate nohighlight">
+\[
+B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
+\]</div>
+<p>Let us use these routines to get the <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>-matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_b_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">):</span>
+    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
+    
+    <span class="c1"># number of Cartesian coordinates</span>
+    <span class="n">n_cart</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span>
+    
+    <span class="c1"># number of internal coordinates</span>
+    <span class="n">n_int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">)</span>
+    
+    <span class="c1"># initialize the B-matrix</span>
+    <span class="n">b_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_int</span><span class="p">,</span> <span class="n">n_cart</span><span class="p">))</span>
+    
+    <span class="c1"># Cartesian coordinates</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">)</span>
+    
+    <span class="c1"># calculate the derivatives of q with respect to coords</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># i runs over all the internal coordinates</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">internal_coordinates</span><span class="p">:</span>
+        <span class="n">deriv_q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="c1"># add the derivative values in the right spots of the b_matrix;</span>
+        <span class="c1"># we need the atom indices from the Z-matrix.</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">z_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="c1"># from 3 * atom_index to 3 * atom_index + 3</span>
+            <span class="n">b_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">]</span> <span class="o">=</span> <span class="n">deriv_q</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">b_matrix</span>
+
+<span class="n">b_mat</span> <span class="o">=</span> <span class="n">get_b_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In order to transform from Cartesian gradient to internal gradient, we would need the inverse of <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial V}{\partial q_i} = \sum_j \frac{\partial V}{\partial x_j} \frac{\partial x_j}{\partial q_i} = \sum_j \frac{\partial V}{\partial x_j} B_{ji}^{-}, 
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\mathbf{BB}^{-}=\mathbf{I}\)</span>. Because <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> is a rectangular matrix, we need to obtain its inverse carefully. From</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{B}\mathbf{B}^\mathrm{T} \left( \mathbf{B}\mathbf{B}^\mathrm{T} \right)^{-} = \mathbf{I}, 
+\]</div>
+<p>we can easily see that <span class="math notranslate nohighlight">\(\mathbf{B}^{-} = \mathbf{B}^\mathrm{T} \left( \mathbf{B}\mathbf{B}^\mathrm{T} \right)^{-}\)</span> holds, so to get the inverse we have to first construct a square matrix <span class="math notranslate nohighlight">\(\mathbf{G}=\mathbf{B}\mathbf{B}^\mathrm{T}\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">g_mat</span> <span class="o">=</span> <span class="o">...</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">b_mat</span><span class="p">,</span> <span class="n">b_mat</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(\mathbf{G}\)</span> is diagnoalized to get its eigenvalues and eigenvectors. The inverse of the non-zero eigenvalues and corresponding eigenvectors will be then used to construct the <span class="math notranslate nohighlight">\(\mathbf{G}^{-}\)</span> matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">g_val</span><span class="p">,</span> <span class="n">g_vec</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1"># Invert the non-zero eigenvalues</span>
+<span class="o">...</span>
+<span class="o">...</span>
+
+<span class="n">g_minus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_vec</span><span class="p">,</span> <span class="n">g_val_inverse_mat</span><span class="p">,</span> <span class="n">g_vec</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g_val</span><span class="p">,</span> <span class="n">g_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">g_mat</span><span class="p">)</span>
+<span class="n">g_val_inverse</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">g_val</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-7</span><span class="p">:</span>
+        <span class="n">g_val_inverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">g</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">g_val_inverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">g_val_inverse_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g_val_inverse</span><span class="p">))</span>
+<span class="n">g_minus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_vec</span><span class="p">,</span> <span class="n">g_val_inverse_mat</span><span class="p">,</span> <span class="n">g_vec</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s make this piece of code a general routine that we can use for an arbitrary <span class="math notranslate nohighlight">\(\mathbf{B}\)</span> matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_g_minus</span><span class="p">(</span><span class="n">b_matrix</span><span class="p">):</span>
+    
+    <span class="o">...</span>
+    
+    <span class="k">return</span> <span class="n">g_minus</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_g_minus</span><span class="p">(</span><span class="n">b_matrix</span><span class="p">):</span>
+    <span class="n">g_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">b_matrix</span><span class="p">,</span> <span class="n">b_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">g_val</span><span class="p">,</span> <span class="n">g_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">g_mat</span><span class="p">)</span>
+    <span class="n">g_val_inverse</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">g_val</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-7</span><span class="p">:</span>
+            <span class="n">g_val_inverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">g</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g_val_inverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            
+    <span class="n">g_val_inverse_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g_val_inverse</span><span class="p">))</span>
+    <span class="n">g_minus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_vec</span><span class="p">,</span> <span class="n">g_val_inverse_mat</span><span class="p">,</span> <span class="n">g_vec</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">g_minus</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">get_g_minus</span><span class="p">(</span><span class="n">b_mat</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we have all the ingredients to transform the gradient, but we need the second order derivatives of <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> with respect to <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> to be able to also transform the Hessian. Let’s write a routine to calculate the second-order B-matrix, <span class="math notranslate nohighlight">\(\mathbf{B}^{(2)}\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_b2_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">):</span>
+ 
+    <span class="c1"># Use as an example the routine to construct the B-matrix</span>
+    <span class="c1"># and write a similar routine for the matrix of second order</span>
+    <span class="c1"># derivatives</span>
+    
+    <span class="k">return</span> <span class="n">b2_matrix</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_b2_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">):</span>
+    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
+    
+    <span class="c1"># number of Cartesian coordinates</span>
+    <span class="n">n_cart</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span>
+    
+    <span class="c1"># number of internal coordinates</span>
+    <span class="n">n_int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">)</span>
+    
+    <span class="c1"># initialize the B-matrix</span>
+    <span class="n">b2_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_int</span><span class="p">,</span> <span class="n">n_cart</span><span class="p">,</span> <span class="n">n_cart</span><span class="p">))</span>
+    
+    <span class="c1"># Cartesian coordinates</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">)</span>
+    
+    <span class="c1"># calculate the derivatives of q with respect to coords</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># i runs over all the internal coordinates</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">internal_coordinates</span><span class="p">:</span>
+        <span class="n">second_deriv_q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="c1"># add the derivative values in the right spots of the b_matrix;</span>
+        <span class="c1"># we need the atom indices from the Z-matrix.</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">z_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">z_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="c1"># from 3 * atom_index_a to 3 * atom_index_a + 3</span>
+                <span class="c1"># and from 3 * atom_index_b to 3 * atom_index_b + 3</span>
+                <span class="n">b2_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> 
+                             <span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_deriv_q</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="p">:,</span> <span class="n">b</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">b2_matrix</span>
+
+<span class="n">b2_matrix</span> <span class="o">=</span> <span class="n">get_b2_matrix</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s write the routines which transform the gradient and the Hessian from Cartesian coordinates to internal coordinates. We have to implement the following equations:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{g}_q = \mathbf{G}^{-}\mathbf{B}\mathbf{g}_x 
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{H}_q = \mathbf{G}^{-}\mathbf{B}\big[ \mathbf{H}_x - \mathbf{g}_q\mathbf{B}^{(2)}\big]\mathbf{B}^\mathrm{T}\mathbf{G}^{-\mathrm{T}} 
+\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">):</span>
+
+    <span class="c1"># Implement the equation to convert the gradient from Cartesian</span>
+    <span class="c1"># to internal coordinates.</span>
+    
+    <span class="k">return</span> <span class="n">gradient_q</span>
+
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">):</span>
+    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c1"># reshape the Cartesian gradient to match the dimensions of the </span>
+    <span class="c1"># g_minus and b_matrix</span>
+    <span class="n">grad_x</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n_atoms</span><span class="p">))</span>
+    
+    <span class="c1"># convert to internal coordinates</span>
+    <span class="n">grad_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_minus</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">grad_x</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">grad_q</span>
+
+<span class="n">grad_q</span> <span class="o">=</span> <span class="n">convert_gradient_to_internal</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">)</span>
+
+<span class="c1"># To check if the gradient in internal coordinates is correct, you can calculate selected elements numerically. </span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Has the conversion worked correctly? How can you check?</p>
+</div>
+<p>Now, let’s write a routine to convert the Hessian.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">):</span>
+    <span class="c1"># calculate term related to the second order B-matrix</span>
+    <span class="n">gradq_b2mat</span> <span class="o">=</span> <span class="o">...</span>
+    
+    <span class="c1"># convert the Hessian from Cartesian to internal coordinates</span>
+    <span class="n">hessian_q</span> <span class="o">=</span> <span class="o">...</span>
+    
+    <span class="k">return</span> <span class="n">hessian_q</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">):</span>
+    <span class="c1"># calculate term related to the second order B-matrix</span>
+    <span class="n">gradq_b2mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,ixy-&gt;xy&quot;</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">)</span>
+    
+    <span class="c1"># convert the Hessian from Cartesian to internal coordinates</span>
+    <span class="n">hessian_q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">g_minus</span><span class="p">,</span> <span class="n">b_matrix</span><span class="p">,</span> <span class="n">hessian</span> <span class="o">-</span> <span class="n">gradq_b2mat</span><span class="p">,</span> <span class="n">b_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">g_minus</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">hessian_q</span>
+
+<span class="n">hessian_q</span> <span class="o">=</span> <span class="n">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_matrix</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">)</span>
+
+<span class="c1"># To check if the conversion of the Hessian works correctly</span>
+<span class="c1"># you can calculate selected Hessian matrix elements numerically.</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="ground-state-pes-by-interpolation">
+<h3>Ground-state PES by interpolation<a class="headerlink" href="#ground-state-pes-by-interpolation" title="Permalink to this headline">¶</a></h3>
+<p>Now that we have set up the routines for conversion between Cartesian and internal coordiantes, we can start collecting data points for interpolation. Let’s start with stretching one of the OH bonds and calculate three new points: one when the bond is contracted, one around equilibrium bond length, and one when the bond is stretched.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;                                                                                                              </span>
+<span class="s2">O    0.000000000000        0.000000000000        0.000000000000                         </span>
+<span class="s2">H    0.000000000000        0.895700000000       -0.316700000000                         </span>
+<span class="s2">H    0.000000000000        0.000000000000        OHdist</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># list of bond distances</span>
+<span class="n">distlist</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.35</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># empty list to save the energies, gradients and hessians</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">cart_gradients</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">cart_hessians</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># list for molecular configurations</span>
+<span class="n">molecules</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the energies, gradients and Hessians for OH = &quot;</span><span class="p">,</span> <span class="n">oh</span><span class="p">,</span> <span class="s2">&quot;A...&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Create new molecule</span>
+    <span class="n">mol_str</span> <span class="o">=</span> <span class="n">mol_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;OHdist&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oh</span><span class="p">))</span>
+    <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># set-up an scf driver</span>
+    <span class="n">new_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># To disable printout</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    
+    <span class="c1"># calculate the gradient</span>
+    <span class="n">new_scf_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">(</span><span class="n">new_scf_drv</span><span class="p">)</span>
+    <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    
+    <span class="c1"># calculate the Hessian</span>
+    <span class="n">new_scf_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">(</span><span class="n">new_scf_drv</span><span class="p">)</span>
+    <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    
+    <span class="c1"># save the results:</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+    <span class="n">cart_gradient</span> <span class="o">=</span> <span class="n">new_scf_grad_drv</span><span class="o">.</span><span class="n">gradient</span>
+    <span class="n">cart_hessian</span> <span class="o">=</span> <span class="n">new_scf_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
+    
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    <span class="n">cart_gradients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cart_gradient</span><span class="p">)</span>
+    <span class="n">cart_hessians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cart_hessian</span><span class="p">)</span>
+    <span class="n">molecules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.75 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.95 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  1.35 A...
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we have to transform the gradient and Hessian from Cartesian to internal coordinates in order to be able to use them for interpolation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># number of data points:</span>
+<span class="n">n_data_pts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+
+<span class="c1"># empty lists for the internal gradients and Hessians:</span>
+<span class="n">int_gradients</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">int_hessians</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_data_pts</span><span class="p">):</span>
+    <span class="c1"># convert gradients</span>
+    <span class="o">...</span>
+    <span class="c1"># convert Hessians</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># number of data points:</span>
+<span class="n">n_data_pts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+
+<span class="c1"># empty lists for the internal gradients and Hessians:</span>
+<span class="n">int_gradients</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">int_hessians</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_data_pts</span><span class="p">):</span>
+    <span class="n">grad_x</span> <span class="o">=</span> <span class="n">cart_gradients</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">hess_x</span> <span class="o">=</span> <span class="n">cart_hessians</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">b_mat</span> <span class="o">=</span> <span class="n">get_b_matrix</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+    <span class="n">g_minus</span> <span class="o">=</span> <span class="n">get_g_minus</span><span class="p">(</span><span class="n">b_mat</span><span class="p">)</span>
+    <span class="n">b2_mat</span> <span class="o">=</span> <span class="n">get_b2_matrix</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">z_matrix</span><span class="p">)</span>
+    
+    <span class="n">grad_q</span> <span class="o">=</span> <span class="n">convert_gradient_to_internal</span><span class="p">(</span><span class="n">grad_x</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">)</span>
+    <span class="n">hess_q</span> <span class="o">=</span> <span class="n">convert_Hessian_to_internal</span><span class="p">(</span><span class="n">hess_x</span><span class="p">,</span> <span class="n">b_mat</span><span class="p">,</span> <span class="n">g_minus</span><span class="p">,</span> <span class="n">b2_mat</span><span class="p">,</span> <span class="n">grad_q</span><span class="p">)</span>
+    <span class="n">int_gradients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grad_q</span><span class="p">)</span>
+    <span class="n">int_hessians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hess_q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now that we have the gradients and Hessians in internal coordinates, let’s write a routine which constructs the harmonic potential, given a new molecular configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[
+V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}{2} \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{H}_a\boldsymbol{\Delta}_a\, .
+\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">new_q</span><span class="p">):</span>
+    <span class="c1"># q_a are the internal coordinates where the energy, gradient and</span>
+    <span class="c1"># hessian have been calculated;</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="o">...</span> 
+    <span class="n">pot</span> <span class="o">=</span> <span class="o">...</span>
+    <span class="k">return</span> <span class="n">pot</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">new_q</span><span class="p">):</span>
+    <span class="c1"># coords_a are the coordinates where the energy, gradient and</span>
+    <span class="c1"># hessian have been calculated;</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">new_q</span> <span class="o">-</span> <span class="n">q_a</span>
+    <span class="n">pot</span> <span class="o">=</span> <span class="n">e_a</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">g_a</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">dist</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">dist</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">pot</span>    
+</pre></div>
+</div>
+</div>
+</div>
+<p>To be able to use the routine, we first have to create the array of internal coordinates <span class="math notranslate nohighlight">\(\mathbf{q}_a\)</span>. Let’s add a routine to calculate the values of the internal coordinates we defined previously using geomeTRIC objects. We will need the Cartesian coordinates of the molecule in the different configurations.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Cartesian and internal coordinates used here are in atomic units!</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">cart_coords</span><span class="p">):</span>
+    <span class="n">q_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">internal_coordinates</span><span class="p">:</span>
+        <span class="n">q_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">cart_coords</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">q_list</span><span class="p">)</span>
+
+<span class="c1"># list of internal coordinates with our interpolation data points:</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">molec</span> <span class="ow">in</span> <span class="n">molecules</span><span class="p">:</span>
+    <span class="n">cart_coords</span> <span class="o">=</span> <span class="n">molec</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    <span class="n">q_a</span> <span class="o">=</span> <span class="n">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">cart_coords</span><span class="p">)</span>
+    <span class="n">qs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q_a</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">cart_coords</span><span class="p">):</span>
+    <span class="n">q_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">internal_coordinates</span><span class="p">:</span>
+        <span class="n">q_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">cart_coords</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">q_list</span><span class="p">)</span>
+
+<span class="c1"># list of internal coordinates with our interpolation data points:</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">molec</span> <span class="ow">in</span> <span class="n">molecules</span><span class="p">:</span>
+    <span class="n">cart_coords</span> <span class="o">=</span> <span class="n">molec</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    <span class="n">q_a</span> <span class="o">=</span> <span class="n">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">cart_coords</span><span class="p">)</span>
+    <span class="n">qs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q_a</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s construct the harmonic potentials based on the three data points we calculated previously. To plot the results let’s use an array of new O-H bond distances.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="c1"># list of harmonic potentials</span>
+<span class="n">harmonic_potentials</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_data_pts</span><span class="p">):</span>
+    <span class="n">q_a</span> <span class="o">=</span> <span class="n">qs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">e_a</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">g_a</span> <span class="o">=</span> <span class="n">int_gradients</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">h_a</span> <span class="o">=</span> <span class="n">int_hessians</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="n">potential</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
+        <span class="c1">#print(&quot;Calculating the harmonic potential for... &quot;, oh)</span>
+    
+        <span class="c1"># Create new molecule</span>
+        <span class="n">mol_str</span> <span class="o">=</span> <span class="n">mol_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;OHdist&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oh</span><span class="p">))</span>
+        <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+        <span class="n">cart_coords</span> <span class="o">=</span> <span class="n">new_molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">cart_coords</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate harmonic potential at point q</span>
+        <span class="n">pot</span> <span class="o">=</span> <span class="n">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">potential</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot</span><span class="p">)</span>
+    <span class="n">harmonic_potentials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">potential</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s plot the results.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Local Harmonic Potentials for Interpolation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.75 Å&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.95 Å&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1.35 Å&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;O-H bond length (Å)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (H)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/impes_calc_38_0.png" src="../../_images/impes_calc_38_0.png" />
+</div>
+</div>
+<p>Let’s use these for interpolation and compare to the PES calculated with HF. We need to implement the following equations:</p>
+<div class="math notranslate nohighlight">
+\[
+V(\mathbf{q}) = \sum_a w_a V_a(\mathbf{q})\,,
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+w_a = \frac{v_a}{\sum_i v_i}\,
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
+\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_interpolated_pes</span><span class="p">(</span><span class="n">new_point</span><span class="p">,</span> <span class="n">data_points</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">hessians</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+    <span class="c1"># sum of all interpolation weights -- to normalize them</span>
+    <span class="n">sum_weights</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">potentials</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
+        <span class="c1"># Calculate the norm of the distance vector</span>
+        
+        <span class="c1"># Calculate the un-normalized weight</span>
+        
+        <span class="c1"># Calculate the harmonic potential</span>
+        
+    
+
+    <span class="c1"># Calculate normalized weights</span>
+    
+    <span class="c1"># Calculate interpolated energy at new_point </span>
+      
+    <span class="k">return</span> <span class="n">new_energy</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_interpolated_pes</span><span class="p">(</span><span class="n">new_point</span><span class="p">,</span> <span class="n">data_points</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">hessians</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+    <span class="c1"># sum of all interpolation weights -- to normalize them</span>
+    <span class="n">sum_weights</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">potentials</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
+        <span class="n">q_a</span> <span class="o">=</span> <span class="n">data_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">e_a</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">g_a</span> <span class="o">=</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">h_a</span> <span class="o">=</span> <span class="n">hessians</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">new_point</span> <span class="o">-</span> <span class="n">q_a</span><span class="p">)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">dist</span><span class="o">**</span><span class="n">exponent</span>
+        <span class="n">pot</span> <span class="o">=</span> <span class="n">get_harmonic_potential</span><span class="p">(</span><span class="n">q_a</span><span class="p">,</span> <span class="n">e_a</span><span class="p">,</span> <span class="n">g_a</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">new_point</span><span class="p">)</span>
+        <span class="c1">#print(pot)</span>
+        <span class="n">sum_weights</span> <span class="o">+=</span> <span class="n">weight</span>
+        <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">potentials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot</span><span class="p">)</span>
+
+    <span class="n">new_energy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_points</span><span class="p">)):</span>
+        <span class="n">new_energy</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_weights</span> <span class="o">*</span> <span class="n">potentials</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1">#print(en)</span>
+    
+    <span class="k">return</span> <span class="n">new_energy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s see how well the interpolated energies compare to HF energies.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scf_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">im_energies</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
+    
+    <span class="c1"># Create new molecule</span>
+    <span class="o">...</span>
+    
+    <span class="c1"># set-up an scf driver and calculate the energy</span>
+    <span class="o">...</span>
+      
+    <span class="c1"># calculate energy by interpolation</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">im_energies</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">oh</span> <span class="ow">in</span> <span class="n">distlist</span><span class="p">:</span>
+    
+    <span class="c1"># Create new molecule</span>
+    <span class="n">mol_str</span> <span class="o">=</span> <span class="n">mol_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;OHdist&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oh</span><span class="p">))</span>
+    <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># set-up an xtb driver, gradient driver and hessian driver</span>
+    <span class="n">new_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    
+    <span class="c1"># save the results:</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">new_scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+    
+    <span class="n">scf_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    
+    <span class="c1"># calculate energies by interpolation</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">new_molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    <span class="n">new_q</span> <span class="o">=</span> <span class="n">get_internal_coordinates_array</span><span class="p">(</span><span class="n">internal_coordinates</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+    <span class="n">im_energy</span> <span class="o">=</span> <span class="n">get_interpolated_pes</span><span class="p">(</span><span class="n">new_q</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">int_gradients</span><span class="p">,</span> <span class="n">int_hessians</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    
+    <span class="n">im_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">im_energy</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qm_points</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.35</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Energy during O-H dissociation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">scf_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;HF&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">im_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interpolated&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qm_points</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;QM data points&#39;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgrey&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;O-H bond length (Å)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (H)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/impes_calc_45_0.png" src="../../_images/impes_calc_45_0.png" />
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Interpolated Energy during O-H dissociation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">im_energies</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;IM&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.75 Å&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;0.95 Å&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">distlist</span><span class="p">,</span> <span class="n">harmonic_potentials</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1.35 Å&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">qm_points</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;QM data points&#39;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s2">&quot;dimgrey&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">ymin</span><span class="o">=-</span><span class="mf">75.1</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=-</span><span class="mf">74.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;O-H bond length (Å)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (H)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/impes_calc_46_0.png" src="../../_images/impes_calc_46_0.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>What happens if you calculate the energy of a configuration which is outside
+the range of QM data points (eg. an OH bond length larger than the largest value you included)?</p></li>
+<li><p>What happens if you include more or fewer data points in your data base?</p></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./docs/mol_struct"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="impes.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">PES interpolation techniques</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="md.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Molecular dynamics</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By The eChem team<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
