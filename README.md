@@ -6,18 +6,16 @@ Using the echem.yml file (stored at the root of the echem directory) to create a
 conda env create -f echem.yml
 ```
 
-Alternatively, you can manually create the environment and install the packages in several steps:
+# Commands
+
+Run notebooks by opening *jupyter-lab* (or *jupyter-notebook*):
 
 ```
-conda create -n echem -c conda-forge -c veloxchem python=3.9 veloxchem libblas=*=*mkl
-conda activate echem
-conda install -c conda-forge jupyter-book matplotlib ghp-import py3dmol h5py k3d
-conda install -c conda-forge -c veloxchem multipsi=0.0.1
-conda install -c conda-forge -c gator gator
-conda install -c conda-forge -c pyscf pyscf
+$ jupyter-lab
 ```
 
-# Some commands
+Jupyter can access folders below where it is spawned, so initiate it in, *e.g.* the main eChem folder. Examples on how to use Jupyter can be found [here](https://jupyter-notebook.readthedocs.io/en/latest/examples/Notebook/examples_index.html).
+
 
 Build the book:
 
@@ -29,6 +27,19 @@ Publish the html-version:
 
 ```
 $ ghp-import -n -p -f _build/html
+```
+
+# Alternative installation
+
+You can manually create the environment and install the packages in several steps:
+
+```
+conda create -n echem -c conda-forge -c veloxchem python=3.9 veloxchem libblas=*=*mkl
+conda activate echem
+conda install -c conda-forge jupyter-book matplotlib ghp-import py3dmol h5py k3d
+conda install -c conda-forge -c veloxchem multipsi=0.0.1
+conda install -c conda-forge -c gator gator
+conda install -c conda-forge -c pyscf pyscf
 ```
 
 # References
@@ -43,33 +54,35 @@ Multiple lists of references are possible but not yet properly implemented.
 
 # Distribution of labor:
 
-0. Intro
+Sections to be added/expanded marked in **bold**.
+
+
+1. Intro
     - All authors
 
-1. Tutorials and Workflows: 
-    -  UV/vis: TF+MD
-    -  Catalysis: Add later
-    -  Optical activity: PN (?)
-    -  Vibrational: IB+MH
-    -  Magnetic: Missing
+2. Tutorials and workflows: 
+    -  **Photochemistry: MD**
+    -  **Vibrational: IEB**
+    -  **UV/vis: TF**
+    -  **Optical activity: PN**
     -  X-ray: TF
 
-2. Electronic Structure Theory:
+3. Electronic ground states:
     - Primarily PN+MD 
+    - **MD will expand CAS parts**
 
-3. Potential Energy Surfaces:
+4. Molecular structure and dynamics:
     - Primarily IEB+MH
-    - Conical intersections: AD
-    - MD: TF
+    - **MD: TF**
 
-4. Properties:
+5. Spectra and properties:
     - Primarily PN+MD
-    - TDDFT: AD+TF
+    - **TDDFT: AD (+TF)**
     - ADC: IEB+MH
     - Exciton coupling: XL
 
-5. Environment:
+6. Environment:
     - Primarily PN
 
-6. Visualization:
+7. Visualization:
     - Primarily PN+MD+TF
