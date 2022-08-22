@@ -1,172 +1,70 @@
 Traceback (most recent call last):
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
     record_timing=False,
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 1204, in execute
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1204, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 84, in wrapped
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 84, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/util.py", line 62, in just_run
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 62, in just_run
     return loop.run_until_complete(coro)
-  File "/opt/miniconda3/envs/echem/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
     return future.result()
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 664, in async_execute
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 664, in async_execute
     cell, index, execution_count=self.code_cells_executed + 1
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 965, in async_execute_cell
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 965, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "/opt/miniconda3/envs/echem/lib/python3.7/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-water_xyz = """
-O       0.0000000000     0.0000000000     0.1178336003
-H      -0.7595754146    -0.0000000000    -0.4713344012
-H       0.7595754146     0.0000000000    -0.4713344012
-"""
+import copy
 
-# Construct structure and basis objects
-struct = gator.get_molecule(water_xyz)
-basis = gator.get_molecular_basis(struct, "6-31G")
+import adcc
+import gator
+import matplotlib.pyplot as plt
+import multipsi as mtp
+import numpy as np
+import veloxchem as vlx
+from matplotlib import gridspec
+from scipy.interpolate import interp1d
+from veloxchem.lreigensolver import LinearResponseEigenSolver
+from veloxchem.rsplinabscross import LinearAbsorptionCrossSection
 
-# Perform SCF calculation
-scf_gs = gator.run_scf(struct, basis)
+# for vlx
+silent_ostream = vlx.OutputStream(None)
+from mpi4py import MPI
 
-# Calculate the 6 lowest eigenstates
-adc_res = gator.run_adc(struct, basis, scf_gs, method="adc3", singlets=6)
+comm = MPI.COMM_WORLD
+
+# au to eV conversion factor
+au2ev = 27.211386
+
+
+def lorentzian(x, y, xmin, xmax, xstep, gamma):
+    """
+    Lorentzian broadening function
+
+    Call: xi,yi = lorentzian(energies, intensities, start energy, end energy, energy step, gamma)
+    """
+    xi = np.arange(xmin, xmax, xstep)
+    yi = np.zeros(len(xi))
+    for i in range(len(xi)):
+        for k in range(len(x)):
+            yi[i] = yi[i] + y[k] * (gamma / 2.0) / (
+                (xi[i] - x[k]) ** 2 + (gamma / 2.0) ** 2
+            )
+    return xi, yi
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mOSError[0m                                   Traceback (most recent call last)
-[0;32m/var/folders/ky/5h8mb6gs32nbvf3w8cyqwrhm0000gn/T/ipykernel_94975/724366564.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     13[0m [0;34m[0m[0m
-[1;32m     14[0m [0;31m# Calculate the 6 lowest eigenstates[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 15[0;31m [0madc_res[0m [0;34m=[0m [0mgator[0m[0;34m.[0m[0mrun_adc[0m[0;34m([0m[0mstruct[0m[0;34m,[0m [0mbasis[0m[0;34m,[0m [0mscf_gs[0m[0;34m,[0m [0mmethod[0m[0;34m=[0m[0;34m"adc3"[0m[0;34m,[0m [0msinglets[0m[0;34m=[0m[0;36m6[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/gator/gatorutils.py[0m in [0;36mrun_adc[0;34m(mol, basis, scf_drv, **kwargs)[0m
-[1;32m    155[0m [0;34m[0m[0m
-[1;32m    156[0m     [0mtask[0m [0;34m=[0m [0mMockTask[0m[0;34m([0m[0mmol[0m[0;34m,[0m [0mbasis[0m[0;34m,[0m [0mcomm[0m[0;34m,[0m [0mostream[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 157[0;31m     [0;32mreturn[0m [0madc_drv[0m[0;34m.[0m[0mcompute[0m[0;34m([0m[0mtask[0m[0;34m,[0m [0mscf_drv[0m[0;34m,[0m [0mverbose[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/gator/adcdriver.py[0m in [0;36mcompute[0;34m(self, task, scf_drv, verbose)[0m
-[1;32m    301[0m                                        [0mfrozen_core[0m[0;34m=[0m[0mself[0m[0;34m.[0m[0madc_frozen_core[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    302[0m                                        [0mfrozen_virtual[0m[0;34m=[0m[0mself[0m[0;34m.[0m[0madc_frozen_virtual[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 303[0;31m                                        conv_tol=self.adc_tol)
-[0m[1;32m    304[0m [0;34m[0m[0m
-[1;32m    305[0m                 [0;32mif[0m [0mverbose[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+[0;32m/tmp/ipykernel_13232/1773258871.py[0m in [0;36m<module>[0;34m[0m
+[1;32m      4[0m [0;32mimport[0m [0mgator[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      5[0m [0;32mimport[0m [0mmatplotlib[0m[0;34m.[0m[0mpyplot[0m [0;32mas[0m [0mplt[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 6[0;31m [0;32mimport[0m [0mmultipsi[0m [0;32mas[0m [0mmtp[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      7[0m [0;32mimport[0m [0mnumpy[0m [0;32mas[0m [0mnp[0m[0;34m[0m[0;34m[0m[0m
+[1;32m      8[0m [0;32mimport[0m [0mveloxchem[0m [0;32mas[0m [0mvlx[0m[0;34m[0m[0;34m[0m[0m
 
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/workflow.py[0m in [0;36mrun_adc[0;34m(data_or_matrix, n_states, kind, conv_tol, eigensolver, guesses, n_guesses, n_guesses_doubles, output, core_orbitals, frozen_core, frozen_virtual, method, n_singlets, n_triplets, n_spin_flip, environment, **solverargs)[0m
-[1;32m    179[0m     matrix = construct_adcmatrix(
-[1;32m    180[0m         [0mdata_or_matrix[0m[0;34m,[0m [0mcore_orbitals[0m[0;34m=[0m[0mcore_orbitals[0m[0;34m,[0m [0mfrozen_core[0m[0;34m=[0m[0mfrozen_core[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 181[0;31m         frozen_virtual=frozen_virtual, method=method)
-[0m[1;32m    182[0m [0;34m[0m[0m
-[1;32m    183[0m     n_states, kind = validate_state_parameters(
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/workflow.py[0m in [0;36mconstruct_adcmatrix[0;34m(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)[0m
-[1;32m    246[0m                                            [0mcore_orbitals[0m[0;34m=[0m[0mcore_orbitals[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    247[0m                                            [0mfrozen_core[0m[0;34m=[0m[0mfrozen_core[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 248[0;31m                                            frozen_virtual=frozen_virtual)
-[0m[1;32m    249[0m         [0;32mexcept[0m [0mValueError[0m [0;32mas[0m [0me[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    250[0m             [0;32mraise[0m [0mInputError[0m[0;34m([0m[0mstr[0m[0;34m([0m[0me[0m[0;34m)[0m[0;34m)[0m  [0;31m# In case of an issue with the spaces[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/ReferenceState.py[0m in [0;36m__init__[0;34m(self, hfdata, core_orbitals, frozen_core, frozen_virtual, symmetry_check_on_import, import_all_below_n_orbs)[0m
-[1;32m    140[0m         """
-[1;32m    141[0m         [0;32mif[0m [0;32mnot[0m [0misinstance[0m[0;34m([0m[0mhfdata[0m[0;34m,[0m [0mlibadcc[0m[0;34m.[0m[0mHartreeFockSolution_i[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 142[0;31m             [0mhfdata[0m [0;34m=[0m [0mimport_scf_results[0m[0;34m([0m[0mhfdata[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m    143[0m [0;34m[0m[0m
-[1;32m    144[0m         self._mospaces = MoSpaces(hfdata, frozen_core=frozen_core,
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/backends/__init__.py[0m in [0;36mimport_scf_results[0;34m(res)[0m
-[1;32m     58[0m     [0;32mand[0m [0mguess[0m [0mwhat[0m [0mthe[0m [0mhost[0m [0mprogram[0m [0mwas[0m [0;32mand[0m [0mhow[0m [0mto[0m [0;32mimport[0m [0mit[0m[0;34m.[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     59[0m     """
-[0;32m---> 60[0;31m     [0;32mif[0m [0mhave_backend[0m[0;34m([0m[0;34m"pyscf"[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     61[0m         [0;32mfrom[0m [0;34m.[0m [0;32mimport[0m [0mpyscf[0m [0;32mas[0m [0mbackend_pyscf[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     62[0m         [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mscf[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/backends/__init__.py[0m in [0;36mhave_backend[0;34m(backend)[0m
-[1;32m     50[0m [0;32mdef[0m [0mhave_backend[0m[0;34m([0m[0mbackend[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     51[0m     [0;34m"""Is a particular backend available?"""[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 52[0;31m     [0;32mreturn[0m [0mbackend[0m [0;32min[0m [0mavailable[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     53[0m [0;34m[0m[0m
-[1;32m     54[0m [0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/backends/__init__.py[0m in [0;36mavailable[0;34m()[0m
-[1;32m     39[0m     [0;32mif[0m [0;32mnot[0m [0m__status[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     40[0m         status = {
-[0;32m---> 41[0;31m             [0;34m"pyscf"[0m[0;34m:[0m [0mis_module_available[0m[0;34m([0m[0;34m"pyscf"[0m[0;34m,[0m [0;34m"1.5.0"[0m[0;34m)[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     42[0m             "psi4": (is_module_available("psi4", "1.3.0")
-[1;32m     43[0m                      and is_module_available("psi4.core")),
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/adcc/misc.py[0m in [0;36mis_module_available[0;34m(module, min_version)[0m
-[1;32m    123[0m [0;34m[0m[0m
-[1;32m    124[0m     [0;32mtry[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 125[0;31m         [0mmod[0m [0;34m=[0m [0mimportlib[0m[0;34m.[0m[0mimport_module[0m[0;34m([0m[0mmodule[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m    126[0m     [0;32mexcept[0m [0mImportError[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    127[0m         [0;32mreturn[0m [0;32mFalse[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/__init__.py[0m in [0;36mimport_module[0;34m(name, package)[0m
-[1;32m    125[0m                 [0;32mbreak[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    126[0m             [0mlevel[0m [0;34m+=[0m [0;36m1[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 127[0;31m     [0;32mreturn[0m [0m_bootstrap[0m[0;34m.[0m[0m_gcd_import[0m[0;34m([0m[0mname[0m[0;34m[[0m[0mlevel[0m[0;34m:[0m[0;34m][0m[0;34m,[0m [0mpackage[0m[0;34m,[0m [0mlevel[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m    128[0m [0;34m[0m[0m
-[1;32m    129[0m [0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap.py[0m in [0;36m_gcd_import[0;34m(name, package, level)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap.py[0m in [0;36m_find_and_load[0;34m(name, import_)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap.py[0m in [0;36m_find_and_load_unlocked[0;34m(name, import_)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap.py[0m in [0;36m_load_unlocked[0;34m(spec)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap_external.py[0m in [0;36mexec_module[0;34m(self, module)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/importlib/_bootstrap.py[0m in [0;36m_call_with_frames_removed[0;34m(f, *args, **kwds)[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/__init__.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     60[0m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0m__config__[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     61[0m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mlib[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 62[0;31m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mgto[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     63[0m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mscf[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     64[0m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mao2mo[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/gto/__init__.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     17[0m [0;31m#[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     18[0m [0;34m[0m[0m
-[0;32m---> 19[0;31m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mmole[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     20[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mbasis[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     21[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m[0;34m.[0m[0mbasis[0m [0;32mimport[0m [0mparse[0m[0;34m,[0m [0mload[0m[0;34m,[0m [0mparse_ecp[0m[0;34m,[0m [0mload_ecp[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/gto/mole.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     35[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mcmd_args[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     36[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mbasis[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 37[0;31m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mmoleintor[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     38[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m[0;34m.[0m[0meval_gto[0m [0;32mimport[0m [0meval_gto[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     39[0m [0;32mfrom[0m [0mpyscf[0m[0;34m.[0m[0mgto[0m [0;32mimport[0m [0mecp[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/gto/moleintor.py[0m in [0;36m<module>[0;34m[0m
-[1;32m     27[0m [0;32mfrom[0m [0mpyscf[0m [0;32mimport[0m [0mlib[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     28[0m [0;34m[0m[0m
-[0;32m---> 29[0;31m [0mlibcgto[0m [0;34m=[0m [0mlib[0m[0;34m.[0m[0mload_library[0m[0;34m([0m[0;34m'libcgto'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     30[0m [0;34m[0m[0m
-[1;32m     31[0m [0mANG_OF[0m     [0;34m=[0m [0;36m1[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/misc.py[0m in [0;36mload_library[0;34m(libname)[0m
-[1;32m     58[0m             [0;32mraise[0m [0mOSError[0m[0;34m([0m[0;34m'Unknown platform'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     59[0m         [0mlibname_so[0m [0;34m=[0m [0mlibname[0m [0;34m+[0m [0mso_ext[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 60[0;31m         [0;32mreturn[0m [0mctypes[0m[0;34m.[0m[0mCDLL[0m[0;34m([0m[0mos[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mjoin[0m[0;34m([0m[0mos[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mdirname[0m[0;34m([0m[0m__file__[0m[0;34m)[0m[0;34m,[0m [0mlibname_so[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     61[0m     [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     62[0m         [0m_loaderpath[0m [0;34m=[0m [0mos[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mdirname[0m[0;34m([0m[0m__file__[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-
-[0;32m/opt/miniconda3/envs/echem/lib/python3.7/ctypes/__init__.py[0m in [0;36m__init__[0;34m(self, name, mode, handle, use_errno, use_last_error)[0m
-[1;32m    362[0m [0;34m[0m[0m
-[1;32m    363[0m         [0;32mif[0m [0mhandle[0m [0;32mis[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[0;32m--> 364[0;31m             [0mself[0m[0;34m.[0m[0m_handle[0m [0;34m=[0m [0m_dlopen[0m[0;34m([0m[0mself[0m[0;34m.[0m[0m_name[0m[0;34m,[0m [0mmode[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m    365[0m         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-[1;32m    366[0m             [0mself[0m[0;34m.[0m[0m_handle[0m [0;34m=[0m [0mhandle[0m[0;34m[0m[0;34m[0m[0m
-
-[0;31mOSError[0m: dlopen(/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/libcgto.dylib, 0x0006): Library not loaded: '@rpath/libcint.3.0.13.dylib'
-  Referenced from: '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/libcgto.dylib'
-  Reason: tried: '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/../../../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/../../../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/python3.7/lib-dynload/../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/bin/../lib/libcint.3.0.13.dylib' (no such file), '/usr/local/lib/libcint.3.0.13.dylib' (no such file), '/usr/lib/libcint.3.0.13.dylib' (no such file)
-OSError: dlopen(/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/libcgto.dylib, 0x0006): Library not loaded: '@rpath/libcint.3.0.13.dylib'
-  Referenced from: '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/libcgto.dylib'
-  Reason: tried: '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/../../../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/python3.7/site-packages/pyscf/lib/../../../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/python3.7/lib-dynload/../../libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/lib/libcint.3.0.13.dylib' (no such file), '/opt/miniconda3/envs/echem/bin/../lib/libcint.3.0.13.dylib' (no such file), '/usr/local/lib/libcint.3.0.13.dylib' (no such file), '/usr/lib/libcint.3.0.13.dylib' (no such file)
+[0;31mModuleNotFoundError[0m: No module named 'multipsi'
+ModuleNotFoundError: No module named 'multipsi'
 
