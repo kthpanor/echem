@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Constructing the PES by interpolation &#8212; Computational Chemistry from  Laptop to HPC</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +20,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -39,12 +37,13 @@
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -67,7 +66,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -76,9 +89,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -773,107 +787,209 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/docs/mol_struct/impes_calc.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/kthpanor/echem"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/mol_struct/impes_calc.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/mol_struct/impes_calc.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
-        
-        
-        
-        
-    </div>
-</div>
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/mol_struct/impes_calc.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/kthpanor/echem"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/mol_struct/impes_calc.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/docs/mol_struct/impes_calc.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-ground-state-potential-energy-surface-of-water">
    The ground state potential energy surface of water
@@ -893,12 +1009,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Constructing the PES by interpolation</h1>
@@ -934,11 +1049,12 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="constructing-the-pes-by-interpolation">
-<h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Permalink to this headline">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="constructing-the-pes-by-interpolation">
+<h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Permalink to this headline">#</a></h1>
 <p>The idea behind PES interpolation techniques is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically (QM). For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. On the other hand, the use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost <span id="id1">[<a class="reference internal" href="../refs.html#id174" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116(8):573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> as a weighted average between potentials defined from a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -969,8 +1085,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <p>where <span class="math notranslate nohighlight">\(r_a\)</span> is the confidence radius for <span class="math notranslate nohighlight">\(\mathbf{q_a}\)</span>.</p>
 <p>For a good overview of potential energy surfaces by interpolation, see <span id="id4">[<a class="reference internal" href="../refs.html#id174" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116(8):573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>In this tutorial we will get familiar with constructing the ground state potential energy surface (PES) of a molecule by interpolation.</p>
-<div class="section" id="the-ground-state-potential-energy-surface-of-water">
-<h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">¶</a></h2>
+<section id="the-ground-state-potential-energy-surface-of-water">
+<h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">#</a></h2>
 <p>Let’s construct the ground state PES for the water molecule by interpolation. We need to carry out the following steps:</p>
 <ul class="simple">
 <li><p>Transform the coordinates, gradients and Hessians from Cartesian coordinates to internal coordinates,</p></li>
@@ -978,8 +1094,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <li><p>Determine the harmonic potentials and weights,</p></li>
 <li><p>Perform the interpolation and determine the potential energy at new configurations <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p></li>
 </ul>
-<div class="section" id="transforming-from-cartesian-to-internal-coordinates">
-<h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">¶</a></h3>
+<section id="transforming-from-cartesian-to-internal-coordinates">
+<h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">#</a></h3>
 <p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <a class="reference internal" href="coordinates.html#sec-redundant-coordinates"><span class="std std-ref">here</span></a>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell tag_hide-output tag_no-warnings docutils container">
 <div class="cell_input docutils container">
@@ -996,7 +1112,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
+* Warning * Setting OMP_NUM_THREADS to 8.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Setting MKL_THREADING_LAYER to &quot;GNU&quot;.
@@ -1029,8 +1145,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16611586128616278"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_16611586128616278" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16612245698772428"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16612245698772428" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1053,19 +1169,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
 }
 
-var viewer_16611586128616278 = null;
-var warn = document.getElementById("3dmolwarning_16611586128616278");
+var viewer_16612245698772428 = null;
+var warn = document.getElementById("3dmolwarning_16612245698772428");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16611586128616278 = null;
-viewergrid_16611586128616278 = $3Dmol.createViewerGrid($("#3dmolviewer_16611586128616278"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_16611586128616278 = viewergrid_16611586128616278[0][0];
-viewergrid_16611586128616278[0][0].zoomTo();	viewergrid_16611586128616278[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_16611586128616278[0][0].setStyle({"stick": {}});
-	viewergrid_16611586128616278[0][0].rotate(-90,"y");
-viewergrid_16611586128616278[0][0].render();
+var viewergrid_16612245698772428 = null;
+viewergrid_16612245698772428 = $3Dmol.createViewerGrid($("#3dmolviewer_16612245698772428"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16612245698772428 = viewergrid_16612245698772428[0][0];
+viewergrid_16612245698772428[0][0].zoomTo();	viewergrid_16612245698772428[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_16612245698772428[0][0].setStyle({"stick": {}});
+	viewergrid_16612245698772428[0][0].rotate(-90,"y");
+viewergrid_16612245698772428[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1116,7 +1232,7 @@ viewergrid_16611586128616278[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.02 sec.                                                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.03 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -1125,7 +1241,7 @@ viewergrid_16611586128616278[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.05 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.04 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1144,7 +1260,7 @@ viewergrid_16611586128616278[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -74.947250981137    0.0000000000      0.00006046      0.00001095      0.00000000                
+                  1       -74.947250981138    0.0000000000      0.00006046      0.00001095      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
@@ -1157,7 +1273,7 @@ viewergrid_16611586128616278[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.01 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1205,7 +1321,7 @@ viewergrid_16611586128616278[0][0].render();
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.38490 a.u.                                                                  
-               (   1 O   1p+1:    -1.00)                                                                                  
+               (   1 O   1p+1:     1.00)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -1216,8 +1332,8 @@ viewergrid_16611586128616278[0][0].render();
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.71372 a.u.                                                                  
-               (   1 O   2s  :     0.41) (   1 O   1p-1:     0.76) (   1 O   1p0 :    -0.58)                              
-               (   2 H   1s  :    -1.08) (   3 H   1s  :     0.41)                                                        
+               (   1 O   2s  :    -0.41) (   1 O   1p-1:    -0.76) (   1 O   1p0 :     0.58)                              
+               (   2 H   1s  :     1.08) (   3 H   1s  :    -0.41)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -1241,13 +1357,13 @@ viewergrid_16611586128616278[0][0].render();
                                                                                                                           
                           Atom           Gradient X            Gradient Y            Gradient Z                           
                                                                                                                           
-                           O           0.000000000000        0.085297089612       -0.100972944736                         
-                           H          -0.000000000028       -0.061749632579       -0.007085216616                         
-                           H          -0.000000000014       -0.023547457843        0.108058171904                         
+                           O           0.000000000000        0.085297089619       -0.100972944693                         
+                           H           0.000000000014       -0.061749632536       -0.007085216623                         
+                           H          -0.000000000014       -0.023547457801        0.108058171904                         
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.82 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.29 sec ***                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -1257,7 +1373,7 @@ viewergrid_16611586128616278[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 20.40 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 13.68 sec ***                                   
                                                                                                                           
                                                                                                                           
 </pre></div>
@@ -1524,9 +1640,9 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="ground-state-pes-by-interpolation">
-<h3>Ground-state PES by interpolation<a class="headerlink" href="#ground-state-pes-by-interpolation" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="ground-state-pes-by-interpolation">
+<h3>Ground-state PES by interpolation<a class="headerlink" href="#ground-state-pes-by-interpolation" title="Permalink to this headline">#</a></h3>
 <p>Now that we have set up the routines for conversion between Cartesian and internal coordiantes, we can start collecting data points for interpolation. Let’s start with stretching one of the OH bonds and calculate three new points: one when the bond is contracted, one around equilibrium bond length, and one when the bond is stretched.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1926,9 +2042,9 @@ the range of QM data points (eg. an OH bond length larger than the largest value
 <li><p>What happens if you include more or fewer data points in your data base?</p></li>
 </ul>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1952,9 +2068,11 @@ the range of QM data points (eg. an OH bond length larger than the largest value
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="impes.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -1970,24 +2088,28 @@ the range of QM data points (eg. an OH bond length larger than the largest value
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The eChem team<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
     
-      By The eChem team<br/>
-    
-        &copy; Copyright 2022.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
