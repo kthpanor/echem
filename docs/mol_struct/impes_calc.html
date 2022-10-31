@@ -595,6 +595,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mclr.html">
+     Multiconfigurational linear response
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../spec_prop/mr_exercises.html">
      Exercises
     </a>
@@ -1096,7 +1101,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </ul>
 <section id="transforming-from-cartesian-to-internal-coordinates">
 <h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">#</a></h3>
-<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <a class="reference internal" href="coordinates.html#sec-redundant-coordinates"><span class="std std-ref">here</span></a>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
+<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <span class="xref myst">here</span>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell tag_hide-output tag_no-warnings docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -1112,10 +1117,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Setting MKL_THREADING_LAYER to &quot;GNU&quot;.
+* Warning * Setting OMP_NUM_THREADS to 4.
 </pre></div>
 </div>
 </div>
@@ -1142,11 +1144,28 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/STO-3G
+                                                                                                                          
+                                              Molecular Basis (Atomic Basis)                                              
+                                             ================================                                             
+                                                                                                                          
+                                  Basis: STO-3G                                                                           
+                                                                                                                          
+                                  Atom Contracted GTOs          Primitive GTOs                                            
+                                                                                                                          
+                                   O   (2S,1P)                  (6S,3P)                                                   
+                                   H   (1S)                     (3S)                                                      
+                                                                                                                          
+                                  Contracted Basis Functions : 7                                                          
+                                  Primitive Basis Functions  : 21                                                         
+                                                                                                                          
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16612245698772428"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_16612245698772428" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16669516553891976"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16669516553891976" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1166,22 +1185,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
 }
 
-var viewer_16612245698772428 = null;
-var warn = document.getElementById("3dmolwarning_16612245698772428");
+var viewer_16669516553891976 = null;
+var warn = document.getElementById("3dmolwarning_16669516553891976");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16612245698772428 = null;
-viewergrid_16612245698772428 = $3Dmol.createViewerGrid($("#3dmolviewer_16612245698772428"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_16612245698772428 = viewergrid_16612245698772428[0][0];
-viewergrid_16612245698772428[0][0].zoomTo();	viewergrid_16612245698772428[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_16612245698772428[0][0].setStyle({"stick": {}});
-	viewergrid_16612245698772428[0][0].rotate(-90,"y");
-viewergrid_16612245698772428[0][0].render();
+var viewergrid_16669516553891976 = null;
+viewergrid_16669516553891976 = $3Dmol.createViewerGrid($("#3dmolviewer_16669516553891976"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16669516553891976 = viewergrid_16669516553891976[0][0];
+viewergrid_16669516553891976[0][0].zoomTo();	viewergrid_16669516553891976[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_16669516553891976[0][0].setStyle({"stick": {}});
+	viewergrid_16669516553891976[0][0].rotate(-90,"y");
+viewergrid_16669516553891976[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1232,7 +1251,7 @@ viewergrid_16612245698772428[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.03 sec.                                                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -1241,7 +1260,7 @@ viewergrid_16612245698772428[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.04 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.02 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1260,7 +1279,7 @@ viewergrid_16612245698772428[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -74.947250981138    0.0000000000      0.00006046      0.00001095      0.00000000                
+                  1       -74.947250981137    0.0000000000      0.00006046      0.00001095      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
@@ -1273,7 +1292,7 @@ viewergrid_16612245698772428[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.01 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1299,12 +1318,12 @@ viewergrid_16612245698772428[0][0].render();
                Molecular Orbital No.   1:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:  -20.24331 a.u.                                                                  
-               (   1 O   1s  :    -0.99)                                                                                  
+               (   1 O   1s  :     0.99)                                                                                  
                                                                                                                           
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.23684 a.u.                                                                  
-               (   1 O   1s  :    -0.24) (   1 O   2s  :     0.85) (   2 H   1s  :     0.18)                              
+               (   1 O   1s  :     0.24) (   1 O   2s  :    -0.85) (   2 H   1s  :    -0.18)                              
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -1332,15 +1351,17 @@ viewergrid_16612245698772428[0][0].render();
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.71372 a.u.                                                                  
-               (   1 O   2s  :    -0.41) (   1 O   1p-1:    -0.76) (   1 O   1p0 :     0.58)                              
-               (   2 H   1s  :     1.08) (   3 H   1s  :    -0.41)                                                        
+               (   1 O   2s  :     0.41) (   1 O   1p-1:     0.76) (   1 O   1p0 :    -0.58)                              
+               (   2 H   1s  :    -1.08) (   3 H   1s  :     0.41)                                                        
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                                    SCF Gradient Driver                                                    
                                                   =====================                                                   
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                              Molecular Geometry (Angstroms)                                              
@@ -1352,18 +1373,18 @@ viewergrid_16612245698772428[0][0].render();
                            H           0.000000000000        0.895700000000       -0.316700000000                         
                            H           0.000000000000        0.000000000000        1.100000000000                         
                                                                                                                           
-                                                 Gradient (Hartree/Bohr)                                                  
-                                                -------------------------                                                 
+                                            Analytical Gradient (Hartree/Bohr)                                            
+                                           ------------------------------------                                           
                                                                                                                           
                           Atom           Gradient X            Gradient Y            Gradient Z                           
                                                                                                                           
-                           O           0.000000000000        0.085297089619       -0.100972944693                         
-                           H           0.000000000014       -0.061749632536       -0.007085216623                         
-                           H          -0.000000000014       -0.023547457801        0.108058171904                         
+                           O           0.000000000021        0.085297089591       -0.100972944693                         
+                           H           0.000000000043       -0.061749632565       -0.007085216573                         
+                           H           0.000000000000       -0.023547457815        0.108058171918                         
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.29 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.68 sec ***                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -1373,7 +1394,7 @@ viewergrid_16612245698772428[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 13.68 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 17.05 sec ***                                   
                                                                                                                           
                                                                                                                           
 </pre></div>

@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -595,6 +593,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mclr.html">
+     Multiconfigurational linear response
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../spec_prop/mr_exercises.html">
      Exercises
     </a>
@@ -1064,8 +1067,8 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#getting-integrals-in-the-ao-basis">
-     Getting integrals in the AO basis
+    <a class="reference internal nav-link" href="#getting-integrals-in-ao-basis">
+     Getting integrals in AO basis
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
@@ -1195,8 +1198,8 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#getting-integrals-in-the-ao-basis">
-     Getting integrals in the AO basis
+    <a class="reference internal nav-link" href="#getting-integrals-in-ao-basis">
+     Getting integrals in AO basis
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
@@ -1484,8 +1487,8 @@ D^\alpha_{\gamma\delta} &amp; = D^\beta_{\gamma\delta} = \frac{1}{2} D_{\gamma\d
 </div>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 </pre></div>
 </div>
 </div>
@@ -1498,7 +1501,7 @@ D^\alpha_{\gamma\delta} &amp; = D^\beta_{\gamma\delta} = \frac{1}{2} D_{\gamma\d
 <p>Let us implement the presented Hartree–Fock SCF procedure. We will use the water molecule as an example and, as reference, we will first compute the Hartree–Fock energy using the built-in <code class="docutils literal notranslate"><span class="pre">compute</span></code> method in VeloxChem.</p>
 <section id="setting-up-the-system">
 <h2>Setting up the system<a class="headerlink" href="#setting-up-the-system" title="Permalink to this headline">#</a></h2>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O    0.000000000000        0.000000000000        0.000000000000</span>
@@ -1506,16 +1509,21 @@ D^\alpha_{\gamma\delta} &amp; = D^\beta_{\gamma\delta} = \frac{1}{2} D_{\gamma\d
 <span class="s2">H    0.000000000000       -0.740848095288        0.582094932012</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;cc-pVDZ&#39;</span><span class="p">)</span>
-
-<span class="n">norb</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;angstrom&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_electrons</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
 <span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of contracted basis functions:&#39;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of doubly occupied molecular orbitals:&#39;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span> <span class="si">:</span><span class="s1"> 14.12f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span> <span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1541,7 +1549,7 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Final HF energy: </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s1"> 12.8f</span><span class="si">}</span><span class="s1"> Hartree&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final HF energy: </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2"> Hartree&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1552,8 +1560,8 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 </div>
 </div>
 </section>
-<section id="getting-integrals-in-the-ao-basis">
-<h2>Getting integrals in the AO basis<a class="headerlink" href="#getting-integrals-in-the-ao-basis" title="Permalink to this headline">#</a></h2>
+<section id="getting-integrals-in-ao-basis">
+<h2>Getting integrals in AO basis<a class="headerlink" href="#getting-integrals-in-ao-basis" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># overlap matrix</span>
@@ -1567,12 +1575,12 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 <span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
 <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span> 
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
 
 <span class="c1"># two-electron Hamiltonian</span>
 <span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
-<span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_mem</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1621,7 +1629,7 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># symmetric transformation</span>
 <span class="n">sigma</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ik,k,jk-&gt;ij&#39;</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="p">),</span> <span class="n">U</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,k,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="p">),</span> <span class="n">U</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1639,10 +1647,10 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
 
-    <span class="n">F_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ki,kl,lj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F_OAO</span><span class="p">)</span>    
+    <span class="n">F_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ki,kl,lj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F_OAO</span><span class="p">)</span>
     <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,kj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C_OAO</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">C</span>
 </pre></div>
 </div>
@@ -1651,11 +1659,29 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 </section>
 <section id="scf-iterations">
 <h2>SCF iterations<a class="headerlink" href="#scf-iterations" title="Permalink to this headline">#</a></h2>
-<p>We form an initial guess for the density based on the core Hamiltonian and thereafter enter the SCF iterations. As a measure of convergence, we adopt the norm of the occupied–virtual block of the Fock matrix in MO basis. It is convenient to scatter the elements of this block into the format of a vector and which we refer to as the <em>error vector</em>. During the course of the SCF iterations, we form a sequence of error vectors, <span class="math notranslate nohighlight">\(\mathbf{e}_i\)</span>.</p>
+<p>We form an initial guess for the density based on the core Hamiltonian and thereafter enter the SCF iterations. As a measure of convergence, we adopt the norm of the following matrix in AO basis</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{e} = 
+\mathbf{F D S} -
+\mathbf{S D F}
+\]</div>
+<p>It is convenient to scatter the elements of this matrix into the format of a vector and which we refer to as the <em>error vector</em>. During the course of the SCF iterations, we form a sequence of error vectors, <span class="math notranslate nohighlight">\(\mathbf{e}_i\)</span>.</p>
+<p>The choice of convergence metric may at first appear unintuitive but becomes less so in the MO basis</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{e}^\mathrm{MO} = 
+\mathbf{C}^\dagger \mathbf{e} \, \mathbf{C} =
+\begin{bmatrix}
+0 &amp; -F_\mathrm{ov} \\
+F_\mathrm{vo} &amp; 0 \\
+\end{bmatrix}
+\end{split}\]</div>
+<p>where it is seen to correspond to vanishing occupied–virtual blocks in the Fock matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">50</span>
-<span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-4</span>
+<span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-6</span>
 
 <span class="c1"># initial guess from core Hamiltonian</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
@@ -1663,57 +1689,64 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
-    
-    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ik,jk-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-        
-    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijkl,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ilkj,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
-    
-    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;&#39;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+
+    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ilkj,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
+
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
 
     <span class="c1"># compute convergence metric</span>
-    <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ki,kl,lj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
-    <span class="n">e_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">F_MO</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,</span> <span class="n">nocc</span><span class="p">:],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">e_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">S</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span>
+    <span class="n">e_vec</span> <span class="o">=</span> <span class="n">e_mat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vec</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s1">&gt;2d</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s1">16.8f</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s1">10.2e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">10.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SCF iterations converged!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCF iterations converged!&quot;</span><span class="p">)</span>
         <span class="k">break</span>
-    
+
     <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0      -68.84975229    2.23e+00
- 1      -69.95937641    1.79e+00
- 2      -73.34743276    1.74e+00
- 3      -73.46688910    1.36e+00
- 4      -74.74058933    1.29e+00
- 5      -75.55859127    7.91e-01
- 6      -75.86908635    4.86e-01
- 7      -75.97444165    2.74e-01
- 8      -76.00992921    1.60e-01
- 9      -76.02143957    8.99e-02
-10      -76.02519173    5.15e-02
-11      -76.02640379    2.92e-02
-12      -76.02679653    1.67e-02
-13      -76.02692347    9.45e-03
-14      -76.02696455    5.38e-03
-15      -76.02697784    3.06e-03
-16      -76.02698213    1.74e-03
-17      -76.02698352    9.89e-04
-18      -76.02698397    5.63e-04
-19      -76.02698412    3.20e-04
-20      -76.02698416    1.82e-04
-21      -76.02698418    1.04e-04
-22      -76.02698418    5.89e-05
+ 0      -68.84975229    3.09e+00
+ 1      -69.95937641    2.88e+00
+ 2      -73.34743276    2.83e+00
+ 3      -73.46688910    2.23e+00
+ 4      -74.74058933    2.18e+00
+ 5      -75.55859127    1.41e+00
+ 6      -75.86908635    8.26e-01
+ 7      -75.97444165    4.82e-01
+ 8      -76.00992921    2.74e-01
+ 9      -76.02143957    1.57e-01
+10      -76.02519173    8.89e-02
+11      -76.02640379    5.06e-02
+12      -76.02679653    2.88e-02
+13      -76.02692347    1.64e-02
+14      -76.02696455    9.31e-03
+15      -76.02697784    5.30e-03
+16      -76.02698213    3.01e-03
+17      -76.02698352    1.71e-03
+18      -76.02698397    9.74e-04
+19      -76.02698412    5.54e-04
+20      -76.02698416    3.15e-04
+21      -76.02698418    1.79e-04
+22      -76.02698418    1.02e-04
+23      -76.02698419    5.80e-05
+24      -76.02698419    3.30e-05
+25      -76.02698419    1.88e-05
+26      -76.02698419    1.07e-05
+27      -76.02698419    6.07e-06
+28      -76.02698419    3.45e-06
+29      -76.02698419    1.96e-06
+30      -76.02698419    1.12e-06
+31      -76.02698419    6.35e-07
 SCF iterations converged!
 </pre></div>
 </div>
@@ -1735,12 +1768,12 @@ SCF iterations converged!
 \[
 \sum_{i=1}^n w_i = 1
 \]</div>
-<p>Under the assumption of a strict linearity between Fock matrices and error vectors, the averaged error vector would read</p>
+<p>Under the assumption of a strict linearity between Fock matrices and error vectors, the error vector of the averaged Fock matrix would equal</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf{e}_n^\mathrm{DIIS} = \sum_{i=1}^n w_i \mathbf{e}_i
 \]</div>
-<p>As the molecular orbitals change from one iteration to the next, this is not strictly the case but it is a good approximation. We can then determine the weights by minimizing the squared norm of the averaged error vector under the imposed constraint. The squared norm becomes equal to</p>
+<p>As the molecular orbitals change from one iteration to the next, this is not strictly the case but it is a good approximation. We can then determine the weights by minimizing the squared norm of this error vector under the imposed constraint. The squared norm becomes equal to</p>
 <div class="math notranslate nohighlight">
 \[
 \| \mathbf{e}_n^\mathrm{DIIS} \|^2 =
@@ -1773,36 +1806,31 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 0 \\ \vdots \\ 0 \\ -1
 \end{pmatrix}
 \end{split}\]</div>
-<p>We solve this equation for the weights, <span class="math notranslate nohighlight">\(w_i\)</span>, and then determine the averaged Fock matrix, <span class="math notranslate nohighlight">\(\mathbf{F}_n^\mathrm{DIIS}\)</span>, and error vector, <span class="math notranslate nohighlight">\(\mathbf{e}_n^\mathrm{DIIS}\)</span>, which are both kept in storage for subsequent SCF iterations.</p>
+<p>We solve this equation for the weights, <span class="math notranslate nohighlight">\(w_i\)</span>, and then determine the averaged Fock matrix, <span class="math notranslate nohighlight">\(\mathbf{F}_n^\mathrm{DIIS}\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_DIIS_fock</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">):</span>
-    
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">):</span>
+
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">)</span>
-    
+
     <span class="c1"># build DIIS matrix</span>
     <span class="n">B</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-            <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e_vecs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-            
+            <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e_vecs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">b</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    
+
     <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="n">F_ave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
-    <span class="n">evec_ave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nocc</span> <span class="o">*</span> <span class="p">(</span><span class="n">norb</span> <span class="o">-</span> <span class="n">nocc</span><span class="p">))</span>
+    <span class="n">F_diis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">F_ave</span> <span class="o">+=</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">F_mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">evec_ave</span> <span class="o">+=</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">e_vecs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        
-    <span class="n">F_mats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">F_ave</span>
-    <span class="n">e_vecs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">evec_ave</span>
-    
-    <span class="k">return</span> <span class="n">F_ave</span>
+        <span class="n">F_diis</span> <span class="o">+=</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">F_mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">F_diis</span>
 </pre></div>
 </div>
 </div>
@@ -1810,7 +1838,7 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 </section>
 <section id="id4">
 <h2>SCF iterations<a class="headerlink" href="#id4" title="Permalink to this headline">#</a></h2>
-<p>In principle, the only needed modification in the SCF module to implement the DIIS scheme is a replacement of the original Fock matrix with the weighted averaged counterpart before the determination of the new MO coefficients. But it is also required to save Fock matrices and error vectors from previous SCF iteration. In practice, however, this extra storage requirement does not severely hamper applications, and in particular so as an optimum stabilitity in the DIIS scheme is experienced with the use of information from a limited number (about 10) of the previous iterations.</p>
+<p>In principle, the only needed modification in the SCF module to implement the DIIS scheme is to replace the original Fock matrix with the weighted averaged counterpart before the determination of the new MO coefficients. But it is also required to save Fock matrices and error vectors from previous SCF iterations. In practice, this extra storage requirement does not severely hamper applications, and in particular so as an optimum stabilitity in the DIIS scheme is experienced with the use of information from a limited number (about 10) of the previous iterations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e_vecs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1822,50 +1850,46 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
-    
-    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ik,jk-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-        
-    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijkl,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ilkj,kl-&gt;ij&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+
+    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ilkj,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
     <span class="n">F_mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
-    
-    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;&#39;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
 
     <span class="c1"># compute convergence metric</span>
-    <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ki,kl,lj-&gt;ij&#39;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
-    <span class="n">e_vecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">F_MO</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,</span> <span class="n">nocc</span><span class="p">:],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">e_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">S</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span>
+    <span class="n">e_vecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_mat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s1">&gt;2d</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s1">16.8f</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s1">10.2e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">10.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SCF iterations converged!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCF iterations converged!&quot;</span><span class="p">)</span>
         <span class="k">break</span>
-        
-    <span class="n">F</span> <span class="o">=</span> <span class="n">get_DIIS_fock</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
-    
+
+    <span class="n">F</span> <span class="o">=</span> <span class="n">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
     <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0      -68.84975229    2.23e+00
- 1      -69.95937641    1.79e+00
- 2      -75.55244086    7.92e-01
- 3      -75.98441968    2.55e-01
- 4      -76.01359974    1.37e-01
- 5      -76.02627504    3.17e-02
- 6      -76.02602152    3.75e-02
- 7      -76.02686952    1.26e-02
- 8      -76.02697700    3.01e-03
- 9      -76.02698332    8.67e-04
-10      -76.02698394    5.41e-04
-11      -76.02698416    1.39e-04
-12      -76.02698418    5.89e-05
+ 0      -68.84975229    3.09e+00
+ 1      -69.95937641    2.88e+00
+ 2      -75.88501761    8.37e-01
+ 3      -75.97016719    5.18e-01
+ 4      -76.01483442    2.34e-01
+ 5      -76.02676704    3.29e-02
+ 6      -76.02698021    3.32e-03
+ 7      -76.02698392    8.01e-04
+ 8      -76.02698418    2.04e-04
+ 9      -76.02698419    6.97e-05
+10      -76.02698419    2.06e-06
+11      -76.02698419    5.43e-07
 SCF iterations converged!
 </pre></div>
 </div>
