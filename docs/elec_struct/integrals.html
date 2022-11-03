@@ -1168,8 +1168,7 @@ title="Print to PDF"
 <h3>Kinetic energy<a class="headerlink" href="#kinetic-energy" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># one-electron Hamiltonian</span>
-<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 </pre></div>
@@ -1237,19 +1236,21 @@ title="Print to PDF"
 </section>
 <section id="integral-transformation">
 <h2>Integral transformation<a class="headerlink" href="#integral-transformation" title="Permalink to this headline">#</a></h2>
+<p>Most correlated wave function methods rely on integrals in the molecular orbital basis. For some methods, like Møller–Plesset second order perturbation theory, this step is the most time-consuming step of the calculation.</p>
 <section id="conventional">
 <h3>Conventional<a class="headerlink" href="#conventional" title="Permalink to this headline">#</a></h3>
-<p>Most correlated wavefunction theories rely on the integrals in the molecular orbital basis. For some methods, like Møller-Plesset second order perturbation theory, this step is even the most time-consuming step of the calculation.</p>
-<p>Conventionally, this is done by transforming the atomic orbital integrals (a four-dimensional tensor) to molecular basis. For example the <span class="math notranslate nohighlight">\(\langle ij|ab \rangle\)</span> integrals can be obtained via</p>
+<p>The transformation of the AO integrals to the MO basis can be done as follows</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{eqnarray*}
-\langle \mu \nu|\lambda b \rangle &amp;= \sum_{\sigma} C_{\sigma b} \langle \mu \nu | \lambda \sigma \rangle \\
-\langle \mu \nu|a b \rangle &amp;= \sum_{\lambda} C_{\lambda a} \langle \mu \nu | \lambda b \rangle \\
-\langle \mu j|a b \rangle &amp;= \sum_{\nu} C_{\nu j} \langle \mu \nu | a b \rangle \\
-\langle i j|a b \rangle &amp;= \sum_{\mu} C_{\mu i} \langle \mu j | a b \rangle
+( \alpha \beta | \gamma s ) &amp;= \sum_{\delta} C_{\delta s} ( \alpha \beta | \gamma \delta ) \\
+%
+( \alpha \beta | r s ) &amp;= \sum_{\gamma} C^*_{\gamma r} ( \alpha \beta | \gamma s ) \\
+%
+( \alpha q | r s ) &amp;= \sum_{\beta} C_{\beta q} ( \alpha \beta | r s ) \\
+%
+( p q | r s ) &amp;= \sum_{\alpha} C^*_{\alpha p} ( \alpha q | r s ) \\
 \end{eqnarray*}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu\)</span>, <span class="math notranslate nohighlight">\(\nu\)</span>, <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> denote the atomic orbitals.
-The computational cost of this procedure is <span class="math notranslate nohighlight">\(O(N^5)\)</span>, since each summation involves five indices. Note that the intermediate result of the transformation needs to be explicitly stored in memory. This can be demanding as the required memory increases as <span class="math notranslate nohighlight">\(O(N^4)\)</span> where <span class="math notranslate nohighlight">\(N\)</span> is the number of contracted basis functions.</p>
+<p>The computational cost of this procedure is <span class="math notranslate nohighlight">\(O(N^5)\)</span>, since each summation involves five indices. Note that the intermediate result of the transformation needs to be explicitly stored in memory. This can be demanding as the required memory increases as <span class="math notranslate nohighlight">\(O(N^4)\)</span> where <span class="math notranslate nohighlight">\(N\)</span> is the number of contracted basis functions.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the MO coefficients</span>
@@ -1285,23 +1286,21 @@ The computational cost of this procedure is <span class="math notranslate nohigh
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">erimo_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MOIntegralsDriver</span><span class="p">()</span>
 
-<span class="c1"># [ov|vo]</span>
-<span class="n">phys_ovvo</span> <span class="o">=</span> <span class="n">erimo_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;phys_ovvo&quot;</span><span class="p">)</span>
+<span class="n">phys_oovv</span> <span class="o">=</span> <span class="n">erimo_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;phys_oovv&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[oo|vv]:&quot;</span><span class="p">,</span> <span class="n">phys_oovv</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">phys_ovvo</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">chem_ovov</span> <span class="o">=</span> <span class="n">erimo_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;chem_ovov&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(ov|ov):&quot;</span><span class="p">,</span> <span class="n">chem_ovov</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-<span class="c1"># (oo|vv)</span>
-<span class="n">chem_oovv</span> <span class="o">=</span> <span class="n">erimo_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="s2">&quot;chem_oovv&quot;</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">chem_oovv</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">phys_oovv</span><span class="p">,</span> <span class="n">chem_ovov</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5, 19, 19, 5)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[oo|vv]: (5, 5, 19, 19)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(5, 5, 19, 19)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(ov|ov): (5, 19, 5, 19)
 </pre></div>
 </div>
 </div>
@@ -1309,14 +1308,40 @@ The computational cost of this procedure is <span class="math notranslate nohigh
 </section>
 <section id="fock-matrix-driven">
 <h3>Fock-matrix driven<a class="headerlink" href="#fock-matrix-driven" title="Permalink to this headline">#</a></h3>
-<p>An alternative way of getting the molecular orbital integrals is through the direct formation of many Fock matrices. Taking the <span class="math notranslate nohighlight">\(\langle ij|ab \rangle\)</span> integrals as an example, we can in practice build <span class="math notranslate nohighlight">\(N_{occ} \times N_{occ}\)</span> density matrices using the coefficients of the occupied orbitals, and form the corresponding Fock matrices that can then be transformed into molecular basis by the coefficients of the virtual orbitals.</p>
+<p>An alternative way of getting the molecular orbital integrals is through the direct formation of many Fock matrices. Taking the ovov-block of MO integrals as an example, we can in practice build <span class="math notranslate nohighlight">\(N_{occ} \times N_{occ}\)</span> density matrices using the coefficients of the occupied orbitals, and form the corresponding Fock matrices that can then be transformed into molecular basis by the coefficients of the virtual orbitals.</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{eqnarray*}
-D^{ij}_{\mu \nu} &amp;= C_{\mu i} C_{\nu j} \\
-K^{ij}_{\lambda \sigma} &amp;= \sum_{\mu\nu} \langle \mu \nu| \lambda \sigma \rangle D^{ij}_{\mu\nu} \\
-\langle ij|ab \rangle &amp;= \sum_{\lambda \sigma} C_{\lambda a} K^{ij}_{\lambda \sigma} C_{\sigma b}
+D^{ij}_{\alpha \beta} &amp;= C^*_{\alpha i} C^*_{\beta j} \\
+%
+K^{ij}_{\gamma \delta} &amp;= 
+\sum_{\alpha, \beta} D^{ij}_{\alpha\beta} (\alpha \gamma| \beta \delta ) \\
+%
+(i a|j b ) &amp;= \sum_{\gamma, \delta} C_{\gamma a} K^{ij}_{\gamma \delta} C_{\delta b}
 \end{eqnarray*}\]</div>
 <p>The computational cost of this approach is formally <span class="math notranslate nohighlight">\(O(N^6)\)</span>; however, in practice the cost scales between <span class="math notranslate nohighlight">\(O(N^4)\)</span> and <span class="math notranslate nohighlight">\(O(N^5)\)</span> due to screening of integrals in the formation of Fock matrices. An advantage of this approach is that the Fock matrices can be computed and stored on individual compute nodes, making it suitable for large-scale parallelization on HPC systems.</p>
+<p>VeloxChem uses this approach to serve ERIs for the correlated wave function programs Gator and MultiPsi.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+
+<span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;a, b -&gt; ab&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span><span class="n">j</span><span class="p">])</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;acbd, ab -&gt; cd&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="n">g_mo_ab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ca, cd, db -&gt; ab&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">nocc</span><span class="p">:],</span> <span class="n">K</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span><span class="n">nocc</span><span class="p">:])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">g_mo_ab</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">g_mo_ab</span><span class="p">,</span> <span class="n">chem_ovov</span><span class="p">[</span><span class="n">i</span><span class="p">,:,</span><span class="n">j</span><span class="p">,:],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(19, 19)
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 </section>
