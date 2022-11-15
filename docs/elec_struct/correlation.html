@@ -50,14 +50,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Rayleigh–Schrödinger perturbation theory" href="pt.html" />
+    <link rel="next" title="Dispersion interactions" href="dispersion.html" />
     <link rel="prev" title="Electron spin" href="spin.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -284,6 +282,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      Electron correlation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="dispersion.html">
+     Dispersion interactions
     </a>
    </li>
    <li class="toctree-l2">
@@ -1080,20 +1083,20 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="electron-correlation">
 <span id="sec-correlation"></span><h1>Electron correlation<a class="headerlink" href="#electron-correlation" title="Permalink to this headline">#</a></h1>
-<p>The electron correlation describes instantaneous interaction between electrons in a molecular system. This interaction manifests itself as a relationship between <a class="reference internal" href="reduced_density.html#sec-reduced-densities"><span class="std std-ref">one- and two-electron densities</span></a></p>
+<p>Electron correlation stem from the instantaneous interactions between electrons. It manifests itself as a relationship between <a class="reference internal" href="reduced_density.html#sec-reduced-densities"><span class="std std-ref">one- and two-electron densities</span></a></p>
 <div class="math notranslate nohighlight">
 \[
 n(\mathbf{r}, \mathbf{r}') \neq n(\mathbf{r}) n(\mathbf{r}')
 \]</div>
-<p>where <span class="math notranslate nohighlight">\(n(\mathbf{r}, \mathbf{r}')\)</span> is the two-electron density. If the molecular system is described by an approximate wave function model that does not capture this instantaneous electron interaction, then the relationship between densities (incorrectly) becomes</p>
+<p>where <span class="math notranslate nohighlight">\(n(\mathbf{r}, \mathbf{r}')\)</span> is the two-electron density. If the molecular system is described by an approximate wave function that does not capture this instantaneous electron interaction, then the relationship between densities (incorrectly) becomes</p>
 <div class="math notranslate nohighlight">
 \[
 n(\mathbf{r}, \mathbf{r}') = n(\mathbf{r}) n(\mathbf{r}')
 \]</div>
-<p>indicating completely independent motions of electrons in the molecular system.</p>
+<p>indicating completely independent motions of electrons.</p>
 <section id="correlation-energy">
 <h2>Correlation energy<a class="headerlink" href="#correlation-energy" title="Permalink to this headline">#</a></h2>
-<p>Electron correlation arises from two primary sources namely the fermionic nature of electrons and the interaction between electrons. From the perspective of the Hartree–Fock method the first but not the second source is accounted for, and as a measure of this discrepancy the correlation energy is defined as</p>
+<p>Electron correlation arises from two primary sources namely the fermionic nature of electrons and the Coulomb repulsion between electrons. From the perspective of the Hartree–Fock method, the first but not the second source is accounted for, and as a measure of this discrepancy the correlation energy is defined as</p>
 <div class="math notranslate nohighlight">
 \[
 E_{\textrm{corr}} = E_{\textrm{exact}} - E_{\textrm{HF}} 
@@ -1104,22 +1107,24 @@ E_{\textrm{corr}} = E_{\textrm{exact}} - E_{\textrm{HF}}
 E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}  
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(E_{\textrm{WF}}\)</span> is the energy of the molecular system computed by the selected wave function model.</p>
-<p>To illustrate these concepts, we will use the configuration interaction (CI) method to study the H<span class="math notranslate nohighlight">\(_2\)</span> molecule. The obtained results provide the exact correlation energy within the chosen basis set.</p>
+<p>To illustrate these concepts, we will use the full configuration interaction (FCI) method to study the H<span class="math notranslate nohighlight">\(_2\)</span> molecule. The obtained results provide the exact correlation energy for the given basis set.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">170</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">170</span><span class="p">)</span>
 
 <span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">H     0.000000    0.000000   -0.70</span>
 <span class="s2">H     0.000000    0.000000    0.70</span>
 <span class="s2">&quot;&quot;&quot;</span>
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;au&#39;</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;sto-3g&#39;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;au&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
+
+<span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
 
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
@@ -1147,9 +1152,9 @@ E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>HF energy: -1.11671433
-CI energy: -1.13727594
-Correlation energy: -0.02056162
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>HF energy: -1.12870945
+CI energy: -1.16339873
+Correlation energy: -0.03468928
 </pre></div>
 </div>
 </div>
@@ -1159,7 +1164,7 @@ Correlation energy: -0.02056162
 <h2>Visualizing electron correlation<a class="headerlink" href="#visualizing-electron-correlation" title="Permalink to this headline">#</a></h2>
 <section id="one-particle-density">
 <h3>One-particle density<a class="headerlink" href="#one-particle-density" title="Permalink to this headline">#</a></h3>
-<p>With access to both the Hartree–Fock and CI wave functions, we can investigate the densities using the <code class="docutils literal notranslate"><span class="pre">VisualizationDriver</span></code> class in Veloxchem.</p>
+<p>With access to both the Hartree–Fock and FCI wave functions, we can investigate the densities using the <code class="docutils literal notranslate"><span class="pre">VisualizationDriver</span></code> class in Veloxchem.</p>
 <p>This module gives us access to the orbital values at specified coordinates.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1170,42 +1175,41 @@ Correlation energy: -0.02056162
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_orbs</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">):</span>
 
     <span class="n">orbital_values</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
-        
-        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">))</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">))</span>
         <span class="n">orbital_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        
+
     <span class="k">return</span> <span class="n">orbital_values</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>The one-particle density equals the product of the density matrix and orbital densities.</p>
-<p>For HF in the MO basis, the density matrix is diagonal with elements 2 and 0 for occupied and unoccupied orbitals, respectively. For CI, it is a bit more complicated, but the density matrix is provided by the CI driver.</p>
+<p>In the MO basis, the HF density matrix is diagonal with elements 2 and 0 for occupied and unoccupied orbitals, respectively. For CI, it is a bit more complicated, but the density matrix is provided by the CI driver.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">,</span> <span class="n">ci_onepart_denmat</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">):</span>
 
-    <span class="c1"># One-particle densities for HF and CI</span>
-    
-    <span class="n">n1_HF</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># first orbital is occupied</span>
-    
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># number of points with orbital values</span>
-    <span class="n">norb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">)</span> <span class="c1"># number of orbitals</span>
+    <span class="n">hf_onepart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
+    <span class="n">hf_onepart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># first MO is doubly occupied</span>
+    <span class="n">fci_onepart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="n">n1_CI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="c1"># One-particle densities for HF and FCI</span>
+    <span class="n">n1_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n1_fci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
-            
-            <span class="n">n1_CI</span> <span class="o">+=</span> <span class="n">ci_onepart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">n1_HF</span><span class="p">,</span> <span class="n">n1_CI</span>
+            <span class="n">n1_hf</span> <span class="o">+=</span> <span class="n">hf_onepart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">n1_fci</span> <span class="o">+=</span> <span class="n">fci_onepart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">n1_hf</span><span class="p">,</span> <span class="n">n1_fci</span>
 </pre></div>
 </div>
 </div>
@@ -1213,23 +1217,23 @@ Correlation energy: -0.02056162
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">orbital_values</span> <span class="o">=</span> <span class="n">get_orbs</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">orbital_values</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 
-<span class="n">n1_HF</span><span class="p">,</span> <span class="n">n1_CI</span> <span class="o">=</span> <span class="n">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">,</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">n1_hf</span><span class="p">,</span> <span class="n">n1_fci</span> <span class="o">=</span> <span class="n">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_HF</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;HF&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n1_CI</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;CI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">n1_hf</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;HF&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">n1_fci</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;FCI&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;One-particle density (a.u.)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Coordinate z-axis (a.u.)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;One-particle density (a.u.)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Internuclear axis (a.u.)&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -1239,34 +1243,45 @@ Correlation energy: -0.02056162
 <img alt="../../_images/correlation_9_0.png" src="../../_images/correlation_9_0.png" />
 </div>
 </div>
-<p>The differences one-particle densities at the HF and CI levels of theory are very minor. Upon close inspection of the CI density, it is possible to discern a small decrease in the middle of the bond, compensated for by a minor increase around the nuclei.</p>
+<p>The differences one-particle densities at the HF and FCI levels of theory are very minor. Upon close inspection of the FCI density, it is possible to discern a small decrease in the middle of the bond, compensated for by a minor increase around the nuclei.</p>
 </section>
 <section id="two-particle-density">
 <h3>Two-particle density<a class="headerlink" href="#two-particle-density" title="Permalink to this headline">#</a></h3>
 <p>Given the nature of electron correlation, it is in the two-particle density that approximate method shortcomings are expected to more clearly reveal themselves.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">,</span> <span class="n">ci_twopart_denmat</span><span class="p">):</span>
-    
-    <span class="c1"># Two-particle densities for HF and CI</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">):</span>
 
-    <span class="n">n12_HF</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">hf_twopart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">))</span>
+    <span class="n">hf_twopart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># first MO is doubly occupied</span>
+    <span class="n">ci_twopart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get2den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_values_2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># number of points with orbital values</span>
-    <span class="n">norb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_values_2</span><span class="p">)</span> <span class="c1"># number of orbitals</span>
+    <span class="c1"># Two-particle densities for HF and FCI</span>
+    <span class="n">n12_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n12_fci</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-    <span class="n">n12_CI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
 
-                    <span class="n">n12_CI</span> <span class="o">+=</span> <span class="p">(</span><span class="n">ci_twopart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> 
-                               <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> 
-                               <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+                    <span class="n">n12_hf</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="n">hf_twopart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                    <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">n12_HF</span><span class="p">,</span> <span class="n">n12_CI</span>
+                    <span class="n">n12_fci</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="n">ci_twopart_denmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">orbital_values_2</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">n12_hf</span><span class="p">,</span> <span class="n">n12_fci</span>
 </pre></div>
 </div>
 </div>
@@ -1275,23 +1290,21 @@ Correlation energy: -0.02056162
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># electron 1 at the position of the hydrogen nucleus</span>
-<span class="c1"># electron 2 anywhere on the internuclear axis</span>
-<span class="n">orbital_values_1</span> <span class="o">=</span> <span class="n">get_orbs</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">]],</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">orbital_values_2</span> <span class="o">=</span> <span class="n">get_orbs</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">orbital_values_at_H1</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">]],</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 
-<span class="n">n12_HF</span><span class="p">,</span> <span class="n">n12_CI</span> <span class="o">=</span> <span class="n">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">,</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get2den</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">n12_hf</span><span class="p">,</span> <span class="n">n12_fci</span> <span class="o">=</span> <span class="n">get_n12</span><span class="p">(</span><span class="n">orbital_values_at_H1</span><span class="p">,</span> <span class="n">orbital_values</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n12_HF</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;HF&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">n12_CI</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;CI&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">n12_hf</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;HF&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">n12_fci</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;FCI&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mf">0.70</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Two-particle density (a.u.)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Coordinate z-axis (a.u.)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Two-particle density (a.u.)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Internuclear axis (a.u.)&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -1301,72 +1314,74 @@ Correlation energy: -0.02056162
 <img alt="../../_images/correlation_13_0.png" src="../../_images/correlation_13_0.png" />
 </div>
 </div>
-<p>It is here clearly shown how the HF wave functions fails to describe the asymmetry in the two-particle density. As correctly captured by the CI wave function, the probability for finding both electrons at the position of the same (right-most) hydrogen nucleus should be smaller than to find the electrons positioned at different nuclei.</p>
+<p>It is here clearly shown how the HF wave functions fails to describe the asymmetry in the two-particle density.</p>
+<p>As correctly captured by the FCI wave function, the probability for finding both electrons positioned at the same (right-most) hydrogen nucleus should be smaller than to find the electrons positioned at different nuclei.</p>
 </section>
 <section id="electron-cusp-and-basis-set-convergence">
 <h3>Electron cusp and basis set convergence<a class="headerlink" href="#electron-cusp-and-basis-set-convergence" title="Permalink to this headline">#</a></h3>
-<p>As immediately seen in Slater type orbitals, the point charge model of atomic nuclei creates a cusp in the electronic wave function, <em>i.e.</em>, a discontinuity in its derivative.</p>
-<p>Likewise, the point charge of an electron at a given position in space should create a cusp in the wave function relating it to any other electrons. As standard quantum chemistry methods does not introduce any explicit dependence on the interelectronic distances, it is expected that this electron–electron cusp display a slow convergence.</p>
+<p>The point charge model of atomic nuclei creates cusp in the MOs, <em>i.e.</em>, a discontinuity in their derivatives at the positions of the nuclei.</p>
+<p>Likewise, the point charge of a given electron creates a cusp in the wave function relating to any of the other electrons.</p>
+<p>As standard quantum chemistry methods does not introduce any explicit dependence on the inter-electronic distances, it is expected that this electron–electron cusp displays a slow convergence.</p>
 <p>As an illustration of this fact, let us study the helium atom with one electron fixed in space and the other one positioned on a circle such that their positions coincide at one point.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="s2">&quot;He  0.0 0.0 0.0&quot;</span><span class="p">)</span>
 
 <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">coords</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.70</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-<span class="n">coords</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.70</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.70</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.70</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
 <span class="c1"># one- and two-particle densities for each basis set in lists</span>
-<span class="n">n1_HF</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">n12_HF</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">n12_CI</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">n12_fci_l</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">for</span> <span class="n">basis_set</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;sto-3g&#39;</span><span class="p">,</span> <span class="s1">&#39;cc-pvdz&#39;</span><span class="p">,</span> <span class="s1">&#39;cc-pvtz&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">basis_set</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sto-3g&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvtz&quot;</span><span class="p">]:</span>
 
     <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set</span><span class="p">)</span>
+    <span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
     <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-    
+
     <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
     <span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">()</span>
 
     <span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
     <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 
-    <span class="n">orbital_values_1</span> <span class="o">=</span> <span class="n">get_orbs</span><span class="p">([[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-    <span class="n">orbital_values_2</span> <span class="o">=</span> <span class="n">get_orbs</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-   
-    <span class="n">den_HF</span><span class="p">,</span> <span class="n">den_CI</span> <span class="o">=</span> <span class="n">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">,</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get2den</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    
-    <span class="n">n12_HF</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">den_HF</span><span class="p">)</span>
-    <span class="n">n12_CI</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">den_CI</span><span class="p">)</span>
+    <span class="n">orbital_values_1</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">([[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+    <span class="n">orbital_values_2</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">n12_fci</span> <span class="o">=</span> <span class="n">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">)</span>
+
+    <span class="n">n12_fci_l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n12_fci</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_CI</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;STO-3G&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_CI</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;cc-pVDZ&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_CI</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;cc-pVTZ&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;STO-3G&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;cc-pVTZ&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.02</span><span class="p">,</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">xticks</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">190</span><span class="p">,</span><span class="mi">60</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Two-particle density (a.u.)&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Angle between electron position vectors (degrees)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Two-particle density (a.u.)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Angle between electron position vectors (degrees)&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/correlation_18_0.png" src="../../_images/correlation_18_0.png" />
+<img alt="../../_images/correlation_17_0.png" src="../../_images/correlation_17_0.png" />
 </div>
 </div>
-<p>The basis set effect is seen to be large. With STO-3G, a minimal basis, there are no virtual orbitals and therefore no correlation.</p>
-<p>With increased basis set quality, the cusp gets sharper. But convergence is slow. This illustrates why correlated wave function methods require large and flexible basis sets to converge. For HF and DFT, in contrast, the basis set only needs to accommodate an accurate description of the one-particle density and convergence is therefore much faster.</p>
+<p>The basis set effect is seen to be large.</p>
+<p>With the minimal STO-3G basis set there are no virtual orbitals and therefore the electron correlation is not captured.</p>
+<p>With increased basis set quality, the cusp gets sharper but convergence is slow. This illustrates why correlated wave function methods require large and flexible basis sets to converge.</p>
+<p>For HF and DFT, in contrast, the basis set only needs to accommodate an accurate description of the one-particle density and convergence is therefore much faster.</p>
 </section>
 </section>
 </section>
@@ -1405,10 +1420,10 @@ Correlation energy: -0.02056162
             <p class="prev-next-title">Electron spin</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="pt.html" title="next page">
+    <a class='right-next' id="next-link" href="dispersion.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Rayleigh–Schrödinger perturbation theory</p>
+        <p class="prev-next-title">Dispersion interactions</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
