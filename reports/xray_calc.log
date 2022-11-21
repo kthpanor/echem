@@ -1,53 +1,86 @@
 Traceback (most recent call last):
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
     executenb(
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 1204, in execute
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 1204, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/util.py", line 84, in wrapped
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 84, in wrapped
     return just_run(coro(*args, **kwargs))
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/util.py", line 62, in just_run
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/util.py", line 62, in just_run
     return loop.run_until_complete(coro)
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/asyncio/base_events.py", line 646, in run_until_complete
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
     return future.result()
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 663, in async_execute
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 663, in async_execute
     await self.async_execute_cell(
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 965, in async_execute_cell
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 965, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# Construct structure and basis objects
-struct = gator.get_molecule(water_xyz)
-basis = gator.get_molecular_basis(struct, "6-31G")
+import copy
+import adcc
+import gator
+import matplotlib.pyplot as plt
+import multipsi as mtp
+import numpy as np
+import veloxchem as vlx
+from matplotlib import gridspec
 
-# Perform SCF calculation
-scf_gs = gator.run_scf(struct, basis)
+# QC software suites and functionalities
+from pyscf import cc, gto, mp, scf
+from scipy.interpolate import interp1d
+from veloxchem.rsplinabscross import LinearAbsorptionCrossSection
 
-# Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)
-adc_res = gator.run_adc(
-    struct, basis, scf_gs, method="cvs-adc2x", singlets=4, core_orbitals=1
-)
+# for vlx
+silent_ostream = vlx.OutputStream(None)
+from mpi4py import MPI
+comm = MPI.COMM_WORLD
+
+# au to eV conversion factor
+au2ev = 27.211386
+
+
+def lorentzian(x, y, xmin, xmax, xstep, gamma):
+    """
+    Lorentzian broadening function
+
+    Call: xi,yi = lorentzian(energies, intensities, start energy,
+                                    end energy, energy step, gamma)
+    """
+    xi = np.arange(xmin, xmax, xstep)
+    yi = np.zeros(len(xi))
+    for i in range(len(xi)):
+        for k in range(len(x)):
+            yi[i] = (
+                yi[i]
+                + y[k] * gamma / ((xi[i] - x[k]) ** 2 + (gamma / 2.0) ** 2) / np.pi
+            )
+    return xi, yi
+
+
+def gaussian(x, y, xmin, xmax, xstep, sigma):
+    """
+    Gaussian broadening function
+
+    Call: xi,yi = gaussian(energies, intensities, start energy, end energy, energy step, gamma)
+    """
+    xi = np.arange(xmin, xmax, xstep)
+    yi = np.zeros(len(xi))
+    for i in range(len(xi)):
+        for k in range(len(y)):
+            yi[i] = yi[i] + y[k] * np.e ** (-((xi[i] - x[k]) ** 2) / (2 * sigma ** 2))
+    return xi, yi
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mAttributeError[0m                            Traceback (most recent call last)
-Cell [0;32mIn [7], line 6[0m
-[1;32m      3[0m basis [38;5;241m=[39m gator[38;5;241m.[39mget_molecular_basis(struct, [38;5;124m"[39m[38;5;124m6-31G[39m[38;5;124m"[39m)
-[1;32m      5[0m [38;5;66;03m# Perform SCF calculation[39;00m
-[0;32m----> 6[0m scf_gs [38;5;241m=[39m [43mgator[49m[38;5;241;43m.[39;49m[43mrun_scf[49m[43m([49m[43mstruct[49m[43m,[49m[43m [49m[43mbasis[49m[43m)[49m
-[1;32m      8[0m [38;5;66;03m# Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)[39;00m
-[1;32m      9[0m adc_res [38;5;241m=[39m gator[38;5;241m.[39mrun_adc(
-[1;32m     10[0m     struct, basis, scf_gs, method[38;5;241m=[39m[38;5;124m"[39m[38;5;124mcvs-adc2x[39m[38;5;124m"[39m, singlets[38;5;241m=[39m[38;5;241m4[39m, core_orbitals[38;5;241m=[39m[38;5;241m1[39m
-[1;32m     11[0m )
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn [1], line 11[0m
+[1;32m      8[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m [38;5;28;01mimport[39;00m gridspec
+[1;32m     10[0m [38;5;66;03m# QC software suites and functionalities[39;00m
+[0;32m---> 11[0m [38;5;28;01mfrom[39;00m [38;5;21;01mpyscf[39;00m [38;5;28;01mimport[39;00m cc, gto, mp, scf
+[1;32m     12[0m [38;5;28;01mfrom[39;00m [38;5;21;01mscipy[39;00m[38;5;21;01m.[39;00m[38;5;21;01minterpolate[39;00m [38;5;28;01mimport[39;00m interp1d
+[1;32m     13[0m [38;5;28;01mfrom[39;00m [38;5;21;01mveloxchem[39;00m[38;5;21;01m.[39;00m[38;5;21;01mrsplinabscross[39;00m [38;5;28;01mimport[39;00m LinearAbsorptionCrossSection
 
-File [0;32m~/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/gator/gatorutils.py:123[0m, in [0;36mrun_scf[0;34m(mol, basis, **kwargs)[0m
-[1;32m    121[0m [38;5;28;01melse[39;00m:
-[1;32m    122[0m     valstr [38;5;241m+[39m[38;5;241m=[39m [38;5;124m'[39m[38;5;124mNOT converged in [39m[38;5;124m'[39m
-[0;32m--> 123[0m valstr [38;5;241m+[39m[38;5;241m=[39m [38;5;124m'[39m[38;5;132;01m{:d}[39;00m[38;5;124m iterations.[39m[38;5;124m'[39m[38;5;241m.[39mformat([43mscf_drv[49m[38;5;241;43m.[39;49m[43mnum_iter[49m)
-[1;32m    124[0m [38;5;28mprint[39m(valstr, file[38;5;241m=[39msys[38;5;241m.[39mstdout)
-[1;32m    125[0m [38;5;28;01mif[39;00m scf_drv[38;5;241m.[39mis_converged:
-
-[0;31mAttributeError[0m: 'ScfRestrictedDriver' object has no attribute 'num_iter'
-AttributeError: 'ScfRestrictedDriver' object has no attribute 'num_iter'
+[0;31mModuleNotFoundError[0m: No module named 'pyscf'
+ModuleNotFoundError: No module named 'pyscf'
 
