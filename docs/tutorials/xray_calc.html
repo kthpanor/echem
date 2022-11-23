@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -1245,7 +1243,6 @@ title="Print to PDF"
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
 
 <span class="c1"># QC software suites and functionalities</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">cc</span><span class="p">,</span> <span class="n">gto</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">scf</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">veloxchem.rsplinabscross</span> <span class="kn">import</span> <span class="n">LinearAbsorptionCrossSection</span>
 
@@ -1298,7 +1295,7 @@ title="Print to PDF"
 <section id="ies-from-koopmans-theorem">
 <span id="sec-xray-calc-iekoop"></span><h3>IEs from Koopmans’ theorem<a class="headerlink" href="#ies-from-koopmans-theorem" title="Permalink to this headline">#</a></h3>
 <p>A simple model for calculating ionization energies and electron affinities is by using Koopmans’ theorem, where they are estimated from the MO energies. For water, we then obtain a <span class="math notranslate nohighlight">\(1s\)</span> IE of:</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
@@ -1307,36 +1304,27 @@ title="Print to PDF"
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Create veloxchem mol and basis objects</span>
-<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
 <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
+<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies</span>
 <span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1s E from Koopmans&#39; theorem:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1s E from Koopmans&#39; theorem:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">orbital_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /opt/anaconda3/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G         
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                                  Basis: 6-31G                                                                            
-                                                                                                                          
-                                  Atom Contracted GTOs          Primitive GTOs                                            
-                                                                                                                          
-                                   O   (3S,2P)                  (10S,4P)                                                  
-                                   H   (2S)                     (4S)                                                      
-                                                                                                                          
-                                  Contracted Basis Functions : 13                                                         
-                                  Primitive Basis Functions  : 30                                                         
-                                                                                                                          
-1s E from Koopmans&#39; theorem: -559.5 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1s E from Koopmans&#39; theorem: -559.5 eV
 </pre></div>
 </div>
 </div>
@@ -1385,51 +1373,305 @@ C_{cj}^{old}.
 <p>The IE of water using <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span> is then computed as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy molecule object</span>
+<span class="n">mol_ion</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
 
-<span class="c1"># Perform unrestricted SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Change charge and multiplicity</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="c1"># Copy molecular orbitals and occupations</span>
-<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
+<span class="c1"># Lists of occupied alpha and beta MOs</span>
+<span class="n">occa</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">occb</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
-<span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
-<span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-<span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Calculate SCF of core-ion</span>
+<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">)</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># IE from energy difference</span>
 <span class="nb">print</span><span class="p">(</span>
     <span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
     <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3300476e-12  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.0754789470865  &lt;S^2&gt; = 0.76257805  2S+1 = 2.0125387
-Ionization energy: 541.73 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization energy: 541.73 eV
 </pre></div>
 </div>
 </div>
 </div>
 <p>This estimate is within 2 eV from experiment, and we can include electron correlation using MP2:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NotImplementedError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/__init__.py:101,</span> in <span class="ni">adc2</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="nd">@with_runadc_doc</span>
+<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="k">def</span> <span class="nf">adc2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">101</span>     <span class="k">return</span> <span class="n">run_adc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adc2&quot;</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/workflow.py:179,</span> in <span class="ni">run_adc</span><span class="nt">(data_or_matrix, n_states, kind, conv_tol, eigensolver, guesses, n_guesses, n_guesses_doubles, output, core_orbitals, frozen_core, frozen_virtual, method, n_singlets, n_triplets, n_spin_flip, environment, **solverargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">45</span> <span class="k">def</span> <span class="nf">run_adc</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">conv_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">46</span>             <span class="n">eigensolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span>             <span class="n">n_guesses_doubles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span>             <span class="n">frozen_core</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen_virtual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span>             <span class="n">n_singlets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_triplets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span>             <span class="n">environment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">solverargs</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">&quot;&quot;&quot;Run an ADC calculation.</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd"> </span>
+<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="sd">     Main entry point to run an ADC calculation. The reference to build the ADC</span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">    </span><span class="mi">177</span><span class="sd">     ... state = adcc.cvs_adc3(mf, core_orbitals=1, n_singlets=3)</span>
+<span class="g g-Whitespace">    </span><span class="mi">178</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">179</span>     <span class="n">matrix</span> <span class="o">=</span> <span class="n">construct_adcmatrix</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span>         <span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">181</span>         <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span>     <span class="n">n_states</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">validate_state_parameters</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">184</span>         <span class="n">matrix</span><span class="o">.</span><span class="n">reference_state</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="n">n_singlets</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">185</span>         <span class="n">n_triplets</span><span class="o">=</span><span class="n">n_triplets</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="n">n_spin_flip</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">187</span>     <span class="c1"># Determine spin change during excitation. If guesses is not None,</span>
+<span class="g g-Whitespace">    </span><span class="mi">188</span>     <span class="c1"># i.e. user-provided, we cannot guarantee for obtaining a particular</span>
+<span class="g g-Whitespace">    </span><span class="mi">189</span>     <span class="c1"># spin_change in case of a spin_flip calculation.</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/workflow.py:245,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">240</span>     <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;If core-valence separation approximation is &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">241</span>                      <span class="s2">&quot;applied then the number of core orbitals needs &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">242</span>                      <span class="s2">&quot;to be specified via the parameter &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">243</span>                      <span class="s2">&quot;core_orbitals.&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">245</span>     <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">246</span>                                    <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">247</span>                                    <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">248</span>                                    <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">250</span>     <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>  <span class="c1"># In case of an issue with the spaces</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/ReferenceState.py:142,</span> in <span class="ni">ReferenceState.__init__</span><span class="nt">(self, hfdata, core_orbitals, frozen_core, frozen_virtual, symmetry_check_on_import, import_all_below_n_orbs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="sd">&quot;&quot;&quot;Construct a ReferenceState holding information about the employed</span>
+<span class="g g-Whitespace">     </span><span class="mi">42</span><span class="sd"> SCF reference.</span>
+<span class="g g-Whitespace">     </span><span class="mi">43</span><span class="sd"> </span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">    </span><span class="mi">139</span><span class="sd"> beta orbital into the core space.</span>
+<span class="g g-Whitespace">    </span><span class="mi">140</span><span class="sd"> &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">141</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">libadcc</span><span class="o">.</span><span class="n">HartreeFockSolution_i</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">142</span>     <span class="n">hfdata</span> <span class="o">=</span> <span class="n">import_scf_results</span><span class="p">(</span><span class="n">hfdata</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span> <span class="o">=</span> <span class="n">MoSpaces</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span>                           <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span>                           <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span><span class="p">,</span> <span class="n">symmetry_check_on_import</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/backends/__init__.py:107,</span> in <span class="ni">import_scf_results</span><span class="nt">(res)</span>
+<span class="g g-Whitespace">    </span><span class="mi">102</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised path or file extension: </span><span class="si">{}</span><span class="s2">&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">103</span>                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">105</span> <span class="c1"># Note: Add more backends here</span>
+<span class="ne">--&gt; </span><span class="mi">107</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;No means to import an SCF result of &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">108</span>                           <span class="s2">&quot;type &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; implemented.&quot;</span><span class="p">)</span>
+
+<span class="ne">NotImplementedError</span>: No means to import an SCF result of type &lt;class &#39;veloxchem.scfunrestdriver.ScfUnrestrictedDriver&#39;&gt; implemented.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">InvalidReference</span><span class="g g-Whitespace">                          </span>Traceback (most recent call last)
+<span class="nn">File ~/pkg/adcc/adcc/workflow.py:245,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">245</span>     <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">246</span>                                    <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">247</span>                                    <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">248</span>                                    <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/ReferenceState.py:142,</span> in <span class="ni">ReferenceState.__init__</span><span class="nt">(self, hfdata, core_orbitals, frozen_core, frozen_virtual, symmetry_check_on_import, import_all_below_n_orbs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">141</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">libadcc</span><span class="o">.</span><span class="n">HartreeFockSolution_i</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">142</span>     <span class="n">hfdata</span> <span class="o">=</span> <span class="n">import_scf_results</span><span class="p">(</span><span class="n">hfdata</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span> <span class="o">=</span> <span class="n">MoSpaces</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span>                           <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span>                           <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/backends/__init__.py:80,</span> in <span class="ni">import_scf_results</span><span class="nt">(res)</span>
+<span class="g g-Whitespace">     </span><span class="mi">79</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfrestdriver</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">):</span>
+<span class="ne">---&gt; </span><span class="mi">80</span>         <span class="k">return</span> <span class="n">backend_veloxchem</span><span class="o">.</span><span class="n">import_scf</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">82</span> <span class="k">if</span> <span class="n">have_backend</span><span class="p">(</span><span class="s2">&quot;psi4&quot;</span><span class="p">):</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/backends/veloxchem.py:237,</span> in <span class="ni">import_scf</span><span class="nt">(scfdrv)</span>
+<span class="g g-Whitespace">    </span><span class="mi">236</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scfdrv</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">237</span>     <span class="k">raise</span> <span class="n">InvalidReference</span><span class="p">(</span><span class="s2">&quot;Please attach the VeloxChem task to &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">238</span>                            <span class="s2">&quot;the VeloxChem SCF driver&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">240</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">is_converged</span><span class="p">:</span>
+
+<span class="ne">InvalidReference</span>: Please attach the VeloxChem task to the VeloxChem SCF driver
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+<span class="ne">InputError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/__init__.py:101,</span> in <span class="ni">adc2</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="nd">@with_runadc_doc</span>
+<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="k">def</span> <span class="nf">adc2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">101</span>     <span class="k">return</span> <span class="n">run_adc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adc2&quot;</span><span class="p">)</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/workflow.py:179,</span> in <span class="ni">run_adc</span><span class="nt">(data_or_matrix, n_states, kind, conv_tol, eigensolver, guesses, n_guesses, n_guesses_doubles, output, core_orbitals, frozen_core, frozen_virtual, method, n_singlets, n_triplets, n_spin_flip, environment, **solverargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">45</span> <span class="k">def</span> <span class="nf">run_adc</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">conv_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">46</span>             <span class="n">eigensolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span>             <span class="n">n_guesses_doubles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span>             <span class="n">frozen_core</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen_virtual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span>             <span class="n">n_singlets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_triplets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span>             <span class="n">environment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">solverargs</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">&quot;&quot;&quot;Run an ADC calculation.</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd"> </span>
+<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="sd">     Main entry point to run an ADC calculation. The reference to build the ADC</span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">    </span><span class="mi">177</span><span class="sd">     ... state = adcc.cvs_adc3(mf, core_orbitals=1, n_singlets=3)</span>
+<span class="g g-Whitespace">    </span><span class="mi">178</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">179</span>     <span class="n">matrix</span> <span class="o">=</span> <span class="n">construct_adcmatrix</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span>         <span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">181</span>         <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span>     <span class="n">n_states</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">validate_state_parameters</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">184</span>         <span class="n">matrix</span><span class="o">.</span><span class="n">reference_state</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="n">n_singlets</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">185</span>         <span class="n">n_triplets</span><span class="o">=</span><span class="n">n_triplets</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="n">n_spin_flip</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">187</span>     <span class="c1"># Determine spin change during excitation. If guesses is not None,</span>
+<span class="g g-Whitespace">    </span><span class="mi">188</span>     <span class="c1"># i.e. user-provided, we cannot guarantee for obtaining a particular</span>
+<span class="g g-Whitespace">    </span><span class="mi">189</span>     <span class="c1"># spin_change in case of a spin_flip calculation.</span>
+
+<span class="nn">File ~/pkg/adcc/adcc/workflow.py:250,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
+<span class="g g-Whitespace">    </span><span class="mi">245</span>         <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">246</span>                                        <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">247</span>                                        <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">248</span>                                        <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">249</span>     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">250</span>         <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>  <span class="c1"># In case of an issue with the spaces</span>
+<span class="g g-Whitespace">    </span><span class="mi">251</span>     <span class="n">data_or_matrix</span> <span class="o">=</span> <span class="n">refstate</span>
+<span class="g g-Whitespace">    </span><span class="mi">252</span> <span class="k">elif</span> <span class="n">core_orbitals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="ne">InputError</span>: Please attach the VeloxChem task to the VeloxChem SCF driver
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MpiTask</span>
+
+<span class="n">task</span> <span class="o">=</span> <span class="n">MpiTask</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">comm</span><span class="p">)</span>
+<span class="c1">#task = MpiTask()</span>
+<span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">mpi_comm</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ostream</span><span class="p">)</span>
+<span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">min_basis</span><span class="p">)</span>
+<span class="n">scfdrv</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+    
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MpiTask</span>
+<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">task</span> <span class="o">=</span> <span class="n">MpiTask</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">comm</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1">#task = MpiTask()</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">mpi_comm</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ostream</span><span class="p">)</span>
+
+<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py:92,</span> in <span class="ni">MpiTask.__init__</span><span class="nt">(self, fname_list, mpi_comm)</span>
+<span class="g g-Whitespace">     </span><span class="mi">88</span>                 <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">output_fname</span> <span class="ow">or</span> <span class="n">output_fname</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">or</span>
+<span class="g g-Whitespace">     </span><span class="mi">89</span>                         <span class="n">output_fname</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">90</span>                     <span class="n">output_fname</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+<span class="ne">---&gt; </span><span class="mi">92</span>     <span class="n">assert_msg_critical</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">93</span>         <span class="n">Path</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span>
+<span class="g g-Whitespace">     </span><span class="mi">94</span>         <span class="sa">f</span><span class="s1">&#39;MpiTask: input file </span><span class="si">{</span><span class="n">input_fname</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">96</span>     <span class="n">assert_msg_critical</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">97</span>         <span class="n">input_fname</span> <span class="o">!=</span> <span class="n">output_fname</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">98</span>         <span class="s1">&#39;MpiTask: input/output file cannot be the same&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="c1"># initialize molecule, basis set and output stream</span>
+
+<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/errorhandler.py:42,</span> in <span class="ni">assert_msg_critical</span><span class="nt">(condition, msg)</span>
+<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">33</span><span class="sd"> Asserts that the condition is true. Otherwise terminates the program with</span>
+<span class="g g-Whitespace">     </span><span class="mi">34</span><span class="sd"> an error message.</span>
+<span class="sd">   (...)</span>
+<span class="g g-Whitespace">     </span><span class="mi">39</span><span class="sd">     The error message.</span>
+<span class="g g-Whitespace">     </span><span class="mi">40</span><span class="sd"> &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="k">if</span> <span class="n">__debug__</span> <span class="ow">and</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">42</span>     <span class="k">assert</span> <span class="n">condition</span><span class="p">,</span> <span class="n">msg</span>
+<span class="g g-Whitespace">     </span><span class="mi">43</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="n">vlx_assert</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+<span class="ne">AssertionError</span>: MpiTask: input file  does not exist
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MockTask</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MockTask</span>
+
+<span class="ne">ImportError</span>: cannot import name &#39;MockTask&#39; from &#39;veloxchem.mpitask&#39; (/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>MpiTask<span class="o">?</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Red">Init signature:</span> MpiTask<span class=" -Color -Color-Blue">(</span>fname_list<span class=" -Color -Color-Blue">,</span> mpi_comm<span class=" -Color -Color-Blue">=</span><span class=" -Color -Color-Green">None</span><span class=" -Color -Color-Blue">)</span>
+<span class=" -Color -Color-Red">Docstring:</span>     
+Implements the MPI task.
+
+:param fname_list:
+    List of the input/output filenames.
+:param mpi_comm:
+    The MPI communicator.
+
+Instance variable
+    - mpi_comm: The MPI communicator.
+    - mpi_rank: The MPI rank.
+    - mpi_size: Number of MPI processes.
+    - molecule: The molecule.
+    - ao_basis: The AO basis set.
+    - min_basis: The minimal AO basis set for generating initial guess.
+    - ostream: The output stream.
+    - input_dict: The input dictionary.
+    - start_time: The start time of the task.
+<span class=" -Color -Color-Red">Init docstring:</span> Initializes the MPI task.
+<span class=" -Color -Color-Red">File:</span>           ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py
+<span class=" -Color -Color-Red">Type:</span>           type
+<span class=" -Color -Color-Red">Subclasses:</span>     
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run MP2 on neutral and core-hole state</span>
@@ -1566,7 +1808,7 @@ Ionization energy: 542.47 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_11_0.png" src="../../_images/xray_calc_11_0.png" />
+<img alt="../../_images/xray_calc_17_0.png" src="../../_images/xray_calc_17_0.png" />
 </div>
 </div>
 <p>For the comparison to experimental measurements, a cc-pVTZ basis set is selected, as augmented with additional core-polarizing functions for the carbon atoms (<em>i.e.</em> cc-pCVTZ):</p>
@@ -1939,7 +2181,7 @@ Ionization energy: 542.47 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_20_0.png" src="../../_images/xray_calc_20_0.png" />
+<img alt="../../_images/xray_calc_26_0.png" src="../../_images/xray_calc_26_0.png" />
 </div>
 </div>
 <p>Using broadened eigenstates, increasing the basis set size and comparing to experiment we get:</p>
@@ -2095,9 +2337,7 @@ It.        │             │             │             │             │  
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  Total time: 0.10 s
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                                                                                          
 Total MCSCF time: 00:00:00
         ╭────────────────────────────────────────────────────╮
         │     Complex polarization propagator calculation    │
@@ -2418,9 +2658,7 @@ TDA Linear absorption cross-section (a.u.)
   │xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx│
   └────────────────────────────────────────────────────────────┘
   540.00 eV                                          549.90 eV
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                                                                                          
        Absorption Table (by numerical derivatives)
           λ_max     λ_max        ε
            (au)      (eV)      (a.u.)
@@ -2457,7 +2695,7 @@ It.        │             │             │             │             │  
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_24_0.png" src="../../_images/xray_calc_24_0.png" />
+<img alt="../../_images/xray_calc_30_0.png" src="../../_images/xray_calc_30_0.png" />
 </div>
 </div>
 </section>

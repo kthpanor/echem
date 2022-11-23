@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -1223,12 +1221,12 @@ title="Print to PDF"
 <img alt="../../_images/uv_vis_calc_7_0.png" src="../../_images/uv_vis_calc_7_0.png" />
 </div>
 </div>
-<p>We further note that high-energy features can often be a result of a discretized continuum region. A larger basis set will flatten out this region, but care should be taken for any analysis of that part of the spectrum.</p>
+<p>Note that some high-energy features can be the result of a discretized continuum region. A larger basis set will flatten out this region, but care should be taken for any analysis of that part of the spectrum.</p>
 </section>
 <section id="spectra-from-tddft-eigenstates">
 <h3>Spectra from TDDFT eigenstates<a class="headerlink" href="#spectra-from-tddft-eigenstates" title="Permalink to this headline">#</a></h3>
 <p>Calculating the first six eigenstates using TDDFT:</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecule and basis objects</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
@@ -1245,25 +1243,6 @@ title="Print to PDF"
 <span class="n">rpa_solver</span> <span class="o">=</span> <span class="n">LinearResponseEigenSolver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
 <span class="n">rpa_solver</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({</span><span class="s2">&quot;nstates&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span> <span class="n">method_settings</span><span class="p">)</span>
 <span class="n">rpa_results</span> <span class="o">=</span> <span class="n">rpa_solver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                                  Basis: 6-31G                                                                            
-                                                                                                                          
-                                  Atom Contracted GTOs          Primitive GTOs                                            
-                                                                                                                          
-                                   O   (3S,2P)                  (10S,4P)                                                  
-                                   H   (2S)                     (4S)                                                      
-                                                                                                                          
-                                  Contracted Basis Functions : 13                                                         
-                                  Primitive Basis Functions  : 30                                                         
-                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -1295,18 +1274,18 @@ title="Print to PDF"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy [au]  Osc. str.   TM(x)     TM(y)     TM(z)
-   0.286      0.01128   0.00000   0.24321   0.00000
-   0.364      0.09652   0.00000   0.00000  -0.63080
+   0.286      0.01128  -0.00000   0.24321   0.00000
+   0.364      0.09652  -0.00000  -0.00000   0.63080
    0.364      0.00000   0.00000  -0.00000   0.00000
-   0.454      0.08684  -0.53570   0.00000  -0.00000
-   0.540      0.41655  -1.07524   0.00000   0.00000
-   0.666      0.24377  -0.00000  -0.00000  -0.74073
+   0.454      0.08684   0.53570  -0.00000   0.00000
+   0.540      0.41655   1.07524   0.00000  -0.00000
+   0.666      0.24377   0.00000  -0.00000  -0.74073
 </pre></div>
 </div>
 <img alt="../../_images/uv_vis_calc_13_1.png" src="../../_images/uv_vis_calc_13_1.png" />
 </div>
 </div>
-<p>The resulting spectra agrees well with ADC(3), with a common shift in energies of about 0.7 eV:</p>
+<p>The resulting spectra agrees well with ADC(3), with a difference in absolute energies of about 0.7 eV:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -1332,7 +1311,7 @@ title="Print to PDF"
 </section>
 <section id="spectra-from-cpp-dft">
 <h3>Spectra from CPP-DFT<a class="headerlink" href="#spectra-from-cpp-dft" title="Permalink to this headline">#</a></h3>
-<p>Using CPP-DFT, the linear absorption cross-section is resolved over a range of energies, which is chosen as the 7-17 eV from above (with a resolution of 0.1 eV):</p>
+<p>Using CPP-DFT, the linear absorption cross-section is resolved over a range of energies, which is here chosen as the 7-17 eV (with a resolution of 0.1 eV):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define spectrum region to be resolved</span>
@@ -1407,7 +1386,7 @@ title="Print to PDF"
 <span class="c1"># Zoomed in raw and splined spectra</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="mf">3.0</span><span class="o">*</span><span class="n">yi</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="mf">3.0</span><span class="o">*</span><span class="n">yi</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">9.4</span><span class="p">,</span> <span class="mf">10.4</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">))</span>
 
@@ -1422,9 +1401,9 @@ title="Print to PDF"
 </section>
 <section id="spectra-from-mcscf">
 <h3>Spectra from MCSCF<a class="headerlink" href="#spectra-from-mcscf" title="Permalink to this headline">#</a></h3>
-<p>In some cases, it can be preferable to use a multiconfigurational wavefunction to compute excitation energies. This is necessary if, for instance, the molecule is suspected to have strong correlation effects, or if the user is interested in analyzing a conical intersection — something that ADC and TD-DFT often fail to properly describe.</p>
+<p>In some cases, it can be preferable to use a multiconfigurational wavefunction to compute excitation energies. This is necessary if, for instance, the molecule is suspected to have strong correlation effects, or if the user is interested in analyzing a conical intersection — something that ADC and TDDFT often fail to properly describe.</p>
 <p>In principle, a MCSCF spectrum can be computed using response theory similarly to ADC and DFT. However, as configuration interaction (CI) can naturally provide not just the lowest but any state, it is possible to produce excited states by simply increasing the number of requested states or “roots” in the CI. However, in traditional MCSCF, the orbitals cannot be simultaneously optimized for each state, and instead we use a set of orbitals that is a compromise between all states: the state-averaged orbitals.</p>
-<p>For water in its equilibrium distance, there is no strong correlation, and thus the only orbitals we need to include in the active space are those that can be excited in the UV-visible spectrum. Here, will use a CASSCF with an active space comprising the molecular orbitals formed by the oxygen 2p and hydrogen 1s, corresponding to the 2 <span class="math notranslate nohighlight">\(\sigma\)</span> and <span class="math notranslate nohighlight">\(\sigma^*\)</span> and one oxygen lone pair. We could in principle include the other lone pair, formed mostly by the 2s orbital of the oxygen, but its orbital energy is much lower and the orbital is thus not involved in the lowest UV-visible transitions.</p>
+<p>For water in its equilibrium distance, there is no strong correlation, and thus the only orbitals we need to include in the active space are those that can be excited in the UV-visible spectrum. Here, we will use a CASSCF with an active space comprising the molecular orbitals formed by the oxygen 2p and hydrogen 1s, corresponding to the two <span class="math notranslate nohighlight">\(\sigma\)</span> and <span class="math notranslate nohighlight">\(\sigma^*\)</span> and one oxygen lone pair. We could in principle include the other lone pair, formed mostly by the 2s orbital of the oxygen, but its orbital energy is much lower and the orbital is thus not involved in the lowest UV-visible transitions.</p>
 <p>The orbitals are conveniently located around the HOMO-LUMO gap, so it is sufficient to request a CAS(6,5) (6 electrons in 5 orbitals) to get the desired active space. First, we calculate the SCF ground state:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
@@ -1503,7 +1482,9 @@ Number of determinants:      55
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-** Convergence reached in 8 iterations
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>** Convergence reached in 8 iterations
                                                                                                                           
 </pre></div>
 </div>
@@ -1519,19 +1500,19 @@ Number of determinants:      55
                                                                                                                           
 * State 2
 - Energy: -75.70404973092482
-- S^2   : -0.00  (multiplicity = 1.0 )
+- S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.98828 1.00000 1.99728 0.99912 0.01531
                                                                                                                           
 * State 3
-- Energy: -75.62045164342094
-- S^2   : -0.00  (multiplicity = 1.0 )
+- Energy: -75.62045164342096
+- S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.99530 1.00000 1.99422 0.01264 0.99784
                                                                                                                           
 * State 4
-- Energy: -75.60225002508727
-- S^2   : 0.00  (multiplicity = 1.0 )
+- Energy: -75.6022500250873
+- S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.96141 1.99969 1.22264 0.77478 0.04148
                                                                                                                           
@@ -1542,7 +1523,7 @@ Number of determinants:      55
 1.97752 1.99960 1.01676 0.02746 0.97865
                                                                                                                           
 * State 6
-- Energy: -75.44771140909485
+- Energy: -75.44771140909488
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.01935 1.99895 1.97785 0.97990 0.02395
@@ -1565,13 +1546,13 @@ Number of determinants:      55
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.816 Energy:   -0.76930 a.u.                                                                  
-               (   1 O   1p+1:    -0.56) (   1 O   2p+1:    -0.29) (   2 H   1s  :     0.23)                              
-               (   3 H   1s  :    -0.23)                                                                                  
+               (   1 O   1p+1:     0.56) (   1 O   2p+1:     0.29) (   2 H   1s  :    -0.23)                              
+               (   3 H   1s  :     0.23)                                                                                  
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.666 Energy:   -0.52443 a.u.                                                                  
-               (   1 O   1p-1:     0.67) (   1 O   2p-1:     0.48)                                                        
+               (   1 O   1p-1:    -0.67) (   1 O   2p-1:    -0.48)                                                        
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -1600,7 +1581,7 @@ Number of determinants:      55
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.06993 a.u.                                                                  
-               (   1 O   1p-1:     0.94) (   1 O   2p-1:    -1.05)                                                        
+               (   1 O   1p-1:    -0.94) (   1 O   2p-1:     1.05)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -1618,7 +1599,7 @@ Number of determinants:      55
            │             │             │             │     Quasi-Newton
 It.        │             │             │             │             │             │     Wrap-up
            │             │             │             │             │             │  
-   Σ      0.0s ( 8%)    0.0s (33%)    0.0s (13%)    0.0s ( 2%)    0.0s (20%)    0.0s (14%)
+   Σ      0.0s ( 7%)    0.1s (41%)    0.0s (12%)    0.0s ( 4%)    0.0s (13%)    0.0s (10%)
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  Total time: 0.14 s
@@ -1664,16 +1645,14 @@ List of oscillator strengths greather than 1e-10
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy [au]  Osc. str.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.279      0.01220
+   0.279      0.01220
    0.362      0.00000
    0.381      0.10978
    0.463      0.15455
    0.535      0.59936
 </pre></div>
 </div>
-<img alt="../../_images/uv_vis_calc_25_2.png" src="../../_images/uv_vis_calc_25_2.png" />
+<img alt="../../_images/uv_vis_calc_25_1.png" src="../../_images/uv_vis_calc_25_1.png" />
 </div>
 </div>
 <p>Comparing to ADC(3) we see a good agreement in relative features, but the absolute energies and intensities are a bit different:</p>
@@ -1681,10 +1660,12 @@ List of oscillator strengths greather than 1e-10
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span><span class="mi">17</span>
+
 <span class="c1"># ADC(3)</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">oscillator_strength</span>
 <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
+
 <span class="c1"># SA-MCSCF</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">DipOsc</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">DipOsc</span><span class="p">[</span><span class="s2">&quot;oscillator_strengths&quot;</span><span class="p">]</span>
@@ -1706,7 +1687,9 @@ List of oscillator strengths greather than 1e-10
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Active space settings</span>
 <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">space</span><span class="o">.</span><span class="n">CASOrb</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>  <span class="c1"># The list of active orbitals, orbital 4 is not here since it is the lone pair</span>
+
+<span class="c1"># The list of active orbitals, orbital 4 is not here since it is the lone pair</span>
+<span class="n">space</span><span class="o">.</span><span class="n">CASOrb</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
 
 <span class="c1"># CASSCF calculation</span>
 <span class="n">mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
@@ -1789,7 +1772,7 @@ Number of determinants:      21
                                                                                                                           
                                                                                                                           
 * State 1
-- Energy: -76.03727403208025
+- Energy: -76.03727403208026
 - S^2   : 0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.97794 1.97490 0.02386 0.02330
@@ -1813,25 +1796,25 @@ Number of determinants:      21
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50212 a.u.                                                                  
-               (   1 O   1p-1:     0.64) (   1 O   2p-1:     0.51)                                                        
+               (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.51)                                                        
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.978 Energy:   -0.83333 a.u.                                                                  
-               (   1 O   1p0 :    -0.51) (   1 O   2p0 :    -0.35) (   2 H   1s  :     0.21)                              
-               (   3 H   1s  :     0.21)                                                                                  
+               (   1 O   1p0 :     0.51) (   1 O   2p0 :     0.35) (   2 H   1s  :    -0.21)                              
+               (   3 H   1s  :    -0.21)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.975 Energy:   -0.70219 a.u.                                                                  
-               (   1 O   1p+1:    -0.51) (   1 O   2p+1:    -0.25) (   2 H   1s  :     0.27)                              
-               (   3 H   1s  :    -0.27)                                                                                  
+               (   1 O   1p+1:     0.51) (   1 O   2p+1:     0.25) (   2 H   1s  :    -0.27)                              
+               (   3 H   1s  :     0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.024 Energy:    0.75291 a.u.                                                                  
-               (   1 O   1p+1:     0.87) (   2 H   1s  :     0.46) (   2 H   2s  :     0.30)                              
-               (   3 H   1s  :    -0.46) (   3 H   2s  :    -0.30)                                                        
+               (   1 O   1p+1:    -0.87) (   2 H   1s  :    -0.46) (   2 H   2s  :    -0.30)                              
+               (   3 H   1s  :     0.46) (   3 H   2s  :     0.30)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -1843,9 +1826,9 @@ Number of determinants:      21
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.67764 a.u.                                                                  
-               (   1 O   2s  :     0.18) (   1 O   3s  :    -1.21) (   1 O   1p0 :    -0.41)                              
-               (   1 O   2p0 :     0.76) (   2 H   1s  :    -0.40) (   2 H   2s  :     1.13)                              
-               (   3 H   1s  :    -0.40) (   3 H   2s  :     1.13)                                                        
+               (   1 O   2s  :    -0.18) (   1 O   3s  :     1.21) (   1 O   1p0 :     0.41)                              
+               (   1 O   2p0 :    -0.76) (   2 H   1s  :     0.40) (   2 H   2s  :    -1.13)                              
+               (   3 H   1s  :     0.40) (   3 H   2s  :    -1.13)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -1856,7 +1839,7 @@ Number of determinants:      21
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.16377 a.u.                                                                  
-               (   1 O   1p-1:     0.96) (   1 O   2p-1:    -1.04)                                                        
+               (   1 O   1p-1:    -0.96) (   1 O   2p-1:     1.04)                                                        
                                                                                                                           
                                                                                                                           
  MTP execution time table
@@ -1868,10 +1851,10 @@ Number of determinants:      21
            │             │             │             │     Quasi-Newton
 It.        │             │             │             │             │             │     Wrap-up
            │             │             │             │             │             │  
-   Σ      0.0s (14%)    0.0s (21%)    0.0s ( 3%)    0.0s ( 4%)    0.0s (34%)    0.0s (11%)
+   Σ      0.0s (11%)    0.0s (22%)    0.0s (19%)    0.0s ( 4%)    0.0s (29%)    0.0s ( 4%)
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Total time: 0.11 s
+ Total time: 0.14 s
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1954,9 +1937,9 @@ Orbital parameters: 54
                                                  Rotatory strength (cgs)
  Transition   Energy (Ha)    Energy (eV)    Velocity gauge     Length gauge 
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          1     0.3305156      8.99379          0.0000000        0.0000000
-          2     0.4084653     11.11491         -0.0000000       -0.0000000
-          3     0.4307450     11.72117          0.0000000        0.0000000
+          1     0.3305156      8.99379         -0.0000000       -0.0000000
+          2     0.4084653     11.11491          0.0000000        0.0000000
+          3     0.4307450     11.72117         -0.0000000       -0.0000000
           4     0.5110808     13.90722         -0.0000000       -0.0000000
           5     0.5786466     15.74578          0.0000000        0.0000000
 </pre></div>
@@ -1970,10 +1953,10 @@ Orbital parameters: 54
            │             │             │     New trial vectors
 It.        │             │             │             │             │     Properties
            │             │             │             │             │  
-   Σ      0.0s ( 2%)    0.1s (27%)    0.2s (38%)    0.1s (24%)    0.0s ( 2%)
+   Σ      0.0s ( 3%)    0.1s (32%)    0.2s (43%)    0.1s (16%)    0.0s ( 2%)
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Total time: 0.49 s
+ Total time: 0.44 s
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -1986,19 +1969,23 @@ Total MC-RPA time: 00:00:00
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span><span class="mi">17</span>
+
 <span class="c1"># ADC(3)</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_res</span><span class="o">.</span><span class="n">oscillator_strength</span>
 <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
+
 <span class="c1"># SA-MCSCF</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">DipOsc</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">DipOsc</span><span class="p">[</span><span class="s2">&quot;oscillator_strengths&quot;</span><span class="p">]</span>
 <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
+
 <span class="c1"># MCSCF response</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">rspdict</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">rspdict</span><span class="p">[</span><span class="s2">&quot;oscillator_strengths&quot;</span><span class="p">]</span>
 <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s2">&quot;ADC(3)&quot;</span><span class="p">,</span> <span class="s2">&quot;SA-MCSCF&quot;</span><span class="p">,</span> <span class="s2">&quot;MCSCF response&quot;</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">))</span>
