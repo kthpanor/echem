@@ -50,6 +50,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -703,8 +705,8 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../env/pe.html">
-   Polarizable embedding
+  <a class="reference internal" href="../env/embedding.html">
+   Embedding
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
   <label for="toctree-checkbox-20">
@@ -713,8 +715,13 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../env/pe_basics.html">
-     General aspects
+    <a class="reference internal" href="../env/nonpol_emb.html">
+     Non-polarizable embedding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/pol_emb.html">
+     Polarizable embedding
     </a>
    </li>
   </ul>
@@ -1285,6 +1292,13 @@ title="Print to PDF"
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>
             <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span>
+
+<span class="k">class</span> <span class="nc">MockTask</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecule</span> <span class="o">=</span> <span class="n">mol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ao_basis</span> <span class="o">=</span> <span class="n">basis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mpi_comm</span> <span class="o">=</span> <span class="n">comm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ostream</span> <span class="o">=</span> <span class="n">ostream</span>
 </pre></div>
 </div>
 </div>
@@ -1350,7 +1364,7 @@ p_j = \sum_i^n O_{ij} =
 S_{bc} )
 C_{cj}^{old}.
 \]</div>
-<p>The occupied orbitals are then selected by largest <span class="math notranslate nohighlight">\(p_j\)</span> values.</p>
+<p>The occupied orbitals are then selected by largest <span class="math notranslate nohighlight">\(p_j\)</span> values. The original formulation of MOM used the previous iteration as the old space, but more recent development (and what is used in VeloxChem) includes the use of the initial guess as the old space throughout - this is also referred to as initial maximum overlap method (IMOM).</p>
 <p>With this, a converged core-hole wave-function is obtained with the following scheme:</p>
 <ol class="simple">
 <li><p>Calculate the wave-function of the original system (<em>e.g.</em> no core-hole).</p></li>
@@ -1363,10 +1377,6 @@ C_{cj}^{old}.
 <li><p><a class="reference internal" href="xray_aspects.html#sec-xray-topics-chloc"><span class="std std-ref">Delocalized core orbitals</span></a> need to be localized, for example by employing ECPs.</p></li>
 <li><p>If post-HF methods are used, the ground state calculation can attempt to (partially) fill the core-hole of the <a class="reference internal" href="xray_aspects.html#sec-xray-topics-nonaufbau"><span class="std std-ref">non-<em>Aufbau</em> reference state</span></a>, leading to a corrupt wave-function which represents an intermediate between a core-hole/valence-hole state.</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We currently use <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> for the calculations involving explicit core-holes, as <code class="docutils literal notranslate"><span class="pre">veloxchem</span></code> presently lacks MOM.</p>
-</div>
 </section>
 <section id="ies-from-deltascf">
 <span id="sec-xray-calc-dscf"></span><h3>IEs from <span class="math notranslate nohighlight">\(\Delta\)</span>SCF<a class="headerlink" href="#ies-from-deltascf" title="Permalink to this headline">#</a></h3>
@@ -1390,16 +1400,13 @@ C_{cj}^{old}.
 <span class="n">scf_ion</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="n">hf_ie</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;HF ionization energy: </span><span class="si">{</span><span class="n">hf_ie</span> <span class="si">:</span><span class="s1"> 5.2f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ionization energy: 541.73 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>HF ionization energy:  541.73 eV
 </pre></div>
 </div>
 </div>
@@ -1407,329 +1414,50 @@ C_{cj}^{old}.
 <p>This estimate is within 2 eV from experiment, and we can include electron correlation using MP2:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
+<span class="n">mp2_gs</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+
+<span class="n">mp2_ion</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
+<span class="n">mp2_ion</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_ion</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+
+<span class="n">mp2_ie</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="p">((</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">+</span> <span class="n">mp2_ion</span><span class="o">.</span><span class="n">e_mp2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">+</span> <span class="n">mp2_gs</span><span class="o">.</span><span class="n">e_mp2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MP2 ionization energy: </span><span class="si">{</span><span class="n">mp2_ie</span> <span class="si">:</span><span class="s1"> 5.2f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NotImplementedError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/__init__.py:101,</span> in <span class="ni">adc2</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="nd">@with_runadc_doc</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="k">def</span> <span class="nf">adc2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">101</span>     <span class="k">return</span> <span class="n">run_adc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adc2&quot;</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/workflow.py:179,</span> in <span class="ni">run_adc</span><span class="nt">(data_or_matrix, n_states, kind, conv_tol, eigensolver, guesses, n_guesses, n_guesses_doubles, output, core_orbitals, frozen_core, frozen_virtual, method, n_singlets, n_triplets, n_spin_flip, environment, **solverargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span> <span class="k">def</span> <span class="nf">run_adc</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">conv_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span>             <span class="n">eigensolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>             <span class="n">n_guesses_doubles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span>             <span class="n">frozen_core</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen_virtual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span>             <span class="n">n_singlets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_triplets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span>             <span class="n">environment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">solverargs</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">&quot;&quot;&quot;Run an ADC calculation.</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd"> </span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="sd">     Main entry point to run an ADC calculation. The reference to build the ADC</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">177</span><span class="sd">     ... state = adcc.cvs_adc3(mf, core_orbitals=1, n_singlets=3)</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">179</span>     <span class="n">matrix</span> <span class="o">=</span> <span class="n">construct_adcmatrix</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">180</span>         <span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">181</span>         <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">183</span>     <span class="n">n_states</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">validate_state_parameters</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">184</span>         <span class="n">matrix</span><span class="o">.</span><span class="n">reference_state</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="n">n_singlets</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">185</span>         <span class="n">n_triplets</span><span class="o">=</span><span class="n">n_triplets</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="n">n_spin_flip</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span>     <span class="c1"># Determine spin change during excitation. If guesses is not None,</span>
-<span class="g g-Whitespace">    </span><span class="mi">188</span>     <span class="c1"># i.e. user-provided, we cannot guarantee for obtaining a particular</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span>     <span class="c1"># spin_change in case of a spin_flip calculation.</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/workflow.py:245,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">240</span>     <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;If core-valence separation approximation is &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">241</span>                      <span class="s2">&quot;applied then the number of core orbitals needs &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">242</span>                      <span class="s2">&quot;to be specified via the parameter &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">243</span>                      <span class="s2">&quot;core_orbitals.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">245</span>     <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">246</span>                                    <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">247</span>                                    <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">248</span>                                    <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">250</span>     <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>  <span class="c1"># In case of an issue with the spaces</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/ReferenceState.py:142,</span> in <span class="ni">ReferenceState.__init__</span><span class="nt">(self, hfdata, core_orbitals, frozen_core, frozen_virtual, symmetry_check_on_import, import_all_below_n_orbs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="sd">&quot;&quot;&quot;Construct a ReferenceState holding information about the employed</span>
-<span class="g g-Whitespace">     </span><span class="mi">42</span><span class="sd"> SCF reference.</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span><span class="sd"> beta orbital into the core space.</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">141</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">libadcc</span><span class="o">.</span><span class="n">HartreeFockSolution_i</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">142</span>     <span class="n">hfdata</span> <span class="o">=</span> <span class="n">import_scf_results</span><span class="p">(</span><span class="n">hfdata</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span> <span class="o">=</span> <span class="n">MoSpaces</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>                           <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>                           <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span><span class="p">,</span> <span class="n">symmetry_check_on_import</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/backends/__init__.py:107,</span> in <span class="ni">import_scf_results</span><span class="nt">(res)</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised path or file extension: </span><span class="si">{}</span><span class="s2">&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span>                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span> <span class="c1"># Note: Add more backends here</span>
-<span class="ne">--&gt; </span><span class="mi">107</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;No means to import an SCF result of &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">108</span>                           <span class="s2">&quot;type &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; implemented.&quot;</span><span class="p">)</span>
-
-<span class="ne">NotImplementedError</span>: No means to import an SCF result of type &lt;class &#39;veloxchem.scfunrestdriver.ScfUnrestrictedDriver&#39;&gt; implemented.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MP2 ionization energy:  542.86 eV
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">InvalidReference</span><span class="g g-Whitespace">                          </span>Traceback (most recent call last)
-<span class="nn">File ~/pkg/adcc/adcc/workflow.py:245,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">245</span>     <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">246</span>                                    <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">247</span>                                    <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">248</span>                                    <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/ReferenceState.py:142,</span> in <span class="ni">ReferenceState.__init__</span><span class="nt">(self, hfdata, core_orbitals, frozen_core, frozen_virtual, symmetry_check_on_import, import_all_below_n_orbs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">141</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">libadcc</span><span class="o">.</span><span class="n">HartreeFockSolution_i</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">142</span>     <span class="n">hfdata</span> <span class="o">=</span> <span class="n">import_scf_results</span><span class="p">(</span><span class="n">hfdata</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mospaces</span> <span class="o">=</span> <span class="n">MoSpaces</span><span class="p">(</span><span class="n">hfdata</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>                           <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>                           <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/backends/__init__.py:80,</span> in <span class="ni">import_scf_results</span><span class="nt">(res)</span>
-<span class="g g-Whitespace">     </span><span class="mi">79</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">vlx</span><span class="o">.</span><span class="n">scfrestdriver</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">80</span>         <span class="k">return</span> <span class="n">backend_veloxchem</span><span class="o">.</span><span class="n">import_scf</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">82</span> <span class="k">if</span> <span class="n">have_backend</span><span class="p">(</span><span class="s2">&quot;psi4&quot;</span><span class="p">):</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/backends/veloxchem.py:237,</span> in <span class="ni">import_scf</span><span class="nt">(scfdrv)</span>
-<span class="g g-Whitespace">    </span><span class="mi">236</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scfdrv</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">237</span>     <span class="k">raise</span> <span class="n">InvalidReference</span><span class="p">(</span><span class="s2">&quot;Please attach the VeloxChem task to &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">238</span>                            <span class="s2">&quot;the VeloxChem SCF driver&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">240</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">scfdrv</span><span class="o">.</span><span class="n">is_converged</span><span class="p">:</span>
-
-<span class="ne">InvalidReference</span>: Please attach the VeloxChem task to the VeloxChem SCF driver
-
-<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
-
-<span class="ne">InputError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/__init__.py:101,</span> in <span class="ni">adc2</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="nd">@with_runadc_doc</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="k">def</span> <span class="nf">adc2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">101</span>     <span class="k">return</span> <span class="n">run_adc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adc2&quot;</span><span class="p">)</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/workflow.py:179,</span> in <span class="ni">run_adc</span><span class="nt">(data_or_matrix, n_states, kind, conv_tol, eigensolver, guesses, n_guesses, n_guesses_doubles, output, core_orbitals, frozen_core, frozen_virtual, method, n_singlets, n_triplets, n_spin_flip, environment, **solverargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span> <span class="k">def</span> <span class="nf">run_adc</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="n">conv_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span>             <span class="n">eigensolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_guesses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>             <span class="n">n_guesses_doubles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span>             <span class="n">frozen_core</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frozen_virtual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span>             <span class="n">n_singlets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_triplets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span>             <span class="n">environment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">solverargs</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="sd">&quot;&quot;&quot;Run an ADC calculation.</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd"> </span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="sd">     Main entry point to run an ADC calculation. The reference to build the ADC</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">177</span><span class="sd">     ... state = adcc.cvs_adc3(mf, core_orbitals=1, n_singlets=3)</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">179</span>     <span class="n">matrix</span> <span class="o">=</span> <span class="n">construct_adcmatrix</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">180</span>         <span class="n">data_or_matrix</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span> <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">181</span>         <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">183</span>     <span class="n">n_states</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">validate_state_parameters</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">184</span>         <span class="n">matrix</span><span class="o">.</span><span class="n">reference_state</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="n">n_singlets</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">185</span>         <span class="n">n_triplets</span><span class="o">=</span><span class="n">n_triplets</span><span class="p">,</span> <span class="n">n_spin_flip</span><span class="o">=</span><span class="n">n_spin_flip</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span>     <span class="c1"># Determine spin change during excitation. If guesses is not None,</span>
-<span class="g g-Whitespace">    </span><span class="mi">188</span>     <span class="c1"># i.e. user-provided, we cannot guarantee for obtaining a particular</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span>     <span class="c1"># spin_change in case of a spin_flip calculation.</span>
-
-<span class="nn">File ~/pkg/adcc/adcc/workflow.py:250,</span> in <span class="ni">construct_adcmatrix</span><span class="nt">(data_or_matrix, core_orbitals, frozen_core, frozen_virtual, method)</span>
-<span class="g g-Whitespace">    </span><span class="mi">245</span>         <span class="n">refstate</span> <span class="o">=</span> <span class="n">adcc_ReferenceState</span><span class="p">(</span><span class="n">data_or_matrix</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">246</span>                                        <span class="n">core_orbitals</span><span class="o">=</span><span class="n">core_orbitals</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">247</span>                                        <span class="n">frozen_core</span><span class="o">=</span><span class="n">frozen_core</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">248</span>                                        <span class="n">frozen_virtual</span><span class="o">=</span><span class="n">frozen_virtual</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span>     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">250</span>         <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>  <span class="c1"># In case of an issue with the spaces</span>
-<span class="g g-Whitespace">    </span><span class="mi">251</span>     <span class="n">data_or_matrix</span> <span class="o">=</span> <span class="n">refstate</span>
-<span class="g g-Whitespace">    </span><span class="mi">252</span> <span class="k">elif</span> <span class="n">core_orbitals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="ne">InputError</span>: Please attach the VeloxChem task to the VeloxChem SCF driver
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MpiTask</span>
-
-<span class="n">task</span> <span class="o">=</span> <span class="n">MpiTask</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">comm</span><span class="p">)</span>
-<span class="c1">#task = MpiTask()</span>
-<span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">mpi_comm</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ostream</span><span class="p">)</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">min_basis</span><span class="p">)</span>
-<span class="n">scfdrv</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
-    
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AssertionError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MpiTask</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">task</span> <span class="o">=</span> <span class="n">MpiTask</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">comm</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1">#task = MpiTask()</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">scfdrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">mpi_comm</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">ostream</span><span class="p">)</span>
-
-<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py:92,</span> in <span class="ni">MpiTask.__init__</span><span class="nt">(self, fname_list, mpi_comm)</span>
-<span class="g g-Whitespace">     </span><span class="mi">88</span>                 <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">output_fname</span> <span class="ow">or</span> <span class="n">output_fname</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">or</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span>                         <span class="n">output_fname</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">90</span>                     <span class="n">output_fname</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
-<span class="ne">---&gt; </span><span class="mi">92</span>     <span class="n">assert_msg_critical</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span>         <span class="n">Path</span><span class="p">(</span><span class="n">input_fname</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span>         <span class="sa">f</span><span class="s1">&#39;MpiTask: input file </span><span class="si">{</span><span class="n">input_fname</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">96</span>     <span class="n">assert_msg_critical</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">97</span>         <span class="n">input_fname</span> <span class="o">!=</span> <span class="n">output_fname</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span>         <span class="s1">&#39;MpiTask: input/output file cannot be the same&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="c1"># initialize molecule, basis set and output stream</span>
-
-<span class="nn">File ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/errorhandler.py:42,</span> in <span class="ni">assert_msg_critical</span><span class="nt">(condition, msg)</span>
-<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span><span class="sd"> Asserts that the condition is true. Otherwise terminates the program with</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span><span class="sd"> an error message.</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">     </span><span class="mi">39</span><span class="sd">     The error message.</span>
-<span class="g g-Whitespace">     </span><span class="mi">40</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="k">if</span> <span class="n">__debug__</span> <span class="ow">and</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">42</span>     <span class="k">assert</span> <span class="n">condition</span><span class="p">,</span> <span class="n">msg</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="n">vlx_assert</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-
-<span class="ne">AssertionError</span>: MpiTask: input file  does not exist
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MockTask</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">veloxchem.mpitask</span> <span class="kn">import</span> <span class="n">MockTask</span>
-
-<span class="ne">ImportError</span>: cannot import name &#39;MockTask&#39; from &#39;veloxchem.mpitask&#39; (/home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>MpiTask<span class="o">?</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Red">Init signature:</span> MpiTask<span class=" -Color -Color-Blue">(</span>fname_list<span class=" -Color -Color-Blue">,</span> mpi_comm<span class=" -Color -Color-Blue">=</span><span class=" -Color -Color-Green">None</span><span class=" -Color -Color-Blue">)</span>
-<span class=" -Color -Color-Red">Docstring:</span>     
-Implements the MPI task.
-
-:param fname_list:
-    List of the input/output filenames.
-:param mpi_comm:
-    The MPI communicator.
-
-Instance variable
-    - mpi_comm: The MPI communicator.
-    - mpi_rank: The MPI rank.
-    - mpi_size: Number of MPI processes.
-    - molecule: The molecule.
-    - ao_basis: The AO basis set.
-    - min_basis: The minimal AO basis set for generating initial guess.
-    - ostream: The output stream.
-    - input_dict: The input dictionary.
-    - start_time: The start time of the task.
-<span class=" -Color -Color-Red">Init docstring:</span> Initializes the MPI task.
-<span class=" -Color -Color-Red">File:</span>           ~/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/mpitask.py
-<span class=" -Color -Color-Red">Type:</span>           type
-<span class=" -Color -Color-Red">Subclasses:</span>     
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run MP2 on neutral and core-hole state</span>
-<span class="n">mp_res</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MP2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">mp_ion</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MP2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-
-<span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">mp_ion</span><span class="o">.</span><span class="n">e_tot</span> <span class="o">-</span> <span class="n">mp_res</span><span class="o">.</span><span class="n">e_tot</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(UMP2) = -76.113048395549  E_corr = -0.129178012829711
-E(UMP2) = -56.1523709631035  E_corr = -0.076892016016965
-Ionization energy: 543.16 eV
-</pre></div>
-</div>
-</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Above need to be changed, as it currently is using MP2 (not UMP2).</p>
 </div>
 <p>Alternatively, we can consider this with KS-DFT:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform unrestricted SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform SCF calculation</span>
+<span class="n">dft_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;b3lyp&quot;</span><span class="p">}</span>
+<span class="n">dft_gs</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({},</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">dft_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
-
-<span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
-<span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-<span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Calculate SCF of core-ion</span>
+<span class="n">dft_ion</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">dft_ion</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">)</span>
+<span class="n">dft_ion</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({},</span> <span class="n">method_settings</span><span class="p">)</span>
+<span class="n">dft_ion</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># IE from energy difference</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Ionization energy:&quot;</span><span class="p">,</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="n">dft_ie</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">dft_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">dft_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DFT ionization energy: </span><span class="si">{</span><span class="n">dft_ie</span> <span class="si">:</span><span class="s1"> 5.2f</span><span class="si">}</span><span class="s1"> eV&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -76.3480474320838  &lt;S^2&gt; = 2.5503155e-11  2S+1 = 1
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.dft.uks.UKS&#39;&gt;
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -56.4125421194361  &lt;S^2&gt; = 0.75441021  2S+1 = 2.0044054
-Ionization energy: 542.47 eV
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DFT ionization energy:  542.58 eV
 </pre></div>
 </div>
 </div>
@@ -1741,6 +1469,10 @@ Ionization energy: 542.47 eV
 <li><p>B3LYP: 539.19 eV</p></li>
 </ul>
 <p>Thus closer to experiment for the correlated methods (note that <a class="reference internal" href="xray_aspects.html#sec-xray-topics-rel"><span class="std std-ref">scalar-relativistic effects</span></a> will shift these results upwards by <span class="math notranslate nohighlight">\(\sim\)</span>0.37 eV).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Verify above.</p>
+</div>
 </section>
 <section id="spectra-from-delta-textrm-scf">
 <h3>Spectra from <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span><a class="headerlink" href="#spectra-from-delta-textrm-scf" title="Permalink to this headline">#</a></h3>
@@ -1763,31 +1495,37 @@ Ionization energy: 542.47 eV
 <span class="s2">H        -3.6012985602    0.5468300237   -0.5651778685            </span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">esca_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="c1"># Create veloxchem mol and basis objects</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">esca_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
-<span class="c1"># Perform unrestricted SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Perform SCF calculation</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 
-<span class="c1"># Perform core-hole calculation for each carbon atom (MOs 5-8)</span>
+<span class="c1"># Copy molecule object</span>
+<span class="n">mol_ion</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+
+<span class="c1"># Change charge and multiplicity</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
 <span class="n">esca_ies</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]:</span>
-    <span class="c1"># Copy molecular orbitals</span>
-    <span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-    <span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_gs</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
-    <span class="c1"># Create 1s core-hole by setting alpha_n population to zero</span>
-    <span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-    <span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-    <span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-    <span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-    <span class="c1"># Append resulting IEs to an array</span>
-    <span class="n">esca_ies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()))</span>
+    <span class="n">occa</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nocc</span><span class="p">))</span>
+    <span class="n">occb</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">occa</span><span class="p">)</span>
+    <span class="n">occb</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">scf_ion</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+    <span class="n">scf_ion</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">)</span>
+    <span class="n">scf_ion</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    <span class="n">hf_ie</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+    <span class="n">esca_ies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hf_ie</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Above needs to be checked after IMOM start guess issue is fixed.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1808,7 +1546,7 @@ Ionization energy: 542.47 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_17_0.png" src="../../_images/xray_calc_17_0.png" />
+<img alt="../../_images/xray_calc_12_0.png" src="../../_images/xray_calc_12_0.png" />
 </div>
 </div>
 <p>For the comparison to experimental measurements, a cc-pVTZ basis set is selected, as augmented with additional core-polarizing functions for the carbon atoms (<em>i.e.</em> cc-pCVTZ):</p>
@@ -1877,7 +1615,7 @@ Ionization energy: 542.47 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /opt/anaconda3/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G         
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G
                                                                                                                           
                                               Molecular Basis (Atomic Basis)                                              
                                              ================================                                             
@@ -1892,7 +1630,9 @@ Ionization energy: 542.47 eV
                                   Contracted Basis Functions : 13                                                         
                                   Primitive Basis Functions  : 30                                                         
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                             Self Consistent Field Driver Setup                                            
                                            ====================================                                           
                                                                                                                           
@@ -1909,38 +1649,60 @@ Ionization energy: 542.47 eV
                                                                                                                           
 * Info * Nuclear repulsion energy: 9.1561447194 a.u.                                                                      
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+* Info * Overlap matrix computed in 0.01 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * SAD initial guess computed in 0.00 sec.                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.01 sec.                                                                          
                                                                                                                           
-* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.983870205311 a.u. Time: 0.02 sec.                                  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983870205310 a.u. Time: 0.06 sec.                                  
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -75.983870373952    0.0000000000      0.00006826      0.00001638      0.00000000                
-                  2       -75.983870375702   -0.0000000017      0.00002636      0.00000475      0.00006304                
-                  3       -75.983870375765   -0.0000000001      0.00000396      0.00000061      0.00000524                
-                  4       -75.983870375769   -0.0000000000      0.00000029      0.00000008      0.00000296                
+                  1       -75.983870373953    0.0000000000      0.00006826      0.00001638      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -75.983870375702   -0.0000000017      0.00002636      0.00000475      0.00006304                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -75.983870375765   -0.0000000001      0.00000396      0.00000061      0.00000524                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -75.983870375769   -0.0000000000      0.00000029      0.00000008      0.00000296                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.04 sec.                                                         
                                                                                                                           
-               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
-                                                                                                                          
-               Spin-Restricted Hartree-Fock:                                                                              
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Hartree-Fock:                                                                              
                -----------------------------                                                                              
                Total Energy                       :      -75.9838703758 a.u.                                              
                Electronic Energy                  :      -85.1400150952 a.u.                                              
@@ -1989,20 +1751,20 @@ Ionization energy: 542.47 eV
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.20280 a.u.                                                                  
-               (   1 O   3s  :    -1.17) (   1 O   1p0 :     0.23) (   1 O   2p0 :     0.48)                              
-               (   2 H   2s  :     0.99) (   3 H   2s  :     0.99)                                                        
+               (   1 O   3s  :     1.17) (   1 O   1p0 :    -0.23) (   1 O   2p0 :    -0.48)                              
+               (   2 H   2s  :    -0.99) (   3 H   2s  :    -0.99)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.29874 a.u.                                                                  
-               (   1 O   1p+1:    -0.34) (   1 O   2p+1:    -0.82) (   2 H   2s  :    -1.38)                              
-               (   3 H   2s  :     1.38)                                                                                  
+               (   1 O   1p+1:     0.34) (   1 O   2p+1:     0.82) (   2 H   2s  :     1.38)                              
+               (   3 H   2s  :    -1.38)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.05548 a.u.                                                                  
-               (   1 O   2p+1:    -0.74) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.50)                              
-               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.50)                                                        
+               (   1 O   2p+1:     0.74) (   2 H   1s  :     0.97) (   2 H   2s  :    -0.50)                              
+               (   3 H   1s  :    -0.97) (   3 H   2s  :     0.50)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -2018,25 +1780,40 @@ Ionization energy: 542.47 eV
                                                                                                                           
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="c1"># Perform SCF calculation</span>
-<span class="ne">----&gt; </span><span class="mi">6</span> <span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span>     <span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="p">)</span>
-
-<span class="nn">File /opt/anaconda3/envs/echem/lib/python3.9/site-packages/gator/gatorutils.py:123,</span> in <span class="ni">run_scf</span><span class="nt">(mol, basis, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">121</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">122</span>     <span class="n">valstr</span> <span class="o">+=</span> <span class="s1">&#39;NOT converged in &#39;</span>
-<span class="ne">--&gt; </span><span class="mi">123</span> <span class="n">valstr</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1"> iterations.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">num_iter</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">124</span> <span class="nb">print</span><span class="p">(</span><span class="n">valstr</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">125</span> <span class="k">if</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">is_converged</span><span class="p">:</span>
-
-<span class="ne">AttributeError</span>: &#39;ScfRestrictedDriver&#39; object has no attribute &#39;num_iter&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SCF converged in 4 iterations.
+Total Energy: -75.9838703758 au
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting cvs-adc2x singlet Jacobi-Davidson ...
+Niter n_ss  max_residual  time  Ritz values
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1     8        1.2621  334ms  [20.27035896 20.30081829 20.86977777 20.91121528]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2    16      0.038976  308ms  [19.72495586 19.80691963 20.50881    20.51569984]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3    24     0.0035541  348ms  [19.71673642 19.79707758 20.49577433 20.5050343 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4    32    0.00029894  403ms  [19.71639059 19.79671156 20.49373717 20.50484016]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  5    40    3.1991e-05  491ms  [19.7163757  19.79669977 20.49353402 20.5048266 ]
+=== Restart ===
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6    16    5.9779e-06  478ms  [19.7163752  19.79669907 20.49351316 20.50482466]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  7    24    1.1003e-06  377ms  [19.71637516 19.79669898 20.49350798 20.50482383]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8    32    5.7208e-07  392ms  [19.71637516 19.79669897 20.49350754 20.50482373]
+=== Converged ===
+    Number of matrix applies:    64
+    Total solver time:             3s 157ms
 </pre></div>
 </div>
 </div>
@@ -2066,6 +1843,21 @@ Ionization energy: 542.47 eV
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------------------------------------------------------+
+| cvs-adc2x                               singlet ,  converged |
++--------------------------------------------------------------+
+|  #        excitation energy     osc str    |v1|^2    |v2|^2  |
+|          (au)           (eV)                                 |
+|  0      19.71638      536.5099   0.0175       0.8       0.2  |
+|  1       19.7967      538.6956   0.0368    0.8087    0.1913  |
+|  2      20.49351      557.6567   0.0098    0.7858    0.2142  |
+|  3      20.50482      557.9647   0.1007    0.8441    0.1559  |
++--------------------------------------------------------------+
+</pre></div>
+</div>
+<img alt="../../_images/xray_calc_16_1.png" src="../../_images/xray_calc_16_1.png" />
+</div>
 </div>
 <p>The built-in functionality uses a Lorentzian broadening with a small broadening parameter, and plots the full region which is resolved, while we might want to focus on lower-energy regions and use custom broadening schemes (as done in the lower panel). We note that high-energy features can often be a result of a discretized continuum region, as seen by the unphysically intense feature at <span class="math notranslate nohighlight">\(\sim\)</span>558 eV. A larger basis set will flatten out this region, but care should be taken for any analysis above the ionization energy.</p>
 <p>Increasing the basis set to aug-cc-pCVTZ/cc-pVTZ (for oxygen and hydrogen, respectively), we obtain results in good agreement with experiment:</p>
@@ -2090,7 +1882,7 @@ Ionization energy: 542.47 eV
 <li><p>With a method lacking relaxation: starting the region a few eV below the IE from Koopmans’ theorem. This will not work for methods capable of including relaxation, where IEs from <span class="math notranslate nohighlight">\(\Delta\)</span>SCF could instead be considered as a first rough estimate (noting that it will work better or worse for different levels of, <em>e.g.</em>, ADC theory).</p></li>
 </ul>
 <p>Choosing an energy region of 514-525 eV, using a step length of 0.1 eV and a damping factor of 0.3 eV, we calculate the CPP-DFT (with the B3LYP functional) water spectrum as:</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecule and basis objects</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
@@ -2122,25 +1914,6 @@ Ionization energy: 542.47 eV
     <span class="n">azz</span> <span class="o">=</span> <span class="o">-</span><span class="n">cpp_prop</span><span class="o">.</span><span class="n">rsp_property</span><span class="p">[</span><span class="s2">&quot;response_functions&quot;</span><span class="p">][(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)]</span><span class="o">.</span><span class="n">imag</span>
     <span class="n">alpha_bar</span> <span class="o">=</span> <span class="p">(</span><span class="n">axx</span> <span class="o">+</span> <span class="n">ayy</span> <span class="o">+</span> <span class="n">azz</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span>
     <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="n">alpha_bar</span> <span class="o">/</span> <span class="mf">137.035999</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /opt/anaconda3/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G         
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                                  Basis: 6-31G                                                                            
-                                                                                                                          
-                                  Atom Contracted GTOs          Primitive GTOs                                            
-                                                                                                                          
-                                   O   (3S,2P)                  (10S,4P)                                                  
-                                   H   (2S)                     (4S)                                                      
-                                                                                                                          
-                                  Contracted Basis Functions : 13                                                         
-                                  Primitive Basis Functions  : 30                                                         
-                                                                                                                          
 </pre></div>
 </div>
 </div>
@@ -2181,7 +1954,7 @@ Ionization energy: 542.47 eV
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_26_0.png" src="../../_images/xray_calc_26_0.png" />
+<img alt="../../_images/xray_calc_21_0.png" src="../../_images/xray_calc_21_0.png" />
 </div>
 </div>
 <p>Using broadened eigenstates, increasing the basis set size and comparing to experiment we get:</p>
@@ -2200,7 +1973,7 @@ Ionization energy: 542.47 eV
 </section>
 <section id="spectra-from-cpp-casscf">
 <h3>Spectra from CPP-CASSCF<a class="headerlink" href="#spectra-from-cpp-casscf" title="Permalink to this headline">#</a></h3>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecule and basis objects</span>
 <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
@@ -2236,22 +2009,50 @@ Number of determinants:      21
                                                                                                                           
      Iter. | Average Energy | E. Change | Grad. Norm | CI Iter. |   Time
      ---------------------------------------------------------------------
-        1     -75.991874409     0.0e+00      2.3e-01          1   0:00:00
-        2     -76.010326410    -1.8e-02      8.8e-02          1   0:00:00
-        3     -76.033257291    -2.3e-02      3.1e-02          1   0:00:00
-        4     -76.035753530    -2.5e-03      3.3e-02          1   0:00:00
-        5     -76.036826656    -1.1e-03      1.6e-02          1   0:00:00
-        6     -76.037099943    -2.7e-04      8.3e-03          1   0:00:00
-        7     -76.037245454    -1.5e-04      6.8e-03          1   0:00:00
-        8     -76.037271269    -2.6e-05      3.0e-03          1   0:00:00
-        9     -76.037273738    -2.5e-06      8.7e-04          1   0:00:00
-       10     -76.037273993    -2.6e-07      3.2e-04          1   0:00:00
-       11     -76.037274027    -3.3e-08      1.5e-04          1   0:00:00
-       12     -76.037274031    -4.6e-09      5.6e-05          1   0:00:00
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -75.991874409     0.0e+00      2.3e-01          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.010326410    -1.8e-02      8.8e-02          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.033257291    -2.3e-02      3.1e-02          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.035753530    -2.5e-03      3.3e-02          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.036826656    -1.1e-03      1.6e-02          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.037099943    -2.7e-04      8.3e-03          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.037245454    -1.5e-04      6.8e-03          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -76.037271269    -2.6e-05      3.0e-03          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -76.037273738    -2.5e-06      8.7e-04          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       10     -76.037273993    -2.6e-07      3.2e-04          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       11     -76.037274027    -3.3e-08      1.5e-04          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       12     -76.037274031    -4.6e-09      5.6e-05          1   0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 ** Convergence reached in 12 iterations
                                                                                                                           
-        Final results
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        Final results
         -------------
                                                                                                                           
                                                                                                                           
@@ -2260,7 +2061,9 @@ Number of determinants:      21
 - S^2   : -0.00  (multiplicity = 1.0 )
 - Natural orbitals
 1.97794 1.97490 0.02386 0.02330
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                                  Spin Restricted Orbitals                                                 
                                                  ------------------------                                                 
                                                                                                                           
@@ -2278,25 +2081,25 @@ Number of determinants:      21
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50213 a.u.                                                                  
-               (   1 O   1p-1:     0.64) (   1 O   2p-1:     0.51)                                                        
+               (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.51)                                                        
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.978 Energy:   -0.83334 a.u.                                                                  
-               (   1 O   1p0 :     0.51) (   1 O   2p0 :     0.35) (   2 H   1s  :    -0.21)                              
-               (   3 H   1s  :    -0.21)                                                                                  
+               (   1 O   1p0 :    -0.51) (   1 O   2p0 :    -0.35) (   2 H   1s  :     0.21)                              
+               (   3 H   1s  :     0.21)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.975 Energy:   -0.70219 a.u.                                                                  
-               (   1 O   1p+1:    -0.51) (   1 O   2p+1:    -0.25) (   2 H   1s  :     0.27)                              
-               (   3 H   1s  :    -0.27)                                                                                  
+               (   1 O   1p+1:     0.51) (   1 O   2p+1:     0.25) (   2 H   1s  :    -0.27)                              
+               (   3 H   1s  :     0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.024 Energy:    0.75290 a.u.                                                                  
-               (   1 O   1p+1:    -0.87) (   2 H   1s  :    -0.46) (   2 H   2s  :    -0.30)                              
-               (   3 H   1s  :     0.46) (   3 H   2s  :     0.30)                                                        
+               (   1 O   1p+1:     0.87) (   2 H   1s  :     0.46) (   2 H   2s  :     0.30)                              
+               (   3 H   1s  :    -0.46) (   3 H   2s  :    -0.30)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -2308,9 +2111,9 @@ Number of determinants:      21
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.67766 a.u.                                                                  
-               (   1 O   2s  :     0.18) (   1 O   3s  :    -1.21) (   1 O   1p0 :    -0.41)                              
-               (   1 O   2p0 :     0.76) (   2 H   1s  :    -0.40) (   2 H   2s  :     1.13)                              
-               (   3 H   1s  :    -0.40) (   3 H   2s  :     1.13)                                                        
+               (   1 O   2s  :    -0.18) (   1 O   3s  :     1.21) (   1 O   1p0 :     0.41)                              
+               (   1 O   2p0 :    -0.76) (   2 H   1s  :     0.40) (   2 H   2s  :    -1.13)                              
+               (   3 H   1s  :     0.40) (   3 H   2s  :    -1.13)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -2333,13 +2136,17 @@ Number of determinants:      21
            │             │             │             │     Quasi-Newton
 It.        │             │             │             │             │             │     Wrap-up
            │             │             │             │             │             │  
-   Σ      0.0s (11%)    0.0s (32%)    0.0s (21%)    0.0s ( 3%)    0.0s (20%)    0.0s ( 5%)
+   Σ      0.0s (18%)    0.0s (25%)    0.0s (11%)    0.0s ( 4%)    0.0s (22%)    0.0s ( 4%)
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Total time: 0.10 s
-                                                                                                                          
+ Total time: 0.16 s
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
 Total MCSCF time: 00:00:00
-        ╭────────────────────────────────────────────────────╮
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        ╭────────────────────────────────────────────────────╮
         │     Complex polarization propagator calculation    │
         ╰────────────────────────────────────────────────────╯
           a Operator              : dipole
@@ -2368,16 +2175,25 @@ Total MCSCF time: 00:00:00
 
          Iter. ┃ Grad. Norm ┃ Converged ┃ CI+Orb vec. ┃ Time
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           1    1.20e+00      0/ 300       0 +    8   0:00:00  
-           2    2.22e+00    100/ 300       4 +   16   0:00:00  
-           3    3.64e-01    113/ 300       8 +   22   0:00:00  
-           4    3.74e-03    271/ 300      11 +   26   0:00:00  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           1    1.20e+00      0/ 300       0 +    8   0:00:00  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           2    2.22e+00    100/ 300       4 +   16   0:00:00  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           3    3.64e-01    113/ 300       8 +   22   0:00:00  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           4    3.74e-03    271/ 300      11 +   26   0:00:00  
            5    9.86e-04    300/ 300      11 +   27   0:00:00  
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ** Convergence reached in 5 iterations
-
-** End of response **
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>** End of response **
 
 
       ┌────────────────────────────────────────────────────┐
@@ -2609,9 +2425,9 @@ Total MCSCF time: 00:00:00
        20.2048   549.800       -0.205525       0.007085
        20.2085   549.900       -0.203348       0.006582
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                                                                                                           
          
 TDA Linear absorption cross-section (a.u.)
@@ -2658,7 +2474,9 @@ TDA Linear absorption cross-section (a.u.)
   │xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx│
   └────────────────────────────────────────────────────────────┘
   540.00 eV                                          549.90 eV
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
        Absorption Table (by numerical derivatives)
           λ_max     λ_max        ε
            (au)      (eV)      (a.u.)
@@ -2667,7 +2485,9 @@ TDA Linear absorption cross-section (a.u.)
           20.12    547.400     0.294  
        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
  MTP execution time table
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    Calculate H2, S2
@@ -2680,10 +2500,10 @@ TDA Linear absorption cross-section (a.u.)
            │             │             │             │             │             │             │             │     Expand Subspace TDA
 It.        │             │             │             │             │             │             │             │             │     Calculate properties
            │             │             │             │             │             │             │             │             │  
-   Σ      0.0s ( 1%)    0.0s ( 2%)    0.1s ( 6%)    0.0s ( 3%)    0.0s ( 0%)    0.0s ( 2%)    0.4s (31%)    0.3s (20%)    0.0s ( 0%)
+   Σ      0.0s ( 1%)    0.0s ( 0%)    0.3s ( 5%)    0.1s ( 2%)    0.0s ( 0%)    0.1s ( 2%)    1.8s (36%)    0.8s (16%)    0.0s ( 0%)
                                                                                                                           
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- Total time: 1.34 s
+ Total time: 4.92 s
 </pre></div>
 </div>
 </div>
@@ -2695,7 +2515,7 @@ It.        │             │             │             │             │  
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_calc_30_0.png" src="../../_images/xray_calc_30_0.png" />
+<img alt="../../_images/xray_calc_25_0.png" src="../../_images/xray_calc_25_0.png" />
 </div>
 </div>
 </section>
@@ -2722,31 +2542,44 @@ It.        │             │             │             │             │  
 <span id="sec-xray-calc-xesadc"></span><h3>Spectra from ADC<a class="headerlink" href="#spectra-from-adc" title="Permalink to this headline">#</a></h3>
 <p>One approach for considering X-ray emission spectra is to converge a core-hole state and use this core-ionized system as the reference state for a normal excited state calculation <span id="id14">[<a class="reference internal" href="../refs.html#id26" title="N. A. Besley and F. A. Asmuruf. Time-dependent density functional theory calculations of the spectroscopy of core electrons. Phys. Chem. Chem. Phys., 12:12024-12039, 2010. URL: https://doi.org/10.1039/C002207A.">BA10</a>, <a class="reference internal" href="../refs.html#id21" title="T. Fransson and A. Dreuw. Simulating x-ray emission spectroscopy with algebraic diagrammatic construction schemes for the polarization propagator. J. Chem. Theory Comput., 15:546-556, 2019. URL: https://doi.org/10.1021/acs.jctc.8b01046.">FD19</a>]</span>. The core-decay transitions are then the first negative eigenstates of the system, such that a standard Davidson calculation can be run on top of this reference state.</p>
 <p>Considering water with ADC(2), the oxygen X-ray emission spectrum is calculated as:</p>
-<div class="cell tag_hide-output docutils container">
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently considering double-core-hole, as adcc cannot yet use an unrestricted SCF from VeloxChem.</p>
+</div>
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create veloxchem mol and basis objects</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-311G&quot;</span><span class="p">)</span>
 
-<span class="c1"># Perform unrestricted SCF calculation</span>
-<span class="n">scf_res</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_res</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Perform SCF calculation</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="c1"># Copy molecular orbitals</span>
-<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">scf_res</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
+<span class="c1"># Copy molecule object</span>
+<span class="n">mol_ion</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
 
-<span class="c1"># Create 1s core-hole by setting alpha_0 population to zero</span>
-<span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="c1"># Change charge and multiplicity</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mol_ion</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Perform unrestricted SCF calculation with MOM constraint</span>
-<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">UHF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">mom_occ</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">scf_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+<span class="c1"># Lists of occupied alpha and beta MOs</span>
+<span class="n">occa</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">occb</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
-<span class="c1"># Perform ADC calculation</span>
+<span class="c1"># Calculate SCF of core-ion</span>
+<span class="n">scf_ion</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">)</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="c1"># IE from energy difference</span>
+<span class="n">hf_ie</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">scf_ion</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+
+<span class="c1"># Set up mock task for adcc</span>
+<span class="n">task</span> <span class="o">=</span> <span class="n">MockTask</span><span class="p">(</span><span class="n">mol_ion</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_ion</span><span class="o">.</span><span class="n">comm</span><span class="p">,</span> <span class="n">scf_ion</span><span class="o">.</span><span class="n">ostream</span><span class="p">)</span>
+<span class="n">scf_ion</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+
+<span class="c1"># Four lowest (negative) eigenstates</span>
 <span class="n">adc_xes</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_ion</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2772,7 +2605,7 @@ It.        │             │             │             │             │  
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Custom broadening&quot;</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">au2ev</span> <span class="o">*</span> <span class="n">adc_xes</span><span class="o">.</span><span class="n">excitation_energy</span><span class="p">,</span> <span class="n">adc_xes</span><span class="o">.</span><span class="n">oscillator_strength</span>
-<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">519</span><span class="p">,</span> <span class="mi">531</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">598</span><span class="p">,</span> <span class="mi">603</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Photon energy [eV]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Cross section [au]&quot;</span><span class="p">)</span>
@@ -2780,6 +2613,21 @@ It.        │             │             │             │             │  
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------------------------------------------------------+
+| adc2                                        any ,  converged |
++--------------------------------------------------------------+
+|  #        excitation energy     osc str    |v1|^2    |v2|^2  |
+|          (au)           (eV)                                 |
+|  0     -22.20632     -604.2647   0.0000    0.9644   0.03563  |
+|  1     -22.15933      -602.986   0.0000    0.9622   0.03785  |
+|  2     -22.09184     -601.1495   0.1612    0.9588   0.04123  |
+|  3     -22.04624     -599.9086   0.1409    0.9561   0.04391  |
++--------------------------------------------------------------+
+</pre></div>
+</div>
+<img alt="../../_images/xray_calc_29_1.png" src="../../_images/xray_calc_29_1.png" />
 </div>
 </div>
 <p>Using a cc-pCVTZ/cc-pVTZ basis set and comparing to experiment:</p>
@@ -2863,6 +2711,28 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G
+                                                                                                                          
+                                              Molecular Basis (Atomic Basis)                                              
+                                             ================================                                             
+                                                                                                                          
+                                  Basis: 6-31G                                                                            
+                                                                                                                          
+                                  Atom Contracted GTOs          Primitive GTOs                                            
+                                                                                                                          
+                                   O   (3S,2P)                  (10S,4P)                                                  
+                                   H   (2S)                     (4S)                                                      
+                                                                                                                          
+                                  Contracted Basis Functions : 13                                                         
+                                  Primitive Basis Functions  : 30                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Occupied MO energies: [-520.65709503  -27.6878928   -14.39952882   -9.70377531   -7.94952958]
+</pre></div>
+</div>
+</div>
 </div>
 <p>The results can be printed as a table, and convoluted and plotted using a custom broadening. We here focus on the high-energy features:</p>
 <div class="cell docutils container">
@@ -2887,6 +2757,16 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy   Osc. str.   x-component   y-component   z-component
+492.969   0.00022      0.00000      -0.00000      -0.01478
+506.258   0.00238      0.04878      -0.00000       0.00000
+510.953   0.00255      0.00000      -0.00000       0.05050
+512.708   0.00342     -0.00000       0.05848      -0.00000
+</pre></div>
+</div>
+<img alt="../../_images/xray_calc_34_1.png" src="../../_images/xray_calc_34_1.png" />
+</div>
 </div>
 <p>Using a cc-pCVTZ/cc-pVTZ basis set and comparing to experiment <span id="id18">[<a class="reference internal" href="../refs.html#id23" title="L. Weinhardt, A. Benkert, F. Meyer, M. Blum, R. G. Wilks, W. Yang, M. Bär, F. Reinert, and C. Heske. Nuclear dynamics and spectator effects in resonant inelastic soft x-ray scattering of gas-phase water molecules. J. Chem. Phys., 136:144311, 2012. URL: https://doi.org/10.1063/1.3702644.">WBM+12</a>]</span>:</p>
 <figure class="align-default" id="overlap-water-xes">
@@ -2910,6 +2790,10 @@ f \propto | \langle \phi_i | \hat{\mu} | \phi_c \rangle | ^2
 <p>The RIXS plane is then constructed from the above absorption and emission energies, with the RIXS intensity from the multiplication of the two respective oscillator strengths.</p>
 <p>Note that this approach is an approximation, as it disregards potentially important detuning effects. In the example given below we also ignore the coupling between the polarization of the incoming and outgoing photons. Furthermore, the calculation requires the convergence of core-excited states, which is much trickier than core-ionized, and will likely only work for the first few core-excited states. Finally, depending on how the intermediate core-excited state is constructed, issues with spin-contamination can become highly influential.</p>
 <p>Nevertheless, the scheme is quite easy to understand, and introducing core-excited dynamics is relatively straightforward. As such, we here illustrate how the RIXS plane of water can be constructed. First, calculate the X-ray absorption spectrum, as well as the emission spectra with a core-excited reference state:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is to be updated, once adcc can import an UHF object from VeloxChem.</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create pyscf mol object</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>

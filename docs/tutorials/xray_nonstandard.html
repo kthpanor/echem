@@ -705,8 +705,8 @@ const thebe_selector_output = ".output, .cell_output"
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../env/pe.html">
-   Polarizable embedding
+  <a class="reference internal" href="../env/embedding.html">
+   Embedding
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
   <label for="toctree-checkbox-20">
@@ -715,8 +715,13 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../env/pe_basics.html">
-     General aspects
+    <a class="reference internal" href="../env/nonpol_emb.html">
+     Non-polarizable embedding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/pol_emb.html">
+     Polarizable embedding
     </a>
    </li>
   </ul>
@@ -1018,11 +1023,6 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mom-approaches">
-   MOM approaches
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#impact-of-channel-restriction-for-tddft">
    Impact of channel restriction for TDDFT
   </a>
@@ -1096,11 +1096,6 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mom-approaches">
-   MOM approaches
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#impact-of-channel-restriction-for-tddft">
    Impact of channel restriction for TDDFT
   </a>
@@ -1157,7 +1152,6 @@ title="Print to PDF"
 <span class="kn">import</span> <span class="nn">adcc</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">scf</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 
 <span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
@@ -1194,9 +1188,11 @@ title="Print to PDF"
 </ul>
 <p>Note that the LSOR wave function will be heavily spin contaminated, as seen below. This has been claimed to lead to minimal errors, but care should be taken. Further note that converging to a reference state which represents the actual valence excitation is non-trivial, and may indeed be all but impossible. As such, this two-step approach is useful, but has some issues. Finally, if using correlated methods, there are some concerns that the <a class="reference external" href="https://doi.org/10.1063%2F4.0000070">observed</a> relative energies are off from experimental values, which could relate to issues with using a <a class="reference external" href="https://doi.org/10.1039/D2CP00584K">non-Aufbau</a> reference state.</p>
 <p>As an example we consider the first valence-excited state of water:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>pyscf version - to be changed</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
 <span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
@@ -1230,31 +1226,9 @@ title="Print to PDF"
 <span class="n">scf_hsor</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GS:
-converged SCF energy = -75.9838703827193  &lt;S^2&gt; = 6.3380412e-12  2S+1 = 1
-LSOR:
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overwritten attributes  get_occ  of &lt;class &#39;pyscf.scf.uhf.UHF&#39;&gt;
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -75.7142931989803  &lt;S^2&gt; = 1.0127856  2S+1 = 2.2474747
-HSOR:
-converged SCF energy = -75.7278282670684  &lt;S^2&gt; = 2.0038371  2S+1 = 3.002557
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-75.72782826706836
-</pre></div>
-</div>
-</div>
-</div>
 <p>As can be seen, the <span class="math notranslate nohighlight">\(\langle S^2 \rangle\)</span> of the LSOR reference is close to 1, and thus represents an almost perfect mix of a singlet and triplet.</p>
 <p>Calculating the valence-excitation energies and comparing it to energy differences obtained from the different reference states:</p>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adc_gs</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adc_gs</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">adc_xas</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">cvs_adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">adc_lsor</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">cvs_adc2</span><span class="p">(</span><span class="n">scf_lsor</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">adc_hsor</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">cvs_adc2</span><span class="p">(</span><span class="n">scf_hsor</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1263,77 +1237,14 @@ converged SCF energy = -75.7278282670684  &lt;S^2&gt; = 2.0038371  2S+1 = 3.0025
 <span class="nb">print</span><span class="p">(</span><span class="mf">27.2114</span> <span class="o">*</span> <span class="p">(</span><span class="n">adc_gs</span><span class="o">.</span><span class="n">ground_state</span><span class="o">.</span><span class="n">energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">adc_hsor</span><span class="o">.</span><span class="n">ground_state</span><span class="o">.</span><span class="n">energy</span><span class="p">()))</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting adc2  Jacobi-Davidson ...
-Niter n_ss  max_residual  time  Ritz values
-  1    10       0.22058  701ms  [0.37446036 0.40081598 0.44565934 0.46679031 0.48399895]
-  2    20     0.0030002  287ms  [0.27713767 0.3056213  0.35895717 0.3715342  0.39063453]
-  3    30     9.786e-05  738ms  [0.27640472 0.30463815 0.35766488 0.37047079 0.38929738]
-=== Converged ===
-    Number of matrix applies:    30
-    Total solver time:             1s 735ms
-Starting cvs-adc2  Jacobi-Davidson ...
-Niter n_ss  max_residual  time  Ritz values
-  1     8        1.6222  657ms  [20.26123431 20.31992537 20.32302691 20.3464984  20.77599022]
-  2    16      0.059729  217ms  [19.77470975 19.80230856 19.84312303 19.87818817 20.5373859 ]
-  3    24     0.0025223  441ms  [19.75718509 19.78334186 19.84056229 19.86585919 20.53732181]
-  4    32    0.00064877  311ms  [19.75656768 19.78236576 19.84024749 19.86584883 20.53732181]
-  5    38    2.0368e-05  403ms  [19.756435   19.78211629 19.84024749 19.86584882 20.53732181]
-=== Converged ===
-    Number of matrix applies:    38
-    Total solver time:             2s  47ms
-Starting cvs-adc2  Jacobi-Davidson ...
-Niter n_ss  max_residual  time  Ritz values
-  1     8        1.4197  736ms  [19.65025265 20.45690115 20.50695083 20.60577589 20.87460994]
-  2    16       0.10186  365ms  [19.48097485 19.99916885 20.03363736 20.13668576 20.59740388]
-  3    24     0.0025102  131ms  [19.48081058 19.97028865 20.02430938 20.10063975 20.59579242]
-  4    32    0.00010515  301ms  [19.48081058 19.96947945 20.02423709 20.09930154 20.59579241]
-=== Converged ===
-    Number of matrix applies:    32
-    Total solver time:             1s 556ms
-Starting cvs-adc2  Jacobi-Davidson ...
-Niter n_ss  max_residual  time  Ritz values
-  1     9        1.3402   2.0s  [19.65310247 20.44001891 20.46846981 20.50328038 20.87239002]
-  2    18      0.081792  232ms  [19.48153505 19.99518847 20.03915758 20.06588885 20.59952219]
-  3    27     0.0012024  252ms  [19.48137709 19.98562519 20.0121162  20.05726204 20.59826671]
-  4    36    3.3226e-05  390ms  [19.48137709 19.98556281 20.01155346 20.05707419 20.59826671]
-=== Converged ===
-    Number of matrix applies:    36
-    Total solver time:             2s 836ms
-+--------------------------------------------------------------+
-| adc2                                        any ,  converged |
-+--------------------------------------------------------------+
-|  #        excitation energy     osc str    |v1|^2    |v2|^2  |
-|          (au)           (eV)                                 |
-|  0     0.2764047      7.521355   0.0000    0.9634   0.03655  |
-|  1     0.3046381      8.289626   0.0139    0.9591   0.04088  |
-|  2     0.3576649      9.732557   0.0000    0.9686   0.03135  |
-|  3     0.3704708      10.08102   0.0000     0.967   0.03295  |
-|  4     0.3892974      10.59332   0.0000    0.9636   0.03642  |
-+--------------------------------------------------------------+
-
--8.230663923529203
--7.857499806701424
-</pre></div>
-</div>
-</div>
-</div>
 <p>The first allowed transition energy is relatively close to the <span class="math notranslate nohighlight">\(\Delta\)</span>MP2 results (as we use the MP2 energies), in particular for the LSOR. Resulting spectra can now be plotted as:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="n">adc_xas</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;GS&quot;</span><span class="p">)</span>
 <span class="n">adc_lsor</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;LSOR&quot;</span><span class="p">)</span>
 <span class="n">adc_hsor</span><span class="o">.</span><span class="n">plot_spectrum</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;HSOR&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../../_images/xray_nonstandard_7_0.png" src="../../_images/xray_nonstandard_7_0.png" />
-</div>
 </div>
 <p>We see the occurance of a lower-energy feature, representing the 1s to SOMO transition, as well as an upward shift of remaining features.</p>
 </section>
@@ -1343,155 +1254,6 @@ Niter n_ss  max_residual  time  Ritz values
 <li><p>To be added</p></li>
 </ul>
 </section>
-</section>
-<section id="mom-approaches">
-<h2>MOM approaches<a class="headerlink" href="#mom-approaches" title="Permalink to this headline">#</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>Decide if to include</p></li>
-<li><p>IMOM versus MOM (currently only IMOM)</p></li>
-<li><p>Thanks to Anna Kristina and Josefine</p></li>
-</ul>
-</div>
-<p>As an illustration, the MOM approach <a class="reference external" href="https://pyscf.org/_modules/pyscf/scf/addons.html#mom_occ_">from pyscf</a> has here been adapted to IMOM, <em>i.e.</em> considering overlap to the <strong>initial</strong> rather than most <strong>recent</strong> wave function. This has been done for both restricted (som simultaneously moving 2 electrons at a time) and unrestricted wave functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">imom</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">mocoeffs</span><span class="p">,</span> <span class="n">occnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Use initial maximum overlap method to determine occupation number for each orbital in every</span>
-<span class="sd">    iteration. It can be applied to unrestricted as well as restricted open-shell systems.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Copy initial MO coefficients for occupied orbitals</span>
-    <span class="c1"># This can be adapted for MOM / IMOM - need to look into</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">dft</span><span class="o">.</span><span class="n">rks</span><span class="o">.</span><span class="n">RKS</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">scf</span><span class="o">.</span><span class="n">hf</span><span class="o">.</span><span class="n">RHF</span><span class="p">):</span>
-        <span class="n">coef_occ_a</span> <span class="o">=</span> <span class="n">mocoeffs</span><span class="p">[:,</span> <span class="n">occnum</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">dft</span><span class="o">.</span><span class="n">uks</span><span class="o">.</span><span class="n">UKS</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">scf</span><span class="o">.</span><span class="n">uhf</span><span class="o">.</span><span class="n">UHF</span><span class="p">):</span>
-        <span class="n">coef_occ_a</span> <span class="o">=</span> <span class="n">mocoeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">occnum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">coef_occ_b</span> <span class="o">=</span> <span class="n">mocoeffs</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span> <span class="n">occnum</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># Write new get_occ routine for DFT kernel</span>
-    <span class="k">def</span> <span class="nf">get_occ</span><span class="p">(</span><span class="n">mo_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># Get new MO energy and coefficients</span>
-        <span class="k">if</span> <span class="n">mo_energy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mo_energy</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_energy</span>
-        <span class="k">if</span> <span class="n">mo_coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">mo_coeff</span>
-
-        <span class="c1"># Restricted</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">dft</span><span class="o">.</span><span class="n">rks</span><span class="o">.</span><span class="n">RKS</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">scf</span><span class="o">.</span><span class="n">hf</span><span class="o">.</span><span class="n">RHF</span><span class="p">):</span>
-            <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">occnum</span><span class="p">)</span>
-            <span class="n">nocc_a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">occnum</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># number of occupied orbitals</span>
-
-            <span class="c1"># Construct s_a = MO_coeff(old)*S*MO_coeff(new)</span>
-            <span class="n">SC</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">get_ovlp</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">)</span>
-            <span class="n">s_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">coef_occ_a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">SC</span><span class="p">)</span>
-
-            <span class="c1"># Get indices for orbitals with largest p = sum_i s_a(ij)s_a(ij)</span>
-            <span class="n">idx_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span> <span class="n">s_a</span><span class="p">,</span> <span class="n">s_a</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-            <span class="c1"># Set occupation for selected MOs</span>
-            <span class="n">mo_occ</span><span class="p">[</span><span class="n">idx_a</span><span class="p">[:</span><span class="n">nocc_a</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">2.0</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">dft</span><span class="o">.</span><span class="n">uks</span><span class="o">.</span><span class="n">UKS</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">scf</span><span class="o">.</span><span class="n">uhf</span><span class="o">.</span><span class="n">UHF</span><span class="p">):</span>
-            <span class="n">mo_occ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">occnum</span><span class="p">)</span>
-            <span class="n">nocc_a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">occnum</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>  <span class="c1"># number of occupied alpha orbitals</span>
-            <span class="n">nocc_b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">occnum</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>  <span class="c1"># number of occupied beta orbitals</span>
-
-            <span class="c1"># Construct s_a = MO_coeff(old)*S*MO_coeff(new)</span>
-            <span class="n">SC_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">get_ovlp</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">s_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">coef_occ_a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">SC_a</span><span class="p">)</span>
-            <span class="c1"># Likewise for s_b</span>
-            <span class="n">SC_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">mf</span><span class="o">.</span><span class="n">get_ovlp</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">s_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">coef_occ_b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">SC_b</span><span class="p">)</span>
-
-            <span class="c1"># Get indices for orbitals with largest p_a = sum_i s_a(ij)s_a(ij)</span>
-            <span class="n">idx_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span> <span class="n">s_a</span><span class="p">,</span> <span class="n">s_a</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="c1"># Likewise for p_b</span>
-            <span class="n">idx_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span> <span class="n">s_b</span><span class="p">,</span> <span class="n">s_b</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-            <span class="c1"># Set occupation for selected MOs</span>
-            <span class="n">mo_occ</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx_a</span><span class="p">[:</span><span class="n">nocc_a</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
-            <span class="n">mo_occ</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">idx_b</span><span class="p">[:</span><span class="n">nocc_b</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-        <span class="k">return</span> <span class="n">mo_occ</span>
-
-    <span class="c1"># Redefine get_occ for DFT kernel as new function</span>
-    <span class="n">mf</span><span class="o">.</span><span class="n">get_occ</span> <span class="o">=</span> <span class="n">get_occ</span>
-
-    <span class="k">return</span> <span class="n">mf</span>
-</pre></div>
-</div>
-<p>As examples, this can be used to calculate the single- and double-ionization energies of water:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create molecule object</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_xyz</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-
-<span class="c1"># Index of core MO</span>
-<span class="n">core</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># Initial restricted/unrestricted SCF</span>
-<span class="n">dft_re</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">RKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">dft_re</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">dft_re</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-<span class="n">dft_ur</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">dft_ur</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">dft_ur</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-
-<span class="c1"># Single ionization energy</span>
-<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dft_ur</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dft_ur</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
-<span class="n">occ0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">core</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dft_ion</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">UKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">dft_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">imom</span><span class="p">(</span><span class="n">dft_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">dft_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-
-<span class="c1"># Double ionization energy</span>
-<span class="n">mo0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dft_re</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
-<span class="n">occ0</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dft_re</span><span class="o">.</span><span class="n">mo_occ</span><span class="p">)</span>
-<span class="n">occ0</span><span class="p">[</span><span class="n">core</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dft_ion</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">RKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">dft_ion</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
-<span class="n">imom</span><span class="p">(</span><span class="n">dft_ion</span><span class="p">,</span> <span class="n">mo0</span><span class="p">,</span> <span class="n">occ0</span><span class="p">)</span>
-<span class="n">dft_ion</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Single ionization energy:&quot;</span><span class="p">,</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">dft_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">dft_ur</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Double ionization energy:&quot;</span><span class="p">,</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">au2ev</span> <span class="o">*</span> <span class="p">(</span><span class="n">dft_ion</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()</span> <span class="o">-</span> <span class="n">dft_ur</span><span class="o">.</span><span class="n">energy_tot</span><span class="p">()),</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;eV&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">converged SCF energy = -76.3480474320894</span>
-<span class="s2">converged SCF energy = -76.3480474320839  &lt;S^2&gt; = 2.5504043e-11  2S+1 = 1</span>
-<span class="s2">converged SCF energy = -56.4125421194362  &lt;S^2&gt; = 0.75441021  2S+1 = 2.0044054</span>
-<span class="s2">converged SCF energy = -32.9492316840399</span>
-<span class="s2">Single ionization energy: 542.47 eV</span>
-<span class="s2">Double ionization energy: 1180.94 eV</span>
-<span class="s2">&quot;&quot;&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged SCF energy = -76.3480474320894
-converged SCF energy = -76.3480474320839  &lt;S^2&gt; = 2.5504043e-11  2S+1 = 1
-converged SCF energy = -56.4125421194362  &lt;S^2&gt; = 0.75441021  2S+1 = 2.0044054
-converged SCF energy = -32.9492316840399
-Single ionization energy: 542.47 eV
-Double ionization energy: 1180.94 eV
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="impact-of-channel-restriction-for-tddft">
 <span id="sec-xray-cvs-vs-full"></span><h2>Impact of channel restriction for TDDFT<a class="headerlink" href="#impact-of-channel-restriction-for-tddft" title="Permalink to this headline">#</a></h2>
@@ -1517,7 +1279,13 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 <p>This will now be done for water, where the ground state is calculated as:</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
+<span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
+<span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
 <span class="n">vlx_mol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
 <span class="n">vlx_bas</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vlx_mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
@@ -1530,6 +1298,23 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/basis/6-31G
+                                                                                                                          
+                                              Molecular Basis (Atomic Basis)                                              
+                                             ================================                                             
+                                                                                                                          
+                                  Basis: 6-31G                                                                            
+                                                                                                                          
+                                  Atom Contracted GTOs          Primitive GTOs                                            
+                                                                                                                          
+                                   O   (3S,2P)                  (10S,4P)                                                  
+                                   H   (2S)                     (4S)                                                      
+                                                                                                                          
+                                  Contracted Basis Functions : 13                                                         
+                                  Primitive Basis Functions  : 30                                                         
+                                                                                                                          
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                                             Self Consistent Field Driver Setup                                            
                                            ====================================                                           
@@ -1557,34 +1342,60 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * SAD initial guess computed in 0.00 sec.                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
-* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.983870205311 a.u. Time: 0.05 sec.                                  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983870205311 a.u. Time: 0.06 sec.                                  
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
                                                                                                                           
 * Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
                                                                                                                           
 * Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
-                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. |    Kohn-Sham Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
                   1       -76.384877806788    0.0000000000      0.05814398      0.01079242      0.00000000                
-                  2       -76.384691793132    0.0001860137      0.07420609      0.01375856      0.03127560                
-                  3       -76.385185991153   -0.0004941980      0.00038521      0.00008834      0.01651042                
-                  4       -76.385186023175   -0.0000000320      0.00007657      0.00002027      0.00029093                
-                  5       -76.385186023934   -0.0000000008      0.00000194      0.00000051      0.00002930                
-                  6       -76.385186023935   -0.0000000000      0.00000014      0.00000003      0.00000214                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -76.384691793132    0.0001860137      0.07420609      0.01375856      0.03127560                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -76.385185991153   -0.0004941980      0.00038521      0.00008834      0.01651042                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -76.385186023175   -0.0000000320      0.00007657      0.00002027      0.00029093                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -76.385186023934   -0.0000000008      0.00000194      0.00000051      0.00002930                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -76.385186023935   -0.0000000000      0.00000014      0.00000003      0.00000214                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 6 iterations. Time: 1.75 sec.                                                         
                                                                                                                           
-               *** SCF converged in 6 iterations. Time: 1.08 sec.                                                         
-                                                                                                                          
-               Spin-Restricted Kohn-Sham:                                                                                 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Kohn-Sham:                                                                                 
                --------------------------                                                                                 
                Total Energy                       :      -76.3851860239 a.u.                                              
                Electronic Energy                  :      -85.5413307434 a.u.                                              
@@ -1617,14 +1428,14 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.52917 a.u.                                                                  
-               (   1 O   1p+1:     0.52) (   1 O   2p+1:     0.23) (   2 H   1s  :    -0.27)                              
-               (   2 H   2s  :    -0.15) (   3 H   1s  :     0.27) (   3 H   2s  :     0.15)                              
+               (   1 O   1p+1:    -0.52) (   1 O   2p+1:    -0.23) (   2 H   1s  :     0.27)                              
+               (   2 H   2s  :     0.15) (   3 H   1s  :    -0.27) (   3 H   2s  :    -0.15)                              
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.35661 a.u.                                                                  
-               (   1 O   2s  :    -0.20) (   1 O   3s  :    -0.37) (   1 O   1p0 :    -0.54)                              
-               (   1 O   2p0 :    -0.38)                                                                                  
+               (   1 O   2s  :     0.20) (   1 O   3s  :     0.37) (   1 O   1p0 :     0.54)                              
+               (   1 O   2p0 :     0.38)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -1661,6 +1472,774 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
                Occupation: 0.000 Energy:    0.88918 a.u.                                                                  
                (   1 O   1p-1:     0.96) (   1 O   2p-1:    -1.04)                                                        
                                                                                                                           
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;S&#39;: array([[ 1.        ,  0.23368986,  0.16727976,  0.03446908,  0.06872281,
+          0.03446908,  0.06872281,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.23368986,  1.        ,  0.76364081,  0.24635401,  0.37904536,
+          0.24635401,  0.37904536,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.16727976,  0.76364081,  1.        ,  0.4254384 ,  0.68219684,
+          0.4254384 ,  0.68219684,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.03446908,  0.24635401,  0.4254384 ,  1.        ,  0.65829197,
+          0.05097439,  0.22309719,  0.        ,  0.        , -0.1749796 ,
+         -0.35743592, -0.22558965, -0.46081854],
+        [ 0.06872281,  0.37904536,  0.68219684,  0.65829197,  1.        ,
+          0.22309719,  0.51449213,  0.        ,  0.        , -0.09059884,
+         -0.29517246, -0.1168031 , -0.38054637],
+        [ 0.03446908,  0.24635401,  0.4254384 ,  0.05097439,  0.22309719,
+          1.        ,  0.65829197,  0.        ,  0.        , -0.1749796 ,
+         -0.35743592,  0.22558965,  0.46081854],
+        [ 0.06872281,  0.37904536,  0.68219684,  0.22309719,  0.51449213,
+          0.65829197,  1.        ,  0.        ,  0.        , -0.09059884,
+         -0.29517246,  0.1168031 ,  0.38054637],
+        [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  1.        ,  0.50152069,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.50152069,  1.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.1749796 , -0.09059884,
+         -0.1749796 , -0.09059884,  0.        ,  0.        ,  1.        ,
+          0.50152069,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.35743592, -0.29517246,
+         -0.35743592, -0.29517246,  0.        ,  0.        ,  0.50152069,
+          1.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.22558965, -0.1168031 ,
+          0.22558965,  0.1168031 ,  0.        ,  0.        ,  0.        ,
+          0.        ,  1.        ,  0.50152069],
+        [ 0.        ,  0.        ,  0.        , -0.46081854, -0.38054637,
+          0.46081854,  0.38054637,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.50152069,  1.        ]]),
+ &#39;C_alpha&#39;: array([[-9.95037813e-01,  2.09324475e-01,  1.37666725e-16,
+         -9.05298520e-02,  1.70987275e-17, -8.80538689e-02,
+          1.76060736e-15, -9.69131972e-16, -3.19290215e-02,
+          3.42413816e-16,  7.96695787e-02, -9.10737654e-16,
+          5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01, -2.60941706e-16,
+          2.01162605e-01,  2.60428307e-17,  1.53140606e-01,
+         -7.97876335e-15, -2.19257290e-15,  1.81748460e-01,
+         -2.32257870e-16, -4.86183554e-01,  1.87758689e-14,
+         -1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -6.31212251e-16,
+          3.73569016e-01, -1.73725229e-16,  1.09036069e+00,
+         -9.99651404e-15,  1.21792235e-14, -2.76525348e-01,
+          1.49114996e-15,  1.05534845e-01, -2.50777207e-14,
+          2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+         -1.42402905e-01, -1.51089559e-16, -9.71729363e-02,
+          9.67004180e-02, -9.73737667e-01, -7.07856922e-01,
+          9.85845741e-15,  6.85615256e-01, -1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+         -1.04531358e-01,  2.81781434e-16, -9.37004841e-01,
+          1.28446987e+00,  6.69710064e-01,  5.93528765e-01,
+         -7.87815436e-15, -1.88806086e-01, -9.25159402e-01,
+         -6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+         -1.42402905e-01,  1.37033304e-16, -9.71729363e-02,
+         -9.67004180e-02,  9.73737667e-01, -7.07856922e-01,
+          1.48271282e-14,  6.85615256e-01,  1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+         -1.04531358e-01, -1.69509178e-16, -9.37004841e-01,
+         -1.28446987e+00, -6.69710064e-01,  5.93528765e-01,
+         -1.18923930e-14, -1.88806086e-01,  9.25159402e-01,
+         -6.21169757e-01],
+        [ 1.62878044e-17, -1.67350140e-16, -1.20285846e-16,
+         -1.23245613e-16,  6.46307304e-01, -4.33520220e-17,
+         -5.07429630e-17, -2.35282567e-15,  1.67756780e-14,
+          9.58297064e-01,  1.41393722e-15,  4.85819799e-16,
+          1.84397427e-15],
+        [ 5.31056422e-17,  1.67543517e-16, -2.18165249e-16,
+         -2.34644695e-16,  5.04930058e-01, -1.26274391e-16,
+          1.03586875e-16,  2.41294922e-15, -1.82821163e-14,
+         -1.03975576e+00, -1.49839295e-15, -2.48484722e-16,
+         -2.25026934e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -1.81466067e-16,
+          5.44806793e-01,  1.21631421e-16, -2.90699224e-01,
+          7.24620546e-15,  3.04416361e-15, -7.84569882e-01,
+          1.45624627e-14, -5.68420867e-01,  4.90727353e-15,
+          1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  2.40521770e-16,
+          3.75935770e-01,  8.89686343e-17, -4.44924715e-01,
+          3.86939034e-15, -1.65987361e-14,  4.98615138e-01,
+         -9.29291010e-15,  1.11190298e+00,  3.63800513e-16,
+         -8.70248963e-01],
+        [-2.60956853e-17,  4.93434494e-17, -5.16345050e-01,
+         -5.04088599e-16, -1.55894085e-16,  4.96770548e-15,
+          4.18783419e-01, -1.96356299e-01,  7.74116001e-15,
+         -6.99781464e-16,  2.07923194e-15,  9.84633648e-01,
+          9.99134241e-15],
+        [-7.33759624e-17, -1.21541407e-16, -2.34696122e-01,
+          8.07898929e-17,  2.71977238e-17,  1.53119968e-14,
+          7.54724923e-01, -5.26353050e-01, -4.20976196e-15,
+         -8.46276801e-16, -1.47650392e-14, -1.66403161e+00,
+         -1.60848635e-14]]),
+ &#39;C_beta&#39;: array([[-9.95037813e-01,  2.09324475e-01,  1.37666725e-16,
+         -9.05298520e-02,  1.70987275e-17, -8.80538689e-02,
+          1.76060736e-15, -9.69131972e-16, -3.19290215e-02,
+          3.42413816e-16,  7.96695787e-02, -9.10737654e-16,
+          5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01, -2.60941706e-16,
+          2.01162605e-01,  2.60428307e-17,  1.53140606e-01,
+         -7.97876335e-15, -2.19257290e-15,  1.81748460e-01,
+         -2.32257870e-16, -4.86183554e-01,  1.87758689e-14,
+         -1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -6.31212251e-16,
+          3.73569016e-01, -1.73725229e-16,  1.09036069e+00,
+         -9.99651404e-15,  1.21792235e-14, -2.76525348e-01,
+          1.49114996e-15,  1.05534845e-01, -2.50777207e-14,
+          2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+         -1.42402905e-01, -1.51089559e-16, -9.71729363e-02,
+          9.67004180e-02, -9.73737667e-01, -7.07856922e-01,
+          9.85845741e-15,  6.85615256e-01, -1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+         -1.04531358e-01,  2.81781434e-16, -9.37004841e-01,
+          1.28446987e+00,  6.69710064e-01,  5.93528765e-01,
+         -7.87815436e-15, -1.88806086e-01, -9.25159402e-01,
+         -6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+         -1.42402905e-01,  1.37033304e-16, -9.71729363e-02,
+         -9.67004180e-02,  9.73737667e-01, -7.07856922e-01,
+          1.48271282e-14,  6.85615256e-01,  1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+         -1.04531358e-01, -1.69509178e-16, -9.37004841e-01,
+         -1.28446987e+00, -6.69710064e-01,  5.93528765e-01,
+         -1.18923930e-14, -1.88806086e-01,  9.25159402e-01,
+         -6.21169757e-01],
+        [ 1.62878044e-17, -1.67350140e-16, -1.20285846e-16,
+         -1.23245613e-16,  6.46307304e-01, -4.33520220e-17,
+         -5.07429630e-17, -2.35282567e-15,  1.67756780e-14,
+          9.58297064e-01,  1.41393722e-15,  4.85819799e-16,
+          1.84397427e-15],
+        [ 5.31056422e-17,  1.67543517e-16, -2.18165249e-16,
+         -2.34644695e-16,  5.04930058e-01, -1.26274391e-16,
+          1.03586875e-16,  2.41294922e-15, -1.82821163e-14,
+         -1.03975576e+00, -1.49839295e-15, -2.48484722e-16,
+         -2.25026934e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -1.81466067e-16,
+          5.44806793e-01,  1.21631421e-16, -2.90699224e-01,
+          7.24620546e-15,  3.04416361e-15, -7.84569882e-01,
+          1.45624627e-14, -5.68420867e-01,  4.90727353e-15,
+          1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  2.40521770e-16,
+          3.75935770e-01,  8.89686343e-17, -4.44924715e-01,
+          3.86939034e-15, -1.65987361e-14,  4.98615138e-01,
+         -9.29291010e-15,  1.11190298e+00,  3.63800513e-16,
+         -8.70248963e-01],
+        [-2.60956853e-17,  4.93434494e-17, -5.16345050e-01,
+         -5.04088599e-16, -1.55894085e-16,  4.96770548e-15,
+          4.18783419e-01, -1.96356299e-01,  7.74116001e-15,
+         -6.99781464e-16,  2.07923194e-15,  9.84633648e-01,
+          9.99134241e-15],
+        [-7.33759624e-17, -1.21541407e-16, -2.34696122e-01,
+          8.07898929e-17,  2.71977238e-17,  1.53119968e-14,
+          7.54724923e-01, -5.26353050e-01, -4.20976196e-15,
+         -8.46276801e-16, -1.47650392e-14, -1.66403161e+00,
+         -1.60848635e-14]]),
+ &#39;E_alpha&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;E_beta&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;D_alpha&#39;: array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+         -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+          1.24811384e-02, -2.90290220e-17,  1.21048477e-17,
+         -1.96368190e-02, -1.67654563e-02,  1.08465194e-17,
+          7.94652224e-18],
+        [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+          4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+         -2.08559965e-02,  6.92126423e-17, -1.13252512e-16,
+          3.88790948e-02,  4.34172259e-02,  1.11720087e-17,
+          1.35921609e-16],
+        [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+          1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+         -3.90068263e-02, -8.29556388e-17, -2.49913493e-16,
+          1.35153028e-01,  1.09149806e-01,  1.15109677e-16,
+          2.31937467e-16],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+         -2.51639193e-02, -8.69697897e-17, -1.26421794e-16,
+         -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+         -6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+         -1.15888427e-02,  1.76928487e-16,  1.33870381e-16,
+         -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+         -3.52240640e-02],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+         -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+          5.49917609e-02,  1.63487563e-16,  1.35576305e-16,
+         -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+          6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+         -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+          3.34613955e-02, -7.86380411e-17, -2.85137153e-17,
+         -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+          3.52240640e-02],
+        [-2.90290220e-17,  6.92126423e-17, -8.29556388e-17,
+         -8.69697897e-17,  1.76928487e-16,  1.63487563e-16,
+         -7.86380411e-17,  4.17713131e-01,  3.26339985e-01,
+         -1.39877570e-17, -5.22271232e-19, -3.86464845e-17,
+          4.58087091e-17],
+        [ 1.21048477e-17, -1.13252512e-16, -2.49913493e-16,
+         -1.26421794e-16,  1.33870381e-16,  1.35576305e-16,
+         -2.85137153e-17,  3.26339985e-01,  2.54954364e-01,
+         -4.07838773e-17, -3.17723229e-17,  3.39329373e-17,
+          6.49354863e-17],
+        [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+         -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+         -5.69844320e-02, -1.39877570e-17, -4.07838773e-17,
+          3.20019261e-01,  2.15406731e-01, -1.73473695e-16,
+          6.79295076e-17],
+        [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+         -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+         -3.93016483e-02, -5.22271232e-19, -3.17723229e-17,
+          2.15406731e-01,  1.46178518e-01, -3.10192298e-16,
+         -3.43372737e-17],
+        [ 1.08465194e-17,  1.11720087e-17,  1.15109677e-16,
+         -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+          7.74949791e-02, -3.86464845e-17,  3.39329373e-17,
+         -1.73473695e-16, -3.10192298e-16,  2.66612210e-01,
+          1.21184181e-01],
+        [ 7.94652224e-18,  1.35921609e-16,  2.31937467e-16,
+         -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+          3.52240640e-02,  4.58087091e-17,  6.49354863e-17,
+          6.79295076e-17, -3.43372737e-17,  1.21184181e-01,
+          5.50822697e-02]]),
+ &#39;D_beta&#39;: array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+         -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+          1.24811384e-02, -2.90290220e-17,  1.21048477e-17,
+         -1.96368190e-02, -1.67654563e-02,  1.08465194e-17,
+          7.94652224e-18],
+        [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+          4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+         -2.08559965e-02,  6.92126423e-17, -1.13252512e-16,
+          3.88790948e-02,  4.34172259e-02,  1.11720087e-17,
+          1.35921609e-16],
+        [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+          1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+         -3.90068263e-02, -8.29556388e-17, -2.49913493e-16,
+          1.35153028e-01,  1.09149806e-01,  1.15109677e-16,
+          2.31937467e-16],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+         -2.51639193e-02, -8.69697897e-17, -1.26421794e-16,
+         -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+         -6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+         -1.15888427e-02,  1.76928487e-16,  1.33870381e-16,
+         -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+         -3.52240640e-02],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+         -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+          5.49917609e-02,  1.63487563e-16,  1.35576305e-16,
+         -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+          6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+         -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+          3.34613955e-02, -7.86380411e-17, -2.85137153e-17,
+         -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+          3.52240640e-02],
+        [-2.90290220e-17,  6.92126423e-17, -8.29556388e-17,
+         -8.69697897e-17,  1.76928487e-16,  1.63487563e-16,
+         -7.86380411e-17,  4.17713131e-01,  3.26339985e-01,
+         -1.39877570e-17, -5.22271232e-19, -3.86464845e-17,
+          4.58087091e-17],
+        [ 1.21048477e-17, -1.13252512e-16, -2.49913493e-16,
+         -1.26421794e-16,  1.33870381e-16,  1.35576305e-16,
+         -2.85137153e-17,  3.26339985e-01,  2.54954364e-01,
+         -4.07838773e-17, -3.17723229e-17,  3.39329373e-17,
+          6.49354863e-17],
+        [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+         -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+         -5.69844320e-02, -1.39877570e-17, -4.07838773e-17,
+          3.20019261e-01,  2.15406731e-01, -1.73473695e-16,
+          6.79295076e-17],
+        [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+         -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+         -3.93016483e-02, -5.22271232e-19, -3.17723229e-17,
+          2.15406731e-01,  1.46178518e-01, -3.10192298e-16,
+         -3.43372737e-17],
+        [ 1.08465194e-17,  1.11720087e-17,  1.15109677e-16,
+         -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+          7.74949791e-02, -3.86464845e-17,  3.39329373e-17,
+         -1.73473695e-16, -3.10192298e-16,  2.66612210e-01,
+          1.21184181e-01],
+        [ 7.94652224e-18,  1.35921609e-16,  2.31937467e-16,
+         -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+          3.52240640e-02,  4.58087091e-17,  6.49354863e-17,
+          6.79295076e-17, -3.43372737e-17,  1.21184181e-01,
+          5.50822697e-02]]),
+ &#39;F_alpha&#39;: array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+         -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+         -1.40703146e+00, -1.28113893e-18,  6.90929799e-18,
+          2.57802936e-02,  3.64412982e-03, -4.49675129e-18,
+         -4.26442143e-18],
+        [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+         -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+         -9.22225067e-01, -3.72066727e-17, -6.51166940e-18,
+          1.26494115e-01,  8.25087352e-02, -1.88835579e-16,
+         -9.35775127e-17],
+        [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+         -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+         -7.67554586e-01, -6.93740101e-17, -2.52514686e-17,
+          1.26327646e-01,  1.80800582e-01, -1.09706282e-16,
+         -1.83166080e-16],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+         -3.07266550e-01, -4.49258453e-18, -5.63964184e-18,
+          2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+          2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+         -4.38484232e-01, -8.29805453e-18, -1.74955838e-17,
+          1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+          9.41600426e-02],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+         -5.34801454e-01, -3.57577780e-17, -1.12514581e-17,
+          2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+         -2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+         -4.94682557e-01, -3.10876511e-17, -3.51390832e-17,
+          1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+         -9.41600426e-02],
+        [-1.28113893e-18, -3.72066727e-17, -6.93740101e-17,
+         -4.49258453e-18, -8.29805453e-18, -3.57577780e-17,
+         -3.10876511e-17, -6.67116218e-02, -4.35060956e-01,
+          2.41506477e-18,  2.18929482e-18,  4.42347948e-17,
+         -2.56116150e-19],
+        [ 6.90929799e-18, -6.51166940e-18, -2.52514686e-17,
+         -5.63964184e-18, -1.74955838e-17, -1.12514581e-17,
+         -3.51390832e-17, -4.35060956e-01,  7.71982166e-02,
+          7.48595849e-18,  1.48522611e-18, -1.55799910e-17,
+         -1.07615801e-17],
+        [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+          2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+          1.92300286e-01,  2.41506477e-18,  7.48595849e-18,
+         -1.01075294e-01, -4.80167092e-01,  1.12757026e-16,
+          2.25920628e-17],
+        [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+          2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+          1.73387325e-01,  2.18929482e-18,  1.48522611e-18,
+         -4.80167092e-01, -4.19059218e-02,  4.62276701e-17,
+          6.47827739e-17],
+        [-4.49675129e-18, -1.88835579e-16, -1.09706282e-16,
+          3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+         -1.70310487e-01,  4.42347948e-17, -1.55799910e-17,
+          1.12757026e-16,  4.62276701e-17, -1.25526972e-01,
+         -5.09617939e-01],
+        [-4.26442143e-18, -9.35775127e-17, -1.83166080e-16,
+          2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+         -9.41600426e-02, -2.56116150e-19, -1.07615801e-17,
+          2.25920628e-17,  6.47827739e-17, -5.09617939e-01,
+         -1.20884378e-01]]),
+ &#39;F_beta&#39;: array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+         -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+         -1.40703146e+00, -1.28113893e-18,  6.90929799e-18,
+          2.57802936e-02,  3.64412982e-03, -4.49675129e-18,
+         -4.26442143e-18],
+        [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+         -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+         -9.22225067e-01, -3.72066727e-17, -6.51166940e-18,
+          1.26494115e-01,  8.25087352e-02, -1.88835579e-16,
+         -9.35775127e-17],
+        [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+         -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+         -7.67554586e-01, -6.93740101e-17, -2.52514686e-17,
+          1.26327646e-01,  1.80800582e-01, -1.09706282e-16,
+         -1.83166080e-16],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+         -3.07266550e-01, -4.49258453e-18, -5.63964184e-18,
+          2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+          2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+         -4.38484232e-01, -8.29805453e-18, -1.74955838e-17,
+          1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+          9.41600426e-02],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+         -5.34801454e-01, -3.57577780e-17, -1.12514581e-17,
+          2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+         -2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+         -4.94682557e-01, -3.10876511e-17, -3.51390832e-17,
+          1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+         -9.41600426e-02],
+        [-1.28113893e-18, -3.72066727e-17, -6.93740101e-17,
+         -4.49258453e-18, -8.29805453e-18, -3.57577780e-17,
+         -3.10876511e-17, -6.67116218e-02, -4.35060956e-01,
+          2.41506477e-18,  2.18929482e-18,  4.42347948e-17,
+         -2.56116150e-19],
+        [ 6.90929799e-18, -6.51166940e-18, -2.52514686e-17,
+         -5.63964184e-18, -1.74955838e-17, -1.12514581e-17,
+         -3.51390832e-17, -4.35060956e-01,  7.71982166e-02,
+          7.48595849e-18,  1.48522611e-18, -1.55799910e-17,
+         -1.07615801e-17],
+        [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+          2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+          1.92300286e-01,  2.41506477e-18,  7.48595849e-18,
+         -1.01075294e-01, -4.80167092e-01,  1.12757026e-16,
+          2.25920628e-17],
+        [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+          2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+          1.73387325e-01,  2.18929482e-18,  1.48522611e-18,
+         -4.80167092e-01, -4.19059218e-02,  4.62276701e-17,
+          6.47827739e-17],
+        [-4.49675129e-18, -1.88835579e-16, -1.09706282e-16,
+          3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+         -1.70310487e-01,  4.42347948e-17, -1.55799910e-17,
+          1.12757026e-16,  4.62276701e-17, -1.25526972e-01,
+         -5.09617939e-01],
+        [-4.26442143e-18, -9.35775127e-17, -1.83166080e-16,
+          2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+         -9.41600426e-02, -2.56116150e-19, -1.07615801e-17,
+          2.25920628e-17,  6.47827739e-17, -5.09617939e-01,
+         -1.20884378e-01]]),
+ &#39;C&#39;: array([[-9.95037813e-01,  2.09324475e-01,  1.37666725e-16,
+         -9.05298520e-02,  1.70987275e-17, -8.80538689e-02,
+          1.76060736e-15, -9.69131972e-16, -3.19290215e-02,
+          3.42413816e-16,  7.96695787e-02, -9.10737654e-16,
+          5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01, -2.60941706e-16,
+          2.01162605e-01,  2.60428307e-17,  1.53140606e-01,
+         -7.97876335e-15, -2.19257290e-15,  1.81748460e-01,
+         -2.32257870e-16, -4.86183554e-01,  1.87758689e-14,
+         -1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -6.31212251e-16,
+          3.73569016e-01, -1.73725229e-16,  1.09036069e+00,
+         -9.99651404e-15,  1.21792235e-14, -2.76525348e-01,
+          1.49114996e-15,  1.05534845e-01, -2.50777207e-14,
+          2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+         -1.42402905e-01, -1.51089559e-16, -9.71729363e-02,
+          9.67004180e-02, -9.73737667e-01, -7.07856922e-01,
+          9.85845741e-15,  6.85615256e-01, -1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+         -1.04531358e-01,  2.81781434e-16, -9.37004841e-01,
+          1.28446987e+00,  6.69710064e-01,  5.93528765e-01,
+         -7.87815436e-15, -1.88806086e-01, -9.25159402e-01,
+         -6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+         -1.42402905e-01,  1.37033304e-16, -9.71729363e-02,
+         -9.67004180e-02,  9.73737667e-01, -7.07856922e-01,
+          1.48271282e-14,  6.85615256e-01,  1.55532747e-02,
+         -4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+         -1.04531358e-01, -1.69509178e-16, -9.37004841e-01,
+         -1.28446987e+00, -6.69710064e-01,  5.93528765e-01,
+         -1.18923930e-14, -1.88806086e-01,  9.25159402e-01,
+         -6.21169757e-01],
+        [ 1.62878044e-17, -1.67350140e-16, -1.20285846e-16,
+         -1.23245613e-16,  6.46307304e-01, -4.33520220e-17,
+         -5.07429630e-17, -2.35282567e-15,  1.67756780e-14,
+          9.58297064e-01,  1.41393722e-15,  4.85819799e-16,
+          1.84397427e-15],
+        [ 5.31056422e-17,  1.67543517e-16, -2.18165249e-16,
+         -2.34644695e-16,  5.04930058e-01, -1.26274391e-16,
+          1.03586875e-16,  2.41294922e-15, -1.82821163e-14,
+         -1.03975576e+00, -1.49839295e-15, -2.48484722e-16,
+         -2.25026934e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -1.81466067e-16,
+          5.44806793e-01,  1.21631421e-16, -2.90699224e-01,
+          7.24620546e-15,  3.04416361e-15, -7.84569882e-01,
+          1.45624627e-14, -5.68420867e-01,  4.90727353e-15,
+          1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  2.40521770e-16,
+          3.75935770e-01,  8.89686343e-17, -4.44924715e-01,
+          3.86939034e-15, -1.65987361e-14,  4.98615138e-01,
+         -9.29291010e-15,  1.11190298e+00,  3.63800513e-16,
+         -8.70248963e-01],
+        [-2.60956853e-17,  4.93434494e-17, -5.16345050e-01,
+         -5.04088599e-16, -1.55894085e-16,  4.96770548e-15,
+          4.18783419e-01, -1.96356299e-01,  7.74116001e-15,
+         -6.99781464e-16,  2.07923194e-15,  9.84633648e-01,
+          9.99134241e-15],
+        [-7.33759624e-17, -1.21541407e-16, -2.34696122e-01,
+          8.07898929e-17,  2.71977238e-17,  1.53119968e-14,
+          7.54724923e-01, -5.26353050e-01, -4.20976196e-15,
+         -8.46276801e-16, -1.47650392e-14, -1.66403161e+00,
+         -1.60848635e-14]]),
+ &#39;E&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;D&#39;: (array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+          -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+           1.24811384e-02, -2.90290220e-17,  1.21048477e-17,
+          -1.96368190e-02, -1.67654563e-02,  1.08465194e-17,
+           7.94652224e-18],
+         [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+           4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+          -2.08559965e-02,  6.92126423e-17, -1.13252512e-16,
+           3.88790948e-02,  4.34172259e-02,  1.11720087e-17,
+           1.35921609e-16],
+         [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+           1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+          -3.90068263e-02, -8.29556388e-17, -2.49913493e-16,
+           1.35153028e-01,  1.09149806e-01,  1.15109677e-16,
+           2.31937467e-16],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+           1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+          -2.51639193e-02, -8.69697897e-17, -1.26421794e-16,
+          -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+          -6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+           5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+          -1.15888427e-02,  1.76928487e-16,  1.33870381e-16,
+          -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+          -3.52240640e-02],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+           5.49917609e-02,  1.63487563e-16,  1.35576305e-16,
+          -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+           6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+           3.34613955e-02, -7.86380411e-17, -2.85137153e-17,
+          -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+           3.52240640e-02],
+         [-2.90290220e-17,  6.92126423e-17, -8.29556388e-17,
+          -8.69697897e-17,  1.76928487e-16,  1.63487563e-16,
+          -7.86380411e-17,  4.17713131e-01,  3.26339985e-01,
+          -1.39877570e-17, -5.22271232e-19, -3.86464845e-17,
+           4.58087091e-17],
+         [ 1.21048477e-17, -1.13252512e-16, -2.49913493e-16,
+          -1.26421794e-16,  1.33870381e-16,  1.35576305e-16,
+          -2.85137153e-17,  3.26339985e-01,  2.54954364e-01,
+          -4.07838773e-17, -3.17723229e-17,  3.39329373e-17,
+           6.49354863e-17],
+         [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+          -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+          -5.69844320e-02, -1.39877570e-17, -4.07838773e-17,
+           3.20019261e-01,  2.15406731e-01, -1.73473695e-16,
+           6.79295076e-17],
+         [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+          -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+          -3.93016483e-02, -5.22271232e-19, -3.17723229e-17,
+           2.15406731e-01,  1.46178518e-01, -3.10192298e-16,
+          -3.43372737e-17],
+         [ 1.08465194e-17,  1.11720087e-17,  1.15109677e-16,
+          -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+           7.74949791e-02, -3.86464845e-17,  3.39329373e-17,
+          -1.73473695e-16, -3.10192298e-16,  2.66612210e-01,
+           1.21184181e-01],
+         [ 7.94652224e-18,  1.35921609e-16,  2.31937467e-16,
+          -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+           3.52240640e-02,  4.58087091e-17,  6.49354863e-17,
+           6.79295076e-17, -3.43372737e-17,  1.21184181e-01,
+           5.50822697e-02]]),
+  array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+          -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+           1.24811384e-02, -2.90290220e-17,  1.21048477e-17,
+          -1.96368190e-02, -1.67654563e-02,  1.08465194e-17,
+           7.94652224e-18],
+         [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+           4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+          -2.08559965e-02,  6.92126423e-17, -1.13252512e-16,
+           3.88790948e-02,  4.34172259e-02,  1.11720087e-17,
+           1.35921609e-16],
+         [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+           1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+          -3.90068263e-02, -8.29556388e-17, -2.49913493e-16,
+           1.35153028e-01,  1.09149806e-01,  1.15109677e-16,
+           2.31937467e-16],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+           1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+          -2.51639193e-02, -8.69697897e-17, -1.26421794e-16,
+          -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+          -6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+           5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+          -1.15888427e-02,  1.76928487e-16,  1.33870381e-16,
+          -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+          -3.52240640e-02],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+           5.49917609e-02,  1.63487563e-16,  1.35576305e-16,
+          -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+           6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+           3.34613955e-02, -7.86380411e-17, -2.85137153e-17,
+          -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+           3.52240640e-02],
+         [-2.90290220e-17,  6.92126423e-17, -8.29556388e-17,
+          -8.69697897e-17,  1.76928487e-16,  1.63487563e-16,
+          -7.86380411e-17,  4.17713131e-01,  3.26339985e-01,
+          -1.39877570e-17, -5.22271232e-19, -3.86464845e-17,
+           4.58087091e-17],
+         [ 1.21048477e-17, -1.13252512e-16, -2.49913493e-16,
+          -1.26421794e-16,  1.33870381e-16,  1.35576305e-16,
+          -2.85137153e-17,  3.26339985e-01,  2.54954364e-01,
+          -4.07838773e-17, -3.17723229e-17,  3.39329373e-17,
+           6.49354863e-17],
+         [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+          -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+          -5.69844320e-02, -1.39877570e-17, -4.07838773e-17,
+           3.20019261e-01,  2.15406731e-01, -1.73473695e-16,
+           6.79295076e-17],
+         [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+          -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+          -3.93016483e-02, -5.22271232e-19, -3.17723229e-17,
+           2.15406731e-01,  1.46178518e-01, -3.10192298e-16,
+          -3.43372737e-17],
+         [ 1.08465194e-17,  1.11720087e-17,  1.15109677e-16,
+          -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+           7.74949791e-02, -3.86464845e-17,  3.39329373e-17,
+          -1.73473695e-16, -3.10192298e-16,  2.66612210e-01,
+           1.21184181e-01],
+         [ 7.94652224e-18,  1.35921609e-16,  2.31937467e-16,
+          -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+           3.52240640e-02,  4.58087091e-17,  6.49354863e-17,
+           6.79295076e-17, -3.43372737e-17,  1.21184181e-01,
+           5.50822697e-02]])),
+ &#39;F&#39;: (array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+          -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+          -1.40703146e+00, -1.28113893e-18,  6.90929799e-18,
+           2.57802936e-02,  3.64412982e-03, -4.49675129e-18,
+          -4.26442143e-18],
+         [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+          -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+          -9.22225067e-01, -3.72066727e-17, -6.51166940e-18,
+           1.26494115e-01,  8.25087352e-02, -1.88835579e-16,
+          -9.35775127e-17],
+         [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+          -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+          -7.67554586e-01, -6.93740101e-17, -2.52514686e-17,
+           1.26327646e-01,  1.80800582e-01, -1.09706282e-16,
+          -1.83166080e-16],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+          -3.07266550e-01, -4.49258453e-18, -5.63964184e-18,
+           2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+           2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+          -4.38484232e-01, -8.29805453e-18, -1.74955838e-17,
+           1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+           9.41600426e-02],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+          -5.34801454e-01, -3.57577780e-17, -1.12514581e-17,
+           2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+          -2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+          -4.94682557e-01, -3.10876511e-17, -3.51390832e-17,
+           1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+          -9.41600426e-02],
+         [-1.28113893e-18, -3.72066727e-17, -6.93740101e-17,
+          -4.49258453e-18, -8.29805453e-18, -3.57577780e-17,
+          -3.10876511e-17, -6.67116218e-02, -4.35060956e-01,
+           2.41506477e-18,  2.18929482e-18,  4.42347948e-17,
+          -2.56116150e-19],
+         [ 6.90929799e-18, -6.51166940e-18, -2.52514686e-17,
+          -5.63964184e-18, -1.74955838e-17, -1.12514581e-17,
+          -3.51390832e-17, -4.35060956e-01,  7.71982166e-02,
+           7.48595849e-18,  1.48522611e-18, -1.55799910e-17,
+          -1.07615801e-17],
+         [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+           2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+           1.92300286e-01,  2.41506477e-18,  7.48595849e-18,
+          -1.01075294e-01, -4.80167092e-01,  1.12757026e-16,
+           2.25920628e-17],
+         [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+           2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+           1.73387325e-01,  2.18929482e-18,  1.48522611e-18,
+          -4.80167092e-01, -4.19059218e-02,  4.62276701e-17,
+           6.47827739e-17],
+         [-4.49675129e-18, -1.88835579e-16, -1.09706282e-16,
+           3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+          -1.70310487e-01,  4.42347948e-17, -1.55799910e-17,
+           1.12757026e-16,  4.62276701e-17, -1.25526972e-01,
+          -5.09617939e-01],
+         [-4.26442143e-18, -9.35775127e-17, -1.83166080e-16,
+           2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+          -9.41600426e-02, -2.56116150e-19, -1.07615801e-17,
+           2.25920628e-17,  6.47827739e-17, -5.09617939e-01,
+          -1.20884378e-01]]),
+  array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+          -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+          -1.40703146e+00, -1.28113893e-18,  6.90929799e-18,
+           2.57802936e-02,  3.64412982e-03, -4.49675129e-18,
+          -4.26442143e-18],
+         [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+          -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+          -9.22225067e-01, -3.72066727e-17, -6.51166940e-18,
+           1.26494115e-01,  8.25087352e-02, -1.88835579e-16,
+          -9.35775127e-17],
+         [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+          -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+          -7.67554586e-01, -6.93740101e-17, -2.52514686e-17,
+           1.26327646e-01,  1.80800582e-01, -1.09706282e-16,
+          -1.83166080e-16],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+          -3.07266550e-01, -4.49258453e-18, -5.63964184e-18,
+           2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+           2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+          -4.38484232e-01, -8.29805453e-18, -1.74955838e-17,
+           1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+           9.41600426e-02],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+          -5.34801454e-01, -3.57577780e-17, -1.12514581e-17,
+           2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+          -2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+          -4.94682557e-01, -3.10876511e-17, -3.51390832e-17,
+           1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+          -9.41600426e-02],
+         [-1.28113893e-18, -3.72066727e-17, -6.93740101e-17,
+          -4.49258453e-18, -8.29805453e-18, -3.57577780e-17,
+          -3.10876511e-17, -6.67116218e-02, -4.35060956e-01,
+           2.41506477e-18,  2.18929482e-18,  4.42347948e-17,
+          -2.56116150e-19],
+         [ 6.90929799e-18, -6.51166940e-18, -2.52514686e-17,
+          -5.63964184e-18, -1.74955838e-17, -1.12514581e-17,
+          -3.51390832e-17, -4.35060956e-01,  7.71982166e-02,
+           7.48595849e-18,  1.48522611e-18, -1.55799910e-17,
+          -1.07615801e-17],
+         [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+           2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+           1.92300286e-01,  2.41506477e-18,  7.48595849e-18,
+          -1.01075294e-01, -4.80167092e-01,  1.12757026e-16,
+           2.25920628e-17],
+         [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+           2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+           1.73387325e-01,  2.18929482e-18,  1.48522611e-18,
+          -4.80167092e-01, -4.19059218e-02,  4.62276701e-17,
+           6.47827739e-17],
+         [-4.49675129e-18, -1.88835579e-16, -1.09706282e-16,
+           3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+          -1.70310487e-01,  4.42347948e-17, -1.55799910e-17,
+           1.12757026e-16,  4.62276701e-17, -1.25526972e-01,
+          -5.09617939e-01],
+         [-4.26442143e-18, -9.35775127e-17, -1.83166080e-16,
+           2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+          -9.41600426e-02, -2.56116150e-19, -1.07615801e-17,
+           2.25920628e-17,  6.47827739e-17, -5.09617939e-01,
+          -1.20884378e-01]]))}
 </pre></div>
 </div>
 </div>
@@ -1836,7 +2415,7 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/xray_nonstandard_24_0.png" src="../../_images/xray_nonstandard_24_0.png" />
+<img alt="../../_images/xray_nonstandard_22_0.png" src="../../_images/xray_nonstandard_22_0.png" />
 </div>
 </div>
 <p>We note a small difference between the two approaches. This difference has some dependence on the basis set, but will continue to be small for the <em>K</em>-edge.</p>
@@ -1873,6 +2452,10 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 </ol>
 <p>As such, this approach is by not suggested for practical calculations, but it does illustrate the ease of which such exotic calculations can be run, as well as teach us something about the relaxation of core-transitions.</p>
 <p>Considering the X-ray emission spectra of water, we create valence-holes in the four frontier valence MOs and construct a spectrum from this:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>pyscf version - to be changed</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Containers for resulting energies and intensities</span>
 <span class="n">xes_rev_E</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">xes_rev_f</span> <span class="o">=</span> <span class="p">[]</span>

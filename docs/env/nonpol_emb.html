@@ -1,0 +1,1840 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Non-polarizable embedding &#8212; Computational Chemistry from  Laptop to HPC</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Polarizable embedding" href="pol_emb.html" />
+    <link rel="prev" title="Embedding" href="embedding.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Computational Chemistry from  Laptop to HPC</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials and workflows
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/vib_ir.html">
+   Vibrational spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_calc.html">
+     IR spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_raman.html">
+     Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/vib_ir_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/uv_vis.html">
+   UV/vis spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_calc.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_analysis.html">
+     Spectrum analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/uv_vis_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../tutorials/xray.html">
+   X-ray spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_calc.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_analysis.html">
+     Spectrum analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_aspects.html">
+     Special aspects
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_large.html">
+     Larger systems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_nonstandard.html">
+     Non-standard calculations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tutorials/xray_cheatsheet.html">
+     Cheat sheet
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Electronic ground states
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/elstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/orbitals.html">
+     Orbitals and basis sets
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/slater.html">
+     Many-electron wave functions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/operators.html">
+     Operators and matrix elements
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/reduced_density.html">
+     Reduced particle densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/integrals.html">
+     Integrals
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/spin.html">
+     Electron spin
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/correlation.html">
+     Electron correlation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dispersion.html">
+     Dispersion interactions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/pt.html">
+     Rayleigh–Schrödinger perturbation theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/second_quant.html">
+     Second quantization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/wft.html">
+   Wave function theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hartree-fock.html">
+     Hartree–Fock theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/ci.html">
+     Configuration interaction
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mp2.html">
+     Møller–Plesset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mcscf.html">
+     Multiconfigurational methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/wft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/dft.html">
+   Density functional theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hohenberg.html">
+     Hohenberg–Kohn theorems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kohn-sham.html">
+     Kohn–Sham method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kernel_int.html">
+     Kernel integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dft_scf.html">
+     SCF optimization of a closed-shell state
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Molecular structure and dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/molstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/coordinates.html">
+     Choice of coordinates
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/forcefields.html">
+     Force fields
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/gradients.html">
+   Gradients
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/energy_grad.html">
+     Energy gradients
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/property_grad.html">
+     Property gradients
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/hessians_vib.html">
+   Hessians and vibrations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+  <label for="toctree-checkbox-9">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/hessians.html">
+     Molecular Hessians
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/vibrations.html">
+     Vibrational analysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/opt.html">
+   Structure optimization
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+  <label for="toctree-checkbox-10">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/opt_struct.html">
+     Optimization methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/opt_gs.html">
+     Ground-state structure optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/tst.html">
+   Transition-state theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/tst_gen.html">
+     Transition state geometry optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/impes.html">
+   PES interpolation techniques
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+  <label for="toctree-checkbox-12">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/impes_calc.html">
+     Constructing the PES by interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/md.html">
+   Molecular dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
+  <label for="toctree-checkbox-13">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/md_ffs.html">
+     Force field parameterization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/md_setup.html">
+     Ensembles and time integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/md_run.html">
+     Running a simulation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spectra and properties
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/spectra_aspects.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <label for="toctree-checkbox-14">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/vibrot.html">
+     Rovibronic states
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/response.html">
+     Responses to external fields
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/tddft.html">
+   TDDFT
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
+  <label for="toctree-checkbox-15">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_basics.html">
+     Foundations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_rpa.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/mr_response.html">
+   Multireference response
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
+  <label for="toctree-checkbox-16">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/ci_response.html">
+     CI response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/sa_mcscf.html">
+     State-averaged MCSCF
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mclr.html">
+     Multiconfigurational linear response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mr_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/adc.html">
+   ADC
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
+  <label for="toctree-checkbox-17">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_pp.html">
+     Polarization propagator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_isr.html">
+     Intermediate state representation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_cvs.html">
+     Core-valence separation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_hpc.html">
+     HPC-QC implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/excoupl.html">
+   Exciton coupling model
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <label for="toctree-checkbox-18">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/excoupl_impl.html">
+     Implementation of the exciton coupling model
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Environment
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="localprop.html">
+   Localized properties
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <label for="toctree-checkbox-19">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="esp.html">
+     ESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="resp.html">
+     RESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="loprop.html">
+     LoProp charges and polarisabilities
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="embedding.html">
+   Embedding
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
+  <label for="toctree-checkbox-20">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Non-polarizable embedding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pol_emb.html">
+     Polarizable embedding
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Visualization
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/mol_struct.html">
+   Molecular structure and dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/>
+  <label for="toctree-checkbox-21">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/struct_vis.html">
+     Molecular structure
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/md_vis.html">
+     MD trajectories
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/opt_vib_vis.html">
+     Optimization and normal modes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/elec_struct.html">
+   Electronic structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/>
+  <label for="toctree-checkbox-22">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/orb_vis.html">
+     Orbitals and densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/exc_vis.html">
+     Excited states
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Bibliography
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cite.html">
+   How to cite
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../refs.html">
+   References
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/env/nonpol_emb.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/kthpanor/echem"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/env/nonpol_emb.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/docs/env/nonpol_emb.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dipole-moments">
+   Dipole moments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qm">
+   QM
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scf-calculation">
+     SCF calculation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dipole-moment">
+     Dipole moment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qm-mm">
+   QM/MM
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#embedding-potentials">
+     Embedding potentials
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scf-optimizations">
+     SCF optimizations
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#solvation-energies">
+     Solvation energies
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Dipole moments
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Non-polarizable embedding</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dipole-moments">
+   Dipole moments
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qm">
+   QM
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scf-calculation">
+     SCF calculation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dipole-moment">
+     Dipole moment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#qm-mm">
+   QM/MM
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#embedding-potentials">
+     Embedding potentials
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scf-optimizations">
+     SCF optimizations
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#solvation-energies">
+     Solvation energies
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Dipole moments
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="non-polarizable-embedding">
+<h1>Non-polarizable embedding<a class="headerlink" href="#non-polarizable-embedding" title="Permalink to this headline">#</a></h1>
+<p>To illustrate this concept, here we consider the QM/MM version using the Hartree-Fock method. The total energy of the molecular system in the QM/MM method is partitioned into three contributions:</p>
+<div class="math notranslate nohighlight">
+\[
+E = E_\mathrm{MM} + E_\mathrm{MM/QM} + E_\mathrm{QM} , 
+\]</div>
+<p>where the first term is the energy of the MM region, the second term is the interaction energy of the QM and MM regions, and
+the last term is the QM region energy. In this section we use a non-polarizable force field to describe the MM region, and the second term can be expanded as:</p>
+<div class="math notranslate nohighlight">
+\[
+E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{nuc} ),
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\{ q_i^\mathrm{perm}\}\)</span> is the set of permanent charges in MM region, and the <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{ele}\)</span> and <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{nuc}\)</span> are potential components are generated by electrons and nuclei in MM region.</p>
+<p>This is now to be illustrated by considering the energy contributions and dipole moment of one QM water molecule, as considered individually, when coordinated with four MM water molecules, or coordinated with two donors or two acceptors:</p>
+<div class="cell tag_hide-input tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+<span class="s2">water</span>
+<span class="s2">O        0.0000000000      0.0000000000      0.0000000000                 </span>
+<span class="s2">H        0.6891400000      0.8324710000      0.0000000000                 </span>
+<span class="s2">H        0.7224340000     -0.8726890000      0.0000000000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">solvent_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;12</span>
+<span class="s2">water solvent</span>
+<span class="s2">O        1.0991810000      2.2167050000      0.2791250000                 </span>
+<span class="s2">H        2.2673500000      2.2529740000      0.6013580000                 </span>
+<span class="s2">H        0.9984050000      2.8080510000     -0.5840690000                 </span>
+<span class="s2">O       -0.8223690000      0.2141140000     -2.3767710000                 </span>
+<span class="s2">H       -1.5990410000      0.8408210000     -2.6698860000                 </span>
+<span class="s2">H       -0.4683410000      0.4151750000     -1.5365150000                 </span>
+<span class="s2">O        1.7377440000     -2.0168380000     -0.4861090000                 </span>
+<span class="s2">H        2.0753880000     -2.2446490000     -1.3654140000                 </span>
+<span class="s2">H        1.6636970000     -2.7516570000      0.0543720000                 </span>
+<span class="s2">O       -1.0758700000     -0.2692330000      2.5139440000                 </span>
+<span class="s2">H       -0.5822670000     -0.1887880000      1.5058600000                 </span>
+<span class="s2">H       -1.1632420000      0.7082890000      2.8568430000 </span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">donors_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
+<span class="s2">water solvent                                  </span>
+<span class="s2">O       -0.8223690000      0.2141140000     -2.3767710000                 </span>
+<span class="s2">H       -1.5990410000      0.8408210000     -2.6698860000                 </span>
+<span class="s2">H       -0.4683410000      0.4151750000     -1.5365150000</span>
+<span class="s2">O       -1.0758700000     -0.2692330000      2.5139440000                 </span>
+<span class="s2">H       -0.5822670000     -0.1887880000      1.5058600000                 </span>
+<span class="s2">H       -1.1632420000      0.7082890000      2.8568430000</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">acceptors_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
+<span class="s2">water solvent</span>
+<span class="s2">O        1.0991810000      2.2167050000      0.2791250000                 </span>
+<span class="s2">H        2.2673500000      2.2529740000      0.6013580000                 </span>
+<span class="s2">H        0.9984050000      2.8080510000     -0.5840690000</span>
+<span class="s2">O        1.7377440000     -2.0168380000     -0.4861090000                 </span>
+<span class="s2">H        2.0753880000     -2.2446490000     -1.3654140000                 </span>
+<span class="s2">H        1.6636970000     -2.7516570000      0.0543720000              </span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">donors_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">acceptors_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="c1"># rotate for a better initial view</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16693048078235207"  style="position: relative; width: 600px; height: 500px">
+        <p id="3dmolwarning_16693048078235207" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_16693048078235207 = null;
+var warn = document.getElementById("3dmolwarning_16693048078235207");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16693048078235207 = null;
+viewergrid_16693048078235207 = $3Dmol.createViewerGrid($("#3dmolviewer_16693048078235207"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
+viewer_16693048078235207 = viewergrid_16693048078235207[0][0];
+viewergrid_16693048078235207[0][0].zoomTo();viewergrid_16693048078235207[0][1].zoomTo();viewergrid_16693048078235207[1][0].zoomTo();viewergrid_16693048078235207[1][1].zoomTo();	viewergrid_16693048078235207[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16693048078235207[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16693048078235207[1][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16693048078235207[1][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16693048078235207[0][0].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
+	viewergrid_16693048078235207[0][1].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
+	viewergrid_16693048078235207[1][0].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
+	viewergrid_16693048078235207[1][1].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
+	viewergrid_16693048078235207[0][1].addModel("12\nwater solvent\nO        1.0991810000      2.2167050000      0.2791250000                 \nH        2.2673500000      2.2529740000      0.6013580000                 \nH        0.9984050000      2.8080510000     -0.5840690000                 \nO       -0.8223690000      0.2141140000     -2.3767710000                 \nH       -1.5990410000      0.8408210000     -2.6698860000                 \nH       -0.4683410000      0.4151750000     -1.5365150000                 \nO        1.7377440000     -2.0168380000     -0.4861090000                 \nH        2.0753880000     -2.2446490000     -1.3654140000                 \nH        1.6636970000     -2.7516570000      0.0543720000                 \nO       -1.0758700000     -0.2692330000      2.5139440000                 \nH       -0.5822670000     -0.1887880000      1.5058600000                 \nH       -1.1632420000      0.7082890000      2.8568430000 \n");
+	viewergrid_16693048078235207[1][0].addModel("6\nwater solvent                                  \nO       -0.8223690000      0.2141140000     -2.3767710000                 \nH       -1.5990410000      0.8408210000     -2.6698860000                 \nH       -0.4683410000      0.4151750000     -1.5365150000\nO       -1.0758700000     -0.2692330000      2.5139440000                 \nH       -0.5822670000     -0.1887880000      1.5058600000                 \nH       -1.1632420000      0.7082890000      2.8568430000\n");
+	viewergrid_16693048078235207[1][1].addModel("6\nwater solvent\nO        1.0991810000      2.2167050000      0.2791250000                 \nH        2.2673500000      2.2529740000      0.6013580000                 \nH        0.9984050000      2.8080510000     -0.5840690000\nO        1.7377440000     -2.0168380000     -0.4861090000                 \nH        2.0753880000     -2.2446490000     -1.3654140000                 \nH        1.6636970000     -2.7516570000      0.0543720000              \n");
+	viewergrid_16693048078235207[0][0].setStyle({"stick": {}});
+	viewergrid_16693048078235207[0][1].setStyle({"stick": {}});
+	viewergrid_16693048078235207[1][0].setStyle({"stick": {}});
+	viewergrid_16693048078235207[1][1].setStyle({"stick": {}});
+	viewergrid_16693048078235207[0][0].rotate(45,"x");
+	viewergrid_16693048078235207[0][1].rotate(45,"x");
+	viewergrid_16693048078235207[1][0].rotate(45,"x");
+	viewergrid_16693048078235207[1][1].rotate(45,"x");
+viewergrid_16693048078235207[1][1].render();
+viewergrid_16693048078235207[1][0].render();
+viewergrid_16693048078235207[0][1].render();
+viewergrid_16693048078235207[0][0].render();
+});
+</script></div></div>
+</div>
+<section id="dipole-moments">
+<h2>Dipole moments<a class="headerlink" href="#dipole-moments" title="Permalink to this headline">#</a></h2>
+<p>The molecular dipole moment is the sum of its electronic and nuclear parts. The electronic part is the expectation value of a one-electron operator and the nuclear part is obtained as a sum over point charges.</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\mu} = \langle \hat{\boldsymbol{\mu}} \rangle + \boldsymbol{\mu}^\mathrm{n}
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\mu}^\mathrm{n} = \sum_{A = 1}^M
+Z_A \mathbf{R}_A .
+\]</div>
+</section>
+<section id="qm">
+<h2>QM<a class="headerlink" href="#qm" title="Permalink to this headline">#</a></h2>
+<p>Setting up a calculation for a single molecule:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
+
+<span class="n">norb</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span> <span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.9/site-packages/veloxchem/basis/CC-PVDZ
+                                                                                                                          
+                                              Molecular Basis (Atomic Basis)                                              
+                                             ================================                                             
+                                                                                                                          
+                                  Basis: CC-PVDZ                                                                          
+                                                                                                                          
+                                  Atom Contracted GTOs          Primitive GTOs                                            
+                                                                                                                          
+                                   O   (3S,2P,1D)               (17S,4P,1D)                                               
+                                   H   (2S,1P)                  (4S,1P)                                                   
+                                                                                                                          
+                                  Contracted Basis Functions : 24                                                         
+                                  Primitive Basis Functions  : 48                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 24
+Number of doubly occupied molecular orbitals: 5
+Nuclear repulsion energy (in a.u.):  7.964303024713
+</pre></div>
+</div>
+</div>
+</div>
+<section id="scf-calculation">
+<h3>SCF calculation<a class="headerlink" href="#scf-calculation" title="Permalink to this headline">#</a></h3>
+<p>In preparation for the embedded systems, we here set up and use a tailored SCF solver:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scf_solver</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">V_nuc</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+
+    <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-4</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ilkj,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
+
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+
+        <span class="c1"># compute convergence metric</span>
+        <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ki,kl,lj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">e_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">F_MO</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,</span> <span class="n">nocc</span><span class="p">:],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vec</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">10.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCF iterations converged!&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Calculating the overlap matrix and one- and two-electron Hamiltonians:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># overlap matrix</span>
+<span class="n">overlap_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OverlapIntegralsDriver</span><span class="p">()</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">overlap_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># one-electron Hamiltonian</span>
+<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
+
+<span class="c1"># two-electron Hamiltonian</span>
+<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The SCF is calculated with:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>  <span class="c1"># initial guess</span>
+<span class="n">E_HF</span><span class="p">,</span> <span class="n">C_HF</span> <span class="o">=</span> <span class="n">scf_solver</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">V_nuc</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
+ 0      -68.97278671    1.97e+00
+ 1      -69.54016846    1.83e+00
+ 2      -72.78571482    1.77e+00
+ 3      -72.80872293    1.48e+00
+ 4      -74.05300746    1.49e+00
+ 5      -74.77710497    1.14e+00
+ 6      -75.34750222    9.29e-01
+ 7      -75.66180142    6.38e-01
+ 8      -75.83364767    4.64e-01
+ 9      -75.91583567    3.07e-01
+10      -75.95476888    2.12e-01
+11      -75.97240552    1.41e-01
+12      -75.98042144    9.52e-02
+13      -75.98400915    6.33e-02
+14      -75.98562135    4.25e-02
+15      -75.98634173    2.84e-02
+16      -75.98666440    1.90e-02
+17      -75.98680860    1.27e-02
+18      -75.98687312    8.50e-03
+19      -75.98690196    5.68e-03
+20      -75.98691487    3.80e-03
+21      -75.98692063    2.54e-03
+22      -75.98692321    1.70e-03
+23      -75.98692437    1.14e-03
+24      -75.98692488    7.60e-04
+25      -75.98692511    5.08e-04
+26      -75.98692522    3.40e-04
+27      -75.98692526    2.27e-04
+28      -75.98692528    1.52e-04
+29      -75.98692529    1.02e-04
+30      -75.98692530    6.79e-05
+SCF iterations converged!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="dipole-moment">
+<h3>Dipole moment<a class="headerlink" href="#dipole-moment" title="Permalink to this headline">#</a></h3>
+<p>With this, the dipole moment can be calculated as:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+
+    <span class="n">mu_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mu_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># electronic part</span>
+    <span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
+
+    <span class="n">dipole_mats</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+    <span class="n">mu_x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
+    <span class="n">mu_y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span>
+    <span class="n">mu_z</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span>
+
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">)</span>
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_y</span><span class="p">)</span>
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_z</span><span class="p">)</span>
+
+    <span class="c1"># nuclear part</span>
+
+    <span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+        <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+        <span class="n">Z_A</span> <span class="o">=</span> <span class="n">element_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
+
+        <span class="n">mu_n</span> <span class="o">+=</span> <span class="n">Z_A</span> <span class="o">*</span> <span class="n">R_A</span>
+
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_e</span> <span class="o">+</span> <span class="n">mu_n</span>
+
+    <span class="k">return</span> <span class="n">mu</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Using the element charges, we obtain</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">element_charges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">}</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_HF</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vacuum dipole moment: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_HF</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Vacuum dipole moment:  0.878333
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="qm-mm">
+<h2>QM/MM<a class="headerlink" href="#qm-mm" title="Permalink to this headline">#</a></h2>
+<section id="embedding-potentials">
+<h3>Embedding potentials<a class="headerlink" href="#embedding-potentials" title="Permalink to this headline">#</a></h3>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/QM/MM">hybrid QM/MM approach</a> for multiscale modeling of complex systems was recognized by the Nobel Prize in 2013. In this model, the Hamiltonian takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{H} = \hat{H}^\mathrm{QM} + \hat{H}^\mathrm{MM} + \hat{H}^\mathrm{QM/MM}
+\]</div>
+<p>The electrostatic interaction operator between the QM and MM regions takes the form</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{H}^\mathrm{QM/MM} = V^\mathrm{n,es} +  \sum_{i=1}^N
+\hat{v}^\mathrm{es}(i)
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+V^\mathrm{n,es} =
+\sum_{A=1}^M \sum_s
+\frac{Z_A e \, q_s}{4\pi\varepsilon_0 |\mathbf{R}_A - \mathbf{R}_s|} ; \qquad
+%
+\hat{v}^\mathrm{es} = 
+\sum_s
+\frac{-e q_s}{4\pi\varepsilon_0 |\mathbf{r} - \mathbf{R}_s|}
+\]</div>
+<p>We will use this model to study water in the condensed phase with <a class="reference external" href="https://en.wikipedia.org/wiki/Hydrogen_bond">hydrogen bonds</a>. The <a class="reference external" href="https://en.wikipedia.org/wiki/Water_model#3-site">TIP3P model</a> provides a classical description of liquid water in terms of three-site model with partial charges.</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Charge</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>O</p></td>
+<td><p>-0.834</p></td>
+</tr>
+<tr class="row-odd"><td><p>H</p></td>
+<td><p>0.417</p></td>
+</tr>
+</tbody>
+</table>
+<p>Setting up these charges and <code class="docutils literal notranslate"><span class="pre">molecule</span></code> objects:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tip3p_charges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="mf">0.417</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.834</span><span class="p">}</span>
+
+<span class="n">solvent</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">)</span>
+<span class="n">donors</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">donors_xyz</span><span class="p">)</span>
+<span class="n">acceptors</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">acceptors_xyz</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The embedding operator is constructed as:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_embedding_operator</span><span class="p">(</span><span class="n">embedding</span><span class="p">):</span>
+
+    <span class="c1"># electronic part</span>
+    <span class="n">mm_sites</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mm_charges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+        <span class="n">mm_sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">))</span>
+        <span class="n">mm_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tip3p_charges</span><span class="p">[</span><span class="n">atom_label</span><span class="p">])</span>
+
+    <span class="n">pot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
+    <span class="n">v_es</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">pot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mm_charges</span><span class="p">,</span> <span class="n">mm_sites</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="c1"># nuclear part</span>
+    <span class="n">V_n_es</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+        <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+        <span class="n">Z_A</span> <span class="o">=</span> <span class="n">element_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">solvent_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+            <span class="n">R_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+            <span class="n">q_s</span> <span class="o">=</span> <span class="n">mm_charges</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+            <span class="n">V_n_es</span> <span class="o">+=</span> <span class="n">Z_A</span> <span class="o">*</span> <span class="n">q_s</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">R_A</span> <span class="o">-</span> <span class="n">R_s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V_n_es</span><span class="p">,</span> <span class="n">v_es</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="scf-optimizations">
+<h3>SCF optimizations<a class="headerlink" href="#scf-optimizations" title="Permalink to this headline">#</a></h3>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V_n_s</span><span class="p">,</span> <span class="n">v_s</span> <span class="o">=</span> <span class="n">get_embedding_operator</span><span class="p">(</span><span class="n">solvent</span><span class="p">)</span>
+<span class="n">E_s</span><span class="p">,</span> <span class="n">C_s</span> <span class="o">=</span> <span class="n">scf_solver</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">v_s</span><span class="p">,</span> <span class="n">V_nuc</span> <span class="o">+</span> <span class="n">V_n_s</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">)</span>
+
+<span class="n">V_n_d</span><span class="p">,</span> <span class="n">v_d</span> <span class="o">=</span> <span class="n">get_embedding_operator</span><span class="p">(</span><span class="n">donors</span><span class="p">)</span>
+<span class="n">E_d</span><span class="p">,</span> <span class="n">C_d</span> <span class="o">=</span> <span class="n">scf_solver</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">v_d</span><span class="p">,</span> <span class="n">V_nuc</span> <span class="o">+</span> <span class="n">V_n_d</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">)</span>
+
+<span class="n">V_n_a</span><span class="p">,</span> <span class="n">v_a</span> <span class="o">=</span> <span class="n">get_embedding_operator</span><span class="p">(</span><span class="n">acceptors</span><span class="p">)</span>
+<span class="n">E_a</span><span class="p">,</span> <span class="n">C_a</span> <span class="o">=</span> <span class="n">scf_solver</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">v_a</span><span class="p">,</span> <span class="n">V_nuc</span> <span class="o">+</span> <span class="n">V_n_a</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
+ 0      -76.04721904    6.37e-02
+ 1      -76.05404597    3.00e-02
+ 2      -76.05480572    1.40e-02
+ 3      -76.05496833    9.79e-03
+ 4      -76.05501549    5.76e-03
+ 5      -76.05503195    3.89e-03
+ 6      -76.05503832    2.44e-03
+ 7      -76.05504091    1.61e-03
+ 8      -76.05504198    1.04e-03
+ 9      -76.05504243    6.77e-04
+10      -76.05504262    4.37e-04
+11      -76.05504270    2.85e-04
+12      -76.05504273    1.85e-04
+13      -76.05504274    1.20e-04
+14      -76.05504275    7.79e-05
+SCF iterations converged!
+iter      SCF energy    Error norm
+ 0      -76.01164058    3.40e-02
+ 1      -76.01344618    1.41e-02
+ 2      -76.01364388    6.42e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 3      -76.01368402    4.49e-03
+ 4      -76.01369499    2.65e-03
+ 5      -76.01369869    1.83e-03
+ 6      -76.01370012    1.16e-03
+ 7      -76.01370071    7.85e-04
+ 8      -76.01370096    5.11e-04
+ 9      -76.01370106    3.42e-04
+10      -76.01370111    2.25e-04
+11      -76.01370113    1.49e-04
+12      -76.01370114    9.87e-05
+SCF iterations converged!
+iter      SCF energy    Error norm
+ 0      -76.02250376    3.98e-02
+ 1      -76.02508400    1.79e-02
+ 2      -76.02534197    8.27e-03
+ 3      -76.02539710    5.90e-03
+ 4      -76.02541372    3.52e-03
+ 5      -76.02541974    2.40e-03
+ 6      -76.02542215    1.53e-03
+ 7      -76.02542314    1.02e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 8      -76.02542357    6.58e-04
+ 9      -76.02542375    4.34e-04
+10      -76.02542382    2.84e-04
+11      -76.02542386    1.86e-04
+12      -76.02542387    1.22e-04
+13      -76.02542388    8.00e-05
+SCF iterations converged!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="solvation-energies">
+<h3>Solvation energies<a class="headerlink" href="#solvation-energies" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+
+<span class="n">v_s_aver</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">v_s</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear QM/MM energy   : </span><span class="si">{</span><span class="n">V_n_s</span> <span class="si">:</span><span class="s2"> 16.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electronic QM/MM energy: </span><span class="si">{</span><span class="n">v_s_aver</span> <span class="si">:</span><span class="s2"> 16.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">41</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total QM/MM energy     : </span><span class="si">{</span><span class="n">V_n_s</span> <span class="o">+</span> <span class="n">v_s_aver</span> <span class="si">:</span><span class="s2"> 16.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Nuclear QM/MM energy   :  -0.085459561697
+Electronic QM/MM energy:   0.009877803071
+-----------------------------------------
+Total QM/MM energy     :  -0.075581758627
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   vacuum: </span><span class="si">{</span><span class="n">E_HF</span> <span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; solution: </span><span class="si">{</span><span class="n">E_s</span> <span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_s</span> <span class="o">-</span> <span class="n">V_n_s</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_s</span> <span class="o">-</span> <span class="n">V_n_s</span> <span class="o">-</span> <span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   donors: </span><span class="si">{</span><span class="n">E_d</span> <span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_d</span> <span class="o">-</span> <span class="n">V_n_d</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_d</span> <span class="o">-</span> <span class="n">V_n_d</span> <span class="o">-</span> <span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceptors: </span><span class="si">{</span><span class="n">E_a</span> <span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_a</span> <span class="o">-</span> <span class="n">V_n_a</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_a</span> <span class="o">-</span> <span class="n">V_n_a</span> <span class="o">-</span> <span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   vacuum: -75.98692530
+ solution: -76.05504275   -75.96958319    0.01734211
+   donors: -76.01370114   -76.66472104   -0.67779574
+acceptors: -76.02542388   -75.28894441    0.69798088
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h3>Dipole moments<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_d</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_a</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   vacuum: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_HF</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; solution: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_s</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   donors: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_d</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceptors: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_a</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   vacuum:  0.878333
+ solution:  1.147602
+   donors:  1.006242
+acceptors:  1.031627
+</pre></div>
+</div>
+</div>
+</div>
+<p>Compare with the TIP3P dipole moment.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_tip3p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+    <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+    <span class="n">q_A</span> <span class="o">=</span> <span class="n">tip3p_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
+
+    <span class="n">mu_tip3p</span> <span class="o">+=</span> <span class="n">q_A</span> <span class="o">*</span> <span class="n">R_A</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole momemnt: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_tip3p</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dipole momemnt:  1.112794
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./docs/env"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="embedding.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Embedding</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="pol_emb.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Polarizable embedding</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The eChem team<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
