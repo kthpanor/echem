@@ -51,38 +51,3 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 
 Multiple lists of references are possible but not yet properly implemented.
 
-
-# Distribution of labor:
-
-Sections to be added/expanded marked in **bold**.
-
-
-1. Intro
-    - All authors
-
-2. Tutorials and workflows: 
-    -  **Photochemistry: MD**
-    -  **Vibrational: IEB**
-    -  **UV/vis: TF**
-    -  **Optical activity: PN**
-    -  X-ray: TF
-
-3. Electronic ground states:
-    - Primarily PN+MD 
-    - **MD will expand CAS parts**
-
-4. Molecular structure and dynamics:
-    - Primarily IEB+MH
-    - **MD: TF**
-
-5. Spectra and properties:
-    - Primarily PN+MD
-    - **TDDFT: AD (+TF)**
-    - ADC: IEB+MH
-    - Exciton coupling: XL
-
-6. Environment:
-    - Primarily PN
-
-7. Visualization:
-    - Primarily PN+MD+TF
