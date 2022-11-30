@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -394,11 +392,6 @@ const thebe_selector_output = ".output, .cell_output"
      Choice of coordinates
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="forcefields.html">
-     Force fields
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
@@ -512,8 +505,13 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="md_ffs.html">
-     Force field parameterization
+    <a class="reference internal" href="forcefields.html">
+     Force fields
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="reparameterize.html">
+     Reparameterize force fields
     </a>
    </li>
    <li class="toctree-l2">
@@ -1111,7 +1109,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </ul>
 <section id="transforming-from-cartesian-to-internal-coordinates">
 <h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">#</a></h3>
-<p>The steps required for the transformation of Cartesian coordinates to internal coordinates are described in details <span class="xref myst">here</span>. We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
+<p>We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell tag_hide-output tag_no-warnings docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -1174,8 +1172,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1669304828570786"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_1669304828570786" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16697987891859074"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16697987891859074" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1198,19 +1196,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
 }
 
-var viewer_1669304828570786 = null;
-var warn = document.getElementById("3dmolwarning_1669304828570786");
+var viewer_16697987891859074 = null;
+var warn = document.getElementById("3dmolwarning_16697987891859074");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1669304828570786 = null;
-viewergrid_1669304828570786 = $3Dmol.createViewerGrid($("#3dmolviewer_1669304828570786"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_1669304828570786 = viewergrid_1669304828570786[0][0];
-viewergrid_1669304828570786[0][0].zoomTo();	viewergrid_1669304828570786[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_1669304828570786[0][0].setStyle({"stick": {}});
-	viewergrid_1669304828570786[0][0].rotate(-90,"y");
-viewergrid_1669304828570786[0][0].render();
+var viewergrid_16697987891859074 = null;
+viewergrid_16697987891859074 = $3Dmol.createViewerGrid($("#3dmolviewer_16697987891859074"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16697987891859074 = viewergrid_16697987891859074[0][0];
+viewergrid_16697987891859074[0][0].zoomTo();	viewergrid_16697987891859074[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_16697987891859074[0][0].setStyle({"stick": {}});
+	viewergrid_16697987891859074[0][0].rotate(-90,"y");
+viewergrid_16697987891859074[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1265,12 +1263,12 @@ viewergrid_1669304828570786[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.01 sec.                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.05 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.02 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1289,7 +1287,7 @@ viewergrid_1669304828570786[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -74.947250981137    0.0000000000      0.00006046      0.00001095      0.00000000                
+                  1       -74.947250981138    0.0000000000      0.00006046      0.00001095      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
@@ -1302,7 +1300,7 @@ viewergrid_1669304828570786[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.04 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -1388,13 +1386,13 @@ viewergrid_1669304828570786[0][0].render();
                                                                                                                           
                           Atom           Gradient X            Gradient Y            Gradient Z                           
                                                                                                                           
-                           O           0.000000000021        0.085297089605       -0.100972944651                         
-                           H           0.000000000028       -0.061749632586       -0.007085216566                         
-                           H           0.000000000014       -0.023547457758        0.108058171861                         
+                           O           0.000000000021        0.085297089612       -0.100972944693                         
+                           H           0.000000000014       -0.061749632557       -0.007085216630                         
+                           H           0.000000000028       -0.023547457801        0.108058171875                         
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 2.35 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 2.00 sec ***                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -1404,7 +1402,7 @@ viewergrid_1669304828570786[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 23.14 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 20.31 sec ***                                   
                                                                                                                           
                                                                                                                           
 </pre></div>

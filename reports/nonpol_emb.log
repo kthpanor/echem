@@ -17,33 +17,29 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-monomer_natoms = list(exmod_drv.natoms)
-n_monomers = len(monomer_natoms)
-monomer_start_indices = [sum(exmod_drv.natoms[:i]) for i in range(n_monomers)]
+D = np.einsum("ik,jk->ij", C_s[:, :nocc], C_s[:, :nocc])
+mu_s = dipmom(D)
 
-npairs = n_monomers * (n_monomers - 1) // 2
-total_LE_states = n_monomers * exmod_drv.nstates
-total_CT_states = npairs * exmod_drv.ct_nocc * exmod_drv.ct_nvir * 2
-total_num_states = total_LE_states + total_CT_states
+D = np.einsum("ik,jk->ij", C_d[:, :nocc], C_d[:, :nocc])
+mu_d = dipmom(D)
 
-exmod_drv.H = np.zeros((total_num_states, total_num_states))
-exmod_drv.elec_trans_dipoles = np.zeros((total_num_states, 3))
-exmod_drv.velo_trans_dipoles = np.zeros((total_num_states, 3))
-exmod_drv.magn_trans_dipoles = np.zeros((total_num_states, 3))
-exmod_drv.center_of_mass = molecule.center_of_mass()
+D = np.einsum("ik,jk->ij", C_a[:, :nocc], C_a[:, :nocc])
+mu_a = dipmom(D)
 
-state_strings = ['' for s in range(total_num_states)]
-
-excitation_ids = exmod_drv.get_excitation_ids()
+print(f"   vacuum: {np.linalg.norm(mu_HF) : 8.6f}")
+print(f" solution: {np.linalg.norm(mu_s) : 8.6f}")
+print(f"   donors: {np.linalg.norm(mu_d) : 8.6f}")
+print(f"acceptors: {np.linalg.norm(mu_a) : 8.6f}")
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mTypeError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn [5], line 18[0m
-[1;32m     14[0m exmod_drv[38;5;241m.[39mcenter_of_mass [38;5;241m=[39m molecule[38;5;241m.[39mcenter_of_mass()
-[1;32m     16[0m state_strings [38;5;241m=[39m [[38;5;124m'[39m[38;5;124m'[39m [38;5;28;01mfor[39;00m s [38;5;129;01min[39;00m [38;5;28mrange[39m(total_num_states)]
-[0;32m---> 18[0m excitation_ids [38;5;241m=[39m [43mexmod_drv[49m[38;5;241;43m.[39;49m[43mget_excitation_ids[49m[43m([49m[43m)[49m
+Cell [0;32mIn [15], line 2[0m
+[1;32m      1[0m D [38;5;241m=[39m np[38;5;241m.[39meinsum([38;5;124m"[39m[38;5;124mik,jk->ij[39m[38;5;124m"[39m, C_s[:, :nocc], C_s[:, :nocc])
+[0;32m----> 2[0m mu_s [38;5;241m=[39m [43mdipmom[49m[43m([49m[43mD[49m[43m)[49m
+[1;32m      4[0m D [38;5;241m=[39m np[38;5;241m.[39meinsum([38;5;124m"[39m[38;5;124mik,jk->ij[39m[38;5;124m"[39m, C_d[:, :nocc], C_d[:, :nocc])
+[1;32m      5[0m mu_d [38;5;241m=[39m dipmom(D)
 
-[0;31mTypeError[0m: get_excitation_ids() missing 1 required positional argument: 'dimer_pairs'
-TypeError: get_excitation_ids() missing 1 required positional argument: 'dimer_pairs'
+[0;31mTypeError[0m: dipmom() missing 1 required positional argument: 'molecule'
+TypeError: dipmom() missing 1 required positional argument: 'molecule'
 
