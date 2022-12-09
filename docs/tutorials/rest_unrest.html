@@ -1143,6 +1143,13 @@ title="Print to PDF"
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">au2kcal</span> <span class="o">=</span> <span class="mf">627.51</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -1150,29 +1157,34 @@ title="Print to PDF"
 <span class="s2">O   0.0  0.0   0.6</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;angstrom&quot;</span><span class="p">)</span>
-
-<span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Set the spin to &quot;triplet&quot;</span>
-
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
-
-<span class="n">rodft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedOpenDriver</span><span class="p">()</span>
-<span class="n">rodft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
-
-<span class="n">rodft_results</span> <span class="o">=</span> <span class="n">rodft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-<span class="n">udft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
-<span class="n">udft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
-
-<span class="n">udft_results</span> <span class="o">=</span> <span class="n">udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Owing to the larger flexibility in the reference state, the UDFT energy is slightly lower the RODFT one.</p>
-<div class="cell docutils container">
+<p>We determine the triplet ground state with the RODFT and UDFT approaches.</p>
+<div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROB3LYP energy: </span><span class="si">{</span><span class="n">rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; UB3LYP energy: </span><span class="si">{</span><span class="n">udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">triplet_rodft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedOpenDriver</span><span class="p">()</span>
+<span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
+
+<span class="n">triplet_rodft_results</span> <span class="o">=</span> <span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="n">triplet_udft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
+<span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
+
+<span class="n">triplet_udft_results</span> <span class="o">=</span> <span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Owing to the larger flexibility in the reference state, the UDFT energy is slightly lower than the RODFT one.</p>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROB3LYP energy: </span><span class="si">{</span><span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; UB3LYP energy: </span><span class="si">{</span><span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1183,61 +1195,246 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<p>In the RODFT case, we have one set of MOs with the first seven being doubly occupied and MOs eight and nine being singly occupied. The orbital energies are:</p>
+<p>In the RODFT case, we have one set of MOs with the first seven being doubly occupied and MOs eight and nine being singly occupied.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">rodft_results</span><span class="p">[</span><span class="s2">&quot;E_alpha&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">rodft_results</span><span class="p">[</span><span class="s2">&quot;E_beta&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">molecular_orbitals</span><span class="o">.</span><span class="n">print_orbitals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-19.27665036 -19.27649376  -1.28388535  -0.78649766  -0.52368568
-  -0.50971915  -0.50971915  -0.20092026  -0.20092026   0.23772183
-   0.79594885   0.8347283    0.8347283    0.89859242   0.95034018
-   0.95034018   1.07314936   1.69927965   2.08264765   2.08264765
-   2.34862061   2.34862145   2.65824564   2.65824657   2.81489628
-   3.30062197   3.30062197   3.7801952 ]
-[-19.27665036 -19.27649376  -1.28388535  -0.78649766  -0.52368568
-  -0.50971915  -0.50971915  -0.20092026  -0.20092026   0.23772183
-   0.79594885   0.8347283    0.8347283    0.89859242   0.95034018
-   0.95034018   1.07314936   1.69927965   2.08264765   2.08264765
-   2.34862061   2.34862145   2.65824564   2.65824657   2.81489628
-   3.30062197   3.30062197   3.7801952 ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.78650 a.u.                                                                  
+               (   1 O   2s  :     0.36) (   1 O   3s  :     0.46) (   2 O   2s  :    -0.36)                              
+               (   2 O   3s  :    -0.46)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.52369 a.u.                                                                  
+               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.47) (   1 O   2p0 :    -0.23)                              
+               (   2 O   3s  :     0.28) (   2 O   1p0 :     0.47) (   2 O   2p0 :     0.23)                              
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.50972 a.u.                                                                  
+               (   1 O   1p+1:    -0.46) (   1 O   2p+1:    -0.27) (   2 O   1p+1:    -0.46)                              
+               (   2 O   2p+1:    -0.27)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.50972 a.u.                                                                  
+               (   1 O   1p-1:     0.46) (   1 O   2p-1:     0.27) (   2 O   1p-1:     0.46)                              
+               (   2 O   2p-1:     0.27)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.20092 a.u.                                                                  
+               (   1 O   1p+1:     0.52) (   1 O   2p+1:     0.38) (   2 O   1p+1:    -0.52)                              
+               (   2 O   2p+1:    -0.38)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.20092 a.u.                                                                  
+               (   1 O   1p-1:     0.52) (   1 O   2p-1:     0.38) (   2 O   1p-1:    -0.52)                              
+               (   2 O   2p-1:    -0.38)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.23772 a.u.                                                                  
+               (   1 O   2s  :    -0.21) (   1 O   3s  :    -1.06) (   1 O   1p0 :    -0.50)                              
+               (   1 O   2p0 :    -1.00) (   2 O   2s  :     0.21) (   2 O   3s  :     1.06)                              
+               (   2 O   1p0 :    -0.50) (   2 O   2p0 :    -1.00)                                                        
+                                                                                                                          
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.79595 a.u.                                                                  
+               (   1 O   3s  :     1.12) (   1 O   1p0 :    -0.65) (   1 O   2p0 :     1.46)                              
+               (   2 O   3s  :    -1.12) (   2 O   1p0 :    -0.65) (   2 O   2p0 :     1.46)                              
+                                                                                                                          
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.83473 a.u.                                                                  
+               (   1 O   1p+1:     0.44) (   1 O   1p-1:    -0.51) (   1 O   2p+1:    -0.41)                              
+               (   1 O   2p-1:     0.47) (   2 O   1p+1:     0.44) (   2 O   1p-1:    -0.51)                              
+               (   2 O   2p+1:    -0.41) (   2 O   2p-1:     0.47)                                                        
+                                                                                                                          
+               Molecular Orbital No.  13:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.83473 a.u.                                                                  
+               (   1 O   1p+1:    -0.51) (   1 O   1p-1:    -0.44) (   1 O   2p+1:     0.47)                              
+               (   1 O   2p-1:     0.41) (   2 O   1p+1:    -0.51) (   2 O   1p-1:    -0.44)                              
+               (   2 O   2p+1:     0.47) (   2 O   2p-1:     0.41)                                                        
+                                                                                                                          
 </pre></div>
 </div>
 </div>
 </div>
-<p>In the UHF is case, there are two different sets of MOs with nine occupied <span class="math notranslate nohighlight">\(\alpha\)</span>-spin orbitals and seven occupied <span class="math notranslate nohighlight">\(\beta\)</span>-spin orbitals. The orbital energies are:</p>
-<div class="cell docutils container">
+<p>In the UDFT case, there are two different sets of MOs with nine occupied <span class="math notranslate nohighlight">\(\alpha\)</span>-spin orbitals and seven occupied <span class="math notranslate nohighlight">\(\beta\)</span>-spin orbitals.</p>
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">udft_results</span><span class="p">[</span><span class="s2">&quot;E_alpha&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">udft_results</span><span class="p">[</span><span class="s2">&quot;E_beta&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">molecular_orbitals</span><span class="o">.</span><span class="n">print_orbitals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-19.29060541 -19.29052142  -1.31241964  -0.8307511   -0.56128655
-  -0.56128655  -0.54325196  -0.29936529  -0.29936529   0.21614495
-   0.78643753   0.80682008   0.80682008   0.89114085   0.92230336
-   0.92230336   1.05856796   1.67842059   2.06136016   2.06136016
-   2.30837463   2.30837547   2.61252211   2.61252302   2.79245109
-   3.27406086   3.27406086   3.76220036]
-[-19.26107222 -19.2608452   -1.25525728  -0.74211044  -0.50336112
-  -0.45864154  -0.45864154  -0.10410496  -0.10410496   0.26034414
-   0.80589793   0.86450688   0.86450688   0.90593529   0.9815685
-   0.9815685    1.08853499   1.72074183   2.10456366   2.10456366
-   2.38978949   2.38979032   2.70494955   2.70495047   2.83863705
-   3.32767442   3.32767442   3.79910186]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                             Spin Unrestricted Alpha Orbitals                                             
+                                             --------------------------------                                             
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.56129 a.u.                                                                  
+               (   1 O   1p+1:     0.47) (   1 O   2p+1:     0.26) (   2 O   1p+1:     0.47)                              
+               (   2 O   2p+1:     0.26)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.56129 a.u.                                                                  
+               (   1 O   1p-1:    -0.47) (   1 O   2p-1:    -0.26) (   2 O   1p-1:    -0.47)                              
+               (   2 O   2p-1:    -0.26)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.54325 a.u.                                                                  
+               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.47) (   1 O   2p0 :    -0.22)                              
+               (   2 O   3s  :     0.28) (   2 O   1p0 :     0.47) (   2 O   2p0 :     0.22)                              
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.29937 a.u.                                                                  
+               (   1 O   1p+1:     0.38) (   1 O   1p-1:    -0.38) (   1 O   2p+1:     0.28)                              
+               (   1 O   2p-1:    -0.27) (   2 O   1p+1:    -0.38) (   2 O   1p-1:     0.38)                              
+               (   2 O   2p+1:    -0.28) (   2 O   2p-1:     0.27)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.29937 a.u.                                                                  
+               (   1 O   1p+1:     0.38) (   1 O   1p-1:     0.38) (   1 O   2p+1:     0.27)                              
+               (   1 O   2p-1:     0.28) (   2 O   1p+1:    -0.38) (   2 O   1p-1:    -0.38)                              
+               (   2 O   2p+1:    -0.27) (   2 O   2p-1:    -0.28)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.21614 a.u.                                                                  
+               (   1 O   2s  :    -0.21) (   1 O   3s  :    -1.02) (   1 O   1p0 :    -0.51)                              
+               (   1 O   2p0 :    -0.98) (   2 O   2s  :     0.21) (   2 O   3s  :     1.02)                              
+               (   2 O   1p0 :    -0.51) (   2 O   2p0 :    -0.98)                                                        
+                                                                                                                          
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.78644 a.u.                                                                  
+               (   1 O   3s  :     1.11) (   1 O   1p0 :    -0.65) (   1 O   2p0 :     1.46)                              
+               (   2 O   3s  :    -1.11) (   2 O   1p0 :    -0.65) (   2 O   2p0 :     1.46)                              
+                                                                                                                          
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.80682 a.u.                                                                  
+               (   1 O   1p+1:     0.30) (   1 O   1p-1:    -0.59) (   1 O   2p+1:    -0.29)                              
+               (   1 O   2p-1:     0.56) (   2 O   1p+1:     0.30) (   2 O   1p-1:    -0.59)                              
+               (   2 O   2p+1:    -0.29) (   2 O   2p-1:     0.56)                                                        
+                                                                                                                          
+               Molecular Orbital No.  13:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.80682 a.u.                                                                  
+               (   1 O   1p+1:    -0.59) (   1 O   1p-1:    -0.30) (   1 O   2p+1:     0.56)                              
+               (   1 O   2p-1:     0.29) (   2 O   1p+1:    -0.59) (   2 O   1p-1:    -0.30)                              
+               (   2 O   2p+1:     0.56) (   2 O   2p-1:     0.29)                                                        
+                                                                                                                          
+               Molecular Orbital No.  14:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.89114 a.u.                                                                  
+               (   1 O   3s  :     0.33) (   1 O   1p0 :     0.58) (   1 O   2p0 :    -0.82)                              
+               (   2 O   3s  :     0.33) (   2 O   1p0 :    -0.58) (   2 O   2p0 :     0.82)                              
+                                                                                                                          
+                                             Spin Unrestricted Beta Orbitals                                              
+                                             -------------------------------                                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -1.25526 a.u.                                                                  
+               (   1 O   2s  :    -0.32) (   1 O   3s  :    -0.26) (   1 O   1p0 :    -0.19)                              
+               (   2 O   2s  :    -0.32) (   2 O   3s  :    -0.26) (   2 O   1p0 :     0.19)                              
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.74211 a.u.                                                                  
+               (   1 O   2s  :     0.35) (   1 O   3s  :     0.45) (   2 O   2s  :    -0.35)                              
+               (   2 O   3s  :    -0.45)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.50336 a.u.                                                                  
+               (   1 O   3s  :     0.29) (   1 O   1p0 :    -0.46) (   1 O   2p0 :    -0.23)                              
+               (   2 O   3s  :     0.29) (   2 O   1p0 :     0.46) (   2 O   2p0 :     0.23)                              
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.45864 a.u.                                                                  
+               (   1 O   1p-1:     0.44) (   1 O   2p-1:     0.29) (   2 O   1p-1:     0.44)                              
+               (   2 O   2p-1:     0.29)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.000 Energy:   -0.45864 a.u.                                                                  
+               (   1 O   1p+1:     0.44) (   1 O   2p+1:     0.29) (   2 O   1p+1:     0.44)                              
+               (   2 O   2p+1:     0.29)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:   -0.10410 a.u.                                                                  
+               (   1 O   1p+1:     0.34) (   1 O   1p-1:    -0.38) (   1 O   2p+1:     0.30)                              
+               (   1 O   2p-1:    -0.33) (   2 O   1p+1:    -0.34) (   2 O   1p-1:     0.38)                              
+               (   2 O   2p+1:    -0.30) (   2 O   2p-1:     0.33)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:   -0.10410 a.u.                                                                  
+               (   1 O   1p+1:     0.38) (   1 O   1p-1:     0.34) (   1 O   2p+1:     0.33)                              
+               (   1 O   2p-1:     0.30) (   2 O   1p+1:    -0.38) (   2 O   1p-1:    -0.34)                              
+               (   2 O   2p+1:    -0.33) (   2 O   2p-1:    -0.30)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.26034 a.u.                                                                  
+               (   1 O   2s  :    -0.21) (   1 O   3s  :    -1.10) (   1 O   1p0 :    -0.49)                              
+               (   1 O   2p0 :    -1.03) (   2 O   2s  :     0.21) (   2 O   3s  :     1.10)                              
+               (   2 O   1p0 :    -0.49) (   2 O   2p0 :    -1.03)                                                        
+                                                                                                                          
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.80590 a.u.                                                                  
+               (   1 O   3s  :     1.12) (   1 O   1p0 :    -0.66) (   1 O   2p0 :     1.45)                              
+               (   2 O   3s  :    -1.12) (   2 O   1p0 :    -0.66) (   2 O   2p0 :     1.45)                              
+                                                                                                                          
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.86451 a.u.                                                                  
+               (   1 O   1p+1:     0.59) (   1 O   1p-1:     0.34) (   1 O   2p+1:    -0.54)                              
+               (   1 O   2p-1:    -0.31) (   2 O   1p+1:     0.59) (   2 O   1p-1:     0.34)                              
+               (   2 O   2p+1:    -0.54) (   2 O   2p-1:    -0.31)                                                        
+                                                                                                                          
 </pre></div>
 </div>
 </div>
 </div>
-<p>The expectation values of the  <a class="reference external" href="https://kthpanor.github.io/echem/docs/elec_struct/spin.html#many-electron-systems">total spin operator</a> can be determined.</p>
+<p>It is a common procedure to determine a DFT value estimating the expectation value of the  <a class="reference external" href="https://kthpanor.github.io/echem/docs/elec_struct/spin.html#many-electron-systems">total spin operator</a> in the same manner as would be the case for a Hartree–Fock wave function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since the <a class="reference external" href="https://kthpanor.github.io/echem/docs/elec_struct/reduced_density.html#two-particle-density">two-particle density</a> is not directly available in DFT, the expectation value of a two-electron operator such as e.g. the total spin operator is also not available.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; RODFT = </span><span class="si">{</span><span class="n">rodft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">rodft_results</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; UDFT  = </span><span class="si">{</span><span class="n">udft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">udft_results</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; RODFT = </span><span class="si">{</span><span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">triplet_rodft_results</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; UDFT  = </span><span class="si">{</span><span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">triplet_udft_results</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1251,7 +1448,7 @@ title="Print to PDF"
 <p>The ground state of oxygen is a triplet with spin quantum number <span class="math notranslate nohighlight">\(S = 1\)</span> and</p>
 <div class="math notranslate nohighlight">
 \[
-\langle \hat{S}^2 \rangle = S(S+1) = 2
+\langle \hat{S}^2 \rangle = S(S+1)\hbar^2 = 2 \hbar^2
 \]</div>
 <p>This is exactly what we get with a restricted open-shell description, but not in the unrestricted case. In general, an unrestricted state is not a eigenfunction of <span class="math notranslate nohighlight">\(\hat{S}^2\)</span> and one refers to this situation by saying that the state is spin contaminated. Implications of this will be discussed in more details in the section on low spin open-shell systems where the problem is more pronounced.</p>
 <p>The relative simplicity of the unrestricted scheme together with its rather good performance makes it more widely used than the restricted open-shell form.</p>
@@ -1265,21 +1462,21 @@ title="Print to PDF"
 <p>A multi-configurational method such as CASSCF can also be used and we note that a CASSCF wave function with only the high-spin open-shell MOs in the active space is equivalent to restricted open-shell Hartree–Fock (ROHF).</p>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rohf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedOpenDriver</span><span class="p">()</span>
-<span class="n">rohf_results</span> <span class="o">=</span> <span class="n">rohf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">triplet_rohf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedOpenDriver</span><span class="p">()</span>
+<span class="n">triplet_rohf_results</span> <span class="o">=</span> <span class="n">triplet_rohf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># By default, OrbSpace includes all open-shells in the active space</span>
-<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">rohf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
-<span class="n">mcscf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">triplet_rohf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">triplet_mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
+<span class="n">triplet_mcscf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;       ROHF energy: </span><span class="si">{</span><span class="n">rohf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CASSCF(2,2) energy: </span><span class="si">{</span><span class="n">mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;       ROHF energy: </span><span class="si">{</span><span class="n">triplet_rohf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CASSCF(2,2) energy: </span><span class="si">{</span><span class="n">triplet_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1296,78 +1493,91 @@ CASSCF(2,2) energy:  -149.60946112
 <h2>Low spin states<a class="headerlink" href="#low-spin-states" title="Permalink to this headline">#</a></h2>
 <section id="single-reference-methods-broken-symmetry">
 <h3>Single-reference methods: broken symmetry<a class="headerlink" href="#single-reference-methods-broken-symmetry" title="Permalink to this headline">#</a></h3>
-<p>To look at a low spin open-shell, we can continue looking at the oxygen molecule, specifically the singlet states. Looking online, we see that <a class="reference external" href="https://en.wikipedia.org/wiki/Singlet_oxygen">singlet oxygen</a> has two lowest states, one noted <span class="math notranslate nohighlight">\(^1\Delta_g\)</span> at 22.5 kcal/mol above the ground triplet state and one <span class="math notranslate nohighlight">\(^1\Sigma^+_g\)</span> at 37.5 kcal/mol above the triplet. Let’s first compute the closed-shell singlet with standard (restricted) DFT.</p>
+<p>To address low spin open-shell systems, we can study <a class="reference external" href="https://en.wikipedia.org/wiki/Singlet_oxygen">singlet states of the oxygen molecule</a>. The two lowest singlet states are <span class="math notranslate nohighlight">\(a^1\Delta_g\)</span> and <span class="math notranslate nohighlight">\(b^1\Sigma^+_g\)</span> at 22.5 and 37.5 kcal/mol above the ground triplet state, <span class="math notranslate nohighlight">\(X^3\Sigma_g^-\)</span>, respectively.</p>
+<p>Let us first compute the lowest closed-shell singlet state using DFT.</p>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Switch to singlet</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">rdft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">rdft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
-<span class="n">r_result</span> <span class="o">=</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">singlet_rdft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
+<span class="n">singlet_rdft_results</span> <span class="o">=</span> <span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;R-DFT relative energy&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Compared to RO-DFT triplet:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;compared to U-DFT triplet: &quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>R-DFT relative energy
-Compared to RO-DFT triplet: 36.92114599675177
-compared to U-DFT triplet:  39.29447141163301
-</pre></div>
-</div>
-</div>
-</div>
-<p>While these energies matches reasonably well that of the <span class="math notranslate nohighlight">\(^1\Sigma^+_g\)</span>, it is not the lowest singlet. There are now 2 distinct ways to reach the lowest singlet using DFT. The first one is to compute the excited states of this singlet using TD-DFT:</p>
+<p>The <span class="math notranslate nohighlight">\(\pi\)</span>-orbitals in the closed-shell state are no longer doubly degenerate.</p>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rsp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">()</span>
-<span class="n">rsp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({</span><span class="s2">&quot;nstates&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;B3LYP&quot;</span><span class="p">})</span>
-<span class="n">rsp_results</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">r_result</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">molecular_orbitals</span><span class="o">.</span><span class="n">print_orbitals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                                     TDA Driver Setup                                                     
-                                                    ==================                                                    
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
                                                                                                                           
-                               Number of States                : 1                                                        
-                               Max. Number of Iterations       : 150                                                      
-                               Convergence Threshold           : 1.0e-04                                                  
-                               ERI Screening Scheme            : Cauchy Schwarz + Density                                 
-                               ERI Screening Threshold         : 1.0e-15                                                  
-                               Exchange-Correlation Functional : B3LYP                                                    
-                               Molecular Grid Level            : 4                                                        
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.79052 a.u.                                                                  
+               (   1 O   2s  :    -0.36) (   1 O   3s  :    -0.46) (   2 O   2s  :     0.36)                              
+               (   2 O   3s  :     0.46)                                                                                  
                                                                                                                           
-* Info * Molecular grid with 33426 points generated in 0.00 sec.                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.52746 a.u.                                                                  
+               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.47) (   1 O   2p0 :    -0.23)                              
+               (   2 O   3s  :     0.28) (   2 O   1p0 :     0.47) (   2 O   2p0 :     0.23)                              
                                                                                                                           
-                   *** Iteration:   1 * Reduced Space:    1 * Residues (Max,Min): 4.15e-02 and 4.15e-02                   
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.51773 a.u.                                                                  
+               (   1 O   1p+1:     0.45) (   1 O   2p+1:     0.28) (   2 O   1p+1:     0.45)                              
+               (   2 O   2p+1:     0.28)                                                                                  
                                                                                                                           
-                   State  1: -0.01781415 a.u. Residual Norm: 0.04153856                                                   
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.50968 a.u.                                                                  
+               (   1 O   1p-1:    -0.46) (   1 O   2p-1:    -0.27) (   2 O   1p-1:    -0.46)                              
+               (   2 O   2p-1:    -0.27)                                                                                  
                                                                                                                           
-                   *** Iteration:   2 * Reduced Space:    2 * Residues (Max,Min): 1.61e-03 and 1.61e-03                   
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.24089 a.u.                                                                  
+               (   1 O   1p-1:     0.53) (   1 O   2p-1:     0.41) (   2 O   1p-1:    -0.53)                              
+               (   2 O   2p-1:    -0.41)                                                                                  
                                                                                                                           
-                   State  1: -0.01869577 a.u. Residual Norm: 0.00160971                                                   
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:   -0.17013 a.u.                                                                  
+               (   1 O   1p+1:    -0.52) (   1 O   2p+1:    -0.42) (   2 O   1p+1:     0.52)                              
+               (   2 O   2p+1:     0.42)                                                                                  
                                                                                                                           
-                   *** Iteration:   3 * Reduced Space:    3 * Residues (Max,Min): 1.73e-05 and 1.73e-05                   
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.23373 a.u.                                                                  
+               (   1 O   2s  :    -0.21) (   1 O   3s  :    -1.05) (   1 O   1p0 :    -0.50)                              
+               (   1 O   2p0 :    -0.99) (   2 O   2s  :     0.21) (   2 O   3s  :     1.05)                              
+               (   2 O   1p0 :    -0.50) (   2 O   2p0 :    -0.99)                                                        
                                                                                                                           
-                   State  1: -0.01869682 a.u. Residual Norm: 0.00001728                                                   
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.79320 a.u.                                                                  
+               (   1 O   3s  :     1.12) (   1 O   1p0 :    -0.65) (   1 O   2p0 :     1.46)                              
+               (   2 O   3s  :    -1.12) (   2 O   1p0 :    -0.65) (   2 O   2p0 :     1.46)                              
                                                                                                                           
-               *** 1 excited states converged in 3 iterations. Time: 0.54 sec                                             
+               Molecular Orbital No.  12:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.82293 a.u.                                                                  
+               (   1 O   1p+1:    -0.67) (   1 O   2p+1:     0.62) (   2 O   1p+1:    -0.67)                              
+               (   2 O   2p+1:     0.62)                                                                                  
                                                                                                                           
+               Molecular Orbital No.  13:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.84078 a.u.                                                                  
+               (   1 O   1p-1:     0.67) (   1 O   2p-1:    -0.63) (   2 O   1p-1:     0.67)                              
+               (   2 O   2p-1:    -0.63)                                                                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1375,88 +1585,135 @@ compared to U-DFT triplet:  39.29447141163301
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Excitation energy:&quot;</span><span class="p">,</span> <span class="n">rsp_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">])</span>
-<span class="n">E_S</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">+</span> <span class="n">rsp_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="p">)</span>  <span class="c1"># Energy of the &quot;excited&quot; state</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lowest TD-DFT singlet relative energy&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compared to RO-DFT triplet:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">E_S</span> <span class="o">-</span> <span class="n">rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;compared to U-DFT triplet: &quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">E_S</span> <span class="o">-</span> <span class="n">udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy: [-0.01869682]
-Lowest TD-DFT singlet relative energy
-Compared to RO-DFT triplet: 25.188702558890068
-compared to U-DFT triplet:  27.56202797377131
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can see that the lowest excitation energy is actually negative, implying the existence of a state below the close-shell one we had found using restricted DFT. This is an open-shell singlet.</p>
-<p>Let’s try to compute this singlet directly. Restricted open-shell will not help, since for a singlet, restricted open-shell is equivalent to restricted. So we will proceed with unrestricted:</p>
-<div class="cell tag_output_scroll tag_remove-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">singlet_udft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
-<span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
-<span class="n">singlet_u_result</span> <span class="o">=</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singlet RDFT energy:&quot;</span><span class="p">,</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singlet UDFT energy:&quot;</span><span class="p">,</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Singlet RDFT energy: -150.27131288130073
-Singlet UDFT energy: -150.27131288208315
-</pre></div>
-</div>
-</div>
-</div>
-<p>Disappointingly, there is no difference beyond numerical noise. The problem is that the open-shell unrestricted solution exists, but the closed-shell solution is a stable point. Since there is no magnetic field, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> electrons experience the same force, and there is no reason therefore for the <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals to differ. The minimization is stuck in a symmetric solution. In the high-spin case, this symmetry was broken by the fact that we had more <span class="math notranslate nohighlight">\(\alpha\)</span> electrons than <span class="math notranslate nohighlight">\(\beta\)</span>, thus creating a different field.</p>
-<p>To change this and find the lower solution, we need to break the symmetry, and hence, the resulting solution will be called “broken symmetry solution”. Codes sometimes offer a keyword to actively break the symmetry. Here we will use the maximum overlap method to create a different starting occupation for the <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> orbitals.</p>
-<div class="cell tag_output_scroll tag_remove-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># A list of which orbitals are occupied in alpha and beta (starting from the triplet orbitals)</span>
-<span class="n">a_occ</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
-<span class="n">b_occ</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-<span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">a_occ</span><span class="p">,</span> <span class="n">b_occ</span><span class="p">)</span>
-<span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1.0e-5</span>
-<span class="n">singlet_u_result</span> <span class="o">=</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singlet RDFT energy:&quot;</span><span class="p">,</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Singlet UDFT energy:&quot;</span><span class="p">,</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed-shell singlet relative to triplet ground state (in kcal/mol)&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Broken symmetry singlet-triplet gap:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;    restricted triplet state: </span><span class="si">{</span><span class="p">(</span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;  unrestricted triplet state: </span><span class="si">{</span><span class="p">(</span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Singlet RDFT energy: -150.27131288130073
-Singlet UDFT energy: -150.31750582825958
-Broken symmetry singlet-triplet gap: 10.307935265482534
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Closed-shell singlet relative to triplet ground state (in kcal/mol)
+    restricted triplet state:    36.92114581
+  unrestricted triplet state:    39.29447123
 </pre></div>
 </div>
 </div>
 </div>
-<p>With this trick, we have now found a lower energy singlet. We can look at the natural orbitals and see that this indeed correspond to two singly occupied orbitals (the two <span class="math notranslate nohighlight">\(\pi^*\)</span>):</p>
+<p>These energies match reasonably well with the higher <span class="math notranslate nohighlight">\(b^1\Sigma^+_g\)</span> singlet state.</p>
+<p>There are two different ways to reach the lower singlet using DFT. The first one is to compute the (negative) excitation energy using TD-DFT.</p>
+<div class="cell tag_output_scroll tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rsp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">()</span>
+<span class="n">rsp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({</span><span class="s2">&quot;nstates&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;B3LYP&quot;</span><span class="p">})</span>
+<span class="n">rsp_results</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">singlet_rdft_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exc_energy</span> <span class="o">=</span> <span class="n">rsp_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Excitation energy (in kcal/mol): </span><span class="si">{</span><span class="n">exc_energy</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Open-shell singlet energy relative to triplet ground state (in kcal/mol)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;    restricted triplet state: </span><span class="si">{</span><span class="p">(</span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">+</span> <span class="n">exc_energy</span> <span class="o">-</span> <span class="n">triplet_rodft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;  unrestricted triplet state: </span><span class="si">{</span><span class="p">(</span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">+</span> <span class="n">exc_energy</span> <span class="o">-</span> <span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (in kcal/mol):     -11.732443
+
+Open-shell singlet energy relative to triplet ground state (in kcal/mol)
+    restricted triplet state:    25.18870298
+  unrestricted triplet state:    27.56202840
+</pre></div>
+</div>
+</div>
+</div>
+<p>These energies is in better agreement with the lowest singlet state. We have here reached the open-shell singlet state by means of a TD-DFT calculation based on a closed-shell reference state that is higher in energy.</p>
+<p>Let us instead compute the lower singlet state in a direct manner using unrestricted DFT.</p>
+<div class="cell tag_output_scroll tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">singlet_udft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
+<span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
+<span class="n">singlet_udft_result</span> <span class="o">=</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RDFT singlet: </span><span class="si">{</span><span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UDFT singlet: </span><span class="si">{</span><span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RDFT singlet:  -150.27131288
+UDFT singlet:  -150.27131288
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since the closed-shell state represent a stable point, the UDFT solution will become identical.</p>
+<p>As there is no magnetic field, there is no impetus for the <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> molecular orbitals to differ and the SCF optimization gets stuck in a symmetric solution. In the high-spin case, on the other hand, this symmetry was broken by the fact that we had an excess of <span class="math notranslate nohighlight">\(\alpha\)</span>-spin electrons.</p>
+<p>However, we can break the symmetry by introducing different starting occupations for the <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> spin-orbitals and remain in this region during the SCF optimization with the maximum-overlap method.</p>
+<div class="cell tag_output_scroll tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># A list of which orbitals are occupied in alpha and beta (starting from the triplet orbitals)</span>
+<span class="n">a_occ</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="n">b_occ</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+<span class="n">broken_udft_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
+<span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;B3LYP&quot;</span>
+
+<span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">maximum_overlap</span><span class="p">(</span>
+    <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">a_occ</span><span class="p">,</span> <span class="n">b_occ</span>
+<span class="p">)</span>
+<span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1.0e-5</span>
+<span class="n">broken_udft_results</span> <span class="o">=</span> <span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The broken symmetry is noticeable in the orbital energies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">broken_udft_results</span><span class="p">[</span><span class="s2">&quot;E_alpha&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">broken_udft_results</span><span class="p">[</span><span class="s2">&quot;E_beta&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-19.27854022 -19.2783833   -1.28524019  -0.78801466  -0.54954777
+  -0.52462322  -0.47281695  -0.28447192  -0.12169558   0.23668012
+   0.79535564   0.81340929   0.85521247   0.89800219   0.9292196
+   0.97198908   1.07236048   1.69840806   2.06485872   2.09877676
+   2.34625043   2.34756336   2.65573861   2.6583274    2.81503837
+   3.27997378   3.31937597   3.77952973]
+[-19.27853995 -19.27838302  -1.28523984  -0.78801437  -0.54954744
+  -0.52462312  -0.47281663  -0.28447146  -0.1216952    0.23668034
+   0.7953557    0.81340949   0.85521266   0.89800212   0.9292197
+   0.97198919   1.07236049   1.69840805   2.06485871   2.09877688
+   2.34625061   2.34756351   2.65573881   2.65832759   2.81503855
+   3.27997385   3.31937614   3.77952984]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can look at the natural orbitals and see that the state indeed corresponds to two singly occupied <span class="math notranslate nohighlight">\(\pi\)</span>-orbitals.</p>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">natural_orbitals</span><span class="p">()</span><span class="o">.</span><span class="n">print_orbitals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">natural_orbitals</span><span class="p">()</span><span class="o">.</span><span class="n">print_orbitals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1468,112 +1725,137 @@ Broken symmetry singlet-triplet gap: 10.307935265482534
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.01238 a.u.                                                                  
-               (   1 O   2s  :    -0.32) (   1 O   3s  :    -0.38) (   2 O   2s  :    -0.32)                              
-               (   2 O   3s  :    -0.38)                                                                                  
+               (   1 O   2s  :     0.32) (   1 O   3s  :     0.38) (   2 O   2s  :     0.32)                              
+               (   2 O   3s  :     0.38)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.80124 a.u.                                                                  
-               (   1 O   2s  :    -0.36) (   1 O   3s  :    -0.46) (   2 O   2s  :     0.36)                              
-               (   2 O   3s  :     0.46)                                                                                  
+               (   1 O   2s  :     0.36) (   1 O   3s  :     0.46) (   2 O   2s  :    -0.36)                              
+               (   2 O   3s  :    -0.46)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.999 Energy:   -0.51077 a.u.                                                                  
+               (   1 O   1p+1:     0.45) (   1 O   2p+1:     0.27) (   2 O   1p+1:     0.45)                              
+               (   2 O   2p+1:     0.27)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.999 Energy:   -0.51077 a.u.                                                                  
                (   1 O   1p-1:    -0.45) (   1 O   2p-1:    -0.27) (   2 O   1p-1:    -0.45)                              
                (   2 O   2p-1:    -0.27)                                                                                  
                                                                                                                           
-               Molecular Orbital No.   7:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 1.999 Energy:   -0.51077 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.27) (   2 O   1p+1:    -0.45)                              
-               (   2 O   2p+1:    -0.27)                                                                                  
-                                                                                                                          
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.20217 a.u.                                                                  
-               (   1 O   1p+1:     0.35) (   1 O   1p-1:     0.41) (   1 O   2p+1:     0.26)                              
-               (   1 O   2p-1:     0.30) (   2 O   1p+1:    -0.35) (   2 O   1p-1:    -0.41)                              
-               (   2 O   2p+1:    -0.26) (   2 O   2p-1:    -0.30)                                                        
+               (   1 O   1p+1:    -0.40) (   1 O   1p-1:    -0.35) (   1 O   2p+1:    -0.30)                              
+               (   1 O   2p-1:    -0.26) (   2 O   1p+1:     0.40) (   2 O   1p-1:     0.35)                              
+               (   2 O   2p+1:     0.30) (   2 O   2p-1:     0.26)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.20217 a.u.                                                                  
-               (   1 O   1p+1:     0.41) (   1 O   1p-1:    -0.35) (   1 O   2p+1:     0.30)                              
-               (   1 O   2p-1:    -0.26) (   2 O   1p+1:    -0.41) (   2 O   1p-1:     0.35)                              
-               (   2 O   2p+1:    -0.30) (   2 O   2p-1:     0.26)                                                        
+               (   1 O   1p+1:    -0.35) (   1 O   1p-1:     0.40) (   1 O   2p+1:    -0.26)                              
+               (   1 O   2p-1:     0.30) (   2 O   1p+1:     0.35) (   2 O   1p-1:    -0.40)                              
+               (   2 O   2p+1:     0.26) (   2 O   2p-1:    -0.30)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
-               --------------------------                                                                                 
-               Occupation: 0.001 Energy:    0.91738 a.u.                                                                  
-               (   1 O   1p+1:    -0.67) (   1 O   2p+1:     0.60) (   2 O   1p+1:    -0.67)                              
-               (   2 O   2p+1:     0.60)                                                                                  
-                                                                                                                          
-               Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.001 Energy:    0.91738 a.u.                                                                  
                (   1 O   1p-1:     0.67) (   1 O   2p-1:    -0.60) (   2 O   1p-1:     0.67)                              
                (   2 O   2p-1:    -0.60)                                                                                  
                                                                                                                           
+               Molecular Orbital No.  11:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.001 Energy:    0.91738 a.u.                                                                  
+               (   1 O   1p+1:     0.67) (   1 O   2p+1:    -0.60) (   2 O   1p+1:     0.67)                              
+               (   2 O   2p+1:    -0.60)                                                                                  
+                                                                                                                          
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    2.65807 a.u.                                                                  
-               (   1 O   1d+2:    -0.72) (   2 O   1d+2:     0.72)                                                        
+               (   1 O   1d+2:     0.72) (   2 O   1d+2:    -0.72)                                                        
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    2.34841 a.u.                                                                  
-               (   1 O   1d+2:     0.68) (   2 O   1d+2:     0.68)                                                        
+               (   1 O   1d+2:    -0.69) (   2 O   1d+2:    -0.69)                                                        
                                                                                                                           
 </pre></div>
 </div>
 </div>
 </div>
-<p>However, the energy gap (10.3 kcal/mol) is well below that from the literature of 22.5 kcal/mol. The reason was hinted in the beginning of this chapter when we mentioned that high spin open-shells are simpler because they are single determinantal. This is not the case for an open-shell singlet, which is a wavefunction made of (at least) two determinants, here for a two-electron case:</p>
-<div class="math notranslate nohighlight">
-\[ | \Psi_S \rangle = \frac{1}{\sqrt{2}} ( | \alpha \beta \rangle -| \beta \alpha \rangle ) \]</div>
-<p>in our broken symmetry wavefunction, we have only one determinant. Since the triplet is</p>
-<div class="math notranslate nohighlight">
-\[ | \Psi_T \rangle = \frac{1}{\sqrt{2}} ( | \alpha \beta \rangle +| \beta \alpha \rangle ) \]</div>
-<p>we see that a single determinant will be a perfect mix of true singlet and triplet wavefunctions, and this is also reflected in the spin contamination of the UDFT wavefunction:</p>
+<p>The energy of this singlet relative to the triplet ground state becomes:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; UDFT  = </span><span class="si">{</span><span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">singlet_u_result</span><span class="p">)</span><span class="si">:</span><span class="s2">.6</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Broken symmetry singlet-triplet gap:&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;S^2&gt; UDFT  = 1.00328
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Broken symmetry singlet-triplet gap: 10.307935117845176
 </pre></div>
 </div>
 </div>
 </div>
-<p>A true singlet would be 0, and a triplet 2, but here we have a perfect mix, so we get about 1.</p>
-<p>However, knowing this fact, we can actually correct the energy. Since we know the energy of the triplet and of the broken-symmetry solution which is a mix of true singlet and triplet, we can estimate the energy of the true singlet. In this case, since the broken symmetry is half singlet half triplet, we just need to multiply the energy by two and remove the triplet energy to get our true singlet energy:</p>
+<p>With this trick, we have thus found a lower energy singlet, albeit by introducing a small degree of spin contamination.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_T</span> <span class="o">=</span> <span class="n">udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>  <span class="c1"># triplet energy</span>
-<span class="n">E_BS</span> <span class="o">=</span> <span class="n">singlet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>  <span class="c1"># broken-symmetry energy</span>
-<span class="n">E_S</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E_BS</span> <span class="o">-</span> <span class="n">E_T</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimated singlet-triplet gap:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">E_S</span> <span class="o">-</span> <span class="n">E_T</span><span class="p">)</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;&lt;S^2&gt; UDFT  = </span><span class="si">{</span><span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">compute_s2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">broken_udft_results</span><span class="p">)</span> <span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated singlet-triplet gap: 20.61587053096507
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;S^2&gt; UDFT  =  1.003282
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that the energy gap (10.3 kcal/mol) is well below that of the literature reference (22.5 kcal/mol). The reason is that, while high spin open-shells are single-determinant in nature, open-shell singlets and low-spin triplets are not.</p>
+<p>A minimum of two determinant is needed for physically correct wave functions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-bd11dbfb-2397-4e0e-86f5-afeeec2ac913">
+<span class="eqno">(1)<a class="headerlink" href="#equation-bd11dbfb-2397-4e0e-86f5-afeeec2ac913" title="Permalink to this equation">#</a></span>\[\begin{align}
+| \Psi_\mathrm{S} \rangle &amp; = 
+\frac{1}{\sqrt{2}} ( | \alpha \beta \rangle -| \beta \alpha \rangle ) \\
+%
+| \Psi_\mathrm{T} \rangle &amp; = 
+\frac{1}{\sqrt{2}} ( | \alpha \beta \rangle +| \beta \alpha \rangle )
+\end{align}\]</div>
+<p>Our single determinant reference state is seen to correspond to a 50/50 mix of the singlet and triplet wave functions as reflected in the spin contamination of the UDFT wavefunction.</p>
+<p>True singlets and triplets have spin expectation values of <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(2 \hbar^2\)</span>, respectively, whereas we obtained a value close to <span class="math notranslate nohighlight">\(\hbar^2\)</span>.</p>
+<p>However, knowing this fact, we can actually correct the energy. Since we know the energy of the triplet and of the broken-symmetry solution, we can estimate the energy of the true singlet.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Estimated singlet-triplet gap:&quot;</span><span class="p">,</span>
+    <span class="mi">2</span>
+    <span class="o">*</span> <span class="p">(</span><span class="n">broken_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">triplet_udft_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+    <span class="o">*</span> <span class="n">au2kcal</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated singlet-triplet gap: 20.615870235690352
 </pre></div>
 </div>
 </div>
 </div>
 <p>This is now very close to the experimental energy of 22.5 kcal/mol.</p>
-<p>This formula to obtain the “true” singlet energy is a specific case of the more general “weighted-averaged broken symmetry” (WABS) method, which can in principle correct any broken symmetry solution if you know the corresponding high spin energy and the expectation value <span class="math notranslate nohighlight">\(&lt;S^2&gt;\)</span>.</p>
+<p>Our technique to obtain the “true” singlet energy is a special case of the more general “weighted-averaged broken symmetry” (WABS) method, which can in principle correct any broken symmetry solution with knowledge of the high-spin energy and the expectation value of the total spin operator.</p>
 </section>
 <section id="multi-reference-solution">
 <h3>Multi-reference solution<a class="headerlink" href="#multi-reference-solution" title="Permalink to this headline">#</a></h3>
 <p>In this case, the multi-reference solution is arguably simpler. You simply need to have an active space containing the right number of orbitals to describe the open-shells. For O<span class="math notranslate nohighlight">\(_2\)</span>, this is simply 2 electrons in 2 orbitals.</p>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">singlet_mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
 <span class="n">singlet_mcscf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
@@ -1584,23 +1866,22 @@ Broken symmetry singlet-triplet gap: 10.307935265482534
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Lowest singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">singlet_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">())</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;Lowest singlet relative energy: </span><span class="si">{</span><span class="p">(</span><span class="n">singlet_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">triplet_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">())</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lowest singlet relative energy: 29.699916921469505
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lowest singlet relative energy:    29.69991700
 </pre></div>
 </div>
 </div>
 </div>
 <p>The CASSCF automatically finds the open-shell to be the lowest state.</p>
-<p>The CASSCF code in multipsi even allows to compute singlets and triplets simultaneously. We only need to deactivate the spin restriction that is applied by defaults to singlets and compute several states at the same time (here 4):</p>
+<p>The CASSCF code in MultiPsi even allows to compute singlets and triplets simultaneously. We only need to deactivate the spin restriction that is applied by defaults to singlets and compute several states at the same time (here 4):</p>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">singlet_rdft_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">spinrestricted</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">all_mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
@@ -1612,30 +1893,27 @@ Broken symmetry singlet-triplet gap: 10.307935265482534
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;First singlet relative energy : </span><span class="si">{</span><span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;First singlet relative energy : </span><span class="si">{</span><span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;Second singlet relative energy: </span><span class="si">{</span><span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First singlet relative energy: 29.556048789947553
-First singlet relative energy: 29.556048791534863
-First singlet relative energy: 59.11209758549527
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First singlet relative energy :    29.55604879
+First singlet relative energy :    29.55604879
+Second singlet relative energy:    59.11209759
 </pre></div>
 </div>
 </div>
 </div>
-<p>In a single calculation, the CASSCF finds the lowest state to be a triplet (see the spin multiplicity in the output), the following 2 states to be doubly degenerate singlets (the <span class="math notranslate nohighlight">\(^1\Delta_g\)</span> state is doubly degenerate) followed by a higher lying singlet. The energies are not a perfect match (CASSCF with such a small active space does not include correlation), but the order is correct.</p>
-<p>Note that in this small molecule, a much better agreement with the experiment can be found by simply expanding the active space to include all 2p orbitals of the oxygen (resulting in 6 orbitals):</p>
+<p>In a single calculation, the CASSCF finds the lowest state to be a triplet (see the spin multiplicity in the output), the following 2 states to be doubly degenerate singlets (the <span class="math notranslate nohighlight">\(a^1\Delta_g\)</span> state is doubly degenerate) followed by a higher lying singlet. The energies are not a perfect match (CASSCF with such a small active space does not include correlation), but the order is correct.</p>
+<p>Note that in this small molecule, a much better agreement with the experiment can be found by simply expanding the active space to include all 2p orbitals of the oxygen (resulting in six orbitals):</p>
 <div class="cell tag_output_scroll tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
@@ -1648,34 +1926,31 @@ First singlet relative energy: 59.11209758549527
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;First singlet relative energy : </span><span class="si">{</span><span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;First singlet relative energy : </span><span class="si">{</span><span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;First singlet relative energy:&quot;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">627.51</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s2">&quot;Second singlet relative energy: </span><span class="si">{</span><span class="p">(</span><span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">large_mcscf_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">au2kcal</span> <span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First singlet relative energy: 21.002664914600178
-First singlet relative energy: 21.00266491468935
-First singlet relative energy: 39.02172559749284
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First singlet relative energy :    21.00266440
+First singlet relative energy :    21.00266440
+Second singlet relative energy:    39.02171985
 </pre></div>
 </div>
 </div>
 </div>
-<p>which indeed compares very favourably to the experimental energies:</p>
+<p>These results compare very favorably to the experimental results</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(^1\Delta_g\)</span>: 22.5 kcal/mol</p></li>
-<li><p><span class="math notranslate nohighlight">\(^1\Sigma^+_g\)</span>: 37.5 kcal/mol</p></li>
+<li><p><span class="math notranslate nohighlight">\(a^1\Delta_g\)</span>: 22.5 kcal/mol</p></li>
+<li><p><span class="math notranslate nohighlight">\(b^1\Sigma^+_g\)</span>: 37.5 kcal/mol</p></li>
 </ul>
-<p>CASSCF also provides the wavefunctions, allowing us to clearly see the multideterminant nature of the states:</p>
+<p>CASSCF also provides the wave functions, allowing us to clearly see the multi-determinant nature of the states.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_mcscf_drv</span><span class="o">.</span><span class="n">CIVecs</span><span class="p">):</span>
@@ -1692,8 +1967,8 @@ ba              0.707    0.500
 
 Wavefunction for state 2
 Determinant     coef.    weight 
-20              0.707    0.500 
-02             -0.707    0.500 
+20             -0.707    0.500 
+02              0.707    0.500 
 
 Wavefunction for state 3
 Determinant     coef.    weight 
