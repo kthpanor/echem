@@ -50,8 +50,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1025,12 +1025,56 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#runge-gross-theorem">
+   Runge-Gross theorem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adiabatic-approximation">
+   Adiabatic approximation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameterization">
+   Parameterization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#equation-of-motion">
+   Equation of motion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#response-functions">
+   Response functions
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -1042,6 +1086,39 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#runge-gross-theorem">
+   Runge-Gross theorem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#adiabatic-approximation">
+   Adiabatic approximation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameterization">
+   Parameterization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#equation-of-motion">
+   Equation of motion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#response-functions">
+   Response functions
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -1052,6 +1129,102 @@ title="Print to PDF"
   <section class="tex2jax_ignore mathjax_ignore" id="foundations">
 <h1>Foundations<a class="headerlink" href="#foundations" title="Permalink to this headline">#</a></h1>
 <p>In Hartree–Fock and Kohn–Sham density functional theory, the reference state is described by a single Slater determinant, also referred to as the self-consistent field (SCF) approximation. The detailed derivation of response functions in this approximation can be found in <span id="id1">[<a class="reference internal" href="../refs.html#id58" title="Patrick Norman, Kenneth Ruud, and Trond Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, Chichester, UK, 2018.">NRS18</a>]</span>, but the key steps will be indicated below.</p>
+<section id="runge-gross-theorem">
+<h2>Runge-Gross theorem<a class="headerlink" href="#runge-gross-theorem" title="Permalink to this headline">#</a></h2>
+<p>The basics of TDDFT comes from the work of Work of <a class="reference external" href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.52.997">Runge and Gross</a>, who presented a theory which underlies TDDFT:</p>
+<blockquote>
+<div><p>For every single-particle potential <span class="math notranslate nohighlight">\(V(r,t)\)</span>, which can be expanded in a Taylor series around <span class="math notranslate nohighlight">\(t_0\)</span>, there exists a one-to-one mapping <span class="math notranslate nohighlight">\(G:V(r,t) \rightarrow \rho (r,t)\)</span>. This mapping is defined by solving the time-dependent Schrödinger equation with a fixed initial state <span class="math notranslate nohighlight">\(\phi\)</span> and calculating the corresponding densities <span class="math notranslate nohighlight">\(\rho (r,t)\)</span>.</p>
+</div></blockquote>
+<p>They also presented schemes for practical schemes, the most important being:</p>
+<blockquote>
+<div><p>The exact time-dependent density can be expressed as a sum over states: <span class="math notranslate nohighlight">\(\rho (r,t) = \sum | \phi (r,t)|^2\)</span></p>
+</div></blockquote>
+<p>We calculate time-dependent orbitals from:</p>
+<div class="math notranslate nohighlight">
+\[
+i \frac{\partial}{\partial t} \phi_i (r,t) = \left( -\frac{1}{2} \nabla^2 + V_{\textrm{eff}} (r,t) \right) \phi_i (r,t)
+\]</div>
+<p>This requires knowledge of exact time-dependent xc-functional, which is even less known than the ground-state correspondance.</p>
+</section>
+<section id="adiabatic-approximation">
+<h2>Adiabatic approximation<a class="headerlink" href="#adiabatic-approximation" title="Permalink to this headline">#</a></h2>
+<p>In the adiabatic approximation one siplifies the xc-functional as one which do not change over time, such that standard functionals can be used. This is a reasonable approximations for systems changing slowly in time, for which the time-dependence of the energy then changes through the time-dependence of the density.</p>
+<p>It can be note that the search for non-adiabatic functional may be somewhat futile, as it would technically require the solution of the full time-dependent Schrödinger equation, as <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.75.022513">has</a> <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.78.056501">been</a> <a class="reference external" href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.78.056502">discussed</a>.</p>
+</section>
+<section id="parameterization">
+<h2>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">#</a></h2>
+<p>SCF states are parameterized as:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+\label{psi-kappa-param}
+  | \bar{\psi}(t) \rangle =
+    e^{-i\hat{\kappa}(t)} |0\rangle ; \quad
+  \hat{\kappa}(t) =
+  \sum_a^\mathrm{unocc} \sum_i^\mathrm{occ} \left[
+    \kappa_{ai}(t) \hat{a}^\dagger_a \hat{a}_i + \kappa_{ai}^*(t) \hat{a}^\dagger_i \hat{a}_a
+    \right] ,
+\end{equation*}\]</div>
+<p>where the creation, <span class="math notranslate nohighlight">\(\hat{a}^\dagger\)</span>, and annihilation, <span class="math notranslate nohighlight">\(\hat{a}\)</span>, operators act on unoccupied, secondary, <span class="math notranslate nohighlight">\(a\)</span> and occupied, inactive, <span class="math notranslate nohighlight">\(i\)</span> molecular orbitals.</p>
+</section>
+<section id="equation-of-motion">
+<h2>Equation of motion<a class="headerlink" href="#equation-of-motion" title="Permalink to this headline">#</a></h2>
+<p>The time evolution of the SCF state is determined from the Ehrenfest theorem:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+\label{ehren-equiv}
+  \frac{\partial}{\partial t} 
+  \langle \bar{\psi}(t) | \hat{\Omega}_{pq}^\dagger | \bar{\psi}(t) \rangle 
+  -
+  \langle \bar{\psi}(t) | 
+  \frac{\partial \hat{\Omega}_{pq}^\dagger}{\partial t} 
+  | \bar{\psi}(t) \rangle = 
+  \frac{1}{i\hbar}
+    \langle \bar{\psi}(t) | [\hat{\Omega}_{pq}^\dagger, \hat{H}] 
+    | \bar{\psi}(t) \rangle 
+\end{equation*}\]</div>
+<p>We require that this equation is fulfilled for the set of time-transformed electron-transfer operators:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+    \hat{\Omega}_{ai}^\dagger = 
+  e^{-i\hat{\kappa}} \, \hat{a}^\dagger_a \hat{a}_i \, e^{i\hat{\kappa}}
+\end{equation*}\]</div>
+<p>as well as the corresponding Hermitian conjugate. There will be two equations associated with each single-electron excited determinant, so there are twice as  many equations as there are unknown <em>complex</em> parameters, <span class="math notranslate nohighlight">\(\kappa_{ai}(t)\)</span>, with independent real and imaginary parts in the time-dependent phase-isolated wave function, <span class="math notranslate nohighlight">\(| \bar{\psi}(t) \rangle\)</span>.</p>
+<p>At this point, we adopt perturbation theory:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  \kappa_{ai}(t) = \kappa_{ai}^{(1)} + \kappa_{ai}^{(2)} + \kappa_{ai}^{(3)} + \cdots ,
+\end{equation*}\]</div>
+<p>which, after finding a first-order solution in the frequency domain, will eventually results in</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  \boldsymbol{\kappa}^{(1)}(\omega) = - i
+  \left(\mathbf{E}^{[2]} - \hbar \omega \mathbf{S}^{[2]}\right)^{-1} 
+  \mathbf{V}^{\omega, [1]} .
+\end{equation*}\]</div>
+<p>The vector <span class="math notranslate nohighlight">\(\boldsymbol{\kappa}^{(1)}\)</span> collects the set of parameters and their complex conjugate and matrices <span class="math notranslate nohighlight">\(\mathbf{E}^{[2]}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{S}^{[2]}\)</span> are known as the electronic Hessian and overlap matrices, respectively, and <span class="math notranslate nohighlight">\(\mathbf{V}^{\omega, [1]}\)</span> is known as the property gradient of the perturbation operator.</p>
+</section>
+<section id="response-functions">
+<h2>Response functions<a class="headerlink" href="#response-functions" title="Permalink to this headline">#</a></h2>
+<p>The response functions of an observable <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span> are defined by:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  \langle \bar{\psi}(t) | \hat{\Omega} | \bar{\psi}(t) \rangle =
+  \langle 0 | \hat{\Omega} | 0 \rangle + 
+  \sum_{\omega}
+  \langle \! \langle \hat{\Omega}; \hat{V}^{\omega} \rangle \! \rangle 
+  F^{\omega}
+  e^{-i\omega t} + \cdots 
+\end{equation*}\]</div>
+<p>and we are able to identify the following expression for the linear response function</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
+  \langle \! \langle \hat{\Omega}; \hat{V}^{\omega} \rangle \!
+  \rangle  = -
+\left[\boldsymbol{\Omega}^{[1]}\right]^\dagger
+   \left(\mathbf{E}^{[2]} - \hbar \omega \mathbf{S}^{[2]}\right)^{-1} \mathbf{V}^{\omega, [1]} ,
+\end{equation*}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\Omega}^{[1]}\)</span> (analogously to  <span class="math notranslate nohighlight">\(\mathbf{V}^{\omega, [1]}\)</span>) is known as the property gradient associated with the observable. This expression for the linear response functions is also known as the random phase approximation (RPA) equation in the case a Hartree–Fock reference state. It is the principal equation to be solved in time-dependent Hartree–Fock (TDHF) and time-dependent density functional theory (TDDFT) theories.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
