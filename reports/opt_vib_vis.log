@@ -17,30 +17,22 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# SCF
-scfdrv = vlx.ScfRestrictedDriver()
-scf_drv.conv_thresh = 1.0e-6
-# for DFT
-# scf_drv.xcfun = "b3lyp"
-# scf_drv.grid_level = 4
-scfdrv.compute(molecule, basis)
+xtb_hessian_drv = vlx.XTBHessianDriver(None) # Let's create a
 
-# Gradient
-grad_driver = vlx.ScfGradientDriver(scf_drv=scfdrv)
-grad_driver.compute(molecule, basis)
+fname = '../../data/md/kahweol_xtb_hessian.h5'
+hf = h5py.File(fname, "r")
+xtb_hessian_drv.hessian = np.array(hf.get('kahweol_hessian')) 
+xtb_hessian_drv.dipole_gradient = np.array(hf.get('kahweol_dipolegrad'))
+hf.close()
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[3], line 3[0m
-[1;32m      1[0m [38;5;66;03m# SCF[39;00m
-[1;32m      2[0m scfdrv [38;5;241m=[39m vlx[38;5;241m.[39mScfRestrictedDriver()
-[0;32m----> 3[0m [43mscf_drv[49m[38;5;241m.[39mconv_thresh [38;5;241m=[39m [38;5;241m1.0e-6[39m
-[1;32m      4[0m [38;5;66;03m# for DFT[39;00m
-[1;32m      5[0m [38;5;66;03m# scf_drv.xcfun = "b3lyp"[39;00m
-[1;32m      6[0m [38;5;66;03m# scf_drv.grid_level = 4[39;00m
-[1;32m      7[0m scfdrv[38;5;241m.[39mcompute(molecule, basis)
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+Cell [0;32mIn[6], line 1[0m
+[0;32m----> 1[0m xtb_hessian_drv [38;5;241m=[39m [43mvlx[49m[38;5;241;43m.[39;49m[43mXTBHessianDriver[49m([38;5;28;01mNone[39;00m) [38;5;66;03m# Let's create a[39;00m
+[1;32m      3[0m fname [38;5;241m=[39m [38;5;124m'[39m[38;5;124m../../data/md/kahweol_xtb_hessian.h5[39m[38;5;124m'[39m
+[1;32m      4[0m hf [38;5;241m=[39m h5py[38;5;241m.[39mFile(fname, [38;5;124m"[39m[38;5;124mr[39m[38;5;124m"[39m)
 
-[0;31mNameError[0m: name 'scf_drv' is not defined
-NameError: name 'scf_drv' is not defined
+[0;31mAttributeError[0m: module 'veloxchem' has no attribute 'XTBHessianDriver'
+AttributeError: module 'veloxchem' has no attribute 'XTBHessianDriver'
 
