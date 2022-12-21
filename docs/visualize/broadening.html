@@ -52,6 +52,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -294,6 +296,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="../elec_struct/reduced_density.html">
      Reduced particle densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/natural_orbitals.html">
+     Natural orbitals
     </a>
    </li>
    <li class="toctree-l2">
@@ -1053,6 +1060,21 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lorentzian">
+   Lorentzian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gaussian">
+   Gaussian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#voigt">
+   Voigt
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#broadening-calculated-spectrum">
    Broadening calculated spectrum
   </a>
@@ -1079,6 +1101,21 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#broadening-in-experiment">
    Broadening in experiment
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lorentzian">
+   Lorentzian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gaussian">
+   Gaussian
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#voigt">
+   Voigt
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -1150,12 +1187,12 @@ title="Print to PDF"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy [au]  Osc. str.   TM(x)     TM(y)     TM(z)
-   0.286      0.01128   0.00000  -0.00000   0.24321
-   0.364      0.09652   0.00000  -0.63080  -0.00000
-   0.364      0.00000  -0.00000  -0.00000   0.00000
-   0.454      0.08684   0.53570   0.00000   0.00000
-   0.540      0.41655  -1.07524   0.00000  -0.00000
-   0.666      0.24377   0.00000   0.74073   0.00000
+   0.286      0.01128  -0.00000   0.00000  -0.24321
+   0.364      0.09652  -0.00000  -0.63080  -0.00000
+   0.364      0.00000  -0.00000  -0.00000  -0.00000
+   0.454      0.08684   0.53570  -0.00000   0.00000
+   0.540      0.41655   1.07524   0.00000   0.00000
+   0.666      0.24377   0.00000  -0.74073   0.00000
 </pre></div>
 </div>
 </div>
@@ -1171,15 +1208,46 @@ title="Print to PDF"
 </ul>
 <p>These leads to a number of different broadening types, such as</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line_shape#Lorentzian">Lorentzian</a> <br>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line_shape#Lorentzian">Lorentzian</a> (<em>homogenous?</em>)<br>
 From life-time broadening</p></li>
-<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line_shape#Gaussian">Gaussian</a> <br>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line_shape#Gaussian">Gaussian</a> (<em>inhomogenous?</em>) <br>
 From Doppler broadening and resolution of measurement</p></li>
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Spectral_line_shape#Voigt">Voigt</a> <br>
 A convolution of a Gaussian and a Lorentzian</p></li>
 <li><p>Asymmetric <br>
 From vibrational effects</p></li>
 </ul>
+</section>
+<section id="lorentzian">
+<h2>Lorentzian<a class="headerlink" href="#lorentzian" title="Permalink to this headline">#</a></h2>
+<p>Cauchy distribution <span class="math notranslate nohighlight">\(f\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+f ( \omega ; \omega_k, \gamma_k) = \frac{1}{\pi}
+\left[
+\frac{\gamma_k}{(\omega_k - \omega)^2 + \gamma_k^2}
+\right]
+\]</div>
+<p>with FWHM of <span class="math notranslate nohighlight">\(2\gamma_k\)</span>. This is normalized:</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{-\infty}^{+\infty} f ( \omega ; \omega_k, \gamma_k) d \omega = 1.
+\]</div>
+<p>Amplitude <span class="math notranslate nohighlight">\(1/(\gamma \pi)\)</span>.</p>
+</section>
+<section id="gaussian">
+<h2>Gaussian<a class="headerlink" href="#gaussian" title="Permalink to this headline">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+g ( \omega ; \omega_k, \sigma_k) = \frac{\sqrt{2}}{\sigma \sqrt{\pi}}
+\textrm{exp}\left(
+-\frac{2 (\omega - \omega_k)^2}{\sigma_k^2}
+\right)
+\]</div>
+<p>HWHM is <span class="math notranslate nohighlight">\(\sigma \sqrt{\textrm{ln 2}}/{\sqrt{2}}\)</span></p>
+</section>
+<section id="voigt">
+<h2>Voigt<a class="headerlink" href="#voigt" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="broadening-calculated-spectrum">
 <h2>Broadening calculated spectrum<a class="headerlink" href="#broadening-calculated-spectrum" title="Permalink to this headline">#</a></h2>
