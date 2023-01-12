@@ -1,0 +1,1724 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Building the system &#8212; Computational Chemistry from  Laptop to HPC</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Optimizing molecular structure" href="wf_struct.html" />
+    <link rel="prev" title="Constructing workflows" href="workflow.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Computational Chemistry from  Laptop to HPC</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../intro.html">
+   Getting started
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../install.html">
+     Installation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../basics_notebook.html">
+     Using Jupyter notebooks
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Electronic ground states
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/elstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/orbitals.html">
+     Orbitals and basis sets
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/slater.html">
+     Many-electron wave functions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/operators.html">
+     Operators and matrix elements
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/reduced_density.html">
+     Reduced particle densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/natural_orbitals.html">
+     Natural orbitals
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/integrals.html">
+     Integrals
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/spin.html">
+     Electron spin
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/correlation.html">
+     Electron correlation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dispersion.html">
+     Dispersion interactions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/pt.html">
+     Rayleigh–Schrödinger perturbation theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/second_quant.html">
+     Second quantization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/wft.html">
+   Wave function theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hartree-fock.html">
+     Hartree–Fock theory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/ci.html">
+     Configuration interaction
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mp2.html">
+     Møller–Plesset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/mcscf.html">
+     Multiconfigurational methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/wft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../elec_struct/dft.html">
+   Density functional theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/hohenberg.html">
+     Hohenberg–Kohn theorems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kohn-sham.html">
+     Kohn–Sham method
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/kernel_int.html">
+     Kernel integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dft_scf.html">
+     SCF optimization
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../elec_struct/dft_prop.html">
+     First-order properties
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Molecular structure and dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/molstruct_gen.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/coordinates.html">
+     Choice of coordinates
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/gradients.html">
+   Gradients
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/energy_grad.html">
+     Energy gradients
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/property_grad.html">
+     Property gradients
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/hessians_vib.html">
+   Hessians and vibrations
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/hessians.html">
+     Molecular Hessians
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/vibrations.html">
+     Vibrational analysis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/opt.html">
+   Structure optimization
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/>
+  <label for="toctree-checkbox-8">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/opt_struct.html">
+     Optimization methods
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/opt_gs.html">
+     Ground-state structure optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/tst.html">
+   Transition-state theory
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/>
+  <label for="toctree-checkbox-9">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/tst_gen.html">
+     Transition state geometry optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/impes.html">
+   PES interpolation techniques
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/>
+  <label for="toctree-checkbox-10">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/impes_calc.html">
+     Constructing the PES by interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../mol_struct/md.html">
+   Molecular dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/>
+  <label for="toctree-checkbox-11">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/forcefields.html">
+     Force fields
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/reparameterize.html">
+     Reparameterize force fields
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/md_setup.html">
+     Ensembles and time integration
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mol_struct/md_run.html">
+     Running a simulation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Spectra and properties
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/spectra_aspects.html">
+   General aspects
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/>
+  <label for="toctree-checkbox-12">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/vibrot.html">
+     Rovibronic states
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/response.html">
+     Responses to external fields
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/tddft.html">
+   TDDFT
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/>
+  <label for="toctree-checkbox-13">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_basics.html">
+     Foundations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_rpa.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/tddft_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/mr_response.html">
+   Multireference response
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/>
+  <label for="toctree-checkbox-14">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/ci_response.html">
+     CI response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/sa_mcscf.html">
+     State-averaged MCSCF
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mclr.html">
+     Multiconfigurational linear response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/mr_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/adc.html">
+   ADC
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/>
+  <label for="toctree-checkbox-15">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_pp.html">
+     Polarization propagator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_isr.html">
+     Intermediate state representation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_cvs.html">
+     Core-valence separation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_hpc.html">
+     HPC-QC implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/adc_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../spec_prop/excoupl.html">
+   Exciton coupling model
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/>
+  <label for="toctree-checkbox-16">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../spec_prop/excoupl_impl.html">
+     Implementation of the exciton coupling model
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Environment
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../env/localprop.html">
+   Localized properties
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/>
+  <label for="toctree-checkbox-17">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/esp.html">
+     ESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/resp.html">
+     RESP charges
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/loprop.html">
+     LoProp charges and polarisabilities
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../env/embedding.html">
+   Embedding
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
+  <label for="toctree-checkbox-18">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/nonpol_emb.html">
+     Non-polarizable embedding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../env/pol_emb.html">
+     Polarizable embedding
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Visualization
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/mol_struct.html">
+   Molecular structure and dynamics
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/>
+  <label for="toctree-checkbox-19">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/struct_vis.html">
+     Molecular structure
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/md_vis.html">
+     MD trajectories
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/opt_vib_vis.html">
+     Optimization and normal modes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/elec_struct.html">
+   Electronic structure
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/>
+  <label for="toctree-checkbox-20">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/orb_vis.html">
+     Orbitals and densities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/exc_vis.html">
+     Excited states
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../visualize/spec_prop.html">
+   Spectra and properties
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/>
+  <label for="toctree-checkbox-21">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../visualize/broadening.html">
+     Spectrum broadening
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials and workflows
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="workflow.html">
+   Constructing workflows
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/>
+  <label for="toctree-checkbox-22">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Building the system
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="wf_struct.html">
+     Optimizing molecular structure
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="wf_scf.html">
+     Optimizing electronic structure
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="wf_construct.html">
+     Assembling a full workflow
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="uv_vis.html">
+   UV/vis spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/>
+  <label for="toctree-checkbox-23">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv_vis_absorption.html">
+     Absorption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv_vis_fluorescence.html">
+     Fluorescence
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv_vis_analysis.html">
+     Analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv_vis_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="uv_vis_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="vib_ir.html">
+   Vibrational spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/>
+  <label for="toctree-checkbox-24">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="vib_ir_calc.html">
+     IR spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="vib_ir_raman.html">
+     Raman spectroscopy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="vib_ir_exercises.html">
+     Exercises
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="openshells.html">
+   Open shells
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/>
+  <label for="toctree-checkbox-25">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="rest_unrest.html">
+     Restricted versus unrestricted
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="correlation.html">
+     Static versus dynamic correlation correlation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="xray.html">
+   X-ray spectroscopies
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/>
+  <label for="toctree-checkbox-26">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_calc.html">
+     Spectrum calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_analysis.html">
+     Spectrum analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_aspects.html">
+     Special aspects
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_large.html">
+     Larger systems
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_nonstandard.html">
+     Non-standard calculations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_rec.html">
+     Recommendations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_exercises.html">
+     Exercises
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="xray_cheatsheet.html">
+     Cheat sheet
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Bibliography
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cite.html">
+   How to cite and contact
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../refs.html">
+   References
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/kthpanor/echem/master?urlpath=tree/docs/docs/tutorials/wf_build.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/kthpanor/echem"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/tutorials/wf_build.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/docs/tutorials/wf_build.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#caffeine">
+   Caffeine
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-molecules">
+   Linear molecules
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bond-type">
+     Bond type
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#substitution">
+     Substitution
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#optimization">
+     Optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#branched-molecules">
+   Branched molecules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ring-systems">
+   Ring systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-complex-systems">
+   More complex systems
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Building the system</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#caffeine">
+   Caffeine
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-molecules">
+   Linear molecules
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bond-type">
+     Bond type
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#substitution">
+     Substitution
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#optimization">
+     Optimization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#branched-molecules">
+   Branched molecules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ring-systems">
+   Ring systems
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#more-complex-systems">
+   More complex systems
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="building-the-system">
+<h1>Building the system<a class="headerlink" href="#building-the-system" title="Permalink to this headline">#</a></h1>
+<p>This section will focus on the construction of an initial molecular structure, which can be done using a number of ways:</p>
+<ul class="simple">
+<li><p>Downloading a structure from the <a class="reference external" href="https://www.rcsb.org/">protein data bank</a></p></li>
+<li><p>Using a graphical molecular editor, such as <a class="reference external" href="https://avogadro.cc/">Avogadro</a></p></li>
+<li><p>Specify the structure using the simplified molecular-input line-entry system (<a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>) line notation, and employ a program which can build the molecule from this</p></li>
+</ul>
+<p>In this section we will focus on the last option, using the <a class="reference external" href="https://github.com/hjkgrp/molSimplify">molSimplify</a> program. For a full description of how a molecule is written using SMILES can be found on, <em>e.g.</em>, the <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">wiki</a> entry — here we will illustrate its use for a few . Make sure to visualize the resulting geometries and ensure they correspond to what you want to study.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="caffeine">
+<h2>Caffeine<a class="headerlink" href="#caffeine" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">smilestoxyz</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">opt</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="n">mol_bare</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+    <span class="n">mol_full</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">mol_bare</span><span class="p">)</span>
+    <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="p">:</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">UFFOptimizeMolecule</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
+
+<span class="n">caffeine_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;CN1C=NC2=C1C(=O)N(C(=O)N2C)C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">caffeine_xyz</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24
+
+C      3.263017    0.665602   -0.212720
+N      2.130944   -0.255164   -0.199731
+C      2.169427   -1.598733   -0.377053
+N      0.942209   -2.179661   -0.328611
+C      0.122902   -1.131387   -0.108457
+C      0.826777    0.020965   -0.033402
+C      0.176416    1.232141    0.162798
+O      0.830662    2.309769    0.212003
+N     -1.194119    1.221596    0.291480
+C     -1.895573    0.031642    0.181110
+O     -3.158218    0.040671    0.233363
+N     -1.232449   -1.164517    0.007067
+C     -1.967842   -2.428192   -0.134534
+C     -1.923424    2.489165    0.463343
+H      4.214642    0.108953   -0.348684
+H      3.149265    1.386854   -1.048964
+H      3.309011    1.216933    0.749769
+H      3.081659   -2.156591   -0.545352
+H     -1.328558   -3.298924    0.124931
+H     -2.841765   -2.451853    0.551042
+H     -2.320805   -2.537641   -1.181510
+H     -2.839017    2.343970    1.075630
+H     -2.209018    2.891819   -0.531182
+H     -1.306144    3.242585    0.997663
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">caffeine_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16733584682201753"  style="position: relative; width: 400px; height: 300px">
+        <p id="3dmolwarning_16733584682201753" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_16733584682201753 = null;
+var warn = document.getElementById("3dmolwarning_16733584682201753");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_16733584682201753 = $3Dmol.createViewer(document.getElementById("3dmolviewer_16733584682201753"),{backgroundColor:"white"});
+viewer_16733584682201753.zoomTo();
+	viewer_16733584682201753.addModel("24\n\nC      3.263017    0.665602   -0.212720\nN      2.130944   -0.255164   -0.199731\nC      2.169427   -1.598733   -0.377053\nN      0.942209   -2.179661   -0.328611\nC      0.122902   -1.131387   -0.108457\nC      0.826777    0.020965   -0.033402\nC      0.176416    1.232141    0.162798\nO      0.830662    2.309769    0.212003\nN     -1.194119    1.221596    0.291480\nC     -1.895573    0.031642    0.181110\nO     -3.158218    0.040671    0.233363\nN     -1.232449   -1.164517    0.007067\nC     -1.967842   -2.428192   -0.134534\nC     -1.923424    2.489165    0.463343\nH      4.214642    0.108953   -0.348684\nH      3.149265    1.386854   -1.048964\nH      3.309011    1.216933    0.749769\nH      3.081659   -2.156591   -0.545352\nH     -1.328558   -3.298924    0.124931\nH     -2.841765   -2.451853    0.551042\nH     -2.320805   -2.537641   -1.181510\nH     -2.839017    2.343970    1.075630\nH     -2.209018    2.891819   -0.531182\nH     -1.306144    3.242585    0.997663\n","xyz");
+	viewer_16733584682201753.setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewer_16733584682201753.setStyle({"stick": {}});
+viewer_16733584682201753.render();
+});
+</script></div></div>
+</div>
+</section>
+<section id="linear-molecules">
+<h2>Linear molecules<a class="headerlink" href="#linear-molecules" title="Permalink to this headline">#</a></h2>
+<p>The basic principle of SMILES is to…</p>
+<p>Bonds:</p>
+<ul class="simple">
+<li><p>ethane</p></li>
+<li><p>ethene</p></li>
+<li><p>ethyne</p></li>
+<li><p>propane</p></li>
+</ul>
+<p>Substitutions:</p>
+<ul class="simple">
+<li><p>1-vinylfluoride</p></li>
+<li><p>2-vinylfluoride</p></li>
+<li><p>11-difluoroethene</p></li>
+<li><p>12 difluoroethene</p></li>
+</ul>
+<section id="bond-type">
+<h3>Bond type<a class="headerlink" href="#bond-type" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ethane_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;CC&#39;</span><span class="p">)</span>
+<span class="n">ethene_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C=C&#39;</span><span class="p">)</span>
+<span class="n">ethyne_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C#C&#39;</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ethane_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ethene_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ethyne_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16733584682324135"  style="position: relative; width: 800px; height: 300px">
+        <p id="3dmolwarning_16733584682324135" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_16733584682324135 = null;
+var warn = document.getElementById("3dmolwarning_16733584682324135");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16733584682324135 = null;
+viewergrid_16733584682324135 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16733584682324135"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
+viewer_16733584682324135 = viewergrid_16733584682324135[0][0];
+viewergrid_16733584682324135[0][0].zoomTo();viewergrid_16733584682324135[0][1].zoomTo();viewergrid_16733584682324135[0][2].zoomTo();	viewergrid_16733584682324135[0][0].addModel("8\n\nC     -0.759346   -0.008765   -0.017146\nC      0.759346    0.008765    0.017146\nH     -1.129716    0.787607   -0.696540\nH     -1.160934    0.167476    1.002963\nH     -1.116219   -0.994408   -0.383353\nH      1.129716   -0.787608    0.696539\nH      1.160934   -0.167475   -1.002964\nH      1.116219    0.994408    0.383354\n","xyz");
+	viewergrid_16733584682324135[0][1].addModel("6\n\nC      0.618102    0.076267    0.234559\nC     -0.618102   -0.076267   -0.234559\nH      1.034191    1.069882    0.365791\nH      1.217325   -0.792068    0.488620\nH     -1.217324    0.792068   -0.488621\nH     -1.034191   -1.069882   -0.365789\n","xyz");
+	viewergrid_16733584682324135[0][2].addModel("4\n\nC      0.549376   -0.079392   -0.032964\nC     -0.549376    0.079392    0.436494\nH      1.514161   -0.218817   -0.445181\nH     -1.514161    0.218817    0.848711\n","xyz");
+	viewergrid_16733584682324135[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682324135[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682324135[0][2].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682324135[0][0].setStyle({"stick": {}});
+	viewergrid_16733584682324135[0][1].setStyle({"stick": {}});
+	viewergrid_16733584682324135[0][2].setStyle({"stick": {}});
+viewergrid_16733584682324135[0][2].render();
+viewergrid_16733584682324135[0][1].render();
+viewergrid_16733584682324135[0][0].render();
+});
+</script></div></div>
+</div>
+</section>
+<section id="substitution">
+<h3>Substitution<a class="headerlink" href="#substitution" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fluoro1_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;FCC&#39;</span><span class="p">)</span>
+<span class="n">fluoro2_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;CCF&#39;</span><span class="p">)</span>
+<span class="n">difluoro12_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C(=CF)F&#39;</span><span class="p">)</span>
+<span class="n">difluoro22_xyz</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C=C(F)(F)&#39;</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">fluoro1_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">fluoro2_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">difluoro12_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">difluoro22_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16733584682457063"  style="position: relative; width: 600px; height: 500px">
+        <p id="3dmolwarning_16733584682457063" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_16733584682457063 = null;
+var warn = document.getElementById("3dmolwarning_16733584682457063");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16733584682457063 = null;
+viewergrid_16733584682457063 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16733584682457063"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
+viewer_16733584682457063 = viewergrid_16733584682457063[0][0];
+viewergrid_16733584682457063[0][0].zoomTo();viewergrid_16733584682457063[0][1].zoomTo();viewergrid_16733584682457063[1][0].zoomTo();viewergrid_16733584682457063[1][1].zoomTo();	viewergrid_16733584682457063[0][0].addModel("8\n\nF     -1.175507   -1.063969   -0.761755\nC     -0.748151    0.030999   -0.033460\nC      0.768160    0.021634    0.068430\nH     -1.193070   -0.009942    0.983068\nH     -1.084779    0.960377   -0.539320\nH      1.107176   -0.905691    0.576665\nH      1.110614    0.901152    0.653365\nH      1.215556    0.065440   -0.946993\n","xyz");
+	viewergrid_16733584682457063[0][1].addModel("8\n\nC     -0.763794    0.091992   -0.058113\nC      0.730853   -0.140955    0.088295\nF      1.427097    0.876048   -0.538560\nH     -1.039995    0.110214   -1.133542\nH     -1.322240   -0.725025    0.445473\nH     -1.042628    1.061280    0.406537\nH      1.004039   -0.161640    1.164352\nH      1.006667   -1.111913   -0.374441\n","xyz");
+	viewergrid_16733584682457063[1][0].addModel("6\n\nC     -0.617583   -0.190728    0.159782\nC      0.617583    0.190728   -0.159782\nF      1.288182   -0.434915   -1.161832\nF     -1.288182    0.434915    1.161832\nH     -1.095596   -1.003167   -0.378013\nH      1.095596    1.003167    0.378013\n","xyz");
+	viewergrid_16733584682457063[1][1].addModel("6\n\nC      0.708398    0.012816   -0.054163\nC     -0.619147   -0.011201    0.047337\nF     -1.326607    1.148122    0.020930\nF     -1.272222   -1.195139    0.177769\nH      1.233103    0.957051   -0.158475\nH      1.276474   -0.911648   -0.033398\n","xyz");
+	viewergrid_16733584682457063[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682457063[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682457063[1][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682457063[1][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_16733584682457063[0][0].setStyle({"stick": {}});
+	viewergrid_16733584682457063[0][1].setStyle({"stick": {}});
+	viewergrid_16733584682457063[1][0].setStyle({"stick": {}});
+	viewergrid_16733584682457063[1][1].setStyle({"stick": {}});
+viewergrid_16733584682457063[1][1].render();
+viewergrid_16733584682457063[1][0].render();
+viewergrid_16733584682457063[0][1].render();
+viewergrid_16733584682457063[0][0].render();
+});
+</script></div></div>
+</div>
+</section>
+<section id="optimization">
+<h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hexane</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C1CCCCCCC1&#39;</span><span class="p">)</span>
+<span class="n">hexane_start</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C1CCCCCCC1&#39;</span><span class="p">,</span> <span class="n">opt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">hexane</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">hexane_start</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_1673358468268008"  style="position: relative; width: 600px; height: 300px">
+        <p id="3dmolwarning_1673358468268008" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+}
+
+var viewer_1673358468268008 = null;
+var warn = document.getElementById("3dmolwarning_1673358468268008");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_1673358468268008 = null;
+viewergrid_1673358468268008 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1673358468268008"),{rows: 1, cols: 2, control_all: false},{backgroundColor:"white"});
+viewer_1673358468268008 = viewergrid_1673358468268008[0][0];
+viewergrid_1673358468268008[0][0].zoomTo();viewergrid_1673358468268008[0][1].zoomTo();	viewergrid_1673358468268008[0][0].addModel("24\n\nC     -1.195634    1.588803    0.106228\nC      0.253571    1.600823   -0.411030\nC      1.266196    0.943500    0.549934\nC      1.969144   -0.293823   -0.035544\nC      1.061733   -1.338920   -0.714999\nC     -0.173062   -1.756794    0.104305\nC     -1.456199   -0.970850   -0.253202\nC     -1.715175    0.244962    0.655274\nH     -1.290274    2.348396    0.912772\nH     -1.860549    1.915910   -0.722987\nH      0.289142    1.156027   -1.425612\nH      0.545206    2.664276   -0.556387\nH      0.809849    0.683838    1.526053\nH      2.054937    1.688760    0.794043\nH      2.532754   -0.790552    0.784404\nH      2.720133    0.045454   -0.782110\nH      0.771488   -1.007152   -1.733860\nH      1.686653   -2.244943   -0.876469\nH     -0.371363   -2.826197   -0.130729\nH      0.042505   -1.724226    1.194189\nH     -1.477765   -0.678631   -1.325358\nH     -2.312758   -1.667464   -0.114561\nH     -1.334641    0.064369    1.682392\nH     -2.815890    0.354435    0.773253\n","xyz");
+	viewergrid_1673358468268008[0][1].addModel("24\n\nC     -1.998349   -0.357908   -0.058630\nC     -0.970771   -1.211586    0.557302\nC      0.351479   -1.547077    0.094280\nC      1.369812   -0.734830   -0.542602\nC      1.970025    0.511130    0.024316\nC      1.015279    1.756044   -0.071887\nC     -0.247083    1.128154   -0.037587\nC     -1.656646    1.176214   -0.035060\nH     -2.105837   -0.571903   -1.159030\nH     -2.940893   -0.489415    0.457356\nH     -1.032132   -1.008575    1.685448\nH     -1.531638   -2.223254    0.614604\nH      0.842608   -2.033239    1.009135\nH      0.291272   -2.456616   -0.598349\nH      2.308068   -1.409621   -0.524085\nH      1.292268   -0.684817   -1.681396\nH      2.217297    0.322705    1.077010\nH      2.823898    0.779574   -0.594784\nH      1.230847    2.325558   -0.972807\nH      1.285330    2.359105    0.820262\nH     -0.129359    0.526732   -0.986303\nH     -0.118432    0.599755    0.954696\nH     -2.109091    1.666247   -0.910842\nH     -2.157953    1.577626    0.878953\n","xyz");
+	viewergrid_1673358468268008[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_1673358468268008[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_1673358468268008[0][0].setStyle({"stick": {}});
+	viewergrid_1673358468268008[0][1].setStyle({"stick": {}});
+viewergrid_1673358468268008[0][1].render();
+viewergrid_1673358468268008[0][0].render();
+});
+</script></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+<span class="n">AllChem</span><span class="o">.</span><span class="n">UFFOptimizeMolecule</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+<span class="n">mol_xyz</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mol_xyz</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="c1"># black outline for nicer-looking figures</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">mol_xyz</span><span class="p">)</span>
+<span class="c1"># visualize with the stick option - can also consider spheres and more</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="c1"># rotate for a better initial view</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">UFFOptimizeMolecule</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">mol_xyz</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">m3</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;m3&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="branched-molecules">
+<h2>Branched molecules<a class="headerlink" href="#branched-molecules" title="Permalink to this headline">#</a></h2>
+<p>For branching, it…</p>
+<ul class="simple">
+<li><p>octane isomers</p></li>
+</ul>
+</section>
+<section id="ring-systems">
+<h2>Ring systems<a class="headerlink" href="#ring-systems" title="Permalink to this headline">#</a></h2>
+<p>Ring systems are constructed</p>
+<ul class="simple">
+<li><p>cyclohexane</p></li>
+<li><p>benzene</p></li>
+</ul>
+<p>Ring and substituted branch?</p>
+</section>
+<section id="more-complex-systems">
+<h2>More complex systems<a class="headerlink" href="#more-complex-systems" title="Permalink to this headline">#</a></h2>
+<p>Guanine, which can be found on the <a class="reference external" href="https://en.wikipedia.org/wiki/Guanine">wiki</a> entry:</p>
+<ul class="simple">
+<li><p>keto</p></li>
+<li><p>enol</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./docs/tutorials"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="workflow.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Constructing workflows</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="wf_struct.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Optimizing molecular structure</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The eChem team<br/>
+  
+      &copy; Copyright 2023.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
