@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -1299,12 +1297,6 @@ title="Print to PDF"
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 
-<span class="c1"># for vlx</span>
-<span class="n">silent_ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-
-<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-<span class="c1"># au to eV conversion factor</span>
 <span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
 
 <span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -1314,12 +1306,12 @@ title="Print to PDF"
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Create veloxchem mol and basis objects</span>
-<span class="n">mol_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">bas_vlx</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="n">silent_ostream</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol_vlx</span><span class="p">,</span> <span class="n">bas_vlx</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_gs</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Extract orbital energies</span>
 <span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_gs</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
@@ -1330,22 +1322,148 @@ title="Print to PDF"
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
 * Warning * Setting OMP_NUM_THREADS to 4.
-* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/6-31G
+* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem_test/lib/python3.9/site-packages/veloxchem/basis/6-31G
                                                                                                                           
                                               Molecular Basis (Atomic Basis)                                              
                                              ================================                                             
                                                                                                                           
-                                  Basis: 6-31G                                                                            
+                               Basis: 6-31G                                                                               
                                                                                                                           
-                                  Atom Contracted GTOs          Primitive GTOs                                            
+                               Atom Contracted GTOs           Primitive GTOs                                              
                                                                                                                           
-                                   O   (3S,2P)                  (10S,4P)                                                  
-                                   H   (2S)                     (4S)                                                      
+                                O   (3S,2P)                   (10S,4P)                                                    
+                                H   (2S)                      (4S)                                                        
                                                                                                                           
-                                  Contracted Basis Functions : 13                                                         
-                                  Primitive Basis Functions  : 30                                                         
+                               Contracted Basis Functions : 13                                                            
+                               Primitive Basis Functions  : 30                                                            
                                                                                                                           
-1s E from Koopmans&#39; theorem: -559.5 eV
+                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Hartree-Fock                                         
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                                                                                                                          
+* Info * Nuclear repulsion energy: 9.1561447194 a.u.                                                                      
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+* Info * SAD initial guess computed in 0.01 sec.                                                                          
+                                                                                                                          
+* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983870205311 a.u. Time: 0.07 sec.                                  
+                                                                                                                          
+* Info * Overlap matrix computed in 0.01 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+                                                                                                                          
+               Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -75.983870373952    0.0000000000      0.00006826      0.00001638      0.00000000                
+                  2       -75.983870375702   -0.0000000017      0.00002636      0.00000475      0.00006304                
+                  3       -75.983870375765   -0.0000000001      0.00000396      0.00000061      0.00000524                
+                  4       -75.983870375769   -0.0000000000      0.00000029      0.00000008      0.00000296                
+                                                                                                                          
+               *** SCF converged in 4 iterations. Time: 0.08 sec.                                                         
+                                                                                                                          
+               Spin-Restricted Hartree-Fock:                                                                              
+               -----------------------------                                                                              
+               Total Energy                       :      -75.9838703758 a.u.                                              
+               Electronic Energy                  :      -85.1400150952 a.u.                                              
+               Nuclear Repulsion Energy           :        9.1561447194 a.u.                                              
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000002874 a.u.                                              
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -20.56128 a.u.                                                                  
+               (   1 O   1s  :    -1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.35434 a.u.                                                                  
+               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.47) (   1 O   3s  :    -0.48)                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.70774 a.u.                                                                  
+               (   1 O   1p+1:     0.51) (   1 O   2p+1:     0.27) (   2 H   1s  :    -0.26)                              
+               (   3 H   1s  :     0.26)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.56024 a.u.                                                                  
+               (   1 O   2s  :     0.18) (   1 O   3s  :     0.31) (   1 O   1p0 :     0.55)                              
+               (   1 O   2p0 :     0.40)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.50122 a.u.                                                                  
+               (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.51)                                                        
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.20280 a.u.                                                                  
+               (   1 O   3s  :    -1.17) (   1 O   1p0 :     0.23) (   1 O   2p0 :     0.48)                              
+               (   2 H   2s  :     0.99) (   3 H   2s  :     0.99)                                                        
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.29874 a.u.                                                                  
+               (   1 O   1p+1:     0.34) (   1 O   2p+1:     0.82) (   2 H   2s  :     1.38)                              
+               (   3 H   2s  :    -1.38)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.05548 a.u.                                                                  
+               (   1 O   2p+1:    -0.74) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.50)                              
+               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.50)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.16442 a.u.                                                                  
+               (   1 O   1p-1:    -0.96) (   1 O   2p-1:     1.04)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.18237 a.u.                                                                  
+               (   1 O   2s  :     0.26) (   1 O   3s  :    -0.18) (   1 O   1p0 :    -0.67)                              
+               (   1 O   2p0 :     0.22) (   2 H   1s  :    -0.84) (   2 H   2s  :     0.55)                              
+               (   3 H   1s  :    -0.84) (   3 H   2s  :     0.55)                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1s E from Koopmans&#39; theorem: -559.5 eV
 </pre></div>
 </div>
 </div>
@@ -1425,15 +1543,15 @@ title="Print to PDF"
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Construct structure and basis objects</span>
-<span class="n">struct</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
 
 <span class="c1"># Perform SCF calculation</span>
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># Calculate the 6 lowest eigenstates with CVS restriction to MO #1 (oxygen 1s)</span>
 <span class="n">adc_res</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span>
-    <span class="n">struct</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cvs-adc2x&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">core_orbitals</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">)</span>
 </pre></div>
 </div>
