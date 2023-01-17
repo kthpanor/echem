@@ -50,6 +50,10 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -1104,37 +1108,25 @@ title="Print to PDF"
     </div>
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Optimizing molecular structure
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#initial-structure">
+   Initial structure
   </a>
  </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structure-of-methanol">
-   Structure of methanol
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xtb-optimization">
+   xTB optimization
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#initial-structure">
-     Initial structure
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#xtb-optimization">
-     xTB optimization
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#hf-optimization">
-     HF optimization
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#comparison">
-     Comparison
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hf-optimization">
+   HF optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison">
+   Comparison
+  </a>
  </li>
 </ul>
 
@@ -1155,37 +1147,25 @@ title="Print to PDF"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Optimizing molecular structure
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#initial-structure">
+   Initial structure
   </a>
  </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#structure-of-methanol">
-   Structure of methanol
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xtb-optimization">
+   xTB optimization
   </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#initial-structure">
-     Initial structure
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#xtb-optimization">
-     xTB optimization
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#hf-optimization">
-     HF optimization
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#comparison">
-     Comparison
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hf-optimization">
+   HF optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison">
+   Comparison
+  </a>
  </li>
 </ul>
 
@@ -1199,8 +1179,8 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="optimizing-molecular-structure">
 <h1>Optimizing molecular structure<a class="headerlink" href="#optimizing-molecular-structure" title="Permalink to this headline">#</a></h1>
-<p>The initial structure can be provided manually, or as constructed as through the SMILES notation (see <a class="reference internal" href="wf_build.html"><span class="doc std std-doc">previous</span></a> section). Here we will do the latter to illustrate a full optimization workflow.</p>
-<p>To minimize computational cost, we here perform the final quantum chemical structure optimization at a minimal level of theory (HF with the STO-3G basis set). For practical calculations, DFT or MP2 should be used.</p>
+<p>The initial structure can be provided manually, or as constructed using SMILES strings (see <a class="reference internal" href="wf_build.html"><span class="doc std std-doc">previous</span></a> section). Here we will do the latter to illustrate a full structure optimization workflow, with methanol as the example.</p>
+<p>To minimize computational cost, we perform the final quantum chemical structure optimization at a minimal level of theory (HF with the STO-3G basis set). For practical calculations, DFT or MP2 as well as a larger basis set should be used.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
@@ -1209,7 +1189,6 @@ title="Print to PDF"
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">geometric</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
@@ -1217,13 +1196,9 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="structure-of-methanol">
-<h1>Structure of methanol<a class="headerlink" href="#structure-of-methanol" title="Permalink to this headline">#</a></h1>
-<p>As the example, we here seek the equilibroum structure of methanol.</p>
 <section id="initial-structure">
 <h2>Initial structure<a class="headerlink" href="#initial-structure" title="Permalink to this headline">#</a></h2>
-<p>We obtain the initial structure from RDkit, using the SMILES string (<code class="docutils literal notranslate"><span class="pre">CO</span></code>).</p>
+<p>We obtain the initial (UFF optimized) structure from RDkit, using the SMILES string (<code class="docutils literal notranslate"><span class="pre">CO</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">smilestoxyz</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">opt</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_noH</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -1262,26 +1237,21 @@ title="Print to PDF"
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">toxyz</span><span class="p">(</span><span class="n">molecule</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the molecular geometry in xyz format.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">ChemicalElement</span>
     <span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">bohr_in_angstroms</span>
 
     <span class="n">elem_ids</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">elem_ids_to_numpy</span><span class="p">()</span>
-
     <span class="n">xs</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
     <span class="n">ys</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
     <span class="n">zs</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
 
-    <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
-    <span class="n">txt</span> <span class="o">+=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
+    <span class="n">xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">elem_id</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">elem_ids</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">):</span>
         <span class="n">elem</span> <span class="o">=</span> <span class="n">ChemicalElement</span><span class="p">()</span>
         <span class="n">elem</span><span class="o">.</span><span class="n">set_atom_type</span><span class="p">(</span><span class="n">elem_id</span><span class="p">)</span>
-        <span class="n">txt</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%6s</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
-        
-    <span class="k">return</span> <span class="n">txt</span>
+        <span class="n">xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%6s</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xyz</span>
 
 <span class="n">methanol_xtb</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">xtb_opt</span><span class="p">)</span>
 </pre></div>
@@ -1291,7 +1261,7 @@ title="Print to PDF"
 </section>
 <section id="hf-optimization">
 <h2>HF optimization<a class="headerlink" href="#hf-optimization" title="Permalink to this headline">#</a></h2>
-<p>Set up the HF driver and performing the final optimization, using the xTB results as the initial guess.</p>
+<p>Set up the SCF and optimization drivers and performing the final optimization, using the xTB results as the initial structure.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">methanol_xtb</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;STO-3G&#39;</span><span class="p">)</span>
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
@@ -1302,20 +1272,12 @@ title="Print to PDF"
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_hf</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">opt_molecule</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time elapsed: </span><span class="si">{</span><span class="n">t_end</span><span class="o">-</span><span class="n">t_start</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
 </pre></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_hf</span> <span class="o">=</span> <span class="s1">&#39;6</span><span class="se">\n\n</span><span class="s1">     C        -0.355338295061         0.015832253296         0.022623869829</span><span class="se">\n</span><span class="s1">     O         0.957130783496         0.544496756944        -0.204029530782</span><span class="se">\n</span><span class="s1">     H        -0.479565645795        -0.368664416163         1.040410925550</span><span class="se">\n</span><span class="s1">     H        -0.607609510888        -0.787365989746        -0.677656188432</span><span class="se">\n</span><span class="s1">     H        -1.069087493005         0.828785331979        -0.122302379295</span><span class="se">\n</span><span class="s1">     H         1.554469486523        -0.233087881063        -0.059049636847</span><span class="se">\n</span><span class="s1">&#39;</span>
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="comparison">
 <h2>Comparison<a class="headerlink" href="#comparison" title="Permalink to this headline">#</a></h2>
-<p>The three structures can be compared by visualizing the results using py3Dmol:</p>
+<p>Visualize the results using py3Dmol:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1329,8 +1291,8 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16736063465472524"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16736063465472524" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1673951442357811"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_1673951442357811" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1362,31 +1324,31 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
 }
 
-var viewer_16736063465472524 = null;
-var warn = document.getElementById("3dmolwarning_16736063465472524");
+var viewer_1673951442357811 = null;
+var warn = document.getElementById("3dmolwarning_1673951442357811");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16736063465472524 = null;
-viewergrid_16736063465472524 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16736063465472524"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
-viewer_16736063465472524 = viewergrid_16736063465472524[0][0];
-viewergrid_16736063465472524[0][0].zoomTo();viewergrid_16736063465472524[0][1].zoomTo();viewergrid_16736063465472524[0][2].zoomTo();	viewergrid_16736063465472524[0][0].addModel("6\n\nC     -0.357700    0.007590   -0.021482\nO      0.908736   -0.534992   -0.261119\nH     -0.546833    0.071791    1.072109\nH     -0.433768    1.019344   -0.475795\nH     -1.126997   -0.647931   -0.478956\nH      1.556564    0.084198    0.165243\n","xyz");
-	viewergrid_16736063465472524[0][1].addModel("6\n\n     C        -0.362074234066         0.022820030151        -0.012478555244\n     O         0.910461380252        -0.524529261601        -0.254587791368\n     H        -0.577886961159         0.088588864317         1.059590730721\n     H        -0.466993722180         1.017927832806        -0.458556576727\n     H        -1.081490853079        -0.649321462535        -0.476482086974\n     H         1.577986390232         0.044513996862         0.142514279592\n","xyz");
-	viewergrid_16736063465472524[0][2].addModel("6\n\n     C        -0.355338295061         0.015832253296         0.022623869829\n     O         0.957130783496         0.544496756944        -0.204029530782\n     H        -0.479565645795        -0.368664416163         1.040410925550\n     H        -0.607609510888        -0.787365989746        -0.677656188432\n     H        -1.069087493005         0.828785331979        -0.122302379295\n     H         1.554469486523        -0.233087881063        -0.059049636847\n","xyz");
-	viewergrid_16736063465472524[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736063465472524[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736063465472524[0][2].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736063465472524[0][0].setStyle({"stick": {}});
-	viewergrid_16736063465472524[0][1].setStyle({"stick": {}});
-	viewergrid_16736063465472524[0][2].setStyle({"stick": {}});
-viewergrid_16736063465472524[0][2].render();
-viewergrid_16736063465472524[0][1].render();
-viewergrid_16736063465472524[0][0].render();
+var viewergrid_1673951442357811 = null;
+viewergrid_1673951442357811 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1673951442357811"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
+viewer_1673951442357811 = viewergrid_1673951442357811[0][0];
+viewergrid_1673951442357811[0][0].zoomTo();viewergrid_1673951442357811[0][1].zoomTo();viewergrid_1673951442357811[0][2].zoomTo();	viewergrid_1673951442357811[0][0].addModel("6\n\nC     -0.357700    0.007590   -0.021482\nO      0.908736   -0.534992   -0.261119\nH     -0.546833    0.071791    1.072109\nH     -0.433768    1.019344   -0.475795\nH     -1.126997   -0.647931   -0.478956\nH      1.556564    0.084198    0.165243\n","xyz");
+	viewergrid_1673951442357811[0][1].addModel("6\n\n     C        -0.362074234066         0.022820030151        -0.012478555244\n     O         0.910461380252        -0.524529261601        -0.254587791368\n     H        -0.577886961159         0.088588864317         1.059590730721\n     H        -0.466993722180         1.017927832806        -0.458556576727\n     H        -1.081490853079        -0.649321462535        -0.476482086974\n     H         1.577986390232         0.044513996862         0.142514279592\n","xyz");
+	viewergrid_1673951442357811[0][2].addModel("6\n\n     C        -0.355338295061         0.015832253296         0.022623869829\n     O         0.957130783496         0.544496756944        -0.204029530782\n     H        -0.479565645795        -0.368664416163         1.040410925550\n     H        -0.607609510888        -0.787365989746        -0.677656188432\n     H        -1.069087493005         0.828785331979        -0.122302379295\n     H         1.554469486523        -0.233087881063        -0.059049636847\n","xyz");
+	viewergrid_1673951442357811[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_1673951442357811[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_1673951442357811[0][2].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewergrid_1673951442357811[0][0].setStyle({"stick": {}});
+	viewergrid_1673951442357811[0][1].setStyle({"stick": {}});
+	viewergrid_1673951442357811[0][2].setStyle({"stick": {}});
+viewergrid_1673951442357811[0][2].render();
+viewergrid_1673951442357811[0][1].render();
+viewergrid_1673951442357811[0][0].render();
 });
 </script></div></div>
 </div>
-<p>The distance matrices can be compared using functionalities from RDfit:</p>
+<p>These structures are all very similar, featuring, <em>e.g</em>, the staggered H-O-C-H dihedral. To better see any differences in the structures, the distance matrices can be calculated  using functionalities from RDfit:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From UFF:&#39;</span><span class="p">)</span>
@@ -1434,7 +1396,8 @@ From HF:
 </div>
 </div>
 </div>
-<p>In order to see differences more clearly, you can print the difference matrices or the maximal absolute deviation (provided that the order of atoms is the same):</p>
+<p>This gives the the distances between all pairs of atoms, as expressed in Å.</p>
+<p>As long as the atom order is consistent (which it here is), we can print the differences in distance matrices, or maximal absolute difference:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Difference between HF and xTB:&#39;</span><span class="p">)</span>
@@ -1460,10 +1423,10 @@ Maximal absolute difference between HF and xTB:
 </div>
 </div>
 </div>
-<p>For large systems, the bond length differences will propagate along the molecule, and it may thus be more relevant to look at <em>relative</em> differences:</p>
+<p>The largest difference is thus seen to be 0.04 Å, between atoms 2 and 5. These atoms are the oxygen and one hydrogen from CH<span class="math notranslate nohighlight">\(_4\)</span>, which has a total distance of 2.05 Å. As any pair-wise differences will propagate along the molecule, it may be more relevant to look at <em>relative</em> differences:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># replace the diagonal elements (0) with a large number to avoid nan</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># replace the diagonal elements (zeros) with a large number to avoid nan</span>
 <span class="n">dm_tmp</span> <span class="o">=</span> <span class="n">dm_hf</span> <span class="o">+</span> <span class="mf">1e10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dm_hf</span><span class="p">)))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Relative difference between HF and xTB:&#39;</span><span class="p">)</span>
@@ -1489,6 +1452,7 @@ Maximal relative difference between HF and xTB:
 </div>
 </div>
 </div>
+<p>Now we see that the largest <em>relative</em> difference in atom-pair distance is between atoms 2 and 6, which correspond to the oxygen and the hydrogen directly connected to the oxygen. With this, we have thus found the largest relative deviation in a bond length, which is in most cases more important than in distances between atoms at different sites.</p>
 </section>
 </section>
 
