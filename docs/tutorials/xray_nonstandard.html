@@ -615,7 +615,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="../env/embedding.html">
-   Embedding
+   Embedding potentials
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
   <label for="toctree-checkbox-18">
@@ -1380,7 +1380,7 @@ E^{[2]}X = {\lambda} S^{[2]}X
 f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 \end{split}\]</div>
 <p>This will now be done for water, where the ground state is calculated as:</p>
-<div class="cell tag_remove-output docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
@@ -1388,15 +1388,961 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 <span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">basis_str</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_str</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
+<span class="n">vlx_mol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">vlx_bas</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vlx_mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;conv_thresh&quot;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;b3lyp&quot;</span><span class="p">}</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">vlx_mol</span><span class="p">,</span> <span class="n">vlx_bas</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem_test/lib/python3.9/site-packages/veloxchem/basis/6-31G
+                                                                                                                          
+                                              Molecular Basis (Atomic Basis)                                              
+                                             ================================                                             
+                                                                                                                          
+                               Basis: 6-31G                                                                               
+                                                                                                                          
+                               Atom Contracted GTOs           Primitive GTOs                                              
+                                                                                                                          
+                                O   (3S,2P)                   (10S,4P)                                                    
+                                H   (2S)                      (4S)                                                        
+                                                                                                                          
+                               Contracted Basis Functions : 13                                                            
+                               Primitive Basis Functions  : 30                                                            
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                            Self Consistent Field Driver Setup                                            
+                                           ====================================                                           
+                                                                                                                          
+                   Wave Function Model             : Spin-Restricted Kohn-Sham                                            
+                   Initial Guess Model             : Superposition of Atomic Densities                                    
+                   Convergence Accelerator         : Two Level Direct Inversion of Iterative Subspace                     
+                   Max. Number of Iterations       : 50                                                                   
+                   Max. Number of Error Vectors    : 10                                                                   
+                   Convergence Threshold           : 1.0e-06                                                              
+                   ERI Screening Scheme            : Cauchy Schwarz + Density                                             
+                   ERI Screening Mode              : Dynamic                                                              
+                   ERI Screening Threshold         : 1.0e-12                                                              
+                   Linear Dependence Threshold     : 1.0e-06                                                              
+                   Exchange-Correlation Functional : B3LYP                                                                
+                   Molecular Grid Level            : 4                                                                    
+                                                                                                                          
+* Info * Nuclear repulsion energy: 9.1561447194 a.u.                                                                      
+                                                                                                                          
+* Info * Molecular grid with 35950 points generated in 0.02 sec.                                                          
+                                                                                                                          
+* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
+* Info * ...done. SCF energy in reduced basis set: -75.983870205311 a.u. Time: 0.05 sec.                                  
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+                                                                                                                          
+* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+                                                                                                                          
+* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               Iter. |    Kohn-Sham Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
+               --------------------------------------------------------------------------------------------               
+                  1       -76.384877806800    0.0000000000      0.05814398      0.01079242      0.00000000                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -76.384691793145    0.0001860137      0.07420609      0.01375856      0.03127560                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -76.385185991166   -0.0004941980      0.00038521      0.00008834      0.01651042                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -76.385186023188   -0.0000000320      0.00007657      0.00002027      0.00029093                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  5       -76.385186023947   -0.0000000008      0.00000194      0.00000051      0.00002930                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  6       -76.385186023948   -0.0000000000      0.00000014      0.00000003      0.00000214                
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+               *** SCF converged in 6 iterations. Time: 0.76 sec.                                                         
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Spin-Restricted Kohn-Sham:                                                                                 
+               --------------------------                                                                                 
+               Total Energy                       :      -76.3851860239 a.u.                                              
+               Electronic Energy                  :      -85.5413307434 a.u.                                              
+               Nuclear Repulsion Energy           :        9.1561447194 a.u.                                              
+               ------------------------------------                                                                       
+               Gradient Norm                      :        0.0000001389 a.u.                                              
+                                                                                                                          
+                                                                                                                          
+               Ground State Information                                                                                   
+               ------------------------                                                                                   
+               Charge of Molecule            :  0.0                                                                       
+               Multiplicity (2S+1)           :  1.0                                                                       
+               Magnetic Quantum Number (M_S) :  0.0                                                                       
+                                                                                                                          
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -19.13380 a.u.                                                                  
+               (   1 O   1s  :    -1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.01751 a.u.                                                                  
+               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.46) (   1 O   3s  :    -0.45)                              
+               (   1 O   1p0 :     0.15) (   2 H   1s  :    -0.15) (   3 H   1s  :    -0.15)                              
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.52917 a.u.                                                                  
+               (   1 O   1p+1:     0.52) (   1 O   2p+1:     0.23) (   2 H   1s  :    -0.27)                              
+               (   2 H   2s  :    -0.15) (   3 H   1s  :     0.27) (   3 H   2s  :     0.15)                              
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.35661 a.u.                                                                  
+               (   1 O   2s  :    -0.20) (   1 O   3s  :    -0.37) (   1 O   1p0 :    -0.54)                              
+               (   1 O   2p0 :    -0.38)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.29214 a.u.                                                                  
+               (   1 O   1p-1:    -0.65) (   1 O   2p-1:    -0.50)                                                        
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.05639 a.u.                                                                  
+               (   1 O   2s  :    -0.15) (   1 O   3s  :    -1.09) (   1 O   1p0 :     0.29)                              
+               (   1 O   2p0 :     0.44) (   2 H   2s  :     0.94) (   3 H   2s  :     0.94)                              
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.14625 a.u.                                                                  
+               (   1 O   1p+1:    -0.42) (   1 O   2p+1:    -0.75) (   2 H   2s  :    -1.28)                              
+               (   3 H   2s  :     1.28)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.80982 a.u.                                                                  
+               (   1 O   1p+1:    -0.20) (   1 O   2p+1:    -0.53) (   2 H   1s  :    -0.97)                              
+               (   2 H   2s  :     0.67) (   3 H   1s  :     0.97) (   3 H   2s  :    -0.67)                              
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.87512 a.u.                                                                  
+               (   1 O   2s  :    -0.18) (   1 O   3s  :     0.28) (   1 O   1p0 :     0.78)                              
+               (   1 O   2p0 :    -0.50) (   2 H   1s  :     0.71) (   2 H   2s  :    -0.59)                              
+               (   3 H   1s  :     0.71) (   3 H   2s  :    -0.59)                                                        
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.88918 a.u.                                                                  
+               (   1 O   1p-1:    -0.96) (   1 O   2p-1:     1.04)                                                        
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;S&#39;: array([[ 1.        ,  0.23368986,  0.16727976,  0.03446908,  0.06872281,
+          0.03446908,  0.06872281,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.23368986,  1.        ,  0.76364081,  0.24635401,  0.37904536,
+          0.24635401,  0.37904536,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.16727976,  0.76364081,  1.        ,  0.4254384 ,  0.68219684,
+          0.4254384 ,  0.68219684,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.03446908,  0.24635401,  0.4254384 ,  1.        ,  0.65829197,
+          0.05097439,  0.22309719,  0.        ,  0.        , -0.1749796 ,
+         -0.35743592, -0.22558965, -0.46081854],
+        [ 0.06872281,  0.37904536,  0.68219684,  0.65829197,  1.        ,
+          0.22309719,  0.51449213,  0.        ,  0.        , -0.09059884,
+         -0.29517246, -0.1168031 , -0.38054637],
+        [ 0.03446908,  0.24635401,  0.4254384 ,  0.05097439,  0.22309719,
+          1.        ,  0.65829197,  0.        ,  0.        , -0.1749796 ,
+         -0.35743592,  0.22558965,  0.46081854],
+        [ 0.06872281,  0.37904536,  0.68219684,  0.22309719,  0.51449213,
+          0.65829197,  1.        ,  0.        ,  0.        , -0.09059884,
+         -0.29517246,  0.1168031 ,  0.38054637],
+        [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  1.        ,  0.50152069,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.        ,  0.50152069,  1.        ,  0.        ,
+          0.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.1749796 , -0.09059884,
+         -0.1749796 , -0.09059884,  0.        ,  0.        ,  1.        ,
+          0.50152069,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.35743592, -0.29517246,
+         -0.35743592, -0.29517246,  0.        ,  0.        ,  0.50152069,
+          1.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        , -0.22558965, -0.1168031 ,
+          0.22558965,  0.1168031 ,  0.        ,  0.        ,  0.        ,
+          0.        ,  1.        ,  0.50152069],
+        [ 0.        ,  0.        ,  0.        , -0.46081854, -0.38054637,
+          0.46081854,  0.38054637,  0.        ,  0.        ,  0.        ,
+          0.        ,  0.50152069,  1.        ]]),
+ &#39;C_alpha&#39;: array([[-9.95037813e-01,  2.09324475e-01, -5.62663131e-18,
+          9.05298520e-02,  1.96437785e-17,  8.80538689e-02,
+          7.21974860e-17, -2.13042416e-15,  3.19290215e-02,
+         -2.78955143e-16, -7.96695787e-02,  1.22275231e-15,
+         -5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01,  3.25330365e-16,
+         -2.01162605e-01, -7.10162684e-17, -1.53140606e-01,
+         -2.02527196e-15,  1.51608628e-14, -1.81748460e-01,
+         -4.66180980e-16,  4.86183554e-01, -5.24055958e-15,
+          1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -1.29859499e-15,
+         -3.73569016e-01, -7.43184607e-18, -1.09036069e+00,
+          5.18758001e-15, -1.55598820e-14,  2.76525348e-01,
+         -7.62566885e-17, -1.05534845e-01, -3.15638293e-15,
+         -2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+          1.42402905e-01, -3.10320725e-17,  9.71729363e-02,
+         -9.67004180e-02, -9.73737667e-01,  7.07856922e-01,
+         -9.84602766e-15, -6.85615256e-01,  1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+          1.04531358e-01,  9.97782461e-17,  9.37004841e-01,
+         -1.28446987e+00,  6.69710064e-01, -5.93528765e-01,
+          6.15063509e-15,  1.88806086e-01,  9.25159402e-01,
+          6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+          1.42402905e-01,  1.04744194e-16,  9.71729363e-02,
+          9.67004180e-02,  9.73737667e-01,  7.07856922e-01,
+         -1.23427667e-14, -6.85615256e-01, -1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+          1.04531358e-01, -1.45455033e-16,  9.37004841e-01,
+          1.28446987e+00, -6.69710064e-01, -5.93528765e-01,
+          1.05153084e-14,  1.88806086e-01, -9.25159402e-01,
+          6.21169757e-01],
+        [ 1.52314312e-17, -9.45299349e-17, -1.72404888e-16,
+          5.01050198e-16, -6.46307304e-01,  1.04146428e-16,
+         -9.80052667e-17, -9.58874023e-16, -1.42704484e-14,
+         -9.58297064e-01, -7.56525856e-16, -1.62150347e-15,
+         -2.13111601e-15],
+        [ 5.37060909e-17,  1.42361410e-16, -4.95447565e-17,
+          2.67986536e-16, -5.04930058e-01,  2.50479345e-17,
+          5.86982738e-17,  1.05419406e-15,  1.55469627e-14,
+          1.03975576e+00,  8.00538079e-16,  1.81657320e-15,
+          2.58536475e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -3.65319952e-16,
+         -5.44806793e-01, -3.02914549e-16,  2.90699224e-01,
+         -1.46408312e-15, -2.12741177e-14,  7.84569882e-01,
+         -1.17078093e-14,  5.68420867e-01, -7.95140727e-15,
+         -1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  5.39569653e-16,
+         -3.75935770e-01, -2.17545319e-16,  4.44924715e-01,
+         -3.23777548e-17,  6.72847844e-15, -4.98615138e-01,
+          7.14020961e-15, -1.11190298e+00,  1.76956392e-14,
+          8.70248963e-01],
+        [ 5.43331293e-18,  2.67988692e-16,  5.16345050e-01,
+         -9.73955162e-17, -1.03414186e-16, -8.83450664e-16,
+         -4.18783419e-01, -1.96356299e-01, -5.18387867e-15,
+          1.79316533e-15, -1.35312472e-14, -9.84633648e-01,
+          1.54333700e-15],
+        [-1.71875934e-16, -4.41483210e-16,  2.34696122e-01,
+          8.07761038e-17, -2.30993786e-16, -3.62839242e-15,
+         -7.54724923e-01, -5.26353050e-01, -1.87406653e-14,
+         -1.86372421e-15,  2.90071334e-14,  1.66403161e+00,
+         -1.98547967e-15]]),
+ &#39;C_beta&#39;: array([[-9.95037813e-01,  2.09324475e-01, -5.62663131e-18,
+          9.05298520e-02,  1.96437785e-17,  8.80538689e-02,
+          7.21974860e-17, -2.13042416e-15,  3.19290215e-02,
+         -2.78955143e-16, -7.96695787e-02,  1.22275231e-15,
+         -5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01,  3.25330365e-16,
+         -2.01162605e-01, -7.10162684e-17, -1.53140606e-01,
+         -2.02527196e-15,  1.51608628e-14, -1.81748460e-01,
+         -4.66180980e-16,  4.86183554e-01, -5.24055958e-15,
+          1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -1.29859499e-15,
+         -3.73569016e-01, -7.43184607e-18, -1.09036069e+00,
+          5.18758001e-15, -1.55598820e-14,  2.76525348e-01,
+         -7.62566885e-17, -1.05534845e-01, -3.15638293e-15,
+         -2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+          1.42402905e-01, -3.10320725e-17,  9.71729363e-02,
+         -9.67004180e-02, -9.73737667e-01,  7.07856922e-01,
+         -9.84602766e-15, -6.85615256e-01,  1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+          1.04531358e-01,  9.97782461e-17,  9.37004841e-01,
+         -1.28446987e+00,  6.69710064e-01, -5.93528765e-01,
+          6.15063509e-15,  1.88806086e-01,  9.25159402e-01,
+          6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+          1.42402905e-01,  1.04744194e-16,  9.71729363e-02,
+          9.67004180e-02,  9.73737667e-01,  7.07856922e-01,
+         -1.23427667e-14, -6.85615256e-01, -1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+          1.04531358e-01, -1.45455033e-16,  9.37004841e-01,
+          1.28446987e+00, -6.69710064e-01, -5.93528765e-01,
+          1.05153084e-14,  1.88806086e-01, -9.25159402e-01,
+          6.21169757e-01],
+        [ 1.52314312e-17, -9.45299349e-17, -1.72404888e-16,
+          5.01050198e-16, -6.46307304e-01,  1.04146428e-16,
+         -9.80052667e-17, -9.58874023e-16, -1.42704484e-14,
+         -9.58297064e-01, -7.56525856e-16, -1.62150347e-15,
+         -2.13111601e-15],
+        [ 5.37060909e-17,  1.42361410e-16, -4.95447565e-17,
+          2.67986536e-16, -5.04930058e-01,  2.50479345e-17,
+          5.86982738e-17,  1.05419406e-15,  1.55469627e-14,
+          1.03975576e+00,  8.00538079e-16,  1.81657320e-15,
+          2.58536475e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -3.65319952e-16,
+         -5.44806793e-01, -3.02914549e-16,  2.90699224e-01,
+         -1.46408312e-15, -2.12741177e-14,  7.84569882e-01,
+         -1.17078093e-14,  5.68420867e-01, -7.95140727e-15,
+         -1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  5.39569653e-16,
+         -3.75935770e-01, -2.17545319e-16,  4.44924715e-01,
+         -3.23777548e-17,  6.72847844e-15, -4.98615138e-01,
+          7.14020961e-15, -1.11190298e+00,  1.76956392e-14,
+          8.70248963e-01],
+        [ 5.43331293e-18,  2.67988692e-16,  5.16345050e-01,
+         -9.73955162e-17, -1.03414186e-16, -8.83450664e-16,
+         -4.18783419e-01, -1.96356299e-01, -5.18387867e-15,
+          1.79316533e-15, -1.35312472e-14, -9.84633648e-01,
+          1.54333700e-15],
+        [-1.71875934e-16, -4.41483210e-16,  2.34696122e-01,
+          8.07761038e-17, -2.30993786e-16, -3.62839242e-15,
+         -7.54724923e-01, -5.26353050e-01, -1.87406653e-14,
+         -1.86372421e-15,  2.90071334e-14,  1.66403161e+00,
+         -1.98547967e-15]]),
+ &#39;E_alpha&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;E_beta&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;D_alpha&#39;: array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+         -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+          1.24811384e-02, -2.27919628e-18, -9.29781655e-18,
+         -1.96368190e-02, -1.67654563e-02,  3.89677556e-17,
+          8.46019119e-17],
+        [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+          4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+         -2.08559965e-02, -1.14702186e-17, -8.55868292e-17,
+          3.88790948e-02,  4.34172259e-02,  6.31123506e-17,
+          2.69692834e-16],
+        [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+          1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+         -3.90068263e-02, -1.39723279e-16, -1.59581087e-16,
+          1.35153028e-01,  1.09149806e-01, -7.54411179e-16,
+         -1.38959676e-16],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+         -2.51639193e-02,  1.51708135e-16,  4.55730630e-17,
+         -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+         -6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+         -1.15888427e-02,  1.37339543e-17, -1.51235667e-17,
+         -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+         -3.52240640e-02],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+         -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+          5.49917609e-02, -2.81218814e-17, -4.94449798e-17,
+         -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+          6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+         -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+          3.34613955e-02,  1.20479684e-16,  9.38303656e-17,
+         -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+          3.52240640e-02],
+        [-2.27919628e-18, -1.14702186e-17, -1.39723279e-16,
+          1.51708135e-16,  1.37339543e-17, -2.81218814e-17,
+          1.20479684e-16,  4.17713131e-01,  3.26339985e-01,
+         -9.15643582e-17, -5.43816962e-17, -2.21830665e-17,
+          1.08830213e-16],
+        [-9.29781655e-18, -8.55868292e-17, -1.59581087e-16,
+          4.55730630e-17, -1.51235667e-17, -4.94449798e-17,
+          9.38303656e-17,  3.26339985e-01,  2.54954364e-01,
+          2.87522699e-17,  1.88613438e-17,  2.66347412e-17,
+          1.05007744e-16],
+        [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+         -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+         -5.69844320e-02, -9.15643582e-17,  2.87522699e-17,
+          3.20019261e-01,  2.15406731e-01, -9.47386386e-17,
+         -1.97370986e-16],
+        [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+         -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+         -3.93016483e-02, -5.43816962e-17,  1.88613438e-17,
+          2.15406731e-01,  1.46178518e-01,  3.33854483e-16,
+          6.60096797e-17],
+        [ 3.89677556e-17,  6.31123506e-17, -7.54411179e-16,
+         -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+          7.74949791e-02, -2.21830665e-17,  2.66347412e-17,
+         -9.47386386e-17,  3.33854483e-16,  2.66612210e-01,
+          1.21184181e-01],
+        [ 8.46019119e-17,  2.69692834e-16, -1.38959676e-16,
+         -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+          3.52240640e-02,  1.08830213e-16,  1.05007744e-16,
+         -1.97370986e-16,  6.60096797e-17,  1.21184181e-01,
+          5.50822697e-02]]),
+ &#39;D_beta&#39;: array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+         -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+          1.24811384e-02, -2.27919628e-18, -9.29781655e-18,
+         -1.96368190e-02, -1.67654563e-02,  3.89677556e-17,
+          8.46019119e-17],
+        [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+          4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+         -2.08559965e-02, -1.14702186e-17, -8.55868292e-17,
+          3.88790948e-02,  4.34172259e-02,  6.31123506e-17,
+          2.69692834e-16],
+        [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+          1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+         -3.90068263e-02, -1.39723279e-16, -1.59581087e-16,
+          1.35153028e-01,  1.09149806e-01, -7.54411179e-16,
+         -1.38959676e-16],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+         -2.51639193e-02,  1.51708135e-16,  4.55730630e-17,
+         -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+         -6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+         -1.15888427e-02,  1.37339543e-17, -1.51235667e-17,
+         -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+         -3.52240640e-02],
+        [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+         -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+          5.49917609e-02, -2.81218814e-17, -4.94449798e-17,
+         -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+          6.26724502e-02],
+        [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+         -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+          3.34613955e-02,  1.20479684e-16,  9.38303656e-17,
+         -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+          3.52240640e-02],
+        [-2.27919628e-18, -1.14702186e-17, -1.39723279e-16,
+          1.51708135e-16,  1.37339543e-17, -2.81218814e-17,
+          1.20479684e-16,  4.17713131e-01,  3.26339985e-01,
+         -9.15643582e-17, -5.43816962e-17, -2.21830665e-17,
+          1.08830213e-16],
+        [-9.29781655e-18, -8.55868292e-17, -1.59581087e-16,
+          4.55730630e-17, -1.51235667e-17, -4.94449798e-17,
+          9.38303656e-17,  3.26339985e-01,  2.54954364e-01,
+          2.87522699e-17,  1.88613438e-17,  2.66347412e-17,
+          1.05007744e-16],
+        [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+         -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+         -5.69844320e-02, -9.15643582e-17,  2.87522699e-17,
+          3.20019261e-01,  2.15406731e-01, -9.47386386e-17,
+         -1.97370986e-16],
+        [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+         -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+         -3.93016483e-02, -5.43816962e-17,  1.88613438e-17,
+          2.15406731e-01,  1.46178518e-01,  3.33854483e-16,
+          6.60096797e-17],
+        [ 3.89677556e-17,  6.31123506e-17, -7.54411179e-16,
+         -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+          7.74949791e-02, -2.21830665e-17,  2.66347412e-17,
+         -9.47386386e-17,  3.33854483e-16,  2.66612210e-01,
+          1.21184181e-01],
+        [ 8.46019119e-17,  2.69692834e-16, -1.38959676e-16,
+         -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+          3.52240640e-02,  1.08830213e-16,  1.05007744e-16,
+         -1.97370986e-16,  6.60096797e-17,  1.21184181e-01,
+          5.50822697e-02]]),
+ &#39;F_alpha&#39;: array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+         -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+         -1.40703146e+00, -1.36051938e-17,  6.30636134e-18,
+          2.57802936e-02,  3.64412982e-03, -3.69082359e-18,
+         -4.75667666e-18],
+        [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+         -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+         -9.22225067e-01, -2.51200162e-17, -9.84038811e-18,
+          1.26494115e-01,  8.25087352e-02,  2.85470240e-17,
+         -2.91982562e-17],
+        [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+         -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+         -7.67554586e-01, -3.37314805e-17, -5.02045255e-17,
+          1.26327646e-01,  1.80800582e-01,  3.71790097e-17,
+         -1.90744285e-17],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+         -3.07266550e-01, -2.49061574e-17, -7.28946950e-18,
+          2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+          2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+         -4.38484232e-01, -2.30407791e-17, -3.26412267e-17,
+          1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+          9.41600426e-02],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+         -5.34801454e-01, -2.65792084e-17, -5.39274233e-18,
+          2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+         -2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+         -4.94682557e-01, -3.79014400e-17, -4.95728375e-17,
+          1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+         -9.41600426e-02],
+        [-1.36051938e-17, -2.51200162e-17, -3.37314805e-17,
+         -2.49061574e-17, -2.30407791e-17, -2.65792084e-17,
+         -3.79014400e-17, -6.67116218e-02, -4.35060956e-01,
+          5.10414060e-17,  2.83854728e-17,  3.75739031e-18,
+         -3.37291478e-18],
+        [ 6.30636134e-18, -9.84038811e-18, -5.02045255e-17,
+         -7.28946950e-18, -3.26412267e-17, -5.39274233e-18,
+         -4.95728375e-17, -4.35060956e-01,  7.71982166e-02,
+          1.28970850e-17,  7.25562805e-18,  7.55911739e-20,
+         -2.52430444e-17],
+        [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+          2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+          1.92300286e-01,  5.10414060e-17,  1.28970850e-17,
+         -1.01075294e-01, -4.80167092e-01, -1.08420217e-18,
+         -1.31730564e-17],
+        [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+          2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+          1.73387325e-01,  2.83854728e-17,  7.25562805e-18,
+         -4.80167092e-01, -4.19059218e-02,  8.56519716e-18,
+         -4.16740210e-18],
+        [-3.69082359e-18,  2.85470240e-17,  3.71790097e-17,
+          3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+         -1.70310487e-01,  3.75739031e-18,  7.55911739e-20,
+         -1.08420217e-18,  8.56519716e-18, -1.25526972e-01,
+         -5.09617939e-01],
+        [-4.75667666e-18, -2.91982562e-17, -1.90744285e-17,
+          2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+         -9.41600426e-02, -3.37291478e-18, -2.52430444e-17,
+         -1.31730564e-17, -4.16740210e-18, -5.09617939e-01,
+         -1.20884378e-01]]),
+ &#39;F_beta&#39;: array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+         -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+         -1.40703146e+00, -1.36051938e-17,  6.30636134e-18,
+          2.57802936e-02,  3.64412982e-03, -3.69082359e-18,
+         -4.75667666e-18],
+        [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+         -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+         -9.22225067e-01, -2.51200162e-17, -9.84038811e-18,
+          1.26494115e-01,  8.25087352e-02,  2.85470240e-17,
+         -2.91982562e-17],
+        [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+         -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+         -7.67554586e-01, -3.37314805e-17, -5.02045255e-17,
+          1.26327646e-01,  1.80800582e-01,  3.71790097e-17,
+         -1.90744285e-17],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+         -3.07266550e-01, -2.49061574e-17, -7.28946950e-18,
+          2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+          2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+         -4.38484232e-01, -2.30407791e-17, -3.26412267e-17,
+          1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+          9.41600426e-02],
+        [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+         -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+         -5.34801454e-01, -2.65792084e-17, -5.39274233e-18,
+          2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+         -2.47411863e-01],
+        [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+         -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+         -4.94682557e-01, -3.79014400e-17, -4.95728375e-17,
+          1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+         -9.41600426e-02],
+        [-1.36051938e-17, -2.51200162e-17, -3.37314805e-17,
+         -2.49061574e-17, -2.30407791e-17, -2.65792084e-17,
+         -3.79014400e-17, -6.67116218e-02, -4.35060956e-01,
+          5.10414060e-17,  2.83854728e-17,  3.75739031e-18,
+         -3.37291478e-18],
+        [ 6.30636134e-18, -9.84038811e-18, -5.02045255e-17,
+         -7.28946950e-18, -3.26412267e-17, -5.39274233e-18,
+         -4.95728375e-17, -4.35060956e-01,  7.71982166e-02,
+          1.28970850e-17,  7.25562805e-18,  7.55911739e-20,
+         -2.52430444e-17],
+        [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+          2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+          1.92300286e-01,  5.10414060e-17,  1.28970850e-17,
+         -1.01075294e-01, -4.80167092e-01, -1.08420217e-18,
+         -1.31730564e-17],
+        [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+          2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+          1.73387325e-01,  2.83854728e-17,  7.25562805e-18,
+         -4.80167092e-01, -4.19059218e-02,  8.56519716e-18,
+         -4.16740210e-18],
+        [-3.69082359e-18,  2.85470240e-17,  3.71790097e-17,
+          3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+         -1.70310487e-01,  3.75739031e-18,  7.55911739e-20,
+         -1.08420217e-18,  8.56519716e-18, -1.25526972e-01,
+         -5.09617939e-01],
+        [-4.75667666e-18, -2.91982562e-17, -1.90744285e-17,
+          2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+         -9.41600426e-02, -3.37291478e-18, -2.52430444e-17,
+         -1.31730564e-17, -4.16740210e-18, -5.09617939e-01,
+         -1.20884378e-01]]),
+ &#39;C&#39;: array([[-9.95037813e-01,  2.09324475e-01, -5.62663131e-18,
+          9.05298520e-02,  1.96437785e-17,  8.80538689e-02,
+          7.21974860e-17, -2.13042416e-15,  3.19290215e-02,
+         -2.78955143e-16, -7.96695787e-02,  1.22275231e-15,
+         -5.36983695e-02],
+        [-2.79205309e-02, -4.63866616e-01,  3.25330365e-16,
+         -2.01162605e-01, -7.10162684e-17, -1.53140606e-01,
+         -2.02527196e-15,  1.51608628e-14, -1.81748460e-01,
+         -4.66180980e-16,  4.86183554e-01, -5.24055958e-15,
+          1.66559672e+00],
+        [ 1.31627959e-02, -4.49062039e-01, -1.29859499e-15,
+         -3.73569016e-01, -7.43184607e-18, -1.09036069e+00,
+          5.18758001e-15, -1.55598820e-14,  2.76525348e-01,
+         -7.62566885e-17, -1.05534845e-01, -3.15638293e-15,
+         -2.77072792e+00],
+        [-1.18948451e-04, -1.50896921e-01, -2.67036582e-01,
+          1.42402905e-01, -3.10320725e-17,  9.71729363e-02,
+         -9.67004180e-02, -9.73737667e-01,  7.07856922e-01,
+         -9.84602766e-15, -6.85615256e-01,  1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04, -1.50083707e-01,
+          1.04531358e-01,  9.97782461e-17,  9.37004841e-01,
+         -1.28446987e+00,  6.69710064e-01, -5.93528765e-01,
+          6.15063509e-15,  1.88806086e-01,  9.25159402e-01,
+          6.21169757e-01],
+        [-1.18948451e-04, -1.50896921e-01,  2.67036582e-01,
+          1.42402905e-01,  1.04744194e-16,  9.71729363e-02,
+          9.67004180e-02,  9.73737667e-01,  7.07856922e-01,
+         -1.23427667e-14, -6.85615256e-01, -1.55532747e-02,
+          4.78776543e-01],
+        [-3.07199664e-03, -1.85467125e-04,  1.50083707e-01,
+          1.04531358e-01, -1.45455033e-16,  9.37004841e-01,
+          1.28446987e+00, -6.69710064e-01, -5.93528765e-01,
+          1.05153084e-14,  1.88806086e-01, -9.25159402e-01,
+          6.21169757e-01],
+        [ 1.52314312e-17, -9.45299349e-17, -1.72404888e-16,
+          5.01050198e-16, -6.46307304e-01,  1.04146428e-16,
+         -9.80052667e-17, -9.58874023e-16, -1.42704484e-14,
+         -9.58297064e-01, -7.56525856e-16, -1.62150347e-15,
+         -2.13111601e-15],
+        [ 5.37060909e-17,  1.42361410e-16, -4.95447565e-17,
+          2.67986536e-16, -5.04930058e-01,  2.50479345e-17,
+          5.86982738e-17,  1.05419406e-15,  1.55469627e-14,
+          1.03975576e+00,  8.00538079e-16,  1.81657320e-15,
+          2.58536475e-15],
+        [ 2.20981599e-03,  1.52315250e-01, -3.65319952e-16,
+         -5.44806793e-01, -3.02914549e-16,  2.90699224e-01,
+         -1.46408312e-15, -2.12741177e-14,  7.84569882e-01,
+         -1.17078093e-14,  5.68420867e-01, -7.95140727e-15,
+         -1.77998267e-01],
+        [-2.71350028e-03,  6.95949096e-02,  5.39569653e-16,
+         -3.75935770e-01, -2.17545319e-16,  4.44924715e-01,
+         -3.23777548e-17,  6.72847844e-15, -4.98615138e-01,
+          7.14020961e-15, -1.11190298e+00,  1.76956392e-14,
+          8.70248963e-01],
+        [ 5.43331293e-18,  2.67988692e-16,  5.16345050e-01,
+         -9.73955162e-17, -1.03414186e-16, -8.83450664e-16,
+         -4.18783419e-01, -1.96356299e-01, -5.18387867e-15,
+          1.79316533e-15, -1.35312472e-14, -9.84633648e-01,
+          1.54333700e-15],
+        [-1.71875934e-16, -4.41483210e-16,  2.34696122e-01,
+          8.07761038e-17, -2.30993786e-16, -3.62839242e-15,
+         -7.54724923e-01, -5.26353050e-01, -1.87406653e-14,
+         -1.86372421e-15,  2.90071334e-14,  1.66403161e+00,
+         -1.98547967e-15]]),
+ &#39;E&#39;: array([-19.1337955 ,  -1.0175113 ,  -0.52917293,  -0.35660717,
+         -0.29213983,   0.05639149,   0.1462475 ,   0.80981525,
+          0.8751247 ,   0.88917993,   0.95740609,   1.06818555,
+          1.42290431]),
+ &#39;D&#39;: (array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+          -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+           1.24811384e-02, -2.27919628e-18, -9.29781655e-18,
+          -1.96368190e-02, -1.67654563e-02,  3.89677556e-17,
+           8.46019119e-17],
+         [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+           4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+          -2.08559965e-02, -1.14702186e-17, -8.55868292e-17,
+           3.88790948e-02,  4.34172259e-02,  6.31123506e-17,
+           2.69692834e-16],
+         [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+           1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+          -3.90068263e-02, -1.39723279e-16, -1.59581087e-16,
+           1.35153028e-01,  1.09149806e-01, -7.54411179e-16,
+          -1.38959676e-16],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+           1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+          -2.51639193e-02,  1.51708135e-16,  4.55730630e-17,
+          -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+          -6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+           5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+          -1.15888427e-02,  1.37339543e-17, -1.51235667e-17,
+          -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+          -3.52240640e-02],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+           5.49917609e-02, -2.81218814e-17, -4.94449798e-17,
+          -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+           6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+           3.34613955e-02,  1.20479684e-16,  9.38303656e-17,
+          -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+           3.52240640e-02],
+         [-2.27919628e-18, -1.14702186e-17, -1.39723279e-16,
+           1.51708135e-16,  1.37339543e-17, -2.81218814e-17,
+           1.20479684e-16,  4.17713131e-01,  3.26339985e-01,
+          -9.15643582e-17, -5.43816962e-17, -2.21830665e-17,
+           1.08830213e-16],
+         [-9.29781655e-18, -8.55868292e-17, -1.59581087e-16,
+           4.55730630e-17, -1.51235667e-17, -4.94449798e-17,
+           9.38303656e-17,  3.26339985e-01,  2.54954364e-01,
+           2.87522699e-17,  1.88613438e-17,  2.66347412e-17,
+           1.05007744e-16],
+         [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+          -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+          -5.69844320e-02, -9.15643582e-17,  2.87522699e-17,
+           3.20019261e-01,  2.15406731e-01, -9.47386386e-17,
+          -1.97370986e-16],
+         [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+          -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+          -3.93016483e-02, -5.43816962e-17,  1.88613438e-17,
+           2.15406731e-01,  1.46178518e-01,  3.33854483e-16,
+           6.60096797e-17],
+         [ 3.89677556e-17,  6.31123506e-17, -7.54411179e-16,
+          -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+           7.74949791e-02, -2.21830665e-17,  2.66347412e-17,
+          -9.47386386e-17,  3.33854483e-16,  2.66612210e-01,
+           1.21184181e-01],
+         [ 8.46019119e-17,  2.69692834e-16, -1.38959676e-16,
+          -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+           3.52240640e-02,  1.08830213e-16,  1.05007744e-16,
+          -1.97370986e-16,  6.60096797e-17,  1.21184181e-01,
+           5.50822697e-02]]),
+  array([[ 1.04211264e+00, -8.75278730e-02, -1.40916303e-01,
+          -1.85763467e-02,  1.24811384e-02, -1.85763467e-02,
+           1.24811384e-02, -2.27919628e-18, -9.29781655e-18,
+          -1.96368190e-02, -1.67654563e-02,  3.89677556e-17,
+           8.46019119e-17],
+         [-8.75278730e-02,  2.56418187e-01,  2.83085492e-01,
+           4.13532260e-02, -2.08559965e-02,  4.13532260e-02,
+          -2.08559965e-02, -1.14702186e-17, -8.55868292e-17,
+           3.88790948e-02,  4.34172259e-02,  6.31123506e-17,
+           2.69692834e-16],
+         [-1.40916303e-01,  2.83085492e-01,  3.41383783e-01,
+           1.45632003e-02, -3.90068263e-02,  1.45632003e-02,
+          -3.90068263e-02, -1.39723279e-16, -1.59581087e-16,
+           1.35153028e-01,  1.09149806e-01, -7.54411179e-16,
+          -1.38959676e-16],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+           1.14357018e-01,  5.49917609e-02, -2.82600539e-02,
+          -2.51639193e-02,  1.51708135e-16,  4.55730630e-17,
+          -1.00566235e-01, -6.40356805e-02, -1.37883017e-01,
+          -6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+           5.49917609e-02,  3.34613955e-02, -2.51639193e-02,
+          -1.15888427e-02,  1.37339543e-17, -1.51235667e-17,
+          -5.69844320e-02, -3.93016483e-02, -7.74949791e-02,
+          -3.52240640e-02],
+         [-1.85763467e-02,  4.13532260e-02,  1.45632003e-02,
+          -2.82600539e-02, -2.51639193e-02,  1.14357018e-01,
+           5.49917609e-02, -2.81218814e-17, -4.94449798e-17,
+          -1.00566235e-01, -6.40356805e-02,  1.37883017e-01,
+           6.26724502e-02],
+         [ 1.24811384e-02, -2.08559965e-02, -3.90068263e-02,
+          -2.51639193e-02, -1.15888427e-02,  5.49917609e-02,
+           3.34613955e-02,  1.20479684e-16,  9.38303656e-17,
+          -5.69844320e-02, -3.93016483e-02,  7.74949791e-02,
+           3.52240640e-02],
+         [-2.27919628e-18, -1.14702186e-17, -1.39723279e-16,
+           1.51708135e-16,  1.37339543e-17, -2.81218814e-17,
+           1.20479684e-16,  4.17713131e-01,  3.26339985e-01,
+          -9.15643582e-17, -5.43816962e-17, -2.21830665e-17,
+           1.08830213e-16],
+         [-9.29781655e-18, -8.55868292e-17, -1.59581087e-16,
+           4.55730630e-17, -1.51235667e-17, -4.94449798e-17,
+           9.38303656e-17,  3.26339985e-01,  2.54954364e-01,
+           2.87522699e-17,  1.88613438e-17,  2.66347412e-17,
+           1.05007744e-16],
+         [-1.96368190e-02,  3.88790948e-02,  1.35153028e-01,
+          -1.00566235e-01, -5.69844320e-02, -1.00566235e-01,
+          -5.69844320e-02, -9.15643582e-17,  2.87522699e-17,
+           3.20019261e-01,  2.15406731e-01, -9.47386386e-17,
+          -1.97370986e-16],
+         [-1.67654563e-02,  4.34172259e-02,  1.09149806e-01,
+          -6.40356805e-02, -3.93016483e-02, -6.40356805e-02,
+          -3.93016483e-02, -5.43816962e-17,  1.88613438e-17,
+           2.15406731e-01,  1.46178518e-01,  3.33854483e-16,
+           6.60096797e-17],
+         [ 3.89677556e-17,  6.31123506e-17, -7.54411179e-16,
+          -1.37883017e-01, -7.74949791e-02,  1.37883017e-01,
+           7.74949791e-02, -2.21830665e-17,  2.66347412e-17,
+          -9.47386386e-17,  3.33854483e-16,  2.66612210e-01,
+           1.21184181e-01],
+         [ 8.46019119e-17,  2.69692834e-16, -1.38959676e-16,
+          -6.26724502e-02, -3.52240640e-02,  6.26724502e-02,
+           3.52240640e-02,  1.08830213e-16,  1.05007744e-16,
+          -1.97370986e-16,  6.60096797e-17,  1.21184181e-01,
+           5.50822697e-02]])),
+ &#39;F&#39;: (array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+          -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+          -1.40703146e+00, -1.36051938e-17,  6.30636134e-18,
+           2.57802936e-02,  3.64412982e-03, -3.69082359e-18,
+          -4.75667666e-18],
+         [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+          -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+          -9.22225067e-01, -2.51200162e-17, -9.84038811e-18,
+           1.26494115e-01,  8.25087352e-02,  2.85470240e-17,
+          -2.91982562e-17],
+         [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+          -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+          -7.67554586e-01, -3.37314805e-17, -5.02045255e-17,
+           1.26327646e-01,  1.80800582e-01,  3.71790097e-17,
+          -1.90744285e-17],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+          -3.07266550e-01, -2.49061574e-17, -7.28946950e-18,
+           2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+           2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+          -4.38484232e-01, -2.30407791e-17, -3.26412267e-17,
+           1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+           9.41600426e-02],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+          -5.34801454e-01, -2.65792084e-17, -5.39274233e-18,
+           2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+          -2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+          -4.94682557e-01, -3.79014400e-17, -4.95728375e-17,
+           1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+          -9.41600426e-02],
+         [-1.36051938e-17, -2.51200162e-17, -3.37314805e-17,
+          -2.49061574e-17, -2.30407791e-17, -2.65792084e-17,
+          -3.79014400e-17, -6.67116218e-02, -4.35060956e-01,
+           5.10414060e-17,  2.83854728e-17,  3.75739031e-18,
+          -3.37291478e-18],
+         [ 6.30636134e-18, -9.84038811e-18, -5.02045255e-17,
+          -7.28946950e-18, -3.26412267e-17, -5.39274233e-18,
+          -4.95728375e-17, -4.35060956e-01,  7.71982166e-02,
+           1.28970850e-17,  7.25562805e-18,  7.55911739e-20,
+          -2.52430444e-17],
+         [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+           2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+           1.92300286e-01,  5.10414060e-17,  1.28970850e-17,
+          -1.01075294e-01, -4.80167092e-01, -1.08420217e-18,
+          -1.31730564e-17],
+         [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+           2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+           1.73387325e-01,  2.83854728e-17,  7.25562805e-18,
+          -4.80167092e-01, -4.19059218e-02,  8.56519716e-18,
+          -4.16740210e-18],
+         [-3.69082359e-18,  2.85470240e-17,  3.71790097e-17,
+           3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+          -1.70310487e-01,  3.75739031e-18,  7.55911739e-20,
+          -1.08420217e-18,  8.56519716e-18, -1.25526972e-01,
+          -5.09617939e-01],
+         [-4.75667666e-18, -2.91982562e-17, -1.90744285e-17,
+           2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+          -9.41600426e-02, -3.37291478e-18, -2.52430444e-17,
+          -1.31730564e-17, -4.16740210e-18, -5.09617939e-01,
+          -1.20884378e-01]]),
+  array([[-1.91258898e+01, -4.82662082e+00, -3.40415967e+00,
+          -7.14334197e-01, -1.40703146e+00, -7.14334197e-01,
+          -1.40703146e+00, -1.36051938e-17,  6.30636134e-18,
+           2.57802936e-02,  3.64412982e-03, -3.69082359e-18,
+          -4.75667666e-18],
+         [-4.82662082e+00, -1.83704902e+00, -1.75255234e+00,
+          -6.38728611e-01, -9.22225067e-01, -6.38728611e-01,
+          -9.22225067e-01, -2.51200162e-17, -9.84038811e-18,
+           1.26494115e-01,  8.25087352e-02,  2.85470240e-17,
+          -2.91982562e-17],
+         [-3.40415967e+00, -1.75255234e+00, -1.35152998e+00,
+          -5.73972154e-01, -7.67554586e-01, -5.73972154e-01,
+          -7.67554586e-01, -3.37314805e-17, -5.02045255e-17,
+           1.26327646e-01,  1.80800582e-01,  3.71790097e-17,
+          -1.90744285e-17],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -2.17571083e-01, -5.34801454e-01, -1.46098723e-01,
+          -3.07266550e-01, -2.49061574e-17, -7.28946950e-18,
+           2.82878369e-01,  2.10721425e-01,  3.41317338e-01,
+           2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -5.34801454e-01, -4.94682557e-01, -3.07266550e-01,
+          -4.38484232e-01, -2.30407791e-17, -3.26412267e-17,
+           1.92300286e-01,  1.73387325e-01,  1.70310487e-01,
+           9.41600426e-02],
+         [-7.14334197e-01, -6.38728611e-01, -5.73972154e-01,
+          -1.46098723e-01, -3.07266550e-01, -2.17571083e-01,
+          -5.34801454e-01, -2.65792084e-17, -5.39274233e-18,
+           2.82878369e-01,  2.10721425e-01, -3.41317338e-01,
+          -2.47411863e-01],
+         [-1.40703146e+00, -9.22225067e-01, -7.67554586e-01,
+          -3.07266550e-01, -4.38484232e-01, -5.34801454e-01,
+          -4.94682557e-01, -3.79014400e-17, -4.95728375e-17,
+           1.92300286e-01,  1.73387325e-01, -1.70310487e-01,
+          -9.41600426e-02],
+         [-1.36051938e-17, -2.51200162e-17, -3.37314805e-17,
+          -2.49061574e-17, -2.30407791e-17, -2.65792084e-17,
+          -3.79014400e-17, -6.67116218e-02, -4.35060956e-01,
+           5.10414060e-17,  2.83854728e-17,  3.75739031e-18,
+          -3.37291478e-18],
+         [ 6.30636134e-18, -9.84038811e-18, -5.02045255e-17,
+          -7.28946950e-18, -3.26412267e-17, -5.39274233e-18,
+          -4.95728375e-17, -4.35060956e-01,  7.71982166e-02,
+           1.28970850e-17,  7.25562805e-18,  7.55911739e-20,
+          -2.52430444e-17],
+         [ 2.57802936e-02,  1.26494115e-01,  1.26327646e-01,
+           2.82878369e-01,  1.92300286e-01,  2.82878369e-01,
+           1.92300286e-01,  5.10414060e-17,  1.28970850e-17,
+          -1.01075294e-01, -4.80167092e-01, -1.08420217e-18,
+          -1.31730564e-17],
+         [ 3.64412982e-03,  8.25087352e-02,  1.80800582e-01,
+           2.10721425e-01,  1.73387325e-01,  2.10721425e-01,
+           1.73387325e-01,  2.83854728e-17,  7.25562805e-18,
+          -4.80167092e-01, -4.19059218e-02,  8.56519716e-18,
+          -4.16740210e-18],
+         [-3.69082359e-18,  2.85470240e-17,  3.71790097e-17,
+           3.41317338e-01,  1.70310487e-01, -3.41317338e-01,
+          -1.70310487e-01,  3.75739031e-18,  7.55911739e-20,
+          -1.08420217e-18,  8.56519716e-18, -1.25526972e-01,
+          -5.09617939e-01],
+         [-4.75667666e-18, -2.91982562e-17, -1.90744285e-17,
+           2.47411863e-01,  9.41600426e-02, -2.47411863e-01,
+          -9.41600426e-02, -3.37291478e-18, -2.52430444e-17,
+          -1.31730564e-17, -4.16740210e-18, -5.09617939e-01,
+          -1.20884378e-01]]))}
 </pre></div>
 </div>
 </div>
@@ -1412,17 +2358,17 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 <span class="n">rsp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
 <span class="c1"># Electronic Hessian</span>
-<span class="n">E2</span> <span class="o">=</span> <span class="n">lrs</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">lrs</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">vlx_mol</span><span class="p">,</span> <span class="n">vlx_bas</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
 
 <span class="c1"># Property gradients for dipole operator</span>
 <span class="n">V1_x</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span>
-    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
+    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">vlx_mol</span><span class="p">,</span> <span class="n">vlx_bas</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">V1_y</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span>
-    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
+    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">vlx_mol</span><span class="p">,</span> <span class="n">vlx_bas</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">V1_z</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span>
-    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
+    <span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">vlx_mol</span><span class="p">,</span> <span class="n">vlx_bas</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span>
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="c1"># Dimension</span>
@@ -1435,7 +2381,7 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Molecular grid with 35950 points generated in 0.04 sec.                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Molecular grid with 35950 points generated in 0.02 sec.                                                          
                                                                                                                           
 * Info * Processing Fock builds... (batch size: 160)                                                                      
 * Info *   batch 1/1                                                                                                      
@@ -1475,8 +2421,8 @@ f_{osc}^{if} = \frac{2}{3}\cdot \omega_{if}\cdot(T^{\mu})^2
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Number of virtuals</span>
-<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
-<span class="n">nvirt</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span> <span class="o">-</span> <span class="n">nocc</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">vlx_mol</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="n">nvirt</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">vlx_bas</span><span class="p">,</span> <span class="n">vlx_mol</span><span class="p">)</span> <span class="o">-</span> <span class="n">nocc</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">*</span> <span class="n">nvirt</span>
 
 <span class="c1"># CVS space</span>
