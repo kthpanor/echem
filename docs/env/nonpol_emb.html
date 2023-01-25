@@ -50,15 +50,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Polarizable embedding" href="pol_emb.html" />
-    <link rel="prev" title="Embedding" href="embedding.html" />
+    <link rel="prev" title="Embedding potentials" href="embedding.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -615,7 +613,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="embedding.html">
-   Embedding
+   Embedding potentials
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/>
   <label for="toctree-checkbox-18">
@@ -1109,13 +1107,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dipole-moment">
-   Dipole moment
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#free-water-molecule">
-   Free water molecule
+  <a class="reference internal nav-link" href="#gas-phase-water">
+   Gas phase water
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -1124,25 +1117,20 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id1">
+    <a class="reference internal nav-link" href="#dipole-moment">
      Dipole moment
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#qm-mm-system">
-   QM/MM system
+  <a class="reference internal nav-link" href="#liquid-water">
+   Liquid water
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#embedding-potentials">
-     Embedding potentials
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#scf-optimizations">
-     SCF optimizations
+    <a class="reference internal nav-link" href="#embedding-operator">
+     Embedding operator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -1177,13 +1165,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dipole-moment">
-   Dipole moment
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#free-water-molecule">
-   Free water molecule
+  <a class="reference internal nav-link" href="#gas-phase-water">
+   Gas phase water
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -1192,25 +1175,20 @@ title="Print to PDF"
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id1">
+    <a class="reference internal nav-link" href="#dipole-moment">
      Dipole moment
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#qm-mm-system">
-   QM/MM system
+  <a class="reference internal nav-link" href="#liquid-water">
+   Liquid water
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#embedding-potentials">
-     Embedding potentials
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#scf-optimizations">
-     SCF optimizations
+    <a class="reference internal nav-link" href="#embedding-operator">
+     Embedding operator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -1237,19 +1215,31 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="non-polarizable-embedding">
 <h1>Non-polarizable embedding<a class="headerlink" href="#non-polarizable-embedding" title="Permalink to this headline">#</a></h1>
-<p>For a non-polarizable embedding, the interaction energy is given by</p>
+<p>Let us consider a system with <span class="math notranslate nohighlight">\(N\)</span> electrons and <span class="math notranslate nohighlight">\(M\)</span> nuclei in the quantum mechanical (QM) region embedded by a molecular mechanical (MM) region that contains point charges, <span class="math notranslate nohighlight">\(q_s\)</span>, located at site positions <span class="math notranslate nohighlight">\(\mathbf{R}_s\)</span>. In the non-polarizable embedding model, the electrostatic interaction operator between the QM and MM regions is given as</p>
 <div class="math notranslate nohighlight">
 \[
-E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{nuc} ),
+\hat{H}^\mathrm{QM/MM} = V^\mathrm{n,es} +  \sum_{i=1}^N
+\hat{v}^\mathrm{es}(i)
 \]</div>
-<p>where <span class="math notranslate nohighlight">\(\{ q_i^\mathrm{perm}\}\)</span> is the set of permanent charges in MM region, and <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{ele}\)</span> and <span class="math notranslate nohighlight">\(\phi_{i}^\mathrm{nuc}\)</span> are the electrostatic potentials generated by electrons and nuclei, respectively.</p>
-<p>To illustrate this concept, here we consider the QM/MM embedding using the Hartree-Fock method. This is done by considering the energy contributions and dipole moment of a QM water molecule embedded in four MM water molecules. We will include the case of a free molecule, the full pentamer, and the trimers where the embedding donates or accepts two H-bonds. The structures are given and illustrated below:</p>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+V^\mathrm{n,es} =
+\sum_{A=1}^M \sum_s
+\frac{Z_A e \, q_s}{4\pi\varepsilon_0 |\mathbf{R}_A - \mathbf{R}_s|} ; \qquad
+%
+\hat{v}^\mathrm{es} = 
+\sum_s
+\frac{-e q_s}{4\pi\varepsilon_0 |\mathbf{r} - \mathbf{R}_s|}
+\]</div>
+<p>To illustrate the concept, we consider the QM/MM embedding of water in water using the Hartree–Fock method. We determine the energy contributions and dipole moment of a QM water molecule embedded in four MM water molecules i a tetrahedral configuration. The oxygen in the QM region acts as donor and acceptor of two <a class="reference external" href="https://en.wikipedia.org/wiki/Hydrogen_bond">hydrogen bonds</a> each.</p>
+<p>Let us first define the system coordinates and view the system.</p>
 <div class="cell tag_hide-input tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">py3Dmol</span>
 
 <span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
 <span class="s2">water</span>
@@ -1297,27 +1287,26 @@ E_\mathrm{MM/QM} =  \sum_i q_i^\mathrm{perm} (\phi_{i}^\mathrm{ele}+ \phi_{i}^{n
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">donors_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">acceptors_xyz</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">)</span>
+
 <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+
 <span class="c1"># rotate for a better initial view</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16736025735659444"  style="position: relative; width: 700px; height: 400px">
-        <p id="3dmolwarning_16736025735659444" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16746290507028356"  style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_16746290507028356" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1349,44 +1338,24 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
 }
 
-var viewer_16736025735659444 = null;
-var warn = document.getElementById("3dmolwarning_16736025735659444");
+var viewer_16746290507028356 = null;
+var warn = document.getElementById("3dmolwarning_16746290507028356");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16736025735659444 = null;
-viewergrid_16736025735659444 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16736025735659444"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
-viewer_16736025735659444 = viewergrid_16736025735659444[0][0];
-viewergrid_16736025735659444[0][0].zoomTo();viewergrid_16736025735659444[0][1].zoomTo();viewergrid_16736025735659444[1][0].zoomTo();viewergrid_16736025735659444[1][1].zoomTo();	viewergrid_16736025735659444[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736025735659444[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736025735659444[1][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736025735659444[1][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16736025735659444[0][0].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
-	viewergrid_16736025735659444[0][1].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
-	viewergrid_16736025735659444[1][0].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
-	viewergrid_16736025735659444[1][1].addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
-	viewergrid_16736025735659444[0][1].addModel("12\nwater solvent\nO        1.0991810000      2.2167050000      0.2791250000                 \nH        2.2673500000      2.2529740000      0.6013580000                 \nH        0.9984050000      2.8080510000     -0.5840690000                 \nO       -0.8223690000      0.2141140000     -2.3767710000                 \nH       -1.5990410000      0.8408210000     -2.6698860000                 \nH       -0.4683410000      0.4151750000     -1.5365150000                 \nO        1.7377440000     -2.0168380000     -0.4861090000                 \nH        2.0753880000     -2.2446490000     -1.3654140000                 \nH        1.6636970000     -2.7516570000      0.0543720000                 \nO       -1.0758700000     -0.2692330000      2.5139440000                 \nH       -0.5822670000     -0.1887880000      1.5058600000                 \nH       -1.1632420000      0.7082890000      2.8568430000 \n");
-	viewergrid_16736025735659444[1][0].addModel("6\nwater solvent                                  \nO       -0.8223690000      0.2141140000     -2.3767710000                 \nH       -1.5990410000      0.8408210000     -2.6698860000                 \nH       -0.4683410000      0.4151750000     -1.5365150000\nO       -1.0758700000     -0.2692330000      2.5139440000                 \nH       -0.5822670000     -0.1887880000      1.5058600000                 \nH       -1.1632420000      0.7082890000      2.8568430000\n");
-	viewergrid_16736025735659444[1][1].addModel("6\nwater solvent\nO        1.0991810000      2.2167050000      0.2791250000                 \nH        2.2673500000      2.2529740000      0.6013580000                 \nH        0.9984050000      2.8080510000     -0.5840690000\nO        1.7377440000     -2.0168380000     -0.4861090000                 \nH        2.0753880000     -2.2446490000     -1.3654140000                 \nH        1.6636970000     -2.7516570000      0.0543720000              \n");
-	viewergrid_16736025735659444[0][0].setStyle({"stick": {}});
-	viewergrid_16736025735659444[0][1].setStyle({"stick": {}});
-	viewergrid_16736025735659444[1][0].setStyle({"stick": {}});
-	viewergrid_16736025735659444[1][1].setStyle({"stick": {}});
-	viewergrid_16736025735659444[0][0].rotate(45,"x");
-	viewergrid_16736025735659444[0][1].rotate(45,"x");
-	viewergrid_16736025735659444[1][0].rotate(45,"x");
-	viewergrid_16736025735659444[1][1].rotate(45,"x");
-viewergrid_16736025735659444[1][1].render();
-viewergrid_16736025735659444[1][0].render();
-viewergrid_16736025735659444[0][1].render();
-viewergrid_16736025735659444[0][0].render();
+viewer_16746290507028356 = $3Dmol.createViewer(document.getElementById("3dmolviewer_16746290507028356"),{backgroundColor:"white"});
+viewer_16746290507028356.zoomTo();
+	viewer_16746290507028356.addModel("3\nwater\nO        0.0000000000      0.0000000000      0.0000000000                 \nH        0.6891400000      0.8324710000      0.0000000000                 \nH        0.7224340000     -0.8726890000      0.0000000000\n");
+	viewer_16746290507028356.addModel("12\nwater solvent\nO        1.0991810000      2.2167050000      0.2791250000                 \nH        2.2673500000      2.2529740000      0.6013580000                 \nH        0.9984050000      2.8080510000     -0.5840690000                 \nO       -0.8223690000      0.2141140000     -2.3767710000                 \nH       -1.5990410000      0.8408210000     -2.6698860000                 \nH       -0.4683410000      0.4151750000     -1.5365150000                 \nO        1.7377440000     -2.0168380000     -0.4861090000                 \nH        2.0753880000     -2.2446490000     -1.3654140000                 \nH        1.6636970000     -2.7516570000      0.0543720000                 \nO       -1.0758700000     -0.2692330000      2.5139440000                 \nH       -0.5822670000     -0.1887880000      1.5058600000                 \nH       -1.1632420000      0.7082890000      2.8568430000 \n");
+	viewer_16746290507028356.setStyle({"stick": {}});
+	viewer_16746290507028356.setViewStyle({"style": "outline", "color": "black", "width": 0.1});
+	viewer_16746290507028356.rotate(45,"x");
+viewer_16746290507028356.render();
 });
 </script></div></div>
 </div>
-<section id="dipole-moment">
-<h2>Dipole moment<a class="headerlink" href="#dipole-moment" title="Permalink to this headline">#</a></h2>
-<p>The molecular dipole moment is the sum of its electronic and nuclear parts, where the electronic part is the expectation value of a one-electron operator and the nuclear part is obtained as a sum over point charges:</p>
+<p>As a probe of the changes in the electron density of the solute water in the QM region as due to the embedding, we will study the molecular dipole moment. The dipole moment is the sum of its electronic and nuclear parts, where the electronic part is the expectation value of a one-electron operator and the nuclear part is obtained as a sum over point charges:</p>
 <div class="math notranslate nohighlight">
 \[
 \boldsymbol{\mu} = \langle \hat{\boldsymbol{\mu}} \rangle + \boldsymbol{\mu}^\mathrm{n}
@@ -1397,43 +1366,93 @@ viewergrid_16736025735659444[0][0].render();
 \boldsymbol{\mu}^\mathrm{n} = \sum_{A = 1}^M
 Z_A \mathbf{R}_A .
 \]</div>
-<p>With this, we are ready to consider the impact of embedding for the dipole moment of water.</p>
-</section>
-<section id="free-water-molecule">
-<h2>Free water molecule<a class="headerlink" href="#free-water-molecule" title="Permalink to this headline">#</a></h2>
-<p>Examining first the free molecule, the calculation is set up as:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">element_charges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We implement a function to determine the dipole moment given the one-particle density matrix in the atomic orbital (AO) basis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+
+    <span class="n">mu_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mu_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># electronic part</span>
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">)</span>
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_y</span><span class="p">)</span>
+    <span class="n">mu_e</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_z</span><span class="p">)</span>
+
+    <span class="c1"># nuclear part</span>
+    <span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+        <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+        <span class="n">Z_A</span> <span class="o">=</span> <span class="n">element_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
+
+        <span class="n">mu_n</span> <span class="o">+=</span> <span class="n">Z_A</span> <span class="o">*</span> <span class="n">R_A</span>
+
+    <span class="c1"># total dipole moment</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_e</span> <span class="o">+</span> <span class="n">mu_n</span>
+
+    <span class="k">return</span> <span class="n">mu</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="gas-phase-water">
+<h2>Gas phase water<a class="headerlink" href="#gas-phase-water" title="Permalink to this headline">#</a></h2>
+<p>For reference, we determine the properties of an isolated water molecule.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
 
-<span class="n">norb</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>With</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span><span class="w"> </span><span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 24
-Number of doubly occupied molecular orbitals: 5
-Nuclear repulsion energy (in a.u.):  7.964303024713
-</pre></div>
-</div>
-</div>
-</div>
 <section id="scf-calculation">
 <h3>SCF calculation<a class="headerlink" href="#scf-calculation" title="Permalink to this headline">#</a></h3>
-<p>The SCF is calculated with the following solver, which has been set up to enable the inclusion of (non-polarizable) embedding contributions (see the <a class="reference internal" href="../elec_struct/hartree-fock.html"><span class="doc std std-doc">Hartree-Fock section</span></a> for details):</p>
+<p>We first retrieve needed one- and two-electron integrals in the AO basis.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># overlap</span>
+<span class="n">overlap_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OverlapIntegralsDriver</span><span class="p">()</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">overlap_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># electric-dipole</span>
+<span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
+
+<span class="n">dipole_mats</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="n">mu_x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
+<span class="n">mu_y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span>
+<span class="n">mu_z</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span>
+
+<span class="c1"># kinetic energy</span>
+<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># nuclear attraction</span>
+<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># one-electron Hamiltonian</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
+
+<span class="c1"># two-electron Hamiltonian</span>
+<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The SCF optimization is performed with the following solver, see the <a class="reference internal" href="../elec_struct/hartree-fock.html"><span class="doc std std-doc">Hartree-Fock section</span></a> for details.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scf_solver</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">V_nuc</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
@@ -1445,13 +1464,13 @@ Nuclear repulsion energy (in a.u.):  7.964303024713
 
     <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
 
-        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+        <span class="n">D_alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
 
-        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ilkj,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ilkj,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">)</span>
         <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span> <span class="o">-</span> <span class="n">K</span>
 
-        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
 
         <span class="c1"># compute convergence metric</span>
         <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ki,kl,lj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
@@ -1470,30 +1489,7 @@ Nuclear repulsion energy (in a.u.):  7.964303024713
 </div>
 </div>
 </div>
-<p>Calculating the overlap matrix and one- and two-electron Hamiltonians:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># overlap matrix</span>
-<span class="n">overlap_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OverlapIntegralsDriver</span><span class="p">()</span>
-<span class="n">S</span> <span class="o">=</span> <span class="n">overlap_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-<span class="c1"># one-electron Hamiltonian</span>
-<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
-<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
-
-<span class="c1"># two-electron Hamiltonian</span>
-<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The SCF is optimized:</p>
+<p>We perform an SCF optimization to get the Hartree–Fock wave function of an isolated water molecule.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>  <span class="c1"># initial guess</span>
@@ -1503,52 +1499,13 @@ Nuclear repulsion energy (in a.u.):  7.964303024713
 </div>
 </div>
 </section>
-<section id="id1">
-<h3>Dipole moment<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
-<p>The dipole moment is now calculated from the electronic and nuclear contributions</p>
+<section id="dipole-moment">
+<h3>Dipole moment<a class="headerlink" href="#dipole-moment" title="Permalink to this headline">#</a></h3>
+<p>From the molecular orbital (MO) coefficients, we determine the density matrix and compute the dipole moment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">molecule</span><span class="p">):</span>
-
-    <span class="n">mu_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">mu_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-    <span class="c1"># electronic part</span>
-    <span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
-
-    <span class="n">dipole_mats</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-    <span class="n">mu_x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
-    <span class="n">mu_y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span>
-    <span class="n">mu_z</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span>
-
-    <span class="n">mu_e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">)</span>
-    <span class="n">mu_e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_y</span><span class="p">)</span>
-    <span class="n">mu_e</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">mu_z</span><span class="p">)</span>
-
-    <span class="c1"># nuclear part</span>
-
-    <span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
-
-        <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
-        <span class="n">Z_A</span> <span class="o">=</span> <span class="n">element_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
-
-        <span class="n">mu_n</span> <span class="o">+=</span> <span class="n">Z_A</span> <span class="o">*</span> <span class="n">R_A</span>
-
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">mu_e</span> <span class="o">+</span> <span class="n">mu_n</span>
-
-    <span class="k">return</span> <span class="n">mu</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Using element charges, we obtain</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">element_charges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">}</span>
-
-<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-<span class="n">mu_HF</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_HF</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_HF</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vacuum dipole moment: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_HF</span><span class="p">)</span><span class="w"> </span><span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1562,33 +1519,9 @@ Nuclear repulsion energy (in a.u.):  7.964303024713
 </div>
 </section>
 </section>
-<section id="qm-mm-system">
-<h2>QM/MM system<a class="headerlink" href="#qm-mm-system" title="Permalink to this headline">#</a></h2>
-<section id="embedding-potentials">
-<h3>Embedding potentials<a class="headerlink" href="#embedding-potentials" title="Permalink to this headline">#</a></h3>
-<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/QM/MM">hybrid QM/MM approach</a> for multiscale modeling of complex systems was recognized by the Nobel Prize in 2013. In this model, the Hamiltonian takes the form</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{H} = \hat{H}^\mathrm{QM} + \hat{H}^\mathrm{MM} + \hat{H}^\mathrm{QM/MM}
-\]</div>
-<p>The electrostatic interaction operator between the QM and MM regions is given as</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{H}^\mathrm{QM/MM} = V^\mathrm{n,es} +  \sum_{i=1}^N
-\hat{v}^\mathrm{es}(i)
-\]</div>
-<p>where</p>
-<div class="math notranslate nohighlight">
-\[
-V^\mathrm{n,es} =
-\sum_{A=1}^M \sum_s
-\frac{Z_A e \, q_s}{4\pi\varepsilon_0 |\mathbf{R}_A - \mathbf{R}_s|} ; \qquad
-%
-\hat{v}^\mathrm{es} = 
-\sum_s
-\frac{-e q_s}{4\pi\varepsilon_0 |\mathbf{r} - \mathbf{R}_s|}
-\]</div>
-<p>We will use this model to study water in the condensed phase with <a class="reference external" href="https://en.wikipedia.org/wiki/Hydrogen_bond">hydrogen bonds</a>. The <a class="reference external" href="https://en.wikipedia.org/wiki/Water_model#3-site">TIP3P model</a> provides a classical description of liquid water in terms of three-site model with the following partial charges:</p>
+<section id="liquid-water">
+<h2>Liquid water<a class="headerlink" href="#liquid-water" title="Permalink to this headline">#</a></h2>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Water_model#3-site">TIP3P model</a> provides a classical description of liquid water in terms of a three-site model with the following partial charges:</p>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Element</p></th>
@@ -1604,19 +1537,49 @@ V^\mathrm{n,es} =
 </tr>
 </tbody>
 </table>
-<p>Setting up these charges and <code class="docutils literal notranslate"><span class="pre">molecule</span></code> objects for each embedding:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tip3p_charges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="mf">0.417</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.834</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let us calculate the dipole moment for a water molecule in the TIP3P model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_tip3p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="n">solvent</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
+
+    <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+    <span class="n">q_A</span> <span class="o">=</span> <span class="n">tip3p_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
+
+    <span class="n">mu_tip3p</span> <span class="o">+=</span> <span class="n">q_A</span> <span class="o">*</span> <span class="n">R_A</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_tip3p</span><span class="p">)</span><span class="w"> </span><span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dipole moment:  1.112794
+</pre></div>
+</div>
+</div>
+</div>
+<p>This dipole moment is substantially larger than the gas phase result.</p>
+<p>In order to determine a QM/MM value for the dipole moment of water, we adopt the TIP3P parameters for the description of the four water molecules in the environment (or solvent) that consists of two donors and two acceptors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solvent</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">solvent_xyz</span><span class="p">)</span>
 <span class="n">donors</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">donors_xyz</span><span class="p">)</span>
 <span class="n">acceptors</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">acceptors_xyz</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The embedding operator is constructed as:</p>
+<section id="embedding-operator">
+<h3>Embedding operator<a class="headerlink" href="#embedding-operator" title="Permalink to this headline">#</a></h3>
+<p>We implement a function to construct the embedding operators given a <code class="docutils literal notranslate"><span class="pre">Molecule</span></code> object that contains the embedding atoms.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_embedding_operator</span><span class="p">(</span><span class="n">embedding</span><span class="p">):</span>
@@ -1652,9 +1615,9 @@ V^\mathrm{n,es} =
 </div>
 </div>
 </section>
-<section id="scf-optimizations">
-<h3>SCF optimizations<a class="headerlink" href="#scf-optimizations" title="Permalink to this headline">#</a></h3>
-<p>Using the initial guess for the free molecule, the SCF for each embedded structure is</p>
+<section id="solvation-energies">
+<h3>Solvation energies<a class="headerlink" href="#solvation-energies" title="Permalink to this headline">#</a></h3>
+<p>Using the initial guess for gas phase water, the SCF optimizations for three embedded systems are performed corresponding to (i) all four water molecules in the solvent, (ii) the two donors, and (iii) the two acceptors.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V_n_s</span><span class="p">,</span> <span class="n">v_s</span> <span class="o">=</span> <span class="n">get_embedding_operator</span><span class="p">(</span><span class="n">solvent</span><span class="p">)</span>
@@ -1669,15 +1632,12 @@ V^\mathrm{n,es} =
 </div>
 </div>
 </div>
-</section>
-<section id="solvation-energies">
-<h3>Solvation energies<a class="headerlink" href="#solvation-energies" title="Permalink to this headline">#</a></h3>
 <p>The solvation energy of the fully coordinated pentamer is calculated as</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
 
-<span class="n">v_s_aver</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">v_s</span><span class="p">)</span>
+<span class="n">v_s_aver</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, ab&quot;</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">v_s</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear QM/MM energy   : </span><span class="si">{</span><span class="n">V_n_s</span><span class="w"> </span><span class="si">:</span><span class="s2"> 16.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electronic QM/MM energy: </span><span class="si">{</span><span class="n">v_s_aver</span><span class="w"> </span><span class="si">:</span><span class="s2"> 16.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1696,15 +1656,21 @@ Total QM/MM energy     :      -0.07558176
 </div>
 </div>
 <p>As can be seen, the pure electronic contributions destabilizes the system, but the nuclear contributions stabilize it even more. As such, solvation is seen to be beneficial, as a result of the nuclear contributions.</p>
-<p>Comparing the energies of the vacuum molecule and three coordinated complexes, we respective total energy, energy excluding nuclear contributions, and electronic QM/MM energy can be calculated as:</p>
+<p>Let us next determine these energies for all three coordination complexes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Structure   Total energy      Nuclear        Electronic   Diff. to vacuum  &#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Structure   Total energy      Nuclear        Electronic   Diff. to vacuum  &quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="mi">73</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   vacuum:  </span><span class="si">{</span><span class="n">E_HF</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; solution:  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_s</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_s</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   donors:  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_d</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_d</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceptors:  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_a</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_a</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot; solution:  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_s</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_s</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_s</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;   donors:  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_d</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_d</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;acceptors:  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">V_n_a</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_a</span><span class="si">:</span><span class="s2"> 14.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">V_n_a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">E_HF</span><span class="si">:</span><span class="s2"> 13.8f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1719,21 +1685,21 @@ acceptors:  -76.02542388     -0.73647946    -75.28894441     0.69798088
 </div>
 </div>
 </div>
-<p>As can be seen, the purely electronic contributions of the donors stabilizes the system, but not for the acceptors or full coordinated system. This can be understood by noting that the donors adds a positive point charge (hydrogens) close to the QM oxygen atom, which provides a beneficial potential for the electronic structure. Adding two acceptors instead puts two negative (oxygen) charges close to the electron density, and thus destabilize the system instead.</p>
+<p>As can be seen, the purely electronic contributions of the donors stabilize the system, but not for the acceptors and the fully coordinated system. This can be understood by noting that the donors add a positive point charge (hydrogens) close to the QM oxygen atom, which provides a beneficial potential for the electronic structure. Adding two acceptors instead puts two negative (oxygen) charges close to the electron density, and thus destabilize the system.</p>
 </section>
 <section id="dipole-moments">
 <h3>Dipole moments<a class="headerlink" href="#dipole-moments" title="Permalink to this headline">#</a></h3>
-<p>The dipole moments for the different structures are:</p>
+<p>Next, we determine the dipole moments of the solute in the different configurations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-<span class="n">mu_s</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_s</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_s</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 
-<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-<span class="n">mu_d</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_d</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_d</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 
-<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-<span class="n">mu_a</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C_a</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
+<span class="n">mu_a</span> <span class="o">=</span> <span class="n">dipmom</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   vacuum: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_HF</span><span class="p">)</span><span class="w"> </span><span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; solution: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_s</span><span class="p">)</span><span class="w"> </span><span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1751,29 +1717,8 @@ acceptors:  1.031627
 </div>
 </div>
 </div>
-<p>Which can be compare with the TIP3P dipole moment.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_tip3p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">A</span><span class="p">,</span> <span class="n">molecule_atom_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()):</span>
-
-    <span class="n">R_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_atom_coordinates</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
-    <span class="n">q_A</span> <span class="o">=</span> <span class="n">tip3p_charges</span><span class="p">[</span><span class="n">molecule_atom_label</span><span class="p">]</span>
-
-    <span class="n">mu_tip3p</span> <span class="o">+=</span> <span class="n">q_A</span> <span class="o">*</span> <span class="n">R_A</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dipole moment: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu_tip3p</span><span class="p">)</span><span class="w"> </span><span class="si">:</span><span class="s2"> 8.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dipole moment:  1.112794
-</pre></div>
-</div>
-</div>
-</div>
-<p>The dipole moment is seen to be strengthened substantially by the solvation, as this enables the electron density to be stretched out along the axis along the oxygen and the midpoint between the two hydrogen atoms.</p>
+<p>The dipole moment is seen to substantially increase due to solvation. The donors pull and acceptors push the electron density of the solute in the direction from the hydrogens toward the oxygen and thus increase the polarization of the QM system.</p>
+<p>We note that the QM/MM dipole moment of the fully solvated water molecule is in good agreement with that of the TIP3P model.</p>
 </section>
 </section>
 </section>
@@ -1809,7 +1754,7 @@ acceptors:  1.031627
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Embedding</p>
+            <p class="prev-next-title">Embedding potentials</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="pol_emb.html" title="next page">
