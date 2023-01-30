@@ -1118,62 +1118,99 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="esp-charges">
 <span id="sec-esp-charges"></span><h1>ESP charges<a class="headerlink" href="#esp-charges" title="Permalink to this headline">#</a></h1>
-<p>Since there is no unique definition for partial charges and no corresponding physical observable, they can be assigned in several ways, such as being derived from the quantum mechanical electrostatic potential</p>
+<p>Let us consider a molecular system with <span class="math notranslate nohighlight">\(M\)</span> nuclei and a electron charge distribution described by the one-particle density matrix <span class="math notranslate nohighlight">\(D\)</span>.</p>
+<p>Our goal is to represent the quantum mechanical electrostatic potential</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-V(\boldsymbol{r}) = 
-\sum_{I}
-\frac{Z_I e}{4\pi\varepsilon_0 |\boldsymbol{r}-\mathrm{\textbf{R}}_I|} - e
-\sum_{\mu,\nu}
-D_{\mu\nu}
+V(\mathbf{r}) = 
+\sum_{A=1}^M
+\frac{Z_A e}{4\pi\varepsilon_0 |\mathbf{r}-\mathrm{\textbf{R}}_A|} - e
+\sum_{\alpha,\beta}
+D_{\alpha\beta}
 \int 
 \frac{
-\phi_\mu^*(\boldsymbol{r}')\phi_\nu(\boldsymbol{r}')
+\phi_\alpha^*(\mathbf{r}')\phi_\beta(\mathbf{r}')
 }{
 4\pi\varepsilon_0
-|\boldsymbol{r}-\boldsymbol{r}'|
+|\mathbf{r}-\mathbf{r}'|
 }
-d^3\boldsymbol{r}'
+d^3\mathbf{r}'
 \end{equation*}\]</div>
-<p>that can be replaced with a potential caused by the partial charges:</p>
+<p>with a classical potential associated with a set of atomic partial charges known as the electrostatic potential (ESP) charges</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-\widetilde{V}(\boldsymbol{r}) = 
-\sum_{I}
+\tilde{V}(\mathbf{r}) = 
+\sum_{A=1}^M
 \frac{
-q_I
+q_A
 }{
 4\pi\varepsilon_0
-|\boldsymbol{r}-\textbf{R}_I|
+|\mathbf{r}-\textbf{R}_A|
 }
 \end{equation*}\]</div>
-<p>The Merz–Kollman scheme <span id="id1">[<a class="reference internal" href="../refs.html#id9" title="Brent H. Besler, Kenneth M. Merz, and Peter A. Kollman. Atomic charges derived from semiempirical methods. J. Comput. Chem., 11:431–439, 1990. URL: https://onlinelibrary.wiley.com/doi/10.1002/jcc.540110404.">BMK90</a>, <a class="reference internal" href="../refs.html#id6" title="U. Chandra Singh and Peter A. Kollman. An approach to computing electrostatic charges for molecules. J. Comput. Chem., 5:129–145, 1984. URL: https://onlinelibrary.wiley.com/doi/10.1002/jcc.540050204.">SK84</a>]</span> minimizes the squared norm difference between these two quantities evaluated on a set of grid points in the solvent-accessible region of the molecule with respect to variations in the partial charges and a constraint of a conservation of the total molecular charge – the grid points are distributed on successive layers of scaled van der Waals surfaces. This measure is referred to as the figure-of-merit</p>
+<p>There is of course no unique way of doiing so. The Merz–Kollman (MK) scheme <span id="id1">[<a class="reference internal" href="../refs.html#id9" title="Brent H. Besler, Kenneth M. Merz, and Peter A. Kollman. Atomic charges derived from semiempirical methods. J. Comput. Chem., 11:431–439, 1990. URL: https://onlinelibrary.wiley.com/doi/10.1002/jcc.540110404.">BMK90</a>, <a class="reference internal" href="../refs.html#id6" title="U. Chandra Singh and Peter A. Kollman. An approach to computing electrostatic charges for molecules. J. Comput. Chem., 5:129–145, 1984. URL: https://onlinelibrary.wiley.com/doi/10.1002/jcc.540050204.">SK84</a>]</span> minimizes the squared norm difference between these two potentials evaluated on a set of grid points in the solvent-accessible region of the molecule with respect to variations in the partial charges and a constraint of a conservation of the total molecular charge, <span class="math notranslate nohighlight">\(Q\)</span>. The grid points are distributed on successive layers of scaled van der Waals surfaces at positions <span class="math notranslate nohighlight">\(\mathbf{r}_a\)</span>.</p>
+<p>To achieve this minimization, a Lagrangian is defined</p>
+<div class="math notranslate nohighlight">
+\[
+L(\{q_A\},\lambda) = \chi_{\mathrm{esp}}^2 - 
+2 \lambda 
+\Big(
+\sum_{A=1}^M q_A -Q
+\Big)
+\]</div>
+<p>where</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-\chi_{\mathrm{esp}}^2 = \sum_a \bigl(V(\boldsymbol{r}_a) - \widetilde{V}(\boldsymbol{r}_a)\bigl)^2
+\chi_{\mathrm{esp}}^2 = \sum_a 
+\big[ 
+V(\mathbf{r}_a) - \tilde{V}(\mathbf{r}_a) 
+\big]^2
 \end{equation*}\]</div>
-<p>The resulting electrostatic potential (ESP) charges are obtained by solving the equation</p>
+<p>Finding the stationary point of this Lagrangian results in the following equaiton from which the ESP charges are obtained</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-\mathrm{\textbf{A}} \, \mathrm{\textbf{q}} = \mathrm{\textbf{b}}
+\begin{pmatrix}
+A_{11} &amp;  \cdots &amp; A_{1M} &amp; 1 \\
+\vdots &amp;  \ddots &amp; \vdots &amp; 1 \\
+A_{M1} &amp;  \cdots &amp; A_{MM} &amp; 1 \\
+1 &amp; \cdots &amp; 1 &amp; 0 \\
+\end{pmatrix}
+\begin{pmatrix}
+q_1\\
+\vdots \\
+q_M \\
+\lambda \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+b_1\\
+\vdots \\
+b_M \\
+Q \\
+\end{pmatrix}
 \end{equation*}\]</div>
 <p>where</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-A_{JI} =
+A_{IJ} =
 \frac{1}{4\pi\varepsilon_0}
-\sum_{a} \frac{1}{r_{aI}r_{aJ}}
+\sum_{a} \frac{1}{r_{aI}r_{aJ}} ;
+\qquad
+r_{aI} =
+|\mathbf{r}_a - \mathbf{R}_I |
 \end{equation*}\]</div>
 <p>and</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
-b_J = \sum_{a} \frac{V_a}{r_{aJ}}
+b_I = \sum_{a} \frac{V(\mathbf{r}_a)}{r_{aI}}
 \end{equation*}\]</div>
-<div class="cell docutils container">
+<p>The MK scheme is implemented in VeloxChem and we will use this implementation to determine the ESP charges of methanol at the Hartree–Fock/6-31G(d) level of theory.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 
-<span class="n">methanol_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="n">methanol_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
+
 <span class="s2">  H      1.2001      0.0363      0.8431</span>
 <span class="s2">  C      0.7031      0.0083     -0.1305</span>
 <span class="s2">  H      0.9877      0.8943     -0.7114</span>
@@ -1182,29 +1219,38 @@ b_J = \sum_{a} \frac{V_a}{r_{aJ}}
 <span class="s2">  H     -1.1326     -0.0311     -0.6482</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">v</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 
-<span class="n">v</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="s2">&quot;6</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">methanol_xyz</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
-<span class="n">v</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
-<span class="n">v</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
-<span class="n">v</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_xyz</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16499578509736588"  style="position: relative; width: 400px; height: 200px">
-        <p id="3dmolwarning_16499578509736588" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1675020912565284"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1675020912565284" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
 
 var loadScriptAsync = function(uri){
   return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
     var tag = document.createElement('script');
     tag.src = uri;
     tag.async = true;
     tag.onload = () => {
-      resolve();
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
     };
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -1213,21 +1259,20 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
 }
 
-var viewer_16499578509736588 = null;
-var warn = document.getElementById("3dmolwarning_16499578509736588");
+var viewer_1675020912565284 = null;
+var warn = document.getElementById("3dmolwarning_1675020912565284");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_16499578509736588 = $3Dmol.createViewer($("#3dmolviewer_16499578509736588"),{backgroundColor:"white"});
-viewer_16499578509736588.zoomTo();
-	viewer_16499578509736588.addModel("6\n\n  H      1.2001      0.0363      0.8431\n  C      0.7031      0.0083     -0.1305\n  H      0.9877      0.8943     -0.7114\n  H      1.0155     -0.8918     -0.6742\n  O     -0.6582     -0.0067      0.1730\n  H     -1.1326     -0.0311     -0.6482\n","xyz");
-	viewer_16499578509736588.setStyle({"stick": {}});
-	viewer_16499578509736588.zoomTo();
-viewer_16499578509736588.render();
+viewer_1675020912565284 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1675020912565284"),{backgroundColor:"white"});
+viewer_1675020912565284.zoomTo();
+	viewer_1675020912565284.addModel("6\n\n  H      1.2001      0.0363      0.8431\n  C      0.7031      0.0083     -0.1305\n  H      0.9877      0.8943     -0.7114\n  H      1.0155     -0.8918     -0.6742\n  O     -0.6582     -0.0067      0.1730\n  H     -1.1326     -0.0311     -0.6482\n","xyz");
+	viewer_1675020912565284.setStyle({"stick": {}});
+viewer_1675020912565284.render();
 });
 </script></div></div>
 </div>
@@ -1235,81 +1280,47 @@ viewer_16499578509736588.render();
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">methanol_xyz</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;def2-SVP&quot;</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">molecule</span><span class="p">))</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">methanol_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31g*&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>A calculation of ESP charges is performed by invoking the <code class="docutils literal notranslate"><span class="pre">RespChargesDriver</span></code> driver class.</p>
-<div class="cell docutils container">
+<p>A calculation of ESP charges is performed with the <code class="docutils literal notranslate"><span class="pre">compute</span></code> method of the <code class="docutils literal notranslate"><span class="pre">RespChargesDriver</span></code> class.</p>
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">esp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">RespChargesDriver</span><span class="p">()</span>
 
-<span class="n">esp_drv</span><span class="o">.</span><span class="n">print_keywords</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                     ================================================================================                     
-                       @resp charges                                                                                      
-                     --------------------------------------------------------------------------------                     
-                       number_layers       integer        number of layers of scaled vdW surfaces                         
-                       density             float          density of points in each layer                                 
-                       restrain_hydrogen   boolean        restrain hydrogen atoms                                         
-                       weak_restraint      float          strength of restraint in 1st RESP stage                         
-                       strong_restraint    float          strength of restraint in 2nd RESP stage                         
-                       max_iter            integer        maximum iterations in RESP fit                                  
-                       threshold           float          convergence threshold of RESP fit                               
-                       xyz_file            string         xyz file containing the conformers                              
-                       net_charge          float          net charge of the molecule                                      
-                       multiplicity        integer        spin multiplicity of the molecule                               
-                       weights             sequence       weight factors of conformers                                    
-                       energies            sequence       energies of conformers                                          
-                       temperature         float          temperature for Boltzmann weight factor                         
-                       fitting_points      multi-line     points on which ESP charges are computed                        
-                     ================================================================================                     
-</pre></div>
-</div>
-</div>
-</div>
-<p>Let us modify a few of the default settings and calculate the ESP charges of methanol with use of the <code class="docutils literal notranslate"><span class="pre">compute</span></code> method.</p>
-<div class="cell tag_remove-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">esp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">({</span>
-    <span class="s1">&#39;number_layers&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
-<span class="p">})</span>
-
-<span class="n">esp_charges</span> <span class="o">=</span> <span class="n">esp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="s1">&#39;esp&#39;</span><span class="p">)</span>
+<span class="n">esp_charges</span> <span class="o">=</span> <span class="n">esp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="s2">&quot;esp&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Atom   Charge (a.u.)&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Atom      ESP charge&quot;</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">charge</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">(),</span> <span class="n">esp_charges</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="w"> </span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">charge</span><span class="w"> </span><span class="si">:</span><span class="s2"> 18.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">esp_charge</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">(),</span> <span class="n">esp_charges</span><span class="p">):</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="w"> </span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">esp_charge</span><span class="w"> </span><span class="si">:</span><span class="s2"> 18.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">esp_charges</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="w"> </span><span class="si">:</span><span class="s2"> 13.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Atom   Charge (a.u.)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Atom      ESP charge
 --------------------
-H           0.038025
-C           0.246240
-H          -0.018417
-H          -0.018484
-O          -0.655265
-H           0.407901
+H           0.056273
+C           0.196542
+H          -0.007483
+H          -0.008463
+O          -0.657469
+H           0.420600
 --------------------
 Total:      0.000000
 </pre></div>
