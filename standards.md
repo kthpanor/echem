@@ -65,31 +65,16 @@ from pyscf import gto, scf
 
 ### References
 
-Include URL or DOI (but not both) to create links in the references:
+Include URL to create links in the references:
 ```
 @article{Sellers1993,
-author = {Sellers, Harrell},
-title = {The C2-DIIS convergence acceleration algorithm},
+author  = {Sellers, Harrell},
+title   = {The C2-DIIS convergence acceleration algorithm},
 journal = {Int. J. Quant. Chem.},
-volume = {45},
-number = {1},
-pages = {31-41},
-url = {https://doi.org/10.1002/qua.560450106},
-year = {1993}
-}
-```
-
-or 
-```
-@article{Sellers1993,
-author = {Sellers, Harrell},
-title = {The C2-DIIS convergence acceleration algorithm},
-journal = {Int. J. Quant. Chem.},
-volume = {45},
-number = {1},
-pages = {31-41},
-doi = {10.1002/qua.560450106},
-year = {1993}
+volume  = {45},
+pages   = {31-41},
+url     = {https://doi.org/10.1002/qua.560450106},
+year    = {1993}
 }
 ```
 
@@ -102,4 +87,12 @@ year = {1993}
 - **Bold** or *italics* for introducing terms
 - Link between sections
 - Static images and Python cells if too expensive
-- Figures in png 300 dpi or svg
+- Figures in png 300 dpi (*potentially* svg)
+- nonzero, not non-zero
+- wave function, not wavefunction
+
+Refer to parts of the book as
+- part
+    - chapter
+        - section
+            - subsection
