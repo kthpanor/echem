@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -257,7 +255,7 @@ const thebe_selector_output = ".output, .cell_output"
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="../elec_struct/hf_example.html">
-       Numerical example
+       HF in VeloxChem
       </a>
      </li>
     </ul>
@@ -1203,7 +1201,7 @@ title="Print to PDF"
 <section id="spectrum-calculation">
 <h2>Spectrum calculation<a class="headerlink" href="#spectrum-calculation" title="Permalink to this headline">#</a></h2>
 <p>Here, we will calculate the Raman spectra of H<span class="math notranslate nohighlight">\(_2\)</span>O, NH<span class="math notranslate nohighlight">\(_3\)</span> and CH<span class="math notranslate nohighlight">\(_4\)</span> and determine how going from O over N to C influences the vibrational frequencies of the Hydrogen stretching modes.</p>
-<div class="cell tag_hide-output docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -1218,20 +1216,16 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
-</pre></div>
-</div>
-</div>
 </div>
 <p>To compute a meaningful Raman spectrum, the molecular geometries must be optimized at the same level of theory and using the same basis set. Let us assume that we have optimized the geometries at the HF/6-31G theory level and we have these geometries stored in xyz files. Otherwise, we would start by performing the necessary geometry optimizations.</p>
-<div class="cell docutils container">
+<div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecules and basis sets:</span>
-<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_h2o.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-<span class="n">nh3_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_nh3.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
-<span class="n">ch4_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_ch4.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># read optimized geometry from file</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare molecules and basis sets</span>
+
+<span class="c1"># Read optimized geometry from file</span>
+<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_h2o.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">nh3_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_nh3.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">ch4_xyz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../data/ir_raman/opt_ch4.xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 <span class="n">h2o</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
 <span class="n">h2o_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
@@ -1241,74 +1235,17 @@ title="Print to PDF"
 
 <span class="n">ch4</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">ch4_xyz</span><span class="p">)</span>
 <span class="n">ch4_basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">       (a) H2O                   (b) NH3                  (c) CH4&quot;</span><span class="p">)</span>
-<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+</div>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/6-31G
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                               Basis: 6-31G                                                                               
-                                                                                                                          
-                               Atom Contracted GTOs           Primitive GTOs                                              
-                                                                                                                          
-                                O   (3S,2P)                   (10S,4P)                                                    
-                                H   (2S)                      (4S)                                                        
-                                                                                                                          
-                               Contracted Basis Functions : 13                                                            
-                               Primitive Basis Functions  : 30                                                            
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/6-31G
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                               Basis: 6-31G                                                                               
-                                                                                                                          
-                               Atom Contracted GTOs           Primitive GTOs                                              
-                                                                                                                          
-                                H   (2S)                      (4S)                                                        
-                                N   (3S,2P)                   (10S,4P)                                                    
-                                                                                                                          
-                               Contracted Basis Functions : 15                                                            
-                               Primitive Basis Functions  : 34                                                            
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/6-31G
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                               Basis: 6-31G                                                                               
-                                                                                                                          
-                               Atom Contracted GTOs           Primitive GTOs                                              
-                                                                                                                          
-                                H   (2S)                      (4S)                                                        
-                                C   (3S,2P)                   (10S,4P)                                                    
-                                                                                                                          
-                               Contracted Basis Functions : 17                                                            
-                               Primitive Basis Functions  : 38                                                            
-                                                                                                                          
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       (a) H2O                   (b) NH3                  (c) CH4
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1678892178339558"  style="position: relative; width: 600px; height: 250px">
-        <p id="3dmolwarning_1678892178339558" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16794851637437084"  style="position: relative; width: 600px; height: 250px">
+        <p id="3dmolwarning_16794851637437084" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1340,24 +1277,27 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_1678892178339558 = null;
-var warn = document.getElementById("3dmolwarning_1678892178339558");
+var viewer_16794851637437084 = null;
+var warn = document.getElementById("3dmolwarning_16794851637437084");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1678892178339558 = null;
-viewergrid_1678892178339558 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1678892178339558"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
-viewer_1678892178339558 = viewergrid_1678892178339558[0][0];
-viewergrid_1678892178339558[0][0].zoomTo();viewergrid_1678892178339558[0][1].zoomTo();viewergrid_1678892178339558[0][2].zoomTo();	viewergrid_1678892178339558[0][0].addModel("3\nHF/6-31G\nO       0.0308991       0.0228758      -0.0161623\nH       0.2572697       0.8975361       0.2762831\nH       0.5960312      -0.2658119      -0.7226208\n","xyz");
-	viewergrid_1678892178339558[0][1].addModel("4\nHF/6-31G\nN       0.0961758       0.0137254       0.1108604\nH      -0.4973546       0.2946055       0.8535526\nH       0.7093592       0.7070993      -0.2441077\nH       0.4632196      -0.9053302       0.1689946\n","xyz");
-	viewergrid_1678892178339558[0][2].addModel("5\nHF/6-31G\nC      -0.0000199       0.0000199       0.0000000\nH       0.5489997       0.7922034       0.4919110\nH       0.6769972      -0.8058792      -0.2512524\nH      -0.7710148      -0.3700500       0.6629997\nH      -0.4550622       0.3838059      -0.9036583\n","xyz");
-	viewergrid_1678892178339558[0][0].setStyle({"stick": {}});
-	viewergrid_1678892178339558[0][1].setStyle({"stick": {}});
-	viewergrid_1678892178339558[0][2].setStyle({"stick": {}});
-viewergrid_1678892178339558[0][2].render();
-viewergrid_1678892178339558[0][1].render();
-viewergrid_1678892178339558[0][0].render();
+var viewergrid_16794851637437084 = null;
+viewergrid_16794851637437084 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16794851637437084"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
+viewer_16794851637437084 = viewergrid_16794851637437084[0][0];
+viewergrid_16794851637437084[0][0].zoomTo();viewergrid_16794851637437084[0][1].zoomTo();viewergrid_16794851637437084[0][2].zoomTo();	viewergrid_16794851637437084[0][0].addModel("3\nHF/6-31G\nO       0.0308991       0.0228758      -0.0161623\nH       0.2572697       0.8975361       0.2762831\nH       0.5960312      -0.2658119      -0.7226208\n","xyz");
+	viewergrid_16794851637437084[0][1].addModel("4\nHF/6-31G\nN       0.0961758       0.0137254       0.1108604\nH      -0.4973546       0.2946055       0.8535526\nH       0.7093592       0.7070993      -0.2441077\nH       0.4632196      -0.9053302       0.1689946\n","xyz");
+	viewergrid_16794851637437084[0][2].addModel("5\nHF/6-31G\nC      -0.0000199       0.0000199       0.0000000\nH       0.5489997       0.7922034       0.4919110\nH       0.6769972      -0.8058792      -0.2512524\nH      -0.7710148      -0.3700500       0.6629997\nH      -0.4550622       0.3838059      -0.9036583\n","xyz");
+	viewergrid_16794851637437084[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851637437084[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851637437084[0][2].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851637437084[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851637437084[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851637437084[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewergrid_16794851637437084[0][2].render();
+viewergrid_16794851637437084[0][1].render();
+viewergrid_16794851637437084[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1366,24 +1306,22 @@ viewergrid_1678892178339558[0][0].render();
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings:</span>
 <span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;conv_thresh&#39;</span><span class="p">:</span> <span class="mf">1.0e-5</span><span class="p">}</span>
-<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># HF;  use &#39;xcfun&#39;: &#39;b3lyp&#39;, &#39;grid_level&#39;: 4, etc. for a DFT calculation </span>
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span>
+
 <span class="c1"># Numerical Hessian</span>
 <span class="n">hessian_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;do_raman&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;print_depolarization_ratio&#39;</span><span class="p">:</span><span class="s1">&#39;yes&#39;</span><span class="p">}</span>
 
 <span class="c1"># We first need to run SCF calculations:</span>
 <span class="n">h2o_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">h2o_scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">h2o_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># To remove printout</span>
 <span class="n">h2o_results</span> <span class="o">=</span> <span class="n">h2o_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">h2o</span><span class="p">,</span> <span class="n">h2o_basis</span><span class="p">)</span>
 
 <span class="n">nh3_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">nh3_scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">nh3_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">nh3_results</span> <span class="o">=</span> <span class="n">nh3_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">nh3</span><span class="p">,</span> <span class="n">nh3_basis</span><span class="p">)</span>
 
 <span class="n">ch4_scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">ch4_scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">ch4_scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">ch4_results</span> <span class="o">=</span> <span class="n">ch4_scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">ch4</span><span class="p">,</span> <span class="n">ch4_basis</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1436,7 +1374,7 @@ viewergrid_1678892178339558[0][0].render();
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
 </pre></div>
@@ -1471,7 +1409,7 @@ viewergrid_1678892178339558[0][0].render();
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">nh3</span><span class="p">)</span>
 </pre></div>
@@ -1522,7 +1460,7 @@ viewergrid_1678892178339558[0][0].render();
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ch4_hessian_drv</span><span class="o">.</span><span class="n">vibrational_analysis</span><span class="p">(</span><span class="n">ch4</span><span class="p">)</span>
 </pre></div>
@@ -1616,7 +1554,7 @@ viewergrid_1678892178339558[0][0].render();
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the Raman spectra</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 
 <span class="n">h2o_x</span><span class="p">,</span><span class="n">h2o_y</span> <span class="o">=</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">h2o_hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
 <span class="n">nh3_x</span><span class="p">,</span><span class="n">nh3_y</span> <span class="o">=</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">nh3_hessian_drv</span><span class="o">.</span><span class="n">raman_intensities</span>
@@ -1639,7 +1577,7 @@ viewergrid_1678892178339558[0][0].render();
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/vib_ir_raman_14_0.png" src="../../_images/vib_ir_raman_14_0.png" />
+<img alt="../../_images/vib_ir_raman_15_0.png" src="../../_images/vib_ir_raman_15_0.png" />
 </div>
 </div>
 <p>Let’s compare the H-stretching modes:</p>
@@ -1652,6 +1590,7 @@ viewergrid_1678892178339558[0][0].render();
     <span class="n">natm</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
     <span class="n">vib_xyz</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">natm</span>
     <span class="n">nm</span> <span class="o">=</span> <span class="n">normal_mode</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">natm</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natm</span><span class="p">):</span>
         <span class="c1"># add coordinates:</span>
         <span class="n">vib_xyz</span> <span class="o">+=</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> </span><span class="si">%15.7f</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
@@ -1685,7 +1624,9 @@ viewergrid_1678892178339558[0][0].render();
 <span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">h2o_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+
+<span class="n">view</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
 <span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
@@ -1697,8 +1638,8 @@ viewergrid_1678892178339558[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the two H stretching modes of H2O.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16788921792059534"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_16788921792059534" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1679485165286528"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1679485165286528" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1730,27 +1671,29 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16788921792059534 = null;
-var warn = document.getElementById("3dmolwarning_16788921792059534");
+var viewer_1679485165286528 = null;
+var warn = document.getElementById("3dmolwarning_1679485165286528");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16788921792059534 = null;
-viewergrid_16788921792059534 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16788921792059534"),{rows: 1, cols: 2, control_all: true},{backgroundColor:"white"});
-viewer_16788921792059534 = viewergrid_16788921792059534[0][0];
-viewergrid_16788921792059534[0][0].zoomTo();viewergrid_16788921792059534[0][1].zoomTo();	viewergrid_16788921792059534[0][0].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623       0.0327104       0.0242160      -0.0171102\nH       0.2572697       0.8975361       0.2762831      -0.1272754      -0.6466085      -0.2543954\nH       0.5960312      -0.2658119      -0.7226208      -0.3919305       0.2622324       0.5259818\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_16788921792059534[0][1].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623       0.0158485      -0.0544267      -0.0467330\nH       0.2572697       0.8975361       0.2762831       0.1681040       0.6495275       0.2171716\nH       0.5960312      -0.2658119      -0.7226208      -0.4196642       0.2143779       0.5246124\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_16788921792059534[0][0].setStyle({"stick": {}});
-	viewergrid_16788921792059534[0][1].setStyle({"stick": {}});
-	viewergrid_16788921792059534[0][0].animate({"loop": "backAndForth"});
-	viewergrid_16788921792059534[0][1].animate({"loop": "backAndForth"});
-	viewergrid_16788921792059534[0][0].rotate(120,"x");
-	viewergrid_16788921792059534[0][1].rotate(120,"x");
-	viewergrid_16788921792059534[0][0].zoomTo();
-	viewergrid_16788921792059534[0][1].zoomTo();
-viewergrid_16788921792059534[0][1].render();
-viewergrid_16788921792059534[0][0].render();
+var viewergrid_1679485165286528 = null;
+viewergrid_1679485165286528 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1679485165286528"),{rows: 1, cols: 2, control_all: true},{backgroundColor:"white"});
+viewer_1679485165286528 = viewergrid_1679485165286528[0][0];
+viewergrid_1679485165286528[0][0].zoomTo();viewergrid_1679485165286528[0][1].zoomTo();	viewergrid_1679485165286528[0][0].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623       0.0327104       0.0242160      -0.0171102\nH       0.2572697       0.8975361       0.2762831      -0.1272754      -0.6466085      -0.2543954\nH       0.5960312      -0.2658119      -0.7226208      -0.3919305       0.2622324       0.5259818\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_1679485165286528[0][1].addModel("3\n\nO       0.0308991       0.0228758      -0.0161623       0.0158485      -0.0544267      -0.0467330\nH       0.2572697       0.8975361       0.2762831       0.1681040       0.6495275       0.2171716\nH       0.5960312      -0.2658119      -0.7226208      -0.4196642       0.2143779       0.5246124\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_1679485165286528[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1679485165286528[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1679485165286528[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1679485165286528[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1679485165286528[0][0].animate({"loop": "backAndForth"});
+	viewergrid_1679485165286528[0][1].animate({"loop": "backAndForth"});
+	viewergrid_1679485165286528[0][0].rotate(120,"x");
+	viewergrid_1679485165286528[0][1].rotate(120,"x");
+	viewergrid_1679485165286528[0][0].zoomTo();
+	viewergrid_1679485165286528[0][1].zoomTo();
+viewergrid_1679485165286528[0][1].render();
+viewergrid_1679485165286528[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1761,7 +1704,9 @@ viewergrid_16788921792059534[0][0].render();
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h1</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">nh3_h3</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+
+<span class="n">view</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
 <span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
@@ -1773,8 +1718,8 @@ viewergrid_16788921792059534[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the three H stretching modes of NH3.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16788921792144773"  style="position: relative; width: 600px; height: 200px">
-        <p id="3dmolwarning_16788921792144773" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16794851653039186"  style="position: relative; width: 600px; height: 200px">
+        <p id="3dmolwarning_16794851653039186" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1806,33 +1751,36 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16788921792144773 = null;
-var warn = document.getElementById("3dmolwarning_16788921792144773");
+var viewer_16794851653039186 = null;
+var warn = document.getElementById("3dmolwarning_16794851653039186");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16788921792144773 = null;
-viewergrid_16788921792144773 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16788921792144773"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
-viewer_16788921792144773 = viewergrid_16788921792144773[0][0];
-viewergrid_16788921792144773[0][0].zoomTo();viewergrid_16788921792144773[0][1].zoomTo();viewergrid_16788921792144773[0][2].zoomTo();	viewergrid_16788921792144773[0][0].addModel("4\n\nN       0.0961758       0.0137254       0.1108604       0.0122338       0.0017465       0.0141058\nH      -0.4973546       0.2946055       0.8535526       0.3677203      -0.1622822      -0.4143243\nH       0.7093592       0.7070993      -0.2441077      -0.3411583      -0.4045994       0.2304919\nH       0.4632196      -0.9053302       0.1689946      -0.1965639       0.5426122      -0.0121830\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_16788921792144773[0][1].addModel("4\n\nN       0.0961758       0.0137254       0.1108604      -0.0517684       0.0535694       0.0382671\nH      -0.4973546       0.2946055       0.8535526       0.4485282      -0.2013363      -0.5554093\nH       0.7093592       0.7070993      -0.2441077       0.0378593       0.0728610      -0.0207532\nH       0.4632196      -0.9053302       0.1689946       0.2329879      -0.6159262       0.0444015\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_16788921792144773[0][2].addModel("4\n\nN       0.0961758       0.0137254       0.1108604       0.0367296       0.0639023      -0.0397672\nH      -0.4973546       0.2946055       0.8535526      -0.1983012       0.1137341       0.2440004\nH       0.7093592       0.7070993      -0.2441077      -0.4994233      -0.5645995       0.2943155\nH       0.4632196      -0.9053302       0.1689946       0.1873284      -0.4371236       0.0142899\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_16788921792144773[0][0].setStyle({"stick": {}});
-	viewergrid_16788921792144773[0][1].setStyle({"stick": {}});
-	viewergrid_16788921792144773[0][2].setStyle({"stick": {}});
-	viewergrid_16788921792144773[0][0].animate({"loop": "backAndForth"});
-	viewergrid_16788921792144773[0][1].animate({"loop": "backAndForth"});
-	viewergrid_16788921792144773[0][2].animate({"loop": "backAndForth"});
-	viewergrid_16788921792144773[0][0].rotate(90,"x");
-	viewergrid_16788921792144773[0][1].rotate(90,"x");
-	viewergrid_16788921792144773[0][2].rotate(90,"x");
-	viewergrid_16788921792144773[0][0].zoomTo();
-	viewergrid_16788921792144773[0][1].zoomTo();
-	viewergrid_16788921792144773[0][2].zoomTo();
-viewergrid_16788921792144773[0][2].render();
-viewergrid_16788921792144773[0][1].render();
-viewergrid_16788921792144773[0][0].render();
+var viewergrid_16794851653039186 = null;
+viewergrid_16794851653039186 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16794851653039186"),{rows: 1, cols: 3, control_all: true},{backgroundColor:"white"});
+viewer_16794851653039186 = viewergrid_16794851653039186[0][0];
+viewergrid_16794851653039186[0][0].zoomTo();viewergrid_16794851653039186[0][1].zoomTo();viewergrid_16794851653039186[0][2].zoomTo();	viewergrid_16794851653039186[0][0].addModel("4\n\nN       0.0961758       0.0137254       0.1108604       0.0122338       0.0017465       0.0141058\nH      -0.4973546       0.2946055       0.8535526       0.3677203      -0.1622822      -0.4143243\nH       0.7093592       0.7070993      -0.2441077      -0.3411583      -0.4045994       0.2304919\nH       0.4632196      -0.9053302       0.1689946      -0.1965639       0.5426122      -0.0121830\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653039186[0][1].addModel("4\n\nN       0.0961758       0.0137254       0.1108604      -0.0517684       0.0535694       0.0382671\nH      -0.4973546       0.2946055       0.8535526       0.4485282      -0.2013363      -0.5554093\nH       0.7093592       0.7070993      -0.2441077       0.0378593       0.0728610      -0.0207532\nH       0.4632196      -0.9053302       0.1689946       0.2329879      -0.6159262       0.0444015\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653039186[0][2].addModel("4\n\nN       0.0961758       0.0137254       0.1108604       0.0367296       0.0639023      -0.0397672\nH      -0.4973546       0.2946055       0.8535526      -0.1983012       0.1137341       0.2440004\nH       0.7093592       0.7070993      -0.2441077      -0.4994233      -0.5645995       0.2943155\nH       0.4632196      -0.9053302       0.1689946       0.1873284      -0.4371236       0.0142899\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653039186[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653039186[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653039186[0][2].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653039186[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653039186[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653039186[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653039186[0][0].animate({"loop": "backAndForth"});
+	viewergrid_16794851653039186[0][1].animate({"loop": "backAndForth"});
+	viewergrid_16794851653039186[0][2].animate({"loop": "backAndForth"});
+	viewergrid_16794851653039186[0][0].rotate(90,"x");
+	viewergrid_16794851653039186[0][1].rotate(90,"x");
+	viewergrid_16794851653039186[0][2].rotate(90,"x");
+	viewergrid_16794851653039186[0][0].zoomTo();
+	viewergrid_16794851653039186[0][1].zoomTo();
+	viewergrid_16794851653039186[0][2].zoomTo();
+viewergrid_16794851653039186[0][2].render();
+viewergrid_16794851653039186[0][1].render();
+viewergrid_16794851653039186[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1844,7 +1792,9 @@ viewergrid_16788921792144773[0][0].render();
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h2</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h3</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_h4</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;vibrate&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.75</span><span class="p">}},</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:{}})</span>
+
+<span class="n">view</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">animate</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="s1">&#39;backAndForth&#39;</span><span class="p">})</span>
 <span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
 <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1855,8 +1805,8 @@ viewergrid_16788921792144773[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>These are the four H stretching modes of CH4.
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1678892179222983"  style="position: relative; width: 600px; height: 200px">
-        <p id="3dmolwarning_1678892179222983" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16794851653260627"  style="position: relative; width: 600px; height: 200px">
+        <p id="3dmolwarning_16794851653260627" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1888,35 +1838,39 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_1678892179222983 = null;
-var warn = document.getElementById("3dmolwarning_1678892179222983");
+var viewer_16794851653260627 = null;
+var warn = document.getElementById("3dmolwarning_16794851653260627");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1678892179222983 = null;
-viewergrid_1678892179222983 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1678892179222983"),{rows: 1, cols: 4, control_all: true},{backgroundColor:"white"});
-viewer_1678892179222983 = viewergrid_1678892179222983[0][0];
-viewergrid_1678892179222983[0][0].zoomTo();viewergrid_1678892179222983[0][1].zoomTo();viewergrid_1678892179222983[0][2].zoomTo();viewergrid_1678892179222983[0][3].zoomTo();	viewergrid_1678892179222983[0][0].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0000001      -0.0000000      -0.0000002\nH       0.5489997       0.7922034       0.4919110       0.2536819       0.3660389       0.2272940\nH       0.6769972      -0.8058792      -0.2512524       0.3128238      -0.3723751      -0.1160942\nH      -0.7710148      -0.3700500       0.6629997      -0.3562480      -0.1709954       0.3063473\nH      -0.4550622       0.3838059      -0.9036583      -0.2102569       0.1773321      -0.4175443\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_1678892179222983[0][1].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0340235      -0.0610143       0.0584425\nH       0.5489997       0.7922034       0.4919110       0.1655323       0.2357191       0.1716460\nH       0.6769972      -0.8058792      -0.2512524      -0.0733168       0.0606392       0.0392300\nH      -0.7710148      -0.3700500       0.6629997       0.5516666       0.2530706      -0.4667356\nH      -0.4550622       0.3838059      -0.9036583      -0.2384727       0.1775919      -0.4405166\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_1678892179222983[0][2].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0033071      -0.0619934      -0.0666468\nH       0.5489997       0.7922034       0.4919110       0.3807778       0.5344139       0.3244610\nH       0.6769972      -0.8058792      -0.2512524      -0.3633034       0.4151665       0.1170204\nH      -0.7710148      -0.3700500       0.6629997      -0.1205617      -0.0737171       0.0854424\nH      -0.4550622       0.3838059      -0.9036583       0.1424929      -0.1371759       0.2672108\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_1678892179222983[0][3].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0844238       0.0270177      -0.0209421\nH       0.5489997       0.7922034       0.4919110       0.1385547       0.2389705       0.1384935\nH       0.6769972      -0.8058792      -0.2512524       0.3920163      -0.4859212      -0.1591988\nH      -0.7710148      -0.3700500       0.6629997       0.2416776       0.1337234      -0.2323672\nH      -0.4550622       0.3838059      -0.9036583       0.2337092      -0.2087045       0.5026100\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
-	viewergrid_1678892179222983[0][0].setStyle({"stick": {}});
-	viewergrid_1678892179222983[0][1].setStyle({"stick": {}});
-	viewergrid_1678892179222983[0][2].setStyle({"stick": {}});
-	viewergrid_1678892179222983[0][3].setStyle({"stick": {}});
-	viewergrid_1678892179222983[0][0].animate({"loop": "backAndForth"});
-	viewergrid_1678892179222983[0][1].animate({"loop": "backAndForth"});
-	viewergrid_1678892179222983[0][2].animate({"loop": "backAndForth"});
-	viewergrid_1678892179222983[0][3].animate({"loop": "backAndForth"});
-	viewergrid_1678892179222983[0][0].zoomTo();
-	viewergrid_1678892179222983[0][1].zoomTo();
-	viewergrid_1678892179222983[0][2].zoomTo();
-	viewergrid_1678892179222983[0][3].zoomTo();
-viewergrid_1678892179222983[0][3].render();
-viewergrid_1678892179222983[0][2].render();
-viewergrid_1678892179222983[0][1].render();
-viewergrid_1678892179222983[0][0].render();
+var viewergrid_16794851653260627 = null;
+viewergrid_16794851653260627 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16794851653260627"),{rows: 1, cols: 4, control_all: true},{backgroundColor:"white"});
+viewer_16794851653260627 = viewergrid_16794851653260627[0][0];
+viewergrid_16794851653260627[0][0].zoomTo();viewergrid_16794851653260627[0][1].zoomTo();viewergrid_16794851653260627[0][2].zoomTo();viewergrid_16794851653260627[0][3].zoomTo();	viewergrid_16794851653260627[0][0].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0000001      -0.0000000      -0.0000002\nH       0.5489997       0.7922034       0.4919110       0.2536819       0.3660389       0.2272940\nH       0.6769972      -0.8058792      -0.2512524       0.3128238      -0.3723751      -0.1160942\nH      -0.7710148      -0.3700500       0.6629997      -0.3562480      -0.1709954       0.3063473\nH      -0.4550622       0.3838059      -0.9036583      -0.2102569       0.1773321      -0.4175443\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653260627[0][1].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0340235      -0.0610143       0.0584425\nH       0.5489997       0.7922034       0.4919110       0.1655323       0.2357191       0.1716460\nH       0.6769972      -0.8058792      -0.2512524      -0.0733168       0.0606392       0.0392300\nH      -0.7710148      -0.3700500       0.6629997       0.5516666       0.2530706      -0.4667356\nH      -0.4550622       0.3838059      -0.9036583      -0.2384727       0.1775919      -0.4405166\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653260627[0][2].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0033071      -0.0619934      -0.0666468\nH       0.5489997       0.7922034       0.4919110       0.3807778       0.5344139       0.3244610\nH       0.6769972      -0.8058792      -0.2512524      -0.3633034       0.4151665       0.1170204\nH      -0.7710148      -0.3700500       0.6629997      -0.1205617      -0.0737171       0.0854424\nH      -0.4550622       0.3838059      -0.9036583       0.1424929      -0.1371759       0.2672108\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653260627[0][3].addModel("5\n\nC      -0.0000199       0.0000199       0.0000000      -0.0844238       0.0270177      -0.0209421\nH       0.5489997       0.7922034       0.4919110       0.1385547       0.2389705       0.1384935\nH       0.6769972      -0.8058792      -0.2512524       0.3920163      -0.4859212      -0.1591988\nH      -0.7710148      -0.3700500       0.6629997       0.2416776       0.1337234      -0.2323672\nH      -0.4550622       0.3838059      -0.9036583       0.2337092      -0.2087045       0.5026100\n","xyz",{"vibrate": {"frames": 10, "amplitude": 0.75}});
+	viewergrid_16794851653260627[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653260627[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653260627[0][2].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653260627[0][3].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16794851653260627[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653260627[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653260627[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653260627[0][3].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16794851653260627[0][0].animate({"loop": "backAndForth"});
+	viewergrid_16794851653260627[0][1].animate({"loop": "backAndForth"});
+	viewergrid_16794851653260627[0][2].animate({"loop": "backAndForth"});
+	viewergrid_16794851653260627[0][3].animate({"loop": "backAndForth"});
+	viewergrid_16794851653260627[0][0].zoomTo();
+	viewergrid_16794851653260627[0][1].zoomTo();
+	viewergrid_16794851653260627[0][2].zoomTo();
+	viewergrid_16794851653260627[0][3].zoomTo();
+viewergrid_16794851653260627[0][3].render();
+viewergrid_16794851653260627[0][2].render();
+viewergrid_16794851653260627[0][1].render();
+viewergrid_16794851653260627[0][0].render();
 });
 </script></div></div>
 </div>

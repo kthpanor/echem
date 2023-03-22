@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -257,7 +255,7 @@ const thebe_selector_output = ".output, .cell_output"
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="hf_example.html">
-       Numerical example
+       HF in VeloxChem
       </a>
      </li>
     </ul>
@@ -1286,14 +1284,29 @@ n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
 <h2>Setting up the system<a class="headerlink" href="#setting-up-the-system" title="Permalink to this headline">#</a></h2>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+
 <span class="s2">O    0.000000000000        0.000000000000        0.000000000000</span>
 <span class="s2">H    0.000000000000        0.740848095288        0.582094932012</span>
 <span class="s2">H    0.000000000000       -0.740848095288        0.582094932012</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;angstrom&quot;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1306,14 +1319,14 @@ n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of orbitals:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span><span class="w"> </span><span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span><span class="w"> </span><span class="si">:</span><span class="s2"> 10.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of orbitals: 24
 Number of doubly occupied molecular orbitals: 5
-Nuclear repulsion energy (in a.u.):  9.343638157670
+Nuclear repulsion energy (in a.u.):  9.34363816
 </pre></div>
 </div>
 </div>
@@ -1335,12 +1348,12 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final DFT energy: </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span><span class="w"> </span><span class="si">:</span><span class="s2"> 12.8f</span><span class="si">}</span><span class="s2"> Hartree&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final DFT energy: </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span><span class="w"> </span><span class="si">:</span><span class="s2"> 10.7f</span><span class="si">}</span><span class="s2"> Hartree&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final DFT energy: -75.18743920 Hartree
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final DFT energy: -75.1874392 Hartree
 </pre></div>
 </div>
 </div>
@@ -1429,15 +1442,12 @@ v_\mathrm{xc}(\mathbf{r}_g)
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter       SCF energy   LDA exchange   Exact exchange   Error norm&quot;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
-
     <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
-
+    
     <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ijkl,kl-&gt;ij&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span>  <span class="c1"># no exact exchange in the Fock matrix</span>
-
     <span class="n">F_xc</span><span class="p">,</span> <span class="n">E_xc</span> <span class="o">=</span> <span class="n">LDA_exchange</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
     <span class="n">F</span> <span class="o">+=</span> <span class="n">F_xc</span>  <span class="c1"># add LDA exchange</span>
-
     <span class="n">F_mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 
     <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
@@ -1451,7 +1461,6 @@ v_\mathrm{xc}(\mathbf{r}_g)
     <span class="n">e_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">F</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">([</span><span class="n">S</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">])</span>
     <span class="n">e_vecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_mat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">18.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_xc</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E_exact_exchange</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">12.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
@@ -1459,7 +1468,6 @@ v_\mathrm{xc}(\mathbf{r}_g)
         <span class="k">break</span>
 
     <span class="n">F</span> <span class="o">=</span> <span class="n">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
-
     <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1517,7 +1525,6 @@ E_{\mathrm{x}}^\mathrm{LDA} = 2
 <span class="n">g_iiii</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
-
     <span class="n">F_xc_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;a,b,ab-&gt;&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">F_xc</span><span class="p">))</span>
     <span class="n">K_ii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;a,b,ab-&gt;&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">K</span><span class="p">))</span>
     <span class="n">g_iiii</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;a,b,c,d,abcd-&gt;&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">g</span><span class="p">))</span>
@@ -1526,26 +1533,24 @@ E_{\mathrm{x}}^\mathrm{LDA} = 2
 <span class="n">HF_x_ii</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">K_ii</span><span class="p">)</span>
 <span class="n">g_iiii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">g_iiii</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">HF_x_ii</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact exchange&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="n">LDA_x_ii</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;LDA exchange&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">),</span> <span class="o">-</span><span class="n">g_iiii</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$-(\phi_i\phi_i | \phi_i\phi_i)$&quot;</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Molecular orbital&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (Hartree)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Molecular orbital&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (Hartree)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/dft_scf_18_0.png" src="../../_images/dft_scf_18_0.png" />
+<img alt="../../_images/dft_scf_19_0.png" src="../../_images/dft_scf_19_0.png" />
 </div>
 </div>
 <p>First, we note that the self-interaction energy (SIE) in terms of the integral <span class="math notranslate nohighlight">\((\phi_i\phi_i|\phi_i\phi_i)\)</span> represents a dominant part of the exchange energy. The percentage contributions exceed 60% for all orbitals and it reaches 97% for the core 1s-orbital.</p>

@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -257,7 +255,7 @@ const thebe_selector_output = ".output, .cell_output"
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="../elec_struct/hf_example.html">
-       Numerical example
+       HF in VeloxChem
       </a>
      </li>
     </ul>
@@ -1215,21 +1213,74 @@ title="Print to PDF"
 <li><p><a class="reference internal" href="#sec-vis-attach-det"><span class="std std-ref">Attachment and detachment densities</span></a>, which are based on the one-particle density matrix and considers the density change involved in an excitation</p></li>
 </ul>
 <p>As an illustration, we consider the first valence-excited state of water, as calculated using ADC(2):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">water_geom</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gator</span>
+
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">O       0.0000000000     0.1187290000     0.0000000000</span>
 <span class="s2">H      -0.7532010000    -0.4749160000    -0.0000000000</span>
 <span class="s2">H       0.7532010000    -0.4749160000     0.0000000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">()</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">water_geom</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s2">&quot;6-31G&quot;</span>
-<span class="n">mol</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="c1"># Construct structure and basis objects</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">get_molecular_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16794806334320824"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16794806334320824" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
 
-<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">HF</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="n">scf_gs</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
 
-<span class="n">adc_state</span> <span class="o">=</span> <span class="n">adcc</span><span class="o">.</span><span class="n">adc2</span><span class="p">(</span><span class="n">scf_gs</span><span class="p">,</span> <span class="n">n_singlets</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
+}
+
+var viewer_16794806334320824 = null;
+var warn = document.getElementById("3dmolwarning_16794806334320824");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_16794806334320824 = $3Dmol.createViewer(document.getElementById("3dmolviewer_16794806334320824"),{backgroundColor:"white"});
+viewer_16794806334320824.zoomTo();
+	viewer_16794806334320824.addModel("3\n\nO       0.0000000000     0.1187290000     0.0000000000\nH      -0.7532010000    -0.4749160000    -0.0000000000\nH       0.7532010000    -0.4749160000     0.0000000000\n","xyz");
+	viewer_16794806334320824.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_16794806334320824.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewer_16794806334320824.render();
+});
+</script></div></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform SCF calculation</span>
+<span class="n">scf_gs</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_scf</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="c1"># Calculate the 2 lowest eigenstates</span>
+<span class="n">adc_results</span> <span class="o">=</span> <span class="n">gator</span><span class="o">.</span><span class="n">run_adc</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_gs</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adc2&quot;</span><span class="p">,</span> <span class="n">singlets</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Printing the results:</p>
@@ -1240,58 +1291,7 @@ title="Print to PDF"
 <span class="nb">print</span><span class="p">(</span><span class="n">adc_state</span><span class="o">.</span><span class="n">describe_amplitudes</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_results</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;+--------------------------------------------------------------+</span>
-<span class="s2">| adc2                                    singlet ,  converged |</span>
-<span class="s2">+--------------------------------------------------------------+</span>
-<span class="s2">|  #        excitation energy     osc str    |v1|^2    |v2|^2  |</span>
-<span class="s2">|          (au)           (eV)                                 |</span>
-<span class="s2">|  0     0.3054352      8.311314   0.0142    0.9591   0.04089  |</span>
-<span class="s2">|  1     0.3903211      10.62118   0.0000    0.9636   0.03637  |</span>
-<span class="s2">+--------------------------------------------------------------+</span>
-
-<span class="s2">+---------------------------------------------------+</span>
-<span class="s2">| State   0 ,     0.3054352 au,      8.311314 eV    |</span>
-<span class="s2">+---------------------------------------------------+</span>
-<span class="s2">| HOMO          -&gt; LUMO           a -&gt;a      -0.691 |</span>
-<span class="s2">| HOMO          -&gt; LUMO+4         a -&gt;a     +0.0451 |</span>
-<span class="s2">| HOMO          -&gt; LUMO+7         a -&gt;a     +0.0227 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO+1 LUMO    ab-&gt;ab    +0.0306 |</span>
-<span class="s2">| HOMO   HOMO   -&gt; LUMO   LUMO+3  ab-&gt;ab    -0.0253 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO   LUMO+1  aa-&gt;aa    -0.0191 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO   LUMO    ab-&gt;ab    -0.0191 |</span>
-<span class="s2">| HOMO-3 HOMO   -&gt; LUMO   LUMO    ab-&gt;ab    +0.0182 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO   LUMO+4  aa-&gt;aa    -0.0174 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+4 LUMO    ab-&gt;ab    +0.0152 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO+6 LUMO    ab-&gt;ab    -0.0152 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+5 LUMO    ab-&gt;ab    -0.0147 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO   LUMO+6  aa-&gt;aa    +0.0139 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO   LUMO+5  aa-&gt;aa    +0.0117 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO   LUMO+1  ab-&gt;ab    +0.0115 |</span>
-<span class="s2">| HOMO-3 HOMO   -&gt; LUMO   LUMO+7  aa-&gt;aa    +0.0107 |</span>
-
-<span class="s2">+---------------------------------------------------+</span>
-<span class="s2">| State   1 ,     0.3903211 au,      10.62118 eV    |</span>
-<span class="s2">+---------------------------------------------------+</span>
-<span class="s2">| HOMO          -&gt; LUMO+1         a -&gt;a       +0.69 |</span>
-<span class="s2">| HOMO          -&gt; LUMO+6         a -&gt;a     -0.0598 |</span>
-<span class="s2">| HOMO          -&gt; LUMO+2         a -&gt;a     -0.0431 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO+1 LUMO+1  ab-&gt;ab    -0.0301 |</span>
-<span class="s2">| HOMO   HOMO   -&gt; LUMO+1 LUMO+3  ab-&gt;ab    +0.0234 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO   LUMO+1  ab-&gt;ab     +0.019 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO+1 LUMO+6  aa-&gt;aa    -0.0189 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+4 LUMO+1  ab-&gt;ab    -0.0144 |</span>
-<span class="s2">| HOMO-3 HOMO   -&gt; LUMO   LUMO+1  ab-&gt;ab    -0.0143 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+1 LUMO+4  aa-&gt;aa    +0.0133 |</span>
-<span class="s2">| HOMO-2 HOMO   -&gt; LUMO+6 LUMO+1  ab-&gt;ab     +0.013 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+5 LUMO+1  ab-&gt;ab    +0.0121 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO+1 LUMO+5  aa-&gt;aa    -0.0109 |</span>
-<span class="s2">| HOMO-1 HOMO   -&gt; LUMO   LUMO+1  aa-&gt;aa    +0.0104 |&quot;&quot;&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">print_results</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<div class="cell tag_hide-input tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+--------------------------------------------------------------+
 | adc2                                    singlet ,  converged |
@@ -1377,16 +1377,7 @@ title="Print to PDF"
 <span class="n">tools</span><span class="o">.</span><span class="n">cubegen</span><span class="o">.</span><span class="n">orbital</span><span class="p">(</span><span class="n">mol</span><span class="o">=</span><span class="n">mol</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="n">outfile</span><span class="o">=</span><span class="s2">&quot;../../img/visualize/water_nto_</span><span class="si">{}</span><span class="s2">_LUNTO+</span><span class="si">{}</span><span class="s2">.cube&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_results</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">Dominant NTO of state 1</span>
-<span class="s2">Relative importance: 0.97</span>
-<span class="s2">&quot;&quot;&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">print_results</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
+<div class="cell tag_hide-input tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dominant NTO of state 1
 Relative importance: 0.97

@@ -1,0 +1,81 @@
+Traceback (most recent call last):
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Prepare molecule and basis objects
+molecule = vlx.Molecule.read_str(water_xyz)
+basis = vlx.MolecularBasis.read(molecule, "6-31G")
+
+# SCF settings and SCF optimization
+scf_drv = vlx.ScfRestrictedDriver()
+scf_settings = {"conv_thresh": 1.0e-6}
+method_settings = {"xcfun": "b3lyp"}
+scf_drv.update_settings(scf_settings, method_settings)
+scf_result = scf_drv.compute(molecule, basis)
+
+# Define spectrum region to be resolved
+freqs = np.arange(515.0, 525.0, 0.1) / au2ev
+freqs_str = [str(x) for x in freqs]
+
+# Calculate the response
+cpp_drv = vlx.rsplinabscross.LinearAbsorptionCrossSection(
+    {"frequencies": ",".join(freqs_str), "damping": 0.3 / au2ev}, method_settings
+)
+cpp_drv.init_driver()
+cpp_result = cpp_drv.compute(molecule, basis, scf_drv.scf_tensors)
+
+# Extract the imaginary part of the complex response function and convert to absorption cross section
+sigma = []
+for w in freqs:
+    axx = -cpp_drv.rsp_property["response_functions"][("x", "x", w)].imag
+    ayy = -cpp_drv.rsp_property["response_functions"][("y", "y", w)].imag
+    azz = -cpp_drv.rsp_property["response_functions"][("z", "z", w)].imag
+    alpha_bar = (axx + ayy + azz) / 3.0
+    sigma.append(4.0 * np.pi * w * alpha_bar / 137.035999)
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[17], line 2[0m
+[1;32m      1[0m [38;5;66;03m# Prepare molecule and basis objects[39;00m
+[0;32m----> 2[0m molecule [38;5;241m=[39m [43mvlx[49m[38;5;241;43m.[39;49m[43mMolecule[49m[38;5;241;43m.[39;49m[43mread_str[49m[43m([49m[43mwater_xyz[49m[43m)[49m
+[1;32m      3[0m basis [38;5;241m=[39m vlx[38;5;241m.[39mMolecularBasis[38;5;241m.[39mread(molecule, [38;5;124m"[39m[38;5;124m6-31G[39m[38;5;124m"[39m)
+[1;32m      5[0m [38;5;66;03m# SCF settings and SCF optimization[39;00m
+
+File [0;32m~/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/molecule.py:57[0m, in [0;36m_Molecule_read_str[0;34m(xyzstr, units)[0m
+[1;32m     54[0m         labels[38;5;241m.[39mappend(content[[38;5;241m0[39m])
+[1;32m     55[0m         coords[38;5;241m.[39mappend([[38;5;28mfloat[39m(x) [38;5;28;01mfor[39;00m x [38;5;129;01min[39;00m content[[38;5;241m1[39m:[38;5;241m4[39m]])
+[0;32m---> 57[0m [38;5;28;01mreturn[39;00m [43mMolecule[49m[43m([49m[43mlabels[49m[43m,[49m[43m [49m[43mcoords[49m[43m,[49m[43m [49m[43munits[49m[43m)[49m
+
+[0;31mTypeError[0m: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. veloxchem.veloxchemlib.Molecule()
+    2. veloxchem.veloxchemlib.Molecule(arg0: veloxchem.veloxchemlib.Molecule)
+    3. veloxchem.veloxchemlib.Molecule(arg0: veloxchem.veloxchemlib.Molecule, arg1: veloxchem.veloxchemlib.Molecule)
+    4. veloxchem.veloxchemlib.Molecule(symbols: List[str], coordinates: numpy.ndarray[numpy.float64], units: str = 'angstrom')
+    5. veloxchem.veloxchemlib.Molecule(Zs: List[int], coordinates: numpy.ndarray[numpy.float64], units: str = 'angstrom')
+
+Invoked with: ['3', 'O', 'H', 'H'], [[], [0.0, 0.0, 0.1178336003], [-0.7595754146, -0.0, -0.4713344012], [0.7595754146, 0.0, -0.4713344012]], 'angstrom'
+TypeError: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. veloxchem.veloxchemlib.Molecule()
+    2. veloxchem.veloxchemlib.Molecule(arg0: veloxchem.veloxchemlib.Molecule)
+    3. veloxchem.veloxchemlib.Molecule(arg0: veloxchem.veloxchemlib.Molecule, arg1: veloxchem.veloxchemlib.Molecule)
+    4. veloxchem.veloxchemlib.Molecule(symbols: List[str], coordinates: numpy.ndarray[numpy.float64], units: str = 'angstrom')
+    5. veloxchem.veloxchemlib.Molecule(Zs: List[int], coordinates: numpy.ndarray[numpy.float64], units: str = 'angstrom')
+
+Invoked with: ['3', 'O', 'H', 'H'], [[], [0.0, 0.0, 0.1178336003], [-0.7595754146, -0.0, -0.4713344012], [0.7595754146, 0.0, -0.4713344012]], 'angstrom'
+

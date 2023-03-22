@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
@@ -257,7 +255,7 @@ const thebe_selector_output = ".output, .cell_output"
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="../elec_struct/hf_example.html">
-       Numerical example
+       HF in VeloxChem
       </a>
      </li>
     </ul>
@@ -1248,17 +1246,73 @@ title="Print to PDF"
 
 <span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.2113245</span>
 
-<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="n">water_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+
 <span class="s2">O       0.0000000000     0.1178336003     0.0000000000</span>
 <span class="s2">H      -0.7595754146    -0.4713344012     0.0000000000</span>
 <span class="s2">H       0.7595754146    -0.4713344012     0.0000000000 </span>
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="c1"># Prepare molecule and basis objects</span>
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">water_xyz</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16794792422815409"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_16794792422815409" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
 
-<span class="c1"># SCF settings and calculation</span>
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
+}
+
+var viewer_16794792422815409 = null;
+var warn = document.getElementById("3dmolwarning_16794792422815409");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_16794792422815409 = $3Dmol.createViewer(document.getElementById("3dmolviewer_16794792422815409"),{backgroundColor:"white"});
+viewer_16794792422815409.zoomTo();
+	viewer_16794792422815409.addModel("3\n\nO       0.0000000000     0.1178336003     0.0000000000\nH      -0.7595754146    -0.4713344012     0.0000000000\nH       0.7595754146    -0.4713344012     0.0000000000 \n","xyz");
+	viewer_16794792422815409.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_16794792422815409.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewer_16794792422815409.render();
+});
+</script></div></div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># SCF settings and calculation</span>
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;conv_thresh&quot;</span><span class="p">:</span> <span class="mf">1.0e-6</span><span class="p">}</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xcfun&quot;</span><span class="p">:</span> <span class="s2">&quot;b3lyp&quot;</span><span class="p">}</span>
@@ -1291,12 +1345,12 @@ title="Print to PDF"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy [au]  Osc. str.   TM(x)     TM(y)     TM(z)
-   0.286      0.01128  -0.00000   0.00000  -0.24321
-   0.364      0.09652   0.00000  -0.63080  -0.00000
+   0.286      0.01128   0.00000  -0.00000   0.24321
+   0.364      0.09652  -0.00000   0.63080   0.00000
    0.364      0.00000   0.00000   0.00000  -0.00000
-   0.454      0.08684   0.53570   0.00000   0.00000
-   0.540      0.41655  -1.07524   0.00000  -0.00000
-   0.666      0.24377  -0.00000  -0.74073   0.00000
+   0.454      0.08684  -0.53570  -0.00000   0.00000
+   0.540      0.41655   1.07524  -0.00000  -0.00000
+   0.666      0.24377   0.00000   0.74073  -0.00000
 </pre></div>
 </div>
 </div>
@@ -1332,7 +1386,7 @@ f ( \omega ; \omega_k, \gamma_k) = \frac{1}{\pi}
 \frac{\gamma_k}{(\omega_k - \omega)^2 + \gamma_k^2}
 \right]
 \]</div>
-<p>with FWHM of <span class="math notranslate nohighlight">\(2\gamma_k\)</span>. This is normalized:</p>
+<p>with FWHM of <span class="math notranslate nohighlight">\(2\gamma_k\)</span>. This is normalized</p>
 <div class="math notranslate nohighlight">
 \[
 \int_{-\infty}^{+\infty} f ( \omega ; \omega_k, \gamma_k) d \omega = 1.
@@ -1401,7 +1455,7 @@ g ( \omega ; \omega_k, \sigma_k) = \frac{\sqrt{2}}{\sigma \sqrt{\pi}}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/broadening_5_0.png" src="../../_images/broadening_5_0.png" />
+<img alt="../../_images/broadening_7_0.png" src="../../_images/broadening_7_0.png" />
 </div>
 </div>
 </section>
