@@ -2,55 +2,48 @@
 
 Need to be a bit flexible, as full consistency is not always preferable
 
-### To do
 
-- Add any points you think we need to standardize
-- Figure out reasonable linking to other parts of book
-- Figure out cheap(er) visualizations
-
-### Code formatting
-
-- Install and use the JupyterLab Code Formatter running under `jupyter-lab` but not `jupyter-notebook`
-
-```
-conda install -c conda-forge jupyterlab_code_formatter black isort
-```
-
-### Spell-checking
-
-- Install and use the JupyterLab Spell-Checker
-
-```
-conda install -c conda-forge jupyterlab-spellchecker
-```
-
-
-### Equations
-
-- Use spinors for spin $\psi^\dagger(\mathbf{r})$ and not $\psi^\ast(\mathbf{x})$.
-
-- Avoid numbered equations
-
-- MO indices
-    - $ij...$ (occupied)
-    - $ab...$ (unoccupied)
-    - $pq...$ (general)
-    - $tu...$ (active)
-- Matrices: $B$ or $\mathbf{B}$
-    - Prefer bold 
-
-- Greek letters for atomic orbitals
-
+- Check units and notation
+- Nonzero (not non-zero)
+- Ionization energy (not ionization potential)
+- Wave function (not wavefunction)
+- Use **bold** or *italics* for introducing terms (?)
 - Text in equations: $E_{\mathrm{HF}}$
+- Generally include visualization of molecule considered, using cell with `remove-input`
+- Avoid commas, colon before (and in) equations
 
-### Terms and abbreviations
+Refer to parts of the book as
+- part
+    - chapter
+        - section
+            - subsection
 
-- Ionization potential or ionization energy
-- Cross section or cross-section
-- Wave function or wave-function
+
+### Figures and tables
+
+- Avoid caption if possible (describe in text around instead)
+- Static images and Python cells if too expensive
+- Figures in png 300 dpi (*potentially* svg)
+- Typical sizes
+    - matplotlib: 6x4 or 12x12
+    - py3Dmol: 400x300
+- Typical py3Dmol style
+    - `viewer.setViewStyle({"style": "outline", "width": 0.05})`
+    - `viewer.setStyle({"stick":{},"sphere": {"scale":0.25}})`
 
 
-### Loading packages (name)
+### Standards
+
+```python
+scf_results = scf_drv(...)
+molecule = vlx.Molecule.from_xyz_string(...)
+basis = vlx.MolecularBasis.read(...)
+```
+
+
+
+
+### Package abbreviations
 
 ```python
 import veloxchem as vlx
@@ -60,12 +53,12 @@ import multipsi as mtp
 import py3Dmol as p3d
 import adcc
 import gator
-from pyscf import gto, scf
 ```
 
 ### References
 
-Include URL to create links in the references:
+Add to .bib (in chronological order) and include URL to create links in the references
+
 ```
 @article{Sellers1993,
 author  = {Sellers, Harrell},
@@ -77,22 +70,3 @@ url     = {https://doi.org/10.1002/qua.560450106},
 year    = {1993}
 }
 ```
-
-
-### Miscellaneous
-
-- Module loads:
-    - In the open or in hidden blocks
-        - Maybe hidden blocks for tutorials (as not main point there), and open otherwise
-- **Bold** or *italics* for introducing terms
-- Link between sections
-- Static images and Python cells if too expensive
-- Figures in png 300 dpi (*potentially* svg)
-- nonzero, not non-zero
-- wave function, not wavefunction
-
-Refer to parts of the book as
-- part
-    - chapter
-        - section
-            - subsection
