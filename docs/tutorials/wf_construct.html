@@ -586,11 +586,10 @@ document.write(`
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
-<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
 </pre></div>
 </div>
 </div>
@@ -602,19 +601,10 @@ document.write(`
 <p>Construct molecules using SMILES strings and perform an UFF optimization.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">smilestoxyz</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">opt</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_noH</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="n">mol_bare</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
-    <span class="n">mol_full</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">mol_bare</span><span class="p">)</span>
-    <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">opt</span><span class="p">:</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">UFFOptimizeMolecule</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">return_noH</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">mol_full</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RemoveHs</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">mol_full</span><span class="p">)</span>
-
-<span class="n">ch4_uff</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-<span class="n">h2o_uff</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
-<span class="n">co2_uff</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;O=C=O&#39;</span><span class="p">)</span>
-<span class="n">o2_uff</span> <span class="o">=</span> <span class="n">smilestoxyz</span><span class="p">(</span><span class="s1">&#39;O=O&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ch4_uff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">_smiles_to_xyz</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="n">h2o_uff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">_smiles_to_xyz</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+<span class="n">co2_uff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">_smiles_to_xyz</span><span class="p">(</span><span class="s1">&#39;O=C=O&#39;</span><span class="p">)</span>
+<span class="n">o2_uff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">_smiles_to_xyz</span><span class="p">(</span><span class="s1">&#39;O=O&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -630,9 +620,9 @@ document.write(`
     <span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
     <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span><span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
     <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
+    <span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">()</span>
     <span class="n">xtb_opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">xtb_grad_drv</span><span class="p">)</span>
-    <span class="n">xtb_opt</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+    <span class="n">xtb_opt</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">xtb_drv</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">xtb_opt</span>
 
 <span class="n">ch4_xtb</span> <span class="o">=</span> <span class="n">xTX_opt</span><span class="p">(</span><span class="n">ch4_uff</span><span class="p">)</span>
@@ -649,27 +639,10 @@ document.write(`
 <p>Convert to format readable by py3Dmol and visualize structures.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">toxyz</span><span class="p">(</span><span class="n">molecule</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">ChemicalElement</span>
-    <span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">bohr_in_angstroms</span>
-
-    <span class="n">elem_ids</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">elem_ids_to_numpy</span><span class="p">()</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
-    <span class="n">ys</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">y_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
-    <span class="n">zs</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">z_to_numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">bohr_in_angstroms</span><span class="p">()</span>
-
-    <span class="n">xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
-    <span class="n">xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_atoms</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">elem_id</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">elem_ids</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">):</span>
-        <span class="n">elem</span> <span class="o">=</span> <span class="n">ChemicalElement</span><span class="p">()</span>
-        <span class="n">elem</span><span class="o">.</span><span class="n">set_atom_type</span><span class="p">(</span><span class="n">elem_id</span><span class="p">)</span>
-        <span class="n">xyz</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%6s</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="s2"> </span><span class="si">%22.12f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xyz</span>
-
-<span class="n">ch4_xyz</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">ch4_xtb</span><span class="p">)</span>
-<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">h2o_xtb</span><span class="p">)</span>
-<span class="n">co2_xyz</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">co2_xtb</span><span class="p">)</span>
-<span class="n">o2_xyz</span> <span class="o">=</span> <span class="n">toxyz</span><span class="p">(</span><span class="n">o2_xtb</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ch4_xyz</span> <span class="o">=</span> <span class="n">ch4_xtb</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
+<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="n">h2o_xtb</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
+<span class="n">co2_xyz</span> <span class="o">=</span> <span class="n">co2_xtb</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
+<span class="n">o2_xyz</span> <span class="o">=</span> <span class="n">o2_xtb</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
 
 <span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">ch4_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -683,8 +656,8 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16794758012211752"  style="position: relative; width: 400px; height: 300px">
-        <p id="3dmolwarning_16794758012211752" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1683626015023959"  style="position: relative; width: 400px; height: 300px">
+        <p id="3dmolwarning_1683626015023959" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -716,31 +689,31 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16794758012211752 = null;
-var warn = document.getElementById("3dmolwarning_16794758012211752");
+var viewer_1683626015023959 = null;
+var warn = document.getElementById("3dmolwarning_1683626015023959");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16794758012211752 = null;
-viewergrid_16794758012211752 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16794758012211752"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
-viewer_16794758012211752 = viewergrid_16794758012211752[0][0];
-viewergrid_16794758012211752[0][0].zoomTo();viewergrid_16794758012211752[0][1].zoomTo();viewergrid_16794758012211752[1][0].zoomTo();viewergrid_16794758012211752[1][1].zoomTo();	viewergrid_16794758012211752[0][0].addModel("5\n\n     C         0.000000017845         0.000000103182         0.000000165980\n     H        -0.662817999881         0.851423006524        -0.083350896284\n     H        -0.398636317742        -0.825205839576        -0.575603951237\n     H         0.083506106786        -0.291824149472         1.038778937016\n     H         0.977948192992         0.265607879342        -0.379823255475\n","xyz");
-	viewergrid_16794758012211752[0][1].addModel("2\n\n     O         0.604905856689        -0.000000000002         0.000000000000\n     O        -0.604905856689         0.000000000002        -0.000000000000\n","xyz");
-	viewergrid_16794758012211752[1][0].addModel("3\n\n     O         1.143651316726        -0.000000000001         0.000000000000\n     C         0.000000000000        -0.000000000000         0.000000000000\n     O        -1.143651316726         0.000000000001        -0.000000000000\n","xyz");
-	viewergrid_16794758012211752[1][1].addModel("3\n\n     O         0.002160277267         0.379377141202         0.000000000000\n     H        -0.773242963872        -0.185290989342        -0.000000000000\n     H         0.771081686604        -0.194086151860         0.000000000000\n","xyz");
-	viewergrid_16794758012211752[0][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_16794758012211752[0][1].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_16794758012211752[1][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_16794758012211752[1][1].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_16794758012211752[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_16794758012211752[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_16794758012211752[1][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_16794758012211752[1][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-viewergrid_16794758012211752[1][1].render();
-viewergrid_16794758012211752[1][0].render();
-viewergrid_16794758012211752[0][1].render();
-viewergrid_16794758012211752[0][0].render();
+var viewergrid_1683626015023959 = null;
+viewergrid_1683626015023959 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1683626015023959"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
+viewer_1683626015023959 = viewergrid_1683626015023959[0][0];
+viewergrid_1683626015023959[0][0].zoomTo();viewergrid_1683626015023959[0][1].zoomTo();viewergrid_1683626015023959[1][0].zoomTo();viewergrid_1683626015023959[1][1].zoomTo();	viewergrid_1683626015023959[0][0].addModel("5\n\nC 0.000000 0.000000 0.000000\nH -0.662818 0.851423 -0.083351\nH -0.398636 -0.825206 -0.575604\nH 0.083506 -0.291824 1.038779\nH 0.977948 0.265608 -0.379823\n","xyz");
+	viewergrid_1683626015023959[0][1].addModel("2\n\nO 0.604906 -0.000000 -0.000000\nO -0.604906 0.000000 0.000000\n","xyz");
+	viewergrid_1683626015023959[1][0].addModel("3\n\nO 1.143651 0.000556 0.000000\nC -0.000000 0.000000 0.000000\nO -1.143651 -0.000556 -0.000000\n","xyz");
+	viewergrid_1683626015023959[1][1].addModel("3\n\nO 0.002160 0.379377 -0.000000\nH -0.773243 -0.185291 0.000000\nH 0.771082 -0.194086 0.000000\n","xyz");
+	viewergrid_1683626015023959[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1683626015023959[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1683626015023959[1][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1683626015023959[1][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1683626015023959[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1683626015023959[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1683626015023959[1][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1683626015023959[1][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewergrid_1683626015023959[1][1].render();
+viewergrid_1683626015023959[1][0].render();
+viewergrid_1683626015023959[0][1].render();
+viewergrid_1683626015023959[0][0].render();
 });
 </script></div></div>
 </div>
@@ -764,7 +737,9 @@ viewergrid_16794758012211752[0][0].render();
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CH4:
- [[0.    1.082 1.082 1.082 1.082]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [[0.    1.082 1.082 1.082 1.082]
  [1.082 0.    1.767 1.767 1.767]
  [1.082 1.767 0.    1.767 1.767]
  [1.082 1.767 1.767 0.    1.767]
@@ -780,16 +755,6 @@ H2O:
  [[0.    0.959 0.959]
  [0.959 0.    1.544]
  [0.959 1.544 0.   ]]
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">13</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CO2:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">co2_dm</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;H2O:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">h2o_dm</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-<span class="ne">---&gt; </span><span class="mi">13</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;H2O:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">h2o_dm</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-<span class="ne">TypeError</span>: unsupported format string passed to numpy.ndarray.__format__
 </pre></div>
 </div>
 </div>

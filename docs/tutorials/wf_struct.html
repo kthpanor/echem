@@ -581,6 +581,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
 </pre></div>
 </div>
 </div>
@@ -605,9 +606,9 @@ document.write(`
 <span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span><span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
 <span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-<span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">(</span><span class="n">xtb_drv</span><span class="p">)</span>
+<span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">()</span>
 <span class="n">xtb_opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">xtb_grad_drv</span><span class="p">)</span>
-<span class="n">xtb_opt</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">methanol</span><span class="p">)</span>
+<span class="n">xtb_opt</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">methanol</span><span class="p">,</span> <span class="n">xtb_drv</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -616,16 +617,6 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_xtb</span> <span class="o">=</span> <span class="n">xtb_opt</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">methanol_xtb</span> <span class="o">=</span> <span class="n">xtb_opt</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
-
-<span class="ne">NameError</span>: name &#39;xtb_opt&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -663,8 +654,8 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16744837065463562"  style="position: relative; width: 500px; height: 200px">
-        <p id="3dmolwarning_16744837065463562" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16836260347478113"  style="position: relative; width: 500px; height: 200px">
+        <p id="3dmolwarning_16836260347478113" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -693,34 +684,34 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@latest/build/3Dmol-min.min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16744837065463562 = null;
-var warn = document.getElementById("3dmolwarning_16744837065463562");
+var viewer_16836260347478113 = null;
+var warn = document.getElementById("3dmolwarning_16836260347478113");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16744837065463562 = null;
-viewergrid_16744837065463562 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16744837065463562"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
-viewer_16744837065463562 = viewergrid_16744837065463562[0][0];
-viewergrid_16744837065463562[0][0].zoomTo();viewergrid_16744837065463562[0][1].zoomTo();viewergrid_16744837065463562[0][2].zoomTo();	viewergrid_16744837065463562[0][0].addModel("6\n\nC     -0.357700    0.007590   -0.021482\nO      0.908736   -0.534992   -0.261119\nH     -0.546833    0.071791    1.072109\nH     -0.433768    1.019344   -0.475795\nH     -1.126997   -0.647931   -0.478956\nH      1.556564    0.084198    0.165243\n","xyz");
-	viewergrid_16744837065463562[0][1].addModel("6\n\n     C        -0.362074181262         0.022820618816        -0.012478191034\n     O         0.910460293070        -0.524530695220        -0.254588748392\n     H        -0.577885801956         0.088589657839         1.059591312713\n     H        -0.466992561771         1.017928636582        -0.458556011492\n     H        -1.081492377974        -0.649319649960        -0.476481088779\n     H         1.577986629893         0.044511431943         0.142512726984\n","xyz");
-	viewergrid_16744837065463562[0][2].addModel("6\n\n     C        -0.355338295061         0.015832253296         0.022623869829\n     O         0.957130783496         0.544496756944        -0.204029530782\n     H        -0.479565645795        -0.368664416163         1.040410925550\n     H        -0.607609510888        -0.787365989746        -0.677656188432\n     H        -1.069087493005         0.828785331979        -0.122302379295\n     H         1.554469486523        -0.233087881063        -0.059049636847\n","xyz");
-	viewergrid_16744837065463562[0][0].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16744837065463562[0][1].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16744837065463562[0][2].setViewStyle({"style": "outline", "color": "black", "width": 0.1});
-	viewergrid_16744837065463562[0][0].setStyle({"stick": {}});
-	viewergrid_16744837065463562[0][1].setStyle({"stick": {}});
-	viewergrid_16744837065463562[0][2].setStyle({"stick": {}});
-viewergrid_16744837065463562[0][2].render();
-viewergrid_16744837065463562[0][1].render();
-viewergrid_16744837065463562[0][0].render();
+var viewergrid_16836260347478113 = null;
+viewergrid_16836260347478113 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16836260347478113"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
+viewer_16836260347478113 = viewergrid_16836260347478113[0][0];
+viewergrid_16836260347478113[0][0].zoomTo();viewergrid_16836260347478113[0][1].zoomTo();viewergrid_16836260347478113[0][2].zoomTo();	viewergrid_16836260347478113[0][0].addModel("6\n\nC     -0.357700    0.007590   -0.021482\nO      0.908736   -0.534992   -0.261119\nH     -0.546833    0.071791    1.072109\nH     -0.433768    1.019344   -0.475795\nH     -1.126997   -0.647931   -0.478956\nH      1.556564    0.084198    0.165243\n","xyz");
+	viewergrid_16836260347478113[0][1].addModel("6\n\nC -0.362075 0.022822 -0.012477\nO 0.910460 -0.524532 -0.254589\nH -0.577886 0.088591 1.059592\nH -0.466993 1.017930 -0.458556\nH -1.081493 -0.649319 -0.476481\nH 1.577989 0.044508 0.142511\n","xyz");
+	viewergrid_16836260347478113[0][2].addModel("6\n\n     C        -0.355338295061         0.015832253296         0.022623869829\n     O         0.957130783496         0.544496756944        -0.204029530782\n     H        -0.479565645795        -0.368664416163         1.040410925550\n     H        -0.607609510888        -0.787365989746        -0.677656188432\n     H        -1.069087493005         0.828785331979        -0.122302379295\n     H         1.554469486523        -0.233087881063        -0.059049636847\n","xyz");
+	viewergrid_16836260347478113[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16836260347478113[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16836260347478113[0][2].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16836260347478113[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16836260347478113[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16836260347478113[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewergrid_16836260347478113[0][2].render();
+viewergrid_16836260347478113[0][1].render();
+viewergrid_16836260347478113[0][0].render();
 });
 </script></div></div>
 </div>
-<p>These structures are all very similar, featuring, <em>e.g</em>, the staggered H-O-C-H dihedral. To better see any differences in the structures, the distance matrices can be calculated  using functionalities from RDfit:</p>
+<p>These structures are all very similar, featuring, <em>e.g</em>, the staggered H-O-C-H dihedral. To better see any differences in the structures, the distance matrices can be calculated using functionalities from <a class="reference external" href="https://www.rdkit.org/">RDkit</a>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From UFF:&#39;</span><span class="p">)</span>
@@ -742,7 +733,9 @@ viewergrid_16744837065463562[0][0].render();
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>From UFF:
-[[0.    1.398 1.112 1.112 1.109 1.925]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.    1.398 1.112 1.112 1.109 1.925]
  [1.398 0.    2.065 2.065 2.05  0.992]
  [1.112 2.065 0.    1.818 1.806 2.291]
  [1.112 2.065 1.818 0.    1.806 2.291]
