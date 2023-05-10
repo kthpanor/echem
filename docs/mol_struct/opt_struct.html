@@ -1263,15 +1263,15 @@ title="Print to PDF"
 <span id="sec-structopt-methods"></span><h1>Optimization methods<a class="headerlink" href="#optimization-methods" title="Permalink to this headline">#</a></h1>
 <p>The first class of special points on the PES that we will discuss are local energy minima. These correspond to equilibrium molecular structures and are characterized by a vanishing first order energy derivative combined with a Hessian matrix which has only positive eigenvalues. The procedure to determine a local minimum (i.e. finding the coordinates that minimize the energy) is called a structure optimization.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/PES.png"><img alt="../../_images/PES.png" src="../../_images/PES.png" style="width: 313.0px; height: 313.0px;" /></a>
+<img alt="../../_images/PES.png" src="../../_images/PES.png" />
 </figure>
 <p>In practical terms, the ingredients to perform a geometry optimization include: (1) the initial molecular coordinates, (2) a choice of coordinate system, (3) the energy at a specific geometry <span class="math notranslate nohighlight">\(E(\mathbf{x})\)</span>, (4) the gradient <span class="math notranslate nohighlight">\(\mathbf{g}(\mathbf{x})=\nabla E(\mathbf{x})\)</span>, (5) the Hessian, and (6) a procedure to update the coordinates and Hessian and move on the potential energy surface towards lower energy.</p>
 <p>Having addressed <a class="reference internal" href="coordinates.html#coord"><span class="std std-ref">the issue of coordinate system</span></a>, the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton–Raphson, quasi-Newton). For a detailed review of minimization techniques, see <span id="id1">[<a class="reference internal" href="../refs.html#id91" title="J. A. Snyman. Practical mathematical optimization. Springer, 2005.">Sny05</a>]</span>.</p>
 <section id="gradient-descent">
 <h2>Gradient descent<a class="headerlink" href="#gradient-descent" title="Permalink to this headline">#</a></h2>
 <p>The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient</p>
-<div class="amsmath math notranslate nohighlight" id="equation-99445335-561f-46c4-9975-8c9541102dbe">
-<span class="eqno">(36)<a class="headerlink" href="#equation-99445335-561f-46c4-9975-8c9541102dbe" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-cabc07d9-dde4-4282-90b9-0b3125b60f78">
+<span class="eqno">(36)<a class="headerlink" href="#equation-cabc07d9-dde4-4282-90b9-0b3125b60f78" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \mathbf{x}_{i+1} = \mathbf{x}_i - k_i\mathbf{g}(\mathbf{x}_i) \nonumber 
 \end{equation}\]</div>
 <p>where by <span class="math notranslate nohighlight">\(\mathbf{x}_{i+1}\)</span> we denote the new coordinates (in a generic coordinate system – either Cartesian or internal coordinates), <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> are the coordinates at the previous step <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\nabla E\)</span> is the energy gradient and <span class="math notranslate nohighlight">\(k_i\)</span> is the step size. The step size can either be kept constant, or adjusted at each iteration, e.g. by the line search procedure.</p>
@@ -1279,7 +1279,7 @@ title="Print to PDF"
 <section id="implementation">
 <h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">#</a></h3>
 <p>Let’s implement the gradient descent method. We will need to set up a molecule, an SCF driver and a gradient driver.</p>
-<div class="cell tag_hide-output docutils container">
+<div class="cell tag_hide-output tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -1291,7 +1291,7 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<div class="cell tag_hide-output docutils container">
+<div class="cell tag_hide-output tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the molecule</span>
 <span class="n">molecule_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
@@ -1308,41 +1308,11 @@ title="Print to PDF"
 </pre></div>
 </div>
 </div>
+</div>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/xinli/miniconda3/envs/echem/lib/python3.10/site-packages/veloxchem/basis/STO-3G
-                                                                                                                          
-                                              Molecular Basis (Atomic Basis)                                              
-                                             ================================                                             
-                                                                                                                          
-                               Basis: STO-3G                                                                              
-                                                                                                                          
-                               Atom Contracted GTOs           Primitive GTOs                                              
-                                                                                                                          
-                                O   (2S,1P)                   (6S,3P)                                                     
-                                H   (1S)                      (3S)                                                        
-                                                                                                                          
-                               Contracted Basis Functions : 7                                                             
-                               Primitive Basis Functions  : 21                                                            
-                                                                                                                          
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell tag_hide-input docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">view</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">linked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">view</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_xyz</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
-<span class="n">view</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;scale&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
-<span class="n">view</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-<span class="n">view</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
-<span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_16837239834744425"  style="position: relative; width: 400px; height: 300px">
-        <p id="3dmolwarning_16837239834744425" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_16837248630479748"  style="position: relative; width: 400px; height: 300px">
+        <p id="3dmolwarning_16837248630479748" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -1374,21 +1344,21 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16837239834744425 = null;
-var warn = document.getElementById("3dmolwarning_16837239834744425");
+var viewer_16837248630479748 = null;
+var warn = document.getElementById("3dmolwarning_16837248630479748");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16837239834744425 = null;
-viewergrid_16837239834744425 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16837239834744425"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_16837239834744425 = viewergrid_16837239834744425[0][0];
-viewergrid_16837239834744425[0][0].zoomTo();	viewergrid_16837239834744425[0][0].addModel("3\nwater\n  O 0.000 0.000  0.000\n  H 0.000 0.000  0.950\n  H 0.896 0.000 -0.317\n","xyz");
-	viewergrid_16837239834744425[0][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_16837239834744425[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_16837239834744425[0][0].rotate(-90,"x");
-	viewergrid_16837239834744425[0][0].zoomTo();
-viewergrid_16837239834744425[0][0].render();
+var viewergrid_16837248630479748 = null;
+viewergrid_16837248630479748 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16837248630479748"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16837248630479748 = viewergrid_16837248630479748[0][0];
+viewergrid_16837248630479748[0][0].zoomTo();	viewergrid_16837248630479748[0][0].addModel("3\nwater\n  O 0.000 0.000  0.000\n  H 0.000 0.000  0.950\n  H 0.896 0.000 -0.317\n","xyz");
+	viewergrid_16837248630479748[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16837248630479748[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16837248630479748[0][0].rotate(-90,"x");
+	viewergrid_16837248630479748[0][0].zoomTo();
+viewergrid_16837248630479748[0][0].render();
 });
 </script></div></div>
 </div>
@@ -1712,13 +1682,13 @@ Iteration     Energy (H)      Max. displacement (bohr)    Gradient norm (H/bohr)
 <section id="conjugate-gradient">
 <h2>Conjugate gradient<a class="headerlink" href="#conjugate-gradient" title="Permalink to this headline">#</a></h2>
 <p>An improved method over the gradient-descent approach is to use the “gradient history” (steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span>) to determine the coordinates at step <span class="math notranslate nohighlight">\(i+1\)</span></p>
-<div class="amsmath math notranslate nohighlight" id="equation-a497c0e1-d60c-417d-8545-a18f3a134b3c">
-<span class="eqno">(37)<a class="headerlink" href="#equation-a497c0e1-d60c-417d-8545-a18f3a134b3c" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-9d24b6c0-d0f9-4d42-ab98-3e2ee98a0d6f">
+<span class="eqno">(37)<a class="headerlink" href="#equation-9d24b6c0-d0f9-4d42-ab98-3e2ee98a0d6f" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \mathbf{x}_{i+1} = \mathbf{x}_i - k_i \mathbf{h}_i \nonumber
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{h}_i = \mathbf{g}(\mathbf{x}_i)+\gamma_i\mathbf{h}_{i-1}\)</span>. The function <span class="math notranslate nohighlight">\(\gamma_i\)</span> contains gradient information from steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span> and can be defined in different ways. For example, in the Fletcher-Reeves conjugate gradient method</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1dd38ae1-c265-4276-bcbf-fc1ba9ba92ed">
-<span class="eqno">(38)<a class="headerlink" href="#equation-1dd38ae1-c265-4276-bcbf-fc1ba9ba92ed" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-045f9b85-67d2-4df2-91aa-7c779b1579b4">
+<span class="eqno">(38)<a class="headerlink" href="#equation-045f9b85-67d2-4df2-91aa-7c779b1579b4" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \gamma_i = \frac{|\mathbf{g}(\mathbf{x}_i)|^2}{|\mathbf{g}(\mathbf{x}_{i-1})|^2} \nonumber
 \end{equation}\]</div>
 <section id="id2">
@@ -1932,7 +1902,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    10.      -74.9655522            0.0051889                0.0166759               0.9431610
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    11.      -74.9656477            0.0057511                0.0156704               0.8830442
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    11.      -74.9656477            0.0057511                0.0156704               0.8830443
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    12.      -74.9657341            0.0057875                0.0138841               0.7850059
@@ -1976,38 +1946,38 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 <section id="newton-raphson-and-quasi-newton">
 <h2>Newton–Raphson and quasi-Newton<a class="headerlink" href="#newton-raphson-and-quasi-newton" title="Permalink to this headline">#</a></h2>
 <p>The next step in the hierarchy of minimization methods is to use both the first and second order energy derivatives (i.e. gradient <span class="math notranslate nohighlight">\(\mathbf{g}\)</span> and Hessian <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>) in determining the next step in conformation space. This is based on a quadratic approximation for the local shape of the PES</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3dac2d27-ffec-4317-8185-21edd618ee8d">
-<span class="eqno">(39)<a class="headerlink" href="#equation-3dac2d27-ffec-4317-8185-21edd618ee8d" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-8776f404-b619-43d1-afc4-28efe66c2558">
+<span class="eqno">(39)<a class="headerlink" href="#equation-8776f404-b619-43d1-afc4-28efe66c2558" title="Permalink to this equation">#</a></span>\[\begin{equation}
     E(\mathbf{x}+\Delta\mathbf{x}) \approx E(\mathbf{x}) + \mathbf{g}(\mathbf{x})\Delta\mathbf{x} + \frac{1}{2}\Delta\mathbf{x}^\mathrm{T}\mathbf{H}\Delta\mathbf{x} \label{eq:quadratic_approx_PES} \nonumber
 \end{equation}\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(\Delta \mathbf{x}\)</span> is the Newton step used to update the coordinates</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9f9b1b6e-d321-4003-bf8d-4fe68630823e">
-<span class="eqno">(40)<a class="headerlink" href="#equation-9f9b1b6e-d321-4003-bf8d-4fe68630823e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-1602846d-3e29-48d2-87c1-0002b8acf7ca">
+<span class="eqno">(40)<a class="headerlink" href="#equation-1602846d-3e29-48d2-87c1-0002b8acf7ca" title="Permalink to this equation">#</a></span>\[\begin{align}
     \Delta \mathbf{x} &amp;= -\mathbf{H}^{-1}\mathbf{g}(\mathbf{x})\label{eq:Newton_step} \nonumber \\
     \mathbf{x}_\mathrm{i+1} &amp;= \mathbf{x}_\mathrm{i}+\Delta \mathbf{x} \nonumber
 \end{align}\]</div>
 <p>When redundant internal coordinates are used, it is important to ensure that the displacements are only performed in the non-redundant region of the internal coordinate space. This is achieved by applying a projector <span class="math notranslate nohighlight">\(\mathbf{P}=\mathbf{G}^{-}\mathbf{G}\)</span> to the gradient and Hessian before constructing the Newton step <span id="id3">[<a class="reference internal" href="../refs.html#id64" title="F. Neese et al. Orca. An Ab Initio, DFT and Semiempirical electronic structure package, 2009.">Neal09</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-707b9a44-3c90-4f19-a43f-dc1f8fca0c81">
-<span class="eqno">(41)<a class="headerlink" href="#equation-707b9a44-3c90-4f19-a43f-dc1f8fca0c81" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-58b9fd6d-4733-4252-a128-d698f931d6d5">
+<span class="eqno">(41)<a class="headerlink" href="#equation-58b9fd6d-4733-4252-a128-d698f931d6d5" title="Permalink to this equation">#</a></span>\[\begin{align}
  \tilde{\mathbf{g}}_q &amp;= \mathbf{P}\mathbf{g}(\mathbf{q}) \, , \nonumber \\
  \tilde{\mathbf{H}}_q &amp;= \mathbf{P}\mathbf{H}_q\mathbf{P}+\alpha(1-\mathbf{P}) \nonumber \,,
  \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is an arbitrary large value (e.g. 1000).</p>
 <p>As evident from the equations above, the second order derivatives of the energy with respect to nuclear displacements are required to generate the Newton step. The direct computation of these derivatives (which compose the Hessian matrix) is quite expensive, but good <em>approximations</em> for the Hessian can be constructed using the gradient history. For example, the Broyden-Fletcher-Goldfarb-Shanno (BFGS, used by <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>) approach uses the relation:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4f2659fa-719a-4214-8eaa-9ee3155215cc">
-<span class="eqno">(42)<a class="headerlink" href="#equation-4f2659fa-719a-4214-8eaa-9ee3155215cc" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b83bd390-4aee-4043-b948-4defe15fbd15">
+<span class="eqno">(42)<a class="headerlink" href="#equation-b83bd390-4aee-4043-b948-4defe15fbd15" title="Permalink to this equation">#</a></span>\[\begin{align}
 \mathbf{H}_{i+1} &amp;= \mathbf{H}_i + \frac{\mathbf{h}^{}_i\mathbf{h}_i^\mathrm{T}}{\mathbf{h}_i^\mathrm{T}\mathbf{s}^{}_i} - \frac{\mathbf{H}_i\mathbf{s}_i\left(\mathbf{H}_i\mathbf{s}_i\right)_{}^\mathrm{T}}{\mathbf{s}_i^\mathrm{T}\mathbf{H}_i^{}\mathbf{s}_i^{}} \, ,\nonumber
 \end{align}\]</div>
 <p>with,</p>
-<div class="amsmath math notranslate nohighlight" id="equation-08cc89a7-09eb-411e-a509-c46b4434a64b">
-<span class="eqno">(43)<a class="headerlink" href="#equation-08cc89a7-09eb-411e-a509-c46b4434a64b" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-70bb7fc6-c1f1-43c3-b3a6-c9aaecaaa961">
+<span class="eqno">(43)<a class="headerlink" href="#equation-70bb7fc6-c1f1-43c3-b3a6-c9aaecaaa961" title="Permalink to this equation">#</a></span>\[\begin{align}
 \mathbf{h}_i &amp;= \mathbf{g}(\mathbf{x}_{i+1}) - \mathbf{g}(\mathbf{x}_i) \, \nonumber \\
 \mathbf{s}_i &amp;= \mathbf{x}_{i+1} - \mathbf{x}_{i} \nonumber \,,
 \end{align}\]</div>
 <p>to update the Hessian at step <span class="math notranslate nohighlight">\(i+1\)</span> using the Hessian at step <span class="math notranslate nohighlight">\(i\)</span> and information about the gradient at the current and previous step.</p>
 <p>Quasi-Newton methods, i.e., methods that use approximate Hessians, achieve a very quick convergence at the same computational cost as the gradient-descent method.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="img/pes/geom_opt_flowchart.png"><img alt="img/pes/geom_opt_flowchart.png" src="img/pes/geom_opt_flowchart.png" /></a>
+<a class="reference internal image-reference" href="../../_images/geom_opt_flowchart.svg"><img alt="../../_images/geom_opt_flowchart.svg" height="420" src="../../_images/geom_opt_flowchart.svg" width="380" /></a>
 </figure>
 <section id="comparison-to-gradient-descent-and-conjugate-gradient">
 <h3>Comparison to gradient descent and conjugate gradient<a class="headerlink" href="#comparison-to-gradient-descent-and-conjugate-gradient" title="Permalink to this headline">#</a></h3>
@@ -2063,7 +2033,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9593193103 a.u.                                                                                 
 * Info *   Gradient : 6.495395e-02 a.u. (RMS)                                                                             
 * Info *              8.771955e-02 a.u. (Max)                                                                             
-* Info *   Time     : 0.46 sec                                                                                            
+* Info *   Time     : 1.83 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -2073,7 +2043,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9648452542 a.u.                                                                                 
 * Info *   Gradient : 1.544611e-02 a.u. (RMS)                                                                             
 * Info *              1.844116e-02 a.u. (Max)                                                                             
-* Info *   Time     : 0.46 sec                                                                                            
+* Info *   Time     : 1.87 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -2082,8 +2052,8 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9657830293 a.u.                                                                                 
 * Info *   Gradient : 6.194312e-03 a.u. (RMS)                                                                             
-* Info *              7.272240e-03 a.u. (Max)                                                                             
-* Info *   Time     : 0.48 sec                                                                                            
+* Info *              7.272241e-03 a.u. (Max)                                                                             
+* Info *   Time     : 1.87 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -2093,7 +2063,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9659001353 a.u.                                                                                 
 * Info *   Gradient : 9.009561e-04 a.u. (RMS)                                                                             
 * Info *              1.171116e-03 a.u. (Max)                                                                             
-* Info *   Time     : 0.47 sec                                                                                            
+* Info *   Time     : 1.90 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -2101,9 +2071,9 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9659012109 a.u.                                                                                 
-* Info *   Gradient : 6.320211e-05 a.u. (RMS)                                                                             
-* Info *              8.691340e-05 a.u. (Max)                                                                             
-* Info *   Time     : 0.47 sec                                                                                            
+* Info *   Gradient : 6.320206e-05 a.u. (RMS)                                                                             
+* Info *              8.691339e-05 a.u. (Max)                                                                             
+* Info *   Time     : 1.91 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -2111,14 +2081,14 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info *   Energy   : -74.9659012173 a.u.                                                                                 
-* Info *   Gradient : 3.104982e-07 a.u. (RMS)                                                                             
-* Info *              4.011159e-07 a.u. (Max)                                                                             
-* Info *   Time     : 0.47 sec                                                                                            
+* Info *   Gradient : 3.105235e-07 a.u. (RMS)                                                                             
+* Info *              4.011071e-07 a.u. (Max)                                                                             
+* Info *   Time     : 1.83 sec                                                                                            
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Saving file: veloxchem_opt_2023-05-10T15.06.51_optim.xyz                                                         
-* Info * Saving file: veloxchem_opt_2023-05-10T15.06.51.log                                                               
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Saving file: veloxchem_opt_2023-05-10T15.22.50_optim.xyz                                                         
+* Info * Saving file: veloxchem_opt_2023-05-10T15.22.50.log                                                               
                                                                                                                           
 </pre></div>
 </div>
@@ -2129,9 +2099,9 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
                                                                                                                           
                           Atom         Coordinate X          Coordinate Y          Coordinate Z                           
                                                                                                                           
-                           O          -0.047424120889        0.000000001015       -0.033716001447                         
-                           H           0.034041959832        0.000000000929        0.952334287143                         
-                           H           0.909380963382        0.000000000733       -0.285619981917                         
+                           O          -0.047424120863        0.000000000469       -0.033716003504                         
+                           H           0.034041956371       -0.000000002351        0.952334285391                         
+                           H           0.909380964287        0.000000002204       -0.285619980753                         
                                                                                                                           
                                                                                                                           
                                              Summary of Geometry Optimization                                             
@@ -2141,7 +2111,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
                   -------------------------------------------------------------------------------------                   
                       0         -74.959319310327        0.000000000000         0.000e+00      0.000e+00                   
                       1         -74.964845254236       -0.005525943910         6.683e-02      7.980e-02                   
-                      2         -74.965783029342       -0.000937775106         3.382e-02      3.774e-02                   
+                      2         -74.965783029341       -0.000937775105         3.382e-02      3.774e-02                   
                       3         -74.965900135283       -0.000117105941         8.081e-03      9.810e-03                   
                       4         -74.965901210888       -0.000001075605         4.828e-04      6.814e-04                   
                       5         -74.965901217298       -0.000000006410         4.323e-05      5.698e-05                   
@@ -2158,7 +2128,7 @@ Iteration     Energy (H)      Max. displacement (bohr)     Gradient norm (H/bohr
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                     *** Time spent in Optimization Driver: 2.84 sec                                      
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                     *** Time spent in Optimization Driver: 11.30 sec                                     
                                                                                                                           
 </pre></div>
 </div>
