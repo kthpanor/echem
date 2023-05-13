@@ -1,29 +1,17 @@
-# Use a faster conda solver
+# Create a conda environment for the eChem book
+
+## Use a faster conda solver
 
 With the new conda-libmamba-solver conda can run much faster. Read more in [this blog post](https://www.anaconda.com/blog/conda-is-fast-now).
-
-To use the new solver, please update your conda first and make sure that it is newer than 22.11.
 
 ```
 conda info
 conda update -n base conda
-conda info
-```
-
-If ``conda update`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as
-
-```
-conda install -n base conda=23.3.1
-```
-
-Then you can install the new conda-libmamba-solver and set it as the default solver.
-
-```
 conda install -n base conda-libmamba-solver
 conda config --set solver libmamba
 ```
 
-# Create a conda environment for the eChem book
+## Create the echem environment
 
 Using the echem.yml file (stored at the root of the echem directory) to create a conda environment `echem` will install all needed packages to compile the book.
 
@@ -31,7 +19,11 @@ Using the echem.yml file (stored at the root of the echem directory) to create a
 conda env create -f echem.yml
 ```
 
-If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
+## Known issues
+
+- If ``conda update`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as ``conda install -n base conda=23.3.1``
+
+- If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
 
 # Commands
 
