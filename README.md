@@ -1,3 +1,28 @@
+# Use a faster conda solver
+
+With the new conda-libmamba-solver conda can run much faster. Read more in [this blog post](https://www.anaconda.com/blog/conda-is-fast-now).
+
+To use the new solver, please update your conda first and make sure that it is newer than 22.11.
+
+```
+conda info
+conda update -n base conda
+conda info
+```
+
+If ``conda update`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as
+
+```
+conda install -n base conda=23.3.1
+```
+
+Then you can install the new conda-libmamba-solver and set it as the default solver.
+
+```
+conda install -n base conda-libmamba-solver
+conda config --set solver libmamba
+```
+
 # Create a conda environment for the eChem book
 
 Using the echem.yml file (stored at the root of the echem directory) to create a conda environment `echem` will install all needed packages to compile the book.
@@ -5,6 +30,8 @@ Using the echem.yml file (stored at the root of the echem directory) to create a
 ```
 conda env create -f echem.yml
 ```
+
+If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
 
 # Commands
 
@@ -29,19 +56,6 @@ Publish the html-version:
 $ ghp-import -n -p -f _build/html
 ```
 
-# Alternative installation
-
-You can manually create the environment and install the packages in several steps:
-
-```
-conda create -n echem -c conda-forge -c veloxchem python=3.9 veloxchem libblas=*=*mkl
-conda activate echem
-conda install -c conda-forge jupyter-book matplotlib ghp-import py3dmol h5py k3d
-conda install -c conda-forge -c veloxchem multipsi=0.0.1
-conda install -c conda-forge -c gator gator
-conda install -c conda-forge -c pyscf pyscf
-```
-
 # References
 The file `references.bib` in the top directory is a regular BIBTEX file. Add your references in this file (in alphabetic order and with consistent format to existing references). A citation in the text is added with
 
@@ -50,4 +64,3 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 ```
 
 Multiple lists of references are possible but not yet properly implemented.
-
