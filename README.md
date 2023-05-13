@@ -29,7 +29,7 @@ conda env update -f echem.yml --prune
 
 ## Known issues
 
-- If ``conda update`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as ``conda install -n base conda=23.3.1``
+- If ``conda update -n base conda`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as ``conda install -n base conda=23.3.1``
 
 - If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
 
