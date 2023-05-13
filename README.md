@@ -19,6 +19,14 @@ Using the echem.yml file (stored at the root of the echem directory) to create a
 conda env create -f echem.yml
 ```
 
+## Update your echem environment
+
+If the echem.yml file has been updated and you would like to update your echem environment accordingly, use the following command
+
+```
+conda env update -f echem.yml --prune
+```
+
 ## Known issues
 
 - If ``conda update`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as ``conda install -n base conda=23.3.1``
