@@ -33,6 +33,8 @@ conda env update -f echem.yml --prune
 
 - If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
 
+- If you encounter the ``DLL load failed`` error on Windows ([link to issue](https://github.com/conda/conda/issues/12161)), try the fix documented in [this link](https://github.com/conda/conda/issues/11795#issuecomment-1335666474).
+
 # Commands
 
 Run notebooks by opening *jupyter-lab* (or *jupyter-notebook*):
