@@ -629,12 +629,12 @@ E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">()</span>
+<span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">()</span>
 
 <span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-<span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+<span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 
-<span class="n">ci_energy</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">getEnergy</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ci_energy</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -692,7 +692,7 @@ Correlation energy: -0.03468928
 
     <span class="n">hf_onepart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
     <span class="n">hf_onepart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># first MO is doubly occupied</span>
-    <span class="n">fci_onepart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">fci_onepart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_active_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># One-particle densities for HF and FCI</span>
     <span class="n">n1_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -748,7 +748,7 @@ Correlation energy: -0.03468928
 
     <span class="n">hf_twopart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">))</span>
     <span class="n">hf_twopart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># first MO is doubly occupied</span>
-    <span class="n">ci_twopart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get2den</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ci_twopart_denmat</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_active_2body_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     
     <span class="c1"># Two-particle densities for HF and FCI</span>
     <span class="n">n12_hf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -833,10 +833,10 @@ Correlation energy: -0.03468928
     <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
     <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-    <span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">()</span>
+    <span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">()</span>
 
     <span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-    <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+    <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 
     <span class="n">orbital_values_1</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">([[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
     <span class="n">orbital_values_2</span> <span class="o">=</span> <span class="n">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>

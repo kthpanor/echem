@@ -632,16 +632,16 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 <span class="n">molecule</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">space</span><span class="o">.</span><span class="n">CAS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">space</span><span class="o">.</span><span class="n">cas</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">expansion</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 
 <span class="n">CI_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-<span class="n">CI_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+<span class="n">ci_results</span> <span class="o">=</span> <span class="n">CI_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now let’s implement the density matrix:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Den1</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="n">DM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">space</span><span class="o">.</span><span class="n">nAct</span><span class="p">,</span><span class="n">space</span><span class="o">.</span><span class="n">nAct</span><span class="p">))</span>
+    <span class="n">DM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">space</span><span class="o">.</span><span class="n">n_active</span><span class="p">,</span><span class="n">space</span><span class="o">.</span><span class="n">n_active</span><span class="p">))</span>
     
     <span class="c1"># Loop over determinants</span>
     
@@ -657,7 +657,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Check that the matrices match</span>
 <span class="n">vec0</span> <span class="o">=</span> <span class="n">CI_drv</span><span class="o">.</span><span class="n">vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 <span class="n">Dpq</span> <span class="o">=</span> <span class="n">Den1</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">Dpq</span><span class="p">,</span> <span class="n">CI_drv</span><span class="o">.</span><span class="n">get1den</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">Dpq</span><span class="p">,</span> <span class="n">CI_drv</span><span class="o">.</span><span class="n">get_active_density</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -681,7 +681,7 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
 <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
-<span class="n">space</span><span class="o">.</span><span class="n">FCI</span><span class="p">(</span><span class="n">nfrozen</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">(</span><span class="n">n_frozen</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="n">expansion</span><span class="o">=</span><span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 <span class="n">CI_ham</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span> <span class="c1">#Contains integrals and functions using them</span>
@@ -737,8 +737,8 @@ D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
     <span class="k">return</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">b</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">sigma</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">nDet</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">detlist</span><span class="p">()):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
         <span class="c1">#Diagonal term</span>
         <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">+=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
         <span class="c1">#Single excitations alpha</span>
@@ -812,7 +812,7 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
+* Warning * Setting OMP_NUM_THREADS to 8.
 </pre></div>
 </div>
 </div>
@@ -840,7 +840,7 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/CC-PVDZ
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /opt/anaconda3/envs/echem/lib/python3.11/site-packages/veloxchem/basis/CC-PVDZ      
                                                                                                                           
                                               Molecular Basis (Atomic Basis)                                              
                                              ================================                                             
@@ -901,7 +901,7 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.03 sec.                                                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.00 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -910,7 +910,7 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -75.967750958278 a.u. Time: 0.11 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -75.967750958278 a.u. Time: 0.02 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -963,7 +963,7 @@ look at the dissociation of one hydrogen atom in the water molecule, and calcula
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 11 iterations. Time: 1.05 sec.                                                        
+               *** SCF converged in 11 iterations. Time: 0.45 sec.                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -1521,7 +1521,7 @@ Denoting MO indices with Latin letters and AO indices with Greek ones, this equi
                                                      HF dipole moment                                                     
                                                     ------------------                                                    
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :         0.627759 a.u.         1.595604 Debye                                     
                                    Z   :         0.498104 a.u.         1.266055 Debye                                     
                                  Total :         0.801367 a.u.         2.036872 Debye                                     
@@ -1610,7 +1610,7 @@ and properties calculated with it as (orbital) unrelaxed.</p>
                                                Unrelaxed MP2 dipole moment                                                
                                               -----------------------------                                               
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :        -0.212789 a.u.        -0.540854 Debye                                     
                                    Z   :        -0.264849 a.u.        -0.673179 Debye                                     
                                  Total :         0.339741 a.u.         0.863535 Debye                                     
@@ -1703,7 +1703,7 @@ in order to obtain the occupied-virtual block of the one-particle density matrix
                                             Approx. relaxed MP2 dipole moment                                             
                                            -----------------------------------                                            
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :        -0.343346 a.u.        -0.872698 Debye                                     
                                    Z   :        -0.410976 a.u.        -1.044597 Debye                                     
                                  Total :         0.535525 a.u.         1.361170 Debye                                     
