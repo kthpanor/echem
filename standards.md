@@ -32,6 +32,17 @@ Refer to parts of the book as
     - `viewer.setStyle({"stick":{},"sphere": {"scale":0.25}})`
 
 
+### Non-executed parts of notebook
+
+Relevant for, *e.g.*
+- High-cost calculations (with Python script as static text)
+- Examples to be filled in by students
+    - Potentially with pseudocode/partially filled out
+Need to havs some accompanying calculations to make sure that the examples runs correct
+- Smaller examples which are invisible to the user (`remove-cell`)
+- Hidden boxes (`hide-cell`)
+Make sure that all parts of the book are tested at least once!
+
 ### Standards
 
 ```python
