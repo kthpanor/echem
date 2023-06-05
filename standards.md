@@ -2,15 +2,14 @@
 
 Need to be a bit flexible, as full consistency is not always preferable
 
-
 - Check units and notation
 - Nonzero (not non-zero)
 - Ionization energy (not ionization potential)
 - Wave function (not wavefunction)
-- Use **bold** or *italics* for introducing terms (?)
+- Use **bold** or *italics* for introducing terms
 - Text in equations: $E_{\mathrm{HF}}$
 - Generally include visualization of molecule considered, using cell with `remove-input`
-- Avoid commas, colon before (and in) equations
+- Avoid commas and colons before (and in) equations
 
 Refer to parts of the book as
 - part
@@ -35,12 +34,15 @@ Refer to parts of the book as
 ### Non-executed parts of notebook
 
 Relevant for, *e.g.*
+
 - High-cost calculations (with Python script as static text)
 - Examples to be filled in by students
     - Potentially with pseudocode/partially filled out
+
 Need to havs some accompanying calculations to make sure that the examples runs correct
 - Smaller examples which are invisible to the user (`remove-cell`)
 - Hidden boxes (`hide-cell`)
+
 Make sure that all parts of the book are tested at least once!
 
 ### Standards
@@ -50,9 +52,6 @@ scf_results = scf_drv(...)
 molecule = vlx.Molecule.from_xyz_string(...)
 basis = vlx.MolecularBasis.read(...)
 ```
-
-
-
 
 ### Package abbreviations
 
