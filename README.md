@@ -35,6 +35,8 @@ conda env update -f echem.yml --prune
 
 - If you encounter ``DLL load failed`` error on Windows ([link to issue](https://github.com/conda/conda/issues/12161)), try the fix documented in [this link](https://github.com/conda/conda/issues/11795#issuecomment-1335666474).
 
+- When using Python 3.11 you may need to set environment variable ``PYDEVD_DISABLE_FILE_VALIDATION`` to ``1`` (see [this link](https://stackoverflow.com/a/75274358)).
+
 # Commands
 
 Run notebooks by opening *jupyter-lab* (or *jupyter-notebook*):
