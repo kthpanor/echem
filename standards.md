@@ -49,7 +49,7 @@ Make sure that all parts of the book are tested at least once!
 
 ```python
 scf_results = scf_drv(...)
-molecule = vlx.Molecule.from_xyz_string(...)
+molecule = vlx.Molecule.read_xyz_string(...)
 basis = vlx.MolecularBasis.read(...)
 ```
 
