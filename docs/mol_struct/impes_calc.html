@@ -617,7 +617,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">#</a></h3>
 <p>We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell tag_hide-output tag_no-warnings docutils container">
-<div class="cell_input above-output-prompt docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -629,18 +629,6 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </pre></div>
 </div>
 </div>
-<details class="hide below-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell output</span>
-<span class="expanded">Hide code cell output</span>
-</summary>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 8.
-</pre></div>
-</div>
-</div>
-</details>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -650,7 +638,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <span class="s2">H    0.000000000000        0.895700000000       -0.316700000000                         </span>
 <span class="s2">H    0.000000000000        0.000000000000        1.100000000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
 <span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
 
@@ -664,7 +652,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /opt/anaconda3/envs/echem/lib/python3.11/site-packages/veloxchem/basis/STO-3G       
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /Users/lixin/miniconda3-x86_64/envs/echem/lib/python3.11/site-packages/veloxchem/basis/STO-3G
                                                                                                                           
                                               Molecular Basis (Atomic Basis)                                              
                                              ================================                                             
@@ -684,8 +672,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_16854262527849228"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_16854262527849228" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1686572780003468"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1686572780003468" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -717,19 +705,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_16854262527849228 = null;
-var warn = document.getElementById("3dmolwarning_16854262527849228");
+var viewer_1686572780003468 = null;
+var warn = document.getElementById("3dmolwarning_1686572780003468");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_16854262527849228 = null;
-viewergrid_16854262527849228 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16854262527849228"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_16854262527849228 = viewergrid_16854262527849228[0][0];
-viewergrid_16854262527849228[0][0].zoomTo();	viewergrid_16854262527849228[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_16854262527849228[0][0].setStyle({"stick": {}});
-	viewergrid_16854262527849228[0][0].rotate(-90,"y");
-viewergrid_16854262527849228[0][0].render();
+var viewergrid_1686572780003468 = null;
+viewergrid_1686572780003468 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1686572780003468"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_1686572780003468 = viewergrid_1686572780003468[0][0];
+viewergrid_1686572780003468[0][0].zoomTo();	viewergrid_1686572780003468[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_1686572780003468[0][0].setStyle({"stick": {}});
+	viewergrid_1686572780003468[0][0].rotate(-90,"y");
+viewergrid_1686572780003468[0][0].render();
 });
 </script></div></div>
 </div>
@@ -794,7 +782,7 @@ viewergrid_16854262527849228[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.02 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.01 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -826,7 +814,7 @@ viewergrid_16854262527849228[0][0].render();
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.02 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.01 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -852,7 +840,7 @@ viewergrid_16854262527849228[0][0].render();
                Molecular Orbital No.   1:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:  -20.24331 a.u.                                                                  
-               (   1 O   1s  :    -0.99)                                                                                  
+               (   1 O   1s  :     0.99)                                                                                  
                                                                                                                           
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
@@ -862,8 +850,8 @@ viewergrid_16854262527849228[0][0].render();
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.59041 a.u.                                                                  
-               (   1 O   1p-1:    -0.41) (   1 O   1p0 :     0.44) (   2 H   1s  :    -0.45)                              
-               (   3 H   1s  :     0.43)                                                                                  
+               (   1 O   1p-1:     0.41) (   1 O   1p0 :    -0.44) (   2 H   1s  :     0.45)                              
+               (   3 H   1s  :    -0.43)                                                                                  
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
@@ -874,7 +862,7 @@ viewergrid_16854262527849228[0][0].render();
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.38490 a.u.                                                                  
-               (   1 O   1p+1:     1.00)                                                                                  
+               (   1 O   1p+1:    -1.00)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -916,13 +904,13 @@ viewergrid_16854262527849228[0][0].render();
                                                                                                                           
                           Atom           Gradient X            Gradient Y            Gradient Z                           
                                                                                                                           
-                           O          -0.000000000043        0.085297089598       -0.100972944701                         
-                           H          -0.000000000021       -0.061749632543       -0.007085216573                         
-                           H          -0.000000000014       -0.023547457772        0.108058171882                         
+                           O          -0.000000000036        0.085297089633       -0.100972944765                         
+                           H           0.000000000000       -0.061749632508       -0.007085216602                         
+                           H           0.000000000014       -0.023547457729        0.108058171875                         
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 1.07 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 0.66 sec ***                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -932,7 +920,7 @@ viewergrid_16854262527849228[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 10.62 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 6.78 sec ***                                    
                                                                                                                           
                                                                                                                           
 </pre></div>

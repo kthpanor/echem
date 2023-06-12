@@ -730,7 +730,7 @@ B_{ia,jb}  = (ia|bj) + c_{\textrm{HF}}(ib|aj) + (1-c_{\textrm{HF}})(ia|f_{\textr
 </section>
 <section id="numerical-example">
 <h2>Numerical example<a class="headerlink" href="#numerical-example" title="Permalink to this headline">#</a></h2>
-<p>Let us consider ethylene in a minimal basis set. We perform an SCF optimization of the Hartree–Fock reference state with use of the VeloxChem program. The dictonary <code class="docutils literal notranslate"><span class="pre">scf_tensors</span></code> contains information of the SCF calculation and we retrieve the orbital energies.</p>
+<p>Let us consider ethylene in a minimal basis set. We perform an SCF optimization of the Hartree–Fock reference state with use of the VeloxChem program. The dictonary <code class="docutils literal notranslate"><span class="pre">scf_results</span></code> contains information of the SCF calculation and we retrieve the orbital energies.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -765,7 +765,7 @@ B_{ia,jb}  = (ia|bj) + c_{\textrm{HF}}(ib|aj) + (1-c_{\textrm{HF}})(ia|f_{\textr
 \[\mathrm{dim}\left(\mathbf{E}^{[2]}\right) = 2 \times n_\mathrm{occ} \times n_\mathrm{virt}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">orbital_energies</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s1">&#39;E_alpha&#39;</span><span class="p">]</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">norb</span> <span class="o">=</span> <span class="n">orbital_energies</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">nvirt</span> <span class="o">=</span> <span class="n">norb</span> <span class="o">-</span> <span class="n">nocc</span>
@@ -789,7 +789,7 @@ Dimension of A-block in E2: 144
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
-<span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -856,9 +856,9 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
 
-<span class="n">mu_x</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">mu_y</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">mu_z</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mu_x</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mu_y</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mu_z</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s1">&#39;electric dipole&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">V1</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_x</span>
 
@@ -872,8 +872,8 @@ Diagonal element for the (pi,pi*)-excitation:  0.361149 a.u.
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of V[1] vector: 288
 Elements for (pi,pi*)-excitation:
-(upper)   g:  2.005214
-(lower) -g*: -2.005214
+(upper)   g: -2.005214
+(lower) -g*:  2.005214
 </pre></div>
 </div>
 </div>
@@ -882,7 +882,7 @@ Elements for (pi,pi*)-excitation:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="c1"># MO coefficients</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s1">&#39;C_alpha&#39;</span><span class="p">]</span> <span class="c1"># MO coefficients</span>
 
 <span class="n">dipole_matrices</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 <span class="n">x_ao</span> <span class="o">=</span> <span class="n">dipole_matrices</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
@@ -893,7 +893,7 @@ Elements for (pi,pi*)-excitation:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO integral &lt; pi | x | pi* &gt;: -1.417900
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO integral &lt; pi | x | pi* &gt;:  1.417900
 </pre></div>
 </div>
 </div>
@@ -939,7 +939,7 @@ Elements for (pi,pi*)-excitation:
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
-<span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1006,7 +1006,7 @@ alpha_zz(0):  7.201365
 <span class="n">method_settings</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Hartree-Fock is default</span>
 <span class="n">lrs_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
-<span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">lrs_out</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 
 <span class="n">alpha_xx</span> <span class="o">=</span> <span class="o">-</span><span class="n">lrs_out</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span>
 <span class="n">alpha_yy</span> <span class="o">=</span> <span class="o">-</span><span class="n">lrs_out</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span> 
@@ -1051,7 +1051,7 @@ alpha_zz(w=0.0656):  7.244817
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nstates&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># the (pi,pi*)-transition</span>
 <span class="n">lres_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
-<span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1079,7 +1079,7 @@ alpha_zz(w=0.0656):  7.244817
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (a.u.): [0.291534]
-Transition moments (a.u.): [-1.531492  0.        0.      ]
+Transition moments (a.u.): [ 1.531492 -0.       -0.      ]
 Oscillator strength: [0.455855]
 </pre></div>
 </div>
@@ -1236,7 +1236,7 @@ Oscillator strength: [0.455855]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.): -1.531506
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transition moment (a.u.):  1.531506
 </pre></div>
 </div>
 </div>
@@ -1361,8 +1361,8 @@ T_{f, ia} = Z_{f, ia} - Y_{f, ia}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [-0. -0.  0.  0.  0. -0.  0. -1.]
-Electron orbital no. 1: [ 1.   -0.    0.    0.    0.   -0.   -0.    0.    0.    0.04  0.   -0.   -0.   -0.   -0.   -0.    0.    0.  ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hole orbital no. 1: [ 0.  0. -0. -0. -0. -0.  0.  1.]
+Electron orbital no. 1: [-1.    0.   -0.   -0.    0.   -0.    0.    0.   -0.    0.04  0.    0.    0.    0.   -0.    0.   -0.   -0.  ]
 </pre></div>
 </div>
 </div>
@@ -1397,7 +1397,7 @@ Electron orbital no. 1: [ 1.   -0.    0.    0.    0.   -0.   -0.    0.    0.    
 <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.0025</span><span class="p">)</span>
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frequencies&#39;</span><span class="p">:</span> <span class="n">freqs</span><span class="p">}</span>
 <span class="n">cpp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">cpp_out</span> <span class="o">=</span> <span class="n">cpp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">cpp_out</span> <span class="o">=</span> <span class="n">cpp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 
 <span class="n">alpha_xx</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">freqs</span><span class="p">:</span>
@@ -1451,11 +1451,11 @@ Electron orbital no. 1: [ 1.   -0.    0.    0.    0.   -0.   -0.    0.    0.    
 <span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nstates&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span> <span class="c1"># the (pi,pi*)-transition</span>
 <span class="n">lres_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
 
-<span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 
 <span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">()</span>
 <span class="n">tda_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
-<span class="n">tda_results</span> <span class="o">=</span> <span class="n">tda_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">tda_results</span> <span class="o">=</span> <span class="n">tda_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 <span class="n">tda_eig_vals</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1477,7 +1477,7 @@ Electron orbital no. 1: [ 1.   -0.    0.    0.    0.   -0.   -0.    0.    0.    
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
-<span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">norb</span> <span class="o">=</span> <span class="n">orbital_energies</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
