@@ -812,12 +812,12 @@ Relative importance: 0.97
 </section>
 <section id="visual-analysis-of-electronic-transitions">
 <span id="sec-vis-analysis-detach-attach"></span><h2>Visual analysis of electronic transitions<a class="headerlink" href="#visual-analysis-of-electronic-transitions" title="Permalink to this heading">#</a></h2>
-<p>The attachment and detachment densities (as well as other density types such as transition, electron, or hole densities) can be further analyzed quantitatively to determine electron localization and transfer between different molecular moieties. This is achieved by fragmenting the molecule into (chemically relevant) subgroups and performing a geometric segmentation of the selected density over these subgroups (using Voronoi segmentation). Charge transfer between molecular fragments can then be calculated. This is achieved by a constrained optimization algorithm since the problem does not have a unique solution. See the complete formulation in <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1111/cgf.14307">this article</a>.</p>
+<p>The attachment and detachment densities (as well as other density types such as transition, electron, or hole densities) can be further analyzed quantitatively to determine electron localization and transfer between different molecular moieties. This is achieved by fragmenting the molecule into (chemically relevant) subgroups and performing a geometric segmentation of the selected density over these subgroups (using Voronoi segmentation). Charge transfer between molecular fragments can then be calculated. This is achieved by a constrained optimization algorithm since the problem does not have a unique solution. See the complete formulation <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1111/cgf.14307">here</a>.</p>
 <p>To illustrate this quantitative analysis method, we will determine the lowest 5 singlet excited states of a molecule with donor-acceptor (D-A) sub-units and we will analyze the nature of these states. The molecule is illustrated below.</p>
 <figure class="align-default" id="da-molecule">
 <a class="reference internal image-reference" href="../../_images/TBTD.png"><img alt="../../_images/TBTD.png" src="../../_images/TBTD.png" style="width: 177.75px; height: 192.75px;" /></a>
 </figure>
-<p>The molecule consists of a electron-donor moiety (thiophene <span class="math notranslate nohighlight">\(-\)</span> T) and an electron-acceptor moiety (benzothiadiazol <span class="math notranslate nohighlight">\(-\)</span> BTD). The excited states could either be local excitations (i.e. to an unoccupied orbital localized over the same moiety as the excited orbital) or charge transfer excited states.</p>
+<p>It consists of an electron-donor moiety (thiophene <span class="math notranslate nohighlight">\(-\)</span> T) and an electron-acceptor moiety (benzothiadiazol <span class="math notranslate nohighlight">\(-\)</span> BTD). The excited states could either be local excitations (i.e. to unoccupied orbitals localized over the same moiety as the excited orbitals) or charge transfer excited states.</p>
 <p>We start by calculating the first 5 lowest excited states and saving the detachment and attachment densities to cube files.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -931,24 +931,22 @@ viewer_1692115792635142.render();
 });
 </script></div></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># We will obtain the excited states at the B3LYP level of theory
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We will obtain the excited states at the B3LYP level of theory</span>
 
-method_dict = {&#39;xcfun&#39;:&#39;b3lyp&#39;}
-scf_dict = {}
+<span class="n">method_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xcfun&#39;</span><span class="p">:</span><span class="s1">&#39;b3lyp&#39;</span><span class="p">}</span>
+<span class="n">scf_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-scf_drv = vlx.ScfRestrictedDriver()
-scf_drv.update_settings(scf_dict={}, method_dict=method_dict)
-scf_results = scf_drv.compute(molecule, basis)
-```
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">scf_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">method_dict</span><span class="o">=</span><span class="n">method_dict</span><span class="p">)</span>
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># We now run the excited states calculation and save the attachment and 
-# detachment densities in cube files
-rsp_dict = {&#39;detach_attach&#39;:&#39;yes&#39;, &#39;nstates&#39;:5}
-rsp_drv = vlx.lreigensolver.LinearResponseEigenSolver()
-rsp_drv.update_settings(rsp_dict=rsp_dict, method_dict=method_dict)
-rsp_results = rsp_drv.compute(molecule, basis, scf_results)
-```
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We now run the excited states calculation and save the attachment and </span>
+<span class="c1"># detachment densities in cube files</span>
+<span class="n">rsp_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;detach_attach&#39;</span><span class="p">:</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;nstates&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+<span class="n">rsp_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">lreigensolver</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
+<span class="n">rsp_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_dict</span><span class="o">=</span><span class="n">rsp_dict</span><span class="p">,</span> <span class="n">method_dict</span><span class="o">=</span><span class="n">method_dict</span><span class="p">)</span>
+<span class="n">rsp_results</span> <span class="o">=</span> <span class="n">rsp_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="cell docutils container">
