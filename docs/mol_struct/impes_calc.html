@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 
-<html >
+<html lang="en" >
 
   <head>
     <meta charset="utf-8" />
@@ -44,6 +44,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -76,7 +77,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="next" title="Molecular dynamics" href="md.html" />
     <link rel="prev" title="PES interpolation techniques" href="impes.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="None"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
   
   
@@ -574,7 +575,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="constructing-the-pes-by-interpolation">
-<h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Permalink to this headline">#</a></h1>
+<h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Permalink to this heading">#</a></h1>
 <p>The idea behind PES interpolation techniques is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically (QM). For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. On the other hand, the use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost <span id="id1">[<a class="reference internal" href="../refs.html#id80" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> as a weighted average between potentials defined from a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -606,7 +607,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <p>For a good overview of potential energy surfaces by interpolation, see <span id="id4">[<a class="reference internal" href="../refs.html#id80" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>In this tutorial we will get familiar with constructing the ground state potential energy surface (PES) of a molecule by interpolation.</p>
 <section id="the-ground-state-potential-energy-surface-of-water">
-<h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this headline">#</a></h2>
+<h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Permalink to this heading">#</a></h2>
 <p>Let’s construct the ground state PES for the water molecule by interpolation. We need to carry out the following steps:</p>
 <ul class="simple">
 <li><p>Transform the coordinates, gradients and Hessians from Cartesian coordinates to internal coordinates,</p></li>
@@ -615,7 +616,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <li><p>Perform the interpolation and determine the potential energy at new configurations <span class="math notranslate nohighlight">\(\mathbf{q}\)</span>.</p></li>
 </ul>
 <section id="transforming-from-cartesian-to-internal-coordinates">
-<h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this headline">#</a></h3>
+<h3>Transforming from Cartesian to internal coordinates<a class="headerlink" href="#transforming-from-cartesian-to-internal-coordinates" title="Permalink to this heading">#</a></h3>
 <p>We will implement a set of routines to transform the gradient and Hessian to internal coordinates, making use of routines from <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>. Let’s start by setting up the molecule and calculating the energy, gradient and Hessian.</p>
 <div class="cell tag_hide-output tag_no-warnings docutils container">
 <div class="cell_input above-output-prompt docutils container">
@@ -637,7 +638,7 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Warning * Environment variable OMP_NUM_THREADS not set.
-* Warning * Setting OMP_NUM_THREADS to 4.
+* Warning * Setting OMP_NUM_THREADS to 8.
 </pre></div>
 </div>
 </div>
@@ -654,18 +655,11 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">)</span>
 <span class="n">basis_set_label</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set_label</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
-<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{}})</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="c1"># rotate the molecule to make it easier to see</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/thomas/Notebook/anaconda/envs/echem/lib/python3.10/site-packages/veloxchem/basis/STO-3G
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Reading basis set from file: /home/emi/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/basis/STO-3G 
                                                                                                                           
                                               Molecular Basis (Atomic Basis)                                              
                                              ================================                                             
@@ -682,11 +676,32 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
                                                                                                                           
 </pre></div>
 </div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initial Geometry of the water molecule:&quot;</span><span class="p">)</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">molecule_string</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;sphere&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;scale&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">)</span> <span class="c1"># rotate the molecule to make it easier to see</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial Geometry of the water molecule:
 </pre></div>
 </div>
-<div class="output text_html"><div id="3dmolviewer_1691416353862783"  style="position: relative; width: 300px; height: 200px">
-        <p id="3dmolwarning_1691416353862783" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1692115063697734"  style="position: relative; width: 300px; height: 200px">
+        <p id="3dmolwarning_1692115063697734" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -718,19 +733,20 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
 }
 
-var viewer_1691416353862783 = null;
-var warn = document.getElementById("3dmolwarning_1691416353862783");
+var viewer_1692115063697734 = null;
+var warn = document.getElementById("3dmolwarning_1692115063697734");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_1691416353862783 = null;
-viewergrid_1691416353862783 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1691416353862783"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
-viewer_1691416353862783 = viewergrid_1691416353862783[0][0];
-viewergrid_1691416353862783[0][0].zoomTo();	viewergrid_1691416353862783[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
-	viewergrid_1691416353862783[0][0].setStyle({"stick": {}});
-	viewergrid_1691416353862783[0][0].rotate(-90,"y");
-viewergrid_1691416353862783[0][0].render();
+var viewergrid_1692115063697734 = null;
+viewergrid_1692115063697734 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1692115063697734"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_1692115063697734 = viewergrid_1692115063697734[0][0];
+viewergrid_1692115063697734[0][0].zoomTo();	viewergrid_1692115063697734[0][0].addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.895700000000       -0.316700000000                         \nH    0.000000000000        0.000000000000        1.100000000000\n","xyz");
+	viewergrid_1692115063697734[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1692115063697734[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1692115063697734[0][0].rotate(-90,"y");
+viewergrid_1692115063697734[0][0].render();
 });
 </script></div></div>
 </div>
@@ -778,32 +794,32 @@ viewergrid_1691416353862783[0][0].render();
                                                                                                                           
 * Info * Nuclear repulsion energy: 8.6203186612 a.u.                                                                      
                                                                                                                           
-* Info * Overlap matrix computed in 0.00 sec.                                                                             
+* Info * Overlap matrix computed in 0.04 sec.                                                                             
                                                                                                                           
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+* Info * Kinetic energy matrix computed in 0.05 sec.                                                                      
                                                                                                                           
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.02 sec.                                                                   
+* Info * Nuclear potential matrix computed in 0.04 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.00 sec.                                                                          
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Orthogonalization matrix computed in 0.06 sec.                                                                   
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * SAD initial guess computed in 0.08 sec.                                                                          
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Starting Reduced Basis SCF calculation...                                                                        
-* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.07 sec.                                  
+* Info * ...done. SCF energy in reduced basis set: -74.947250973879 a.u. Time: 0.46 sec.                                  
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.00 sec.                                                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Overlap matrix computed in 0.02 sec.                                                                             
                                                                                                                           
-* Info * Kinetic energy matrix computed in 0.00 sec.                                                                      
+* Info * Kinetic energy matrix computed in 0.02 sec.                                                                      
                                                                                                                           
-* Info * Nuclear potential matrix computed in 0.00 sec.                                                                   
+* Info * Nuclear potential matrix computed in 0.03 sec.                                                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -814,20 +830,20 @@ viewergrid_1691416353862783[0][0].render();
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                Iter. | Hartree-Fock Energy | Energy Change | Gradient Norm | Max. Gradient | Density Change               
                --------------------------------------------------------------------------------------------               
-                  1       -74.947250981137    0.0000000000      0.00006046      0.00001095      0.00000000                
+                  1       -74.947250981138    0.0000000000      0.00006046      0.00001095      0.00000000                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  2       -74.947250982569   -0.0000000014      0.00001394      0.00000251      0.00006130                
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -74.947250982654   -0.0000000001      0.00000159      0.00000036      0.00001805                
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  3       -74.947250982655   -0.0000000001      0.00000159      0.00000036      0.00001805                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  4       -74.947250982655   -0.0000000000      0.00000011      0.00000002      0.00000116                
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-               *** SCF converged in 4 iterations. Time: 0.03 sec.                                                         
+               *** SCF converged in 4 iterations. Time: 0.25 sec.                                                         
                                                                                                                           
 </pre></div>
 </div>
@@ -875,7 +891,7 @@ viewergrid_1691416353862783[0][0].render();
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.38490 a.u.                                                                  
-               (   1 O   1p+1:     1.00)                                                                                  
+               (   1 O   1p+1:    -1.00)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -886,8 +902,8 @@ viewergrid_1691416353862783[0][0].render();
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.71372 a.u.                                                                  
-               (   1 O   2s  :    -0.41) (   1 O   1p-1:    -0.76) (   1 O   1p0 :     0.58)                              
-               (   2 H   1s  :     1.08) (   3 H   1s  :    -0.41)                                                        
+               (   1 O   2s  :     0.41) (   1 O   1p-1:     0.76) (   1 O   1p0 :    -0.58)                              
+               (   2 H   1s  :    -1.08) (   3 H   1s  :     0.41)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -917,13 +933,13 @@ viewergrid_1691416353862783[0][0].render();
                                                                                                                           
                           Atom           Gradient X            Gradient Y            Gradient Z                           
                                                                                                                           
-                           O          -0.000000000028        0.085297089619       -0.100972944693                         
-                           H           0.000000000021       -0.061749632522       -0.007085216616                         
-                           H          -0.000000000014       -0.023547457758        0.108058171847                         
+                           O          -0.000000000021        0.085297089612       -0.100972944701                         
+                           H           0.000000000014       -0.061749632550       -0.007085216602                         
+                           H           0.000000000000       -0.023547457793        0.108058171847                         
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in gradient calculation: 2.90 sec ***                                   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                  *** Time spent in gradient calculation: 13.90 sec ***                                   
                                                                                                                           
 </pre></div>
 </div>
@@ -933,9 +949,63 @@ viewergrid_1691416353862783[0][0].render();
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                   *** Time spent in Hessian calculation: 25.90 sec ***                                   
-                                                                                                                          
-                                                                                                                          
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">14</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="c1"># Hessian</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="n">scf_hessian_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfHessianDriver</span><span class="p">()</span>
+<span class="ne">---&gt; </span><span class="mi">14</span> <span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="n">hessian</span> <span class="o">=</span> <span class="n">scf_hessian_drv</span><span class="o">.</span><span class="n">hessian</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/scfhessiandriver.py:118,</span> in <span class="ni">ScfHessianDriver.compute</span><span class="nt">(self, molecule, ao_basis, scf_drv)</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span> <span class="n">start_time</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">116</span> <span class="bp">self</span><span class="o">.</span><span class="n">elec_energy</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+<span class="ne">--&gt; </span><span class="mi">118</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_numerical</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span> <span class="c1"># print Hessian</span>
+<span class="g g-Whitespace">    </span><span class="mi">121</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_print_hessian</span><span class="p">:</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/scfhessiandriver.py:196,</span> in <span class="ni">ScfHessianDriver.compute_numerical</span><span class="nt">(self, molecule, ao_basis, scf_drv)</span>
+<span class="g g-Whitespace">    </span><span class="mi">194</span> <span class="n">new_mol</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">195</span> <span class="n">new_mol</span><span class="o">.</span><span class="n">set_multiplicity</span><span class="p">(</span><span class="n">multiplicity</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">196</span> <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_mol</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">197</span> <span class="n">assert_msg_critical</span><span class="p">(</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">is_converged</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">198</span>                     <span class="s1">&#39;ScfHessianDriver: SCF did not converge&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">199</span> <span class="n">energy_ixp</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/scfdriver.py:485,</span> in <span class="ni">ScfDriver.compute</span><span class="nt">(self, molecule, ao_basis, min_basis)</span>
+<span class="g g-Whitespace">    </span><span class="mi">483</span> <span class="k">if</span> <span class="n">min_basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">484</span>     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="n">mpi_master</span><span class="p">():</span>
+<span class="ne">--&gt; </span><span class="mi">485</span>         <span class="n">min_basis</span> <span class="o">=</span> <span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">486</span>                                         <span class="s1">&#39;AO-START-GUESS&#39;</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">487</span>                                         <span class="n">basis_path</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">488</span>                                         <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">489</span>     <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">490</span>         <span class="n">min_basis</span> <span class="o">=</span> <span class="n">MolecularBasis</span><span class="p">()</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/molecularbasis.py:156,</span> in <span class="ni">_MolecularBasis_read</span><span class="nt">(mol, basis_name, basis_path, ostream)</span>
+<span class="g g-Whitespace">    </span><span class="mi">153</span> <span class="n">ostream</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span><span class="n">basis_info</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">154</span> <span class="n">ostream</span><span class="o">.</span><span class="n">print_blank</span><span class="p">()</span>
+<span class="ne">--&gt; </span><span class="mi">156</span> <span class="n">basis_dict</span> <span class="o">=</span> <span class="n">InputParser</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">basis_file</span><span class="p">))</span><span class="o">.</span><span class="n">input_dict</span>
+<span class="g g-Whitespace">    </span><span class="mi">158</span> <span class="n">assert_msg_critical</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">159</span>     <span class="n">fname</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">basis_dict</span><span class="p">[</span><span class="s1">&#39;basis_set_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span>     <span class="s1">&#39;MolecularBasis.read: Inconsistent basis set name&#39;</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">163</span> <span class="n">mol_basis</span> <span class="o">=</span> <span class="n">MolecularBasis</span><span class="p">()</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/inputparser.py:70,</span> in <span class="ni">InputParser.__init__</span><span class="nt">(self, inpname, outname)</span>
+<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_basis_set</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="g g-Whitespace">     </span><span class="mi">68</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_set_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="ne">---&gt; </span><span class="mi">70</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.11/site-packages/veloxchem/inputparser.py:143,</span> in <span class="ni">InputParser.parse</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">141</span> <span class="c1"># inside group</span>
+<span class="g g-Whitespace">    </span><span class="mi">142</span> <span class="k">elif</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">143</span>     <span class="n">input_groups</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span> <span class="c1"># outside group</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="n">assert_msg_critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_basis_set</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
 </div>
 </div>
@@ -1239,7 +1309,7 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </div>
 </section>
 <section id="ground-state-pes-by-interpolation">
-<h3>Ground-state PES by interpolation<a class="headerlink" href="#ground-state-pes-by-interpolation" title="Permalink to this headline">#</a></h3>
+<h3>Ground-state PES by interpolation<a class="headerlink" href="#ground-state-pes-by-interpolation" title="Permalink to this heading">#</a></h3>
 <p>Now that we have set up the routines for conversion between Cartesian and internal coordiantes, we can start collecting data points for interpolation. Let’s start with stretching one of the OH bonds and calculate three new points: one when the bond is contracted, one around equilibrium bond length, and one when the bond is stretched.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1306,12 +1376,8 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.75 A...
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.95 A...
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  1.35 A...
+Calculating the energies, gradients and Hessians for OH =  0.95 A...
+Calculating the energies, gradients and Hessians for OH =  1.35 A...
 </pre></div>
 </div>
 </div>
@@ -1495,7 +1561,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<img alt="../../_images/f1b84caebe9643ceddd6cd00c7a94179856a5b22c75afc1bcd410706b6738ef6.png" src="../../_images/f1b84caebe9643ceddd6cd00c7a94179856a5b22c75afc1bcd410706b6738ef6.png" />
+<img alt="../../_images/23dd160cce2274cd511e777b41514cefcbb3e9061e50c14cd05b57863653ba9a.png" src="../../_images/23dd160cce2274cd511e777b41514cefcbb3e9061e50c14cd05b57863653ba9a.png" />
 </div>
 </details>
 </div>
@@ -1681,7 +1747,7 @@ v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<img alt="../../_images/aef3bc1f999f9ef104681f4db4e6a79394b5526115ec44a2ebb23e5cc32ae586.png" src="../../_images/aef3bc1f999f9ef104681f4db4e6a79394b5526115ec44a2ebb23e5cc32ae586.png" />
+<img alt="../../_images/93b597ca30131763033871b891167234e1889ba88be7b31d931768a0e1d286b7.png" src="../../_images/93b597ca30131763033871b891167234e1889ba88be7b31d931768a0e1d286b7.png" />
 </div>
 </details>
 </div>

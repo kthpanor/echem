@@ -1,0 +1,2183 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Optimization methods &#8212; Computational Chemistry from  Laptop to HPC</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TX4YJ1J5XE"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/mol_struct/xtb_opt_struct_xin';</script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../title.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
+
+
+
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electronic ground states</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/elstruct_gen.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/orbitals.html">Orbitals and basis sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/slater.html">Many-electron wave functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/operators.html">Operators and matrix elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/reduced_density.html">Reduced particle densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/natural_orbitals.html">Natural orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/integrals.html">Integrals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/spin.html">Electron spin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/correlation.html">Electron correlation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dispersion.html">Dispersion interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/pt.html">Rayleigh–Schrödinger perturbation theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/second_quant.html">Second quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/group_theory.html">Group theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/wft.html">Wave function theory</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/hartree-fock.html">Hartree–Fock</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_scf.html">SCF optimization</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcscf.html">Multiconfigurational methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/dft.html">Density functional theory</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/hohenberg.html">Hohenberg–Kohn theorems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kohn-sham.html">Kohn–Sham method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kernel_int.html">Kernel integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_scf.html">SCF optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_prop.html">First-order properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/available_xcfun.html">Available XC functionals</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Molecular structure and dynamics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="molstruct_gen.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="coordinates.html">Choice of coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="gradients.html">Gradients</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="energy_grad.html">Energy gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property_grad.html">Property gradients</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="hessians_vib.html">Hessians and vibrations</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="hessians.html">Molecular Hessians</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vibrations.html">Vibrational analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="opt.html">Structure optimization</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="opt_struct.html">Optimization methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opt_gs.html">Ground-state structure optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tst.html">Transition-state theory</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tst_gen.html">Transition state geometry optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="impes.html">PES interpolation techniques</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="impes_calc.html">Constructing the PES by interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="md.html">Molecular dynamics</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="forcefields.html">Force fields</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="reparameterize.html">Reparameterize force fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md_setup.html">Ensembles and time integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md_run.html">Running a simulation</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spectra and properties</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/spectra_aspects.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/vibrot.html">Rovibronic states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/response.html">Responses to external fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/selection_rules.html">Selection rules</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/tddft.html">TDDFT</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/tddft_basics.html">Foundations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/tddft_rpa.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/tddft_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference response</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/ci_response.html">CI response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Multiconfigurational linear response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/adc.html">ADC</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/adc_pp.html">Polarization propagator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/adc_isr.html">Intermediate state representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/adc_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/adc_hpc.html">HPC-QC implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/adc_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/excoupl.html">Exciton coupling model</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/excoupl_impl.html">Implementation of the exciton coupling model</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Environment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/localprop.html">Localized properties</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/esp.html">ESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/resp.html">RESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/loprop.html">LoProp charges and polarisabilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/mol_struct.html">Molecular structure and dynamics</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/struct_vis.html">Molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/md_vis.html">MD trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/opt_vib_vis.html">Optimization and normal modes</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/elec_struct.html">Electronic structure</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/orb_vis.html">Orbitals and densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/exc_vis.html">Excited states</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/spec_prop.html">Spectra and properties</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/broadening.html">Spectrum broadening</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials and workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/workflow.html">Constructing workflows</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_build.html">Building the system</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_struct.html">Optimizing molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_scf.html">Optimizing electronic structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_construct.html">Assembling a full workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/uv_vis.html">UV/vis spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_absorption.html">Absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_fluorescence.html">Fluorescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_analysis.html">Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/vib_ir.html">Vibrational spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_calc.html">IR spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_raman.html">Raman spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/openshells.html">Open shells</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/rest_unrest.html">Restricted versus unrestricted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/correlation.html">Static versus dynamic correlation correlation</a></li>
+
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/xray.html">X-ray spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_calc.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_analysis.html">Spectrum analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_aspects.html">Special aspects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_large.html">Larger systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_nonstandard.html">Non-standard calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_exercises.html">Exercises</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_cheatsheet.html">Cheat sheet</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Bibliography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">How to cite and contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../refs.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/mol_struct/xtb_opt_struct_xin.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/docs/mol_struct/xtb_opt_struct_xin.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Optimization methods</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent">Gradient descent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="optimization-methods">
+<span id="sec-structopt-methods"></span><h1>Optimization methods<a class="headerlink" href="#optimization-methods" title="Permalink to this heading">#</a></h1>
+<p>The first class of special points on the PES that we will discuss are local energy minima. These correspond to equilibrium molecular structures and are characterized by a vanishing first order energy derivative combined with a Hessian matrix which has only positive eigenvalues. The procedure to determine a local minimum (i.e. finding the coordinates that minimize the energy) is called a structure optimization.</p>
+<figure class="align-default">
+<img alt="../../_images/PES.png" src="../../_images/PES.png" />
+</figure>
+<p>In practical terms, the ingredients to perform a geometry optimization include: (1) the initial molecular coordinates, (2) a choice of coordinate system, (3) the energy at a specific geometry <span class="math notranslate nohighlight">\(E(\mathbf{x})\)</span>, (4) the gradient <span class="math notranslate nohighlight">\(\mathbf{g}(\mathbf{x})=\nabla E(\mathbf{x})\)</span>, (5) the Hessian, and (6) a procedure to update the coordinates and Hessian and move on the potential energy surface towards lower energy.</p>
+<p>Having addressed <a class="reference internal" href="coordinates.html#coord"><span class="std std-ref">the issue of coordinate system</span></a>, the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton–Raphson, quasi-Newton). For a detailed review of minimization techniques, see <span id="id1">[<a class="reference internal" href="../refs.html#id91" title="J. A. Snyman. Practical mathematical optimization. Springer, 2005.">Sny05</a>]</span>.</p>
+<section id="gradient-descent">
+<h2>Gradient descent<a class="headerlink" href="#gradient-descent" title="Permalink to this heading">#</a></h2>
+<p>The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient</p>
+<div class="amsmath math notranslate nohighlight" id="equation-a43c744a-4d8d-4558-b488-f199081e8860">
+<span class="eqno">()<a class="headerlink" href="#equation-a43c744a-4d8d-4558-b488-f199081e8860" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\mathbf{x}_{i+1} = \mathbf{x}_i - k_i\mathbf{g}(\mathbf{x}_i) \nonumber 
+\end{equation}\]</div>
+<p>where by <span class="math notranslate nohighlight">\(\mathbf{x}_{i+1}\)</span> we denote the new coordinates (in a generic coordinate system – either Cartesian or internal coordinates), <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> are the coordinates at the previous step <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\nabla E\)</span> is the energy gradient and <span class="math notranslate nohighlight">\(k_i\)</span> is the step size. The step size can either be kept constant, or adjusted at each iteration, e.g. by the line search procedure.</p>
+<p>The gradient-descent method is simple to implement and is guaranteed to converge, but has the disadvantage that it requires many steps and becomes slow when close to the minimum where the gradient is small. It always converges to a local minimum, given enough steps.</p>
+<section id="implementation">
+<h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">#</a></h3>
+<p>Let’s implement the gradient descent method. We will need to set up a molecule, an SCF driver and a gradient driver.</p>
+<div class="cell tag_hide-output tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import section</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+<span class="kn">from</span> <span class="nn">veloxchem.veloxchemlib</span> <span class="kn">import</span> <span class="n">bohr_in_angstroms</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the molecule</span>
+<span class="n">molecule_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
+<span class="s2">ethylene molecule from https://molview.org/</span>
+<span class="s2">C   -0.6672    0.0000    0.0000</span>
+<span class="s2">C    0.6672    0.0000    0.0000</span>
+<span class="s2">H   -1.2213   -0.9290    0.0708</span>
+<span class="s2">H   -1.2212    0.9290   -0.0708</span>
+<span class="s2">H    1.2213    0.9290   -0.0708</span>
+<span class="s2">H    1.2213   -0.9290    0.0708</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">molecule_xyz</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_16914850314233434"  style="position: relative; width: 400px; height: 300px">
+        <p id="3dmolwarning_16914850314233434" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js');
+}
+
+var viewer_16914850314233434 = null;
+var warn = document.getElementById("3dmolwarning_16914850314233434");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_16914850314233434 = null;
+viewergrid_16914850314233434 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_16914850314233434"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_16914850314233434 = viewergrid_16914850314233434[0][0];
+viewergrid_16914850314233434[0][0].zoomTo();	viewergrid_16914850314233434[0][0].addModel("6\nethylene molecule from https://molview.org/\nC   -0.6672    0.0000    0.0000\nC    0.6672    0.0000    0.0000\nH   -1.2213   -0.9290    0.0708\nH   -1.2212    0.9290   -0.0708\nH    1.2213    0.9290   -0.0708\nH    1.2213   -0.9290    0.0708\n","xyz");
+	viewergrid_16914850314233434[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_16914850314233434[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_16914850314233434[0][0].rotate(-90,"x");
+	viewergrid_16914850314233434[0][0].zoomTo();
+viewergrid_16914850314233434[0][0].render();
+});
+</script></div></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># XTB Energy driver</span>
+<span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
+
+<span class="c1"># Gradient driver</span>
+<span class="n">xtb_grad_driver</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">()</span>
+<span class="n">xtb_grad_driver</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>Now, write your own routine to run one gradient descent iteration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_descent_iteration</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">new_coordinates</span>
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_descent_iteration</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">gradient</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="n">new_coordinates</span> <span class="o">=</span> <span class="n">coordinates</span> <span class="o">-</span> <span class="n">step</span> <span class="o">*</span> <span class="n">gradient</span>
+    <span class="k">return</span> <span class="n">new_coordinates</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>And the routine that runs the optimization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">energy_driver</span><span class="p">,</span> <span class="n">gradient_driver</span><span class="p">,</span>
+                     <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+
+    <span class="c1"># create ostream for xtb driver</span>
+    <span class="n">ostream</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OutputStream</span><span class="p">()</span>
+    
+    <span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">grad_norm</span> <span class="o">=</span> <span class="mi">100</span>
+    
+    <span class="c1"># save atom labels (symbols)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
+    
+    <span class="c1"># initial atomic coordinates</span>
+    <span class="n">old_coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    
+    <span class="n">energy_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">ostream</span><span class="p">)</span>
+    <span class="n">old_energy</span> <span class="o">=</span> <span class="n">energy_driver</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+    
+    <span class="n">gradient_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">energy_driver</span><span class="p">)</span>
+    <span class="n">old_gradient</span> <span class="o">=</span> <span class="n">gradient_driver</span><span class="o">.</span><span class="n">get_gradient</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting gradient descent:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Iteration     Energy (H)      &quot;</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;Max. displacement (bohr)    Gradient norm (H/bohr)&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">old_energy</span><span class="p">]</span>
+    <span class="n">iterations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="n">grad_norm</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">&lt;=</span> <span class="n">max_iter</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="o">...</span>
+        <span class="o">...</span>
+        
+    <span class="k">if</span> <span class="n">iteration</span> <span class="o">&lt;=</span> <span class="n">max_iter</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   *** Gradient Descent converged in &quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> iteration(s). *** &quot;</span> <span class="o">%</span> <span class="n">iteration</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   !!! Gradient Descent did not converge  !!! &quot;</span><span class="p">)</span>
+        <span class="n">new_molecule</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">new_molecule</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">energies</span> 
+</pre></div>
+</div>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">xtb_driver</span><span class="p">,</span> <span class="n">xtb_gradient_driver</span><span class="p">,</span>
+                     <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    
+    <span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">grad_norm</span> <span class="o">=</span> <span class="mi">100</span>
+    
+    <span class="c1"># save atom labels (symbols)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_labels</span><span class="p">()</span>
+    
+    <span class="c1"># initial atomic coordinates</span>
+    <span class="n">old_coords</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+    
+    <span class="n">xtb_driver</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+    <span class="n">xtb_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+    <span class="n">old_energy</span> <span class="o">=</span> <span class="n">xtb_driver</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+    
+    <span class="n">xtb_gradient_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">xtb_driver</span><span class="p">)</span>
+    <span class="n">old_gradient</span> <span class="o">=</span> <span class="n">xtb_gradient_driver</span><span class="o">.</span><span class="n">get_gradient</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting gradient descent:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Iteration     Energy (H)      &quot;</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;Max. displacement (bohr)    Gradient norm (H/bohr)&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">old_energy</span><span class="p">]</span>
+    <span class="n">iterations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="n">grad_norm</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">&lt;=</span> <span class="n">max_iter</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">gradient_descent_iteration</span><span class="p">(</span><span class="n">old_coords</span><span class="p">,</span> <span class="n">old_gradient</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        
+        <span class="c1"># calculate the energy and gradient corresponding to the new coordinates</span>
+        <span class="n">new_molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">molecule</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;au&#39;</span><span class="p">)</span>
+        
+        <span class="n">xtb_driver</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+        <span class="n">xtb_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">)</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">xtb_driver</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+        <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+        
+        <span class="n">xtb_gradient_driver</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">new_molecule</span><span class="p">,</span> <span class="n">xtb_driver</span><span class="p">)</span>
+        <span class="n">gradient</span> <span class="o">=</span> <span class="n">xtb_gradient_driver</span><span class="o">.</span><span class="n">get_gradient</span><span class="p">()</span>
+        <span class="n">grad_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span>
+        
+        <span class="n">displacement</span> <span class="o">=</span> <span class="n">old_coords</span> <span class="o">-</span> <span class="n">coords</span>
+        <span class="n">max_disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">displacement</span><span class="p">))</span>
+        
+        <span class="c1"># calculate energy difference</span>
+        <span class="n">delta_e</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">energy</span> <span class="o">-</span> <span class="n">old_energy</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;   </span><span class="si">%3d</span><span class="s2">.  </span><span class="si">%15.7f</span><span class="s2">      &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="p">)</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%15.7f</span><span class="s2">          </span><span class="si">%15.7f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">max_disp</span><span class="p">,</span> <span class="n">grad_norm</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="c1"># save </span>
+        <span class="n">old_energy</span> <span class="o">=</span> <span class="n">energy</span>
+        <span class="n">old_gradient</span> <span class="o">=</span> <span class="n">gradient</span>
+        <span class="n">old_coords</span> <span class="o">=</span> <span class="n">coords</span>
+        <span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">iterations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">iteration</span> <span class="o">&lt;=</span> <span class="n">max_iter</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   *** Gradient Descent converged in &quot;</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> iteration(s). *** &quot;</span> <span class="o">%</span> <span class="n">iteration</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   !!! Gradient Descent did not converge  !!! &quot;</span><span class="p">)</span>
+        <span class="n">new_molecule</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">new_molecule</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">energies</span> 
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">opt_mol</span><span class="p">,</span> <span class="n">gd_iterations</span><span class="p">,</span> <span class="n">gd_energies</span> <span class="o">=</span> <span class="n">gradient_descent</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span>
+                                                       <span class="n">xtb_drv</span><span class="p">,</span> <span class="n">xtb_grad_driver</span><span class="p">,</span>
+                                                       <span class="n">step</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+                                                       <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+                                                       <span class="n">max_iter</span><span class="o">=</span><span class="mi">450</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting gradient descent:
+
+Iteration     Energy (H)      Max. displacement (bohr)    Gradient norm (H/bohr)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     0.       -6.2705883            0.0009519                0.0278012
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1.       -6.2706259            0.0008925                0.0263887
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2.       -6.2706599            0.0008367                0.0250762
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3.       -6.2706905            0.0007843                0.0238580
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     4.       -6.2707183            0.0007352                0.0227284
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     5.       -6.2707435            0.0006892                0.0216819
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     6.       -6.2707665            0.0006461                0.0207131
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     7.       -6.2707875            0.0006057                0.0198170
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     8.       -6.2708067            0.0005679                0.0189885
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     9.       -6.2708244            0.0005326                0.0182228
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    10.       -6.2708407            0.0004995                0.0175154
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    11.       -6.2708557            0.0004685                0.0168617
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    12.       -6.2708697            0.0004396                0.0162577
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    13.       -6.2708827            0.0004126                0.0156994
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    14.       -6.2708948            0.0003873                0.0151830
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    15.       -6.2709061            0.0003637                0.0147050
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    16.       -6.2709168            0.0003416                0.0142621
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    17.       -6.2709268            0.0003210                0.0138511
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    18.       -6.2709363            0.0003018                0.0134693
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    19.       -6.2709452            0.0002838                0.0131140
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    20.       -6.2709537            0.0002671                0.0127826
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    21.       -6.2709618            0.0002643                0.0124731
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    22.       -6.2709695            0.0002619                0.0121833
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    23.       -6.2709768            0.0002593                0.0119113
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    24.       -6.2709838            0.0002568                0.0116554
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    25.       -6.2709905            0.0002542                0.0114141
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    26.       -6.2709970            0.0002517                0.0111860
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    27.       -6.2710032            0.0002490                0.0109698
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    28.       -6.2710091            0.0002464                0.0107644
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    29.       -6.2710149            0.0002438                0.0105688
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    30.       -6.2710204            0.0002412                0.0103820
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    31.       -6.2710257            0.0002385                0.0102033
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    32.       -6.2710309            0.0002359                0.0100319
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    33.       -6.2710359            0.0002332                0.0098671
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    34.       -6.2710407            0.0002306                0.0097084
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    35.       -6.2710454            0.0002280                0.0095554
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    36.       -6.2710499            0.0002253                0.0094074
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    37.       -6.2710543            0.0002227                0.0092641
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    38.       -6.2710586            0.0002201                0.0091252
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    39.       -6.2710627            0.0002176                0.0089903
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    40.       -6.2710667            0.0002150                0.0088591
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    41.       -6.2710706            0.0002124                0.0087314
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    42.       -6.2710744            0.0002099                0.0086070
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    43.       -6.2710781            0.0002074                0.0084857
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    44.       -6.2710817            0.0002049                0.0083672
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    45.       -6.2710851            0.0002024                0.0082514
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    46.       -6.2710885            0.0002000                0.0081382
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    47.       -6.2710918            0.0001975                0.0080274
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    48.       -6.2710950            0.0001951                0.0079189
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    49.       -6.2710981            0.0001928                0.0078127
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    50.       -6.2711012            0.0001904                0.0077086
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    51.       -6.2711041            0.0001881                0.0076066
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    52.       -6.2711070            0.0001858                0.0075065
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    53.       -6.2711098            0.0001835                0.0074083
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    54.       -6.2711125            0.0001812                0.0073120
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    55.       -6.2711152            0.0001790                0.0072174
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    56.       -6.2711177            0.0001768                0.0071245
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    57.       -6.2711203            0.0001746                0.0070334
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    58.       -6.2711227            0.0001724                0.0069438
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    59.       -6.2711251            0.0001703                0.0068558
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    60.       -6.2711275            0.0001682                0.0067694
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    61.       -6.2711297            0.0001661                0.0066845
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    62.       -6.2711320            0.0001641                0.0066011
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    63.       -6.2711341            0.0001620                0.0065191
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    64.       -6.2711362            0.0001600                0.0064385
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    65.       -6.2711383            0.0001581                0.0063594
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    66.       -6.2711403            0.0001561                0.0062815
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    67.       -6.2711423            0.0001542                0.0062050
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    68.       -6.2711442            0.0001523                0.0061298
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    69.       -6.2711460            0.0001504                0.0060559
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    70.       -6.2711479            0.0001486                0.0059833
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    71.       -6.2711496            0.0001467                0.0059118
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    72.       -6.2711514            0.0001449                0.0058416
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    73.       -6.2711531            0.0001432                0.0057726
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    74.       -6.2711547            0.0001414                0.0057047
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    75.       -6.2711564            0.0001397                0.0056380
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    76.       -6.2711579            0.0001380                0.0055724
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    77.       -6.2711595            0.0001363                0.0055080
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    78.       -6.2711610            0.0001346                0.0054446
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    79.       -6.2711625            0.0001330                0.0053823
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    80.       -6.2711639            0.0001314                0.0053210
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    81.       -6.2711653            0.0001298                0.0052608
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    82.       -6.2711667            0.0001282                0.0052016
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    83.       -6.2711680            0.0001266                0.0051435
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    84.       -6.2711693            0.0001251                0.0050863
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    85.       -6.2711706            0.0001236                0.0050300
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    86.       -6.2711719            0.0001221                0.0049748
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    87.       -6.2711731            0.0001207                0.0049204
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    88.       -6.2711743            0.0001192                0.0048670
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    89.       -6.2711755            0.0001178                0.0048145
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    90.       -6.2711767            0.0001164                0.0047629
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    91.       -6.2711778            0.0001150                0.0047121
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    92.       -6.2711789            0.0001136                0.0046623
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    93.       -6.2711800            0.0001123                0.0046132
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    94.       -6.2711810            0.0001110                0.0045650
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    95.       -6.2711821            0.0001097                0.0045177
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    96.       -6.2711831            0.0001084                0.0044711
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    97.       -6.2711841            0.0001071                0.0044253
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    98.       -6.2711850            0.0001058                0.0043803
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    99.       -6.2711860            0.0001046                0.0043361
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   100.       -6.2711869            0.0001034                0.0042926
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   101.       -6.2711879            0.0001022                0.0042498
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   102.       -6.2711888            0.0001010                0.0042078
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   103.       -6.2711896            0.0000998                0.0041665
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   104.       -6.2711905            0.0000987                0.0041259
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   105.       -6.2711913            0.0000975                0.0040859
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   106.       -6.2711922            0.0000964                0.0040467
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   107.       -6.2711930            0.0000953                0.0040081
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   108.       -6.2711938            0.0000942                0.0039702
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   109.       -6.2711946            0.0000931                0.0039329
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   110.       -6.2711953            0.0000921                0.0038962
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   111.       -6.2711961            0.0000910                0.0038601
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   112.       -6.2711968            0.0000900                0.0038247
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   113.       -6.2711976            0.0000890                0.0037899
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   114.       -6.2711983            0.0000880                0.0037556
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   115.       -6.2711990            0.0000870                0.0037219
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   116.       -6.2711997            0.0000860                0.0036888
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   117.       -6.2712004            0.0000851                0.0036562
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   118.       -6.2712010            0.0000841                0.0036242
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   119.       -6.2712017            0.0000832                0.0035927
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   120.       -6.2712023            0.0000823                0.0035617
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   121.       -6.2712029            0.0000814                0.0035312
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   122.       -6.2712036            0.0000805                0.0035012
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   123.       -6.2712042            0.0000796                0.0034718
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   124.       -6.2712048            0.0000787                0.0034428
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   125.       -6.2712054            0.0000779                0.0034143
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   126.       -6.2712059            0.0000770                0.0033862
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   127.       -6.2712065            0.0000762                0.0033586
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   128.       -6.2712071            0.0000754                0.0033315
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   129.       -6.2712076            0.0000746                0.0033048
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   130.       -6.2712082            0.0000738                0.0032785
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   131.       -6.2712087            0.0000730                0.0032526
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   132.       -6.2712092            0.0000722                0.0032272
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   133.       -6.2712098            0.0000714                0.0032022
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   134.       -6.2712103            0.0000707                0.0031775
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   135.       -6.2712108            0.0000699                0.0031533
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   136.       -6.2712113            0.0000692                0.0031294
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   137.       -6.2712118            0.0000685                0.0031059
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   138.       -6.2712122            0.0000678                0.0030828
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   139.       -6.2712127            0.0000671                0.0030601
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   140.       -6.2712132            0.0000664                0.0030377
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   141.       -6.2712136            0.0000657                0.0030156
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   142.       -6.2712141            0.0000650                0.0029939
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   143.       -6.2712145            0.0000643                0.0029725
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   144.       -6.2712150            0.0000637                0.0029514
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   145.       -6.2712154            0.0000630                0.0029307
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   146.       -6.2712158            0.0000624                0.0029103
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   147.       -6.2712163            0.0000618                0.0028901
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   148.       -6.2712167            0.0000611                0.0028703
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   149.       -6.2712171            0.0000605                0.0028508
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   150.       -6.2712175            0.0000599                0.0028315
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   151.       -6.2712179            0.0000593                0.0028126
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   152.       -6.2712183            0.0000587                0.0027939
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   153.       -6.2712187            0.0000582                0.0027755
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   154.       -6.2712191            0.0000576                0.0027573
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   155.       -6.2712194            0.0000570                0.0027394
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   156.       -6.2712198            0.0000565                0.0027218
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   157.       -6.2712202            0.0000559                0.0027044
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   158.       -6.2712205            0.0000554                0.0026873
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   159.       -6.2712209            0.0000548                0.0026703
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   160.       -6.2712213            0.0000543                0.0026537
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   161.       -6.2712216            0.0000538                0.0026372
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   162.       -6.2712220            0.0000533                0.0026210
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   163.       -6.2712223            0.0000528                0.0026050
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   164.       -6.2712226            0.0000523                0.0025892
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   165.       -6.2712230            0.0000518                0.0025737
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   166.       -6.2712233            0.0000513                0.0025583
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   167.       -6.2712236            0.0000508                0.0025431
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   168.       -6.2712239            0.0000503                0.0025282
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   169.       -6.2712243            0.0000499                0.0025134
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   170.       -6.2712246            0.0000494                0.0024988
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   171.       -6.2712249            0.0000489                0.0024844
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   172.       -6.2712252            0.0000485                0.0024702
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   173.       -6.2712255            0.0000480                0.0024561
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   174.       -6.2712258            0.0000476                0.0024423
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   175.       -6.2712261            0.0000472                0.0024286
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   176.       -6.2712264            0.0000467                0.0024150
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   177.       -6.2712267            0.0000463                0.0024017
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   178.       -6.2712270            0.0000459                0.0023885
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   179.       -6.2712273            0.0000455                0.0023754
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   180.       -6.2712275            0.0000451                0.0023625
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   181.       -6.2712278            0.0000447                0.0023498
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   182.       -6.2712281            0.0000443                0.0023372
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   183.       -6.2712284            0.0000439                0.0023248
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   184.       -6.2712286            0.0000435                0.0023124
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   185.       -6.2712289            0.0000431                0.0023003
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   186.       -6.2712292            0.0000428                0.0022882
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   187.       -6.2712294            0.0000424                0.0022763
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   188.       -6.2712297            0.0000420                0.0022646
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   189.       -6.2712299            0.0000417                0.0022529
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   190.       -6.2712302            0.0000413                0.0022414
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   191.       -6.2712304            0.0000409                0.0022300
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   192.       -6.2712307            0.0000406                0.0022187
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   193.       -6.2712309            0.0000403                0.0022076
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   194.       -6.2712312            0.0000399                0.0021965
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   195.       -6.2712314            0.0000396                0.0021856
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   196.       -6.2712317            0.0000393                0.0021748
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   197.       -6.2712319            0.0000389                0.0021641
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   198.       -6.2712321            0.0000386                0.0021535
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   199.       -6.2712324            0.0000383                0.0021430
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   200.       -6.2712326            0.0000380                0.0021326
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   201.       -6.2712328            0.0000378                0.0021223
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   202.       -6.2712330            0.0000377                0.0021121
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   203.       -6.2712333            0.0000376                0.0021020
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   204.       -6.2712335            0.0000376                0.0020920
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   205.       -6.2712337            0.0000375                0.0020821
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   206.       -6.2712339            0.0000375                0.0020722
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   207.       -6.2712341            0.0000374                0.0020625
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   208.       -6.2712343            0.0000373                0.0020529
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   209.       -6.2712346            0.0000373                0.0020433
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   210.       -6.2712348            0.0000372                0.0020338
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   211.       -6.2712350            0.0000372                0.0020244
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   212.       -6.2712352            0.0000371                0.0020151
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   213.       -6.2712354            0.0000370                0.0020059
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   214.       -6.2712356            0.0000369                0.0019967
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   215.       -6.2712358            0.0000369                0.0019877
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   216.       -6.2712360            0.0000368                0.0019787
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   217.       -6.2712362            0.0000367                0.0019697
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   218.       -6.2712364            0.0000367                0.0019609
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   219.       -6.2712366            0.0000366                0.0019521
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   220.       -6.2712367            0.0000365                0.0019434
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   221.       -6.2712369            0.0000364                0.0019347
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   222.       -6.2712371            0.0000364                0.0019261
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   223.       -6.2712373            0.0000363                0.0019176
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   224.       -6.2712375            0.0000362                0.0019092
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   225.       -6.2712377            0.0000361                0.0019008
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   226.       -6.2712379            0.0000361                0.0018925
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   227.       -6.2712380            0.0000360                0.0018842
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   228.       -6.2712382            0.0000359                0.0018760
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   229.       -6.2712384            0.0000358                0.0018679
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   230.       -6.2712386            0.0000357                0.0018598
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   231.       -6.2712387            0.0000357                0.0018518
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   232.       -6.2712389            0.0000356                0.0018438
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   233.       -6.2712391            0.0000355                0.0018359
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   234.       -6.2712392            0.0000354                0.0018281
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   235.       -6.2712394            0.0000353                0.0018203
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   236.       -6.2712396            0.0000353                0.0018125
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   237.       -6.2712397            0.0000352                0.0018048
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   238.       -6.2712399            0.0000351                0.0017972
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   239.       -6.2712401            0.0000350                0.0017896
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   240.       -6.2712402            0.0000349                0.0017821
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   241.       -6.2712404            0.0000348                0.0017746
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   242.       -6.2712405            0.0000347                0.0017671
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   243.       -6.2712407            0.0000347                0.0017597
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   244.       -6.2712408            0.0000346                0.0017524
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   245.       -6.2712410            0.0000345                0.0017451
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   246.       -6.2712412            0.0000344                0.0017378
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   247.       -6.2712413            0.0000343                0.0017306
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   248.       -6.2712415            0.0000342                0.0017235
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   249.       -6.2712416            0.0000341                0.0017163
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   250.       -6.2712417            0.0000340                0.0017093
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   251.       -6.2712419            0.0000340                0.0017022
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   252.       -6.2712420            0.0000339                0.0016952
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   253.       -6.2712422            0.0000338                0.0016883
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   254.       -6.2712423            0.0000337                0.0016814
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   255.       -6.2712425            0.0000336                0.0016745
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   256.       -6.2712426            0.0000335                0.0016677
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   257.       -6.2712427            0.0000334                0.0016609
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   258.       -6.2712429            0.0000333                0.0016541
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   259.       -6.2712430            0.0000332                0.0016474
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   260.       -6.2712432            0.0000331                0.0016407
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   261.       -6.2712433            0.0000331                0.0016341
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   262.       -6.2712434            0.0000330                0.0016275
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   263.       -6.2712436            0.0000329                0.0016209
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   264.       -6.2712437            0.0000328                0.0016144
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   265.       -6.2712438            0.0000327                0.0016079
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   266.       -6.2712439            0.0000326                0.0016014
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   267.       -6.2712441            0.0000325                0.0015950
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   268.       -6.2712442            0.0000324                0.0015886
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   269.       -6.2712443            0.0000323                0.0015823
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   270.       -6.2712444            0.0000322                0.0015759
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   271.       -6.2712446            0.0000321                0.0015696
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   272.       -6.2712447            0.0000320                0.0015634
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   273.       -6.2712448            0.0000319                0.0015572
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   274.       -6.2712449            0.0000318                0.0015510
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   275.       -6.2712451            0.0000318                0.0015448
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   276.       -6.2712452            0.0000317                0.0015387
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   277.       -6.2712453            0.0000316                0.0015326
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   278.       -6.2712454            0.0000315                0.0015265
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   279.       -6.2712455            0.0000314                0.0015205
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   280.       -6.2712456            0.0000313                0.0015144
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   281.       -6.2712458            0.0000312                0.0015085
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   282.       -6.2712459            0.0000311                0.0015025
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   283.       -6.2712460            0.0000310                0.0014966
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   284.       -6.2712461            0.0000309                0.0014907
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   285.       -6.2712462            0.0000308                0.0014848
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   286.       -6.2712463            0.0000307                0.0014790
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   287.       -6.2712464            0.0000306                0.0014732
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   288.       -6.2712465            0.0000305                0.0014674
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   289.       -6.2712466            0.0000304                0.0014616
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   290.       -6.2712467            0.0000303                0.0014559
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   291.       -6.2712469            0.0000302                0.0014502
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   292.       -6.2712470            0.0000302                0.0014445
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   293.       -6.2712471            0.0000301                0.0014389
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   294.       -6.2712472            0.0000300                0.0014333
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   295.       -6.2712473            0.0000299                0.0014277
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   296.       -6.2712474            0.0000298                0.0014221
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   297.       -6.2712475            0.0000297                0.0014166
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   298.       -6.2712476            0.0000296                0.0014110
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   299.       -6.2712477            0.0000295                0.0014056
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   300.       -6.2712478            0.0000294                0.0014001
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   301.       -6.2712479            0.0000293                0.0013946
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   302.       -6.2712480            0.0000292                0.0013892
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   303.       -6.2712481            0.0000291                0.0013838
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   304.       -6.2712482            0.0000290                0.0013785
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   305.       -6.2712483            0.0000289                0.0013731
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   306.       -6.2712483            0.0000288                0.0013678
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   307.       -6.2712484            0.0000288                0.0013625
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   308.       -6.2712485            0.0000287                0.0013572
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   309.       -6.2712486            0.0000286                0.0013519
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   310.       -6.2712487            0.0000285                0.0013467
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   311.       -6.2712488            0.0000284                0.0013415
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   312.       -6.2712489            0.0000283                0.0013363
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   313.       -6.2712490            0.0000282                0.0013312
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   314.       -6.2712491            0.0000281                0.0013260
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   315.       -6.2712492            0.0000280                0.0013209
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   316.       -6.2712492            0.0000279                0.0013158
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   317.       -6.2712493            0.0000278                0.0013107
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   318.       -6.2712494            0.0000277                0.0013057
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   319.       -6.2712495            0.0000276                0.0013006
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   320.       -6.2712496            0.0000276                0.0012956
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   321.       -6.2712497            0.0000275                0.0012906
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   322.       -6.2712498            0.0000274                0.0012857
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   323.       -6.2712498            0.0000273                0.0012807
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   324.       -6.2712499            0.0000272                0.0012758
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   325.       -6.2712500            0.0000271                0.0012709
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   326.       -6.2712501            0.0000270                0.0012660
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   327.       -6.2712502            0.0000269                0.0012611
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   328.       -6.2712502            0.0000268                0.0012563
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   329.       -6.2712503            0.0000267                0.0012515
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   330.       -6.2712504            0.0000266                0.0012466
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   331.       -6.2712505            0.0000266                0.0012419
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   332.       -6.2712506            0.0000265                0.0012371
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   333.       -6.2712506            0.0000264                0.0012324
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   334.       -6.2712507            0.0000263                0.0012276
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   335.       -6.2712508            0.0000262                0.0012229
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   336.       -6.2712509            0.0000261                0.0012182
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   337.       -6.2712509            0.0000260                0.0012136
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   338.       -6.2712510            0.0000259                0.0012089
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   339.       -6.2712511            0.0000258                0.0012043
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   340.       -6.2712511            0.0000258                0.0011997
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   341.       -6.2712512            0.0000257                0.0011951
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   342.       -6.2712513            0.0000256                0.0011905
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   343.       -6.2712514            0.0000255                0.0011859
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   344.       -6.2712514            0.0000254                0.0011814
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   345.       -6.2712515            0.0000253                0.0011769
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   346.       -6.2712516            0.0000252                0.0011724
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   347.       -6.2712516            0.0000251                0.0011679
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   348.       -6.2712517            0.0000250                0.0011634
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   349.       -6.2712518            0.0000250                0.0011590
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   350.       -6.2712518            0.0000249                0.0011546
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   351.       -6.2712519            0.0000248                0.0011501
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   352.       -6.2712520            0.0000247                0.0011458
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   353.       -6.2712520            0.0000246                0.0011414
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   354.       -6.2712521            0.0000245                0.0011370
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   355.       -6.2712522            0.0000244                0.0011327
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   356.       -6.2712522            0.0000244                0.0011284
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   357.       -6.2712523            0.0000243                0.0011240
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   358.       -6.2712524            0.0000242                0.0011198
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   359.       -6.2712524            0.0000241                0.0011155
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   360.       -6.2712525            0.0000240                0.0011112
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   361.       -6.2712525            0.0000239                0.0011070
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   362.       -6.2712526            0.0000239                0.0011028
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   363.       -6.2712527            0.0000238                0.0010986
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   364.       -6.2712527            0.0000237                0.0010944
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   365.       -6.2712528            0.0000236                0.0010902
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   366.       -6.2712528            0.0000235                0.0010860
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   367.       -6.2712529            0.0000234                0.0010819
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   368.       -6.2712530            0.0000234                0.0010778
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   369.       -6.2712530            0.0000233                0.0010737
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   370.       -6.2712531            0.0000232                0.0010696
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   371.       -6.2712531            0.0000231                0.0010655
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   372.       -6.2712532            0.0000230                0.0010614
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   373.       -6.2712532            0.0000229                0.0010574
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   374.       -6.2712533            0.0000229                0.0010534
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   375.       -6.2712534            0.0000228                0.0010494
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   376.       -6.2712534            0.0000227                0.0010454
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   377.       -6.2712535            0.0000226                0.0010414
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   378.       -6.2712535            0.0000225                0.0010374
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   379.       -6.2712536            0.0000225                0.0010335
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   380.       -6.2712536            0.0000224                0.0010295
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   381.       -6.2712537            0.0000223                0.0010256
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   382.       -6.2712537            0.0000222                0.0010217
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   383.       -6.2712538            0.0000221                0.0010178
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   384.       -6.2712538            0.0000221                0.0010139
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   385.       -6.2712539            0.0000220                0.0010101
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   386.       -6.2712539            0.0000219                0.0010062
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   387.       -6.2712540            0.0000218                0.0010024
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   388.       -6.2712540            0.0000217                0.0009986
+
+   *** Gradient Descent converged in 389 iteration(s). *** 
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gd_iterations</span><span class="p">,</span> <span class="n">gd_energies</span><span class="p">,</span><span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Gradient descent&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">xmin</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">390</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (H)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Gradient descent convergence&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/3c477a8c55e160460324da9c7e3e23f9c9fa61042cdbe058575e65703a367cb3.png" src="../../_images/3c477a8c55e160460324da9c7e3e23f9c9fa61042cdbe058575e65703a367cb3.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs/mol_struct"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent">Gradient descent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The eChem team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
