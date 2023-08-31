@@ -67,6 +67,14 @@ import gator
 
 ### References
 
+The file `references.bib` in the top directory is a regular BIBTEX file. Add your references in this file (in alphabetic order and with consistent format to existing references). A citation in the text is added with
+
+```
+{cite}`Wang2016, Schlegel2011`
+```
+
+Multiple lists of references are possible but not yet properly implemented.
+
 Add to .bib (in chronological order) and include URL to create links in the references
 
 ```
