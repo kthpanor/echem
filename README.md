@@ -2,7 +2,7 @@
 
 ## Use a faster conda solver
 
-With the new conda-libmamba-solver conda can run much faster. Read more in [this blog post](https://www.anaconda.com/blog/conda-is-fast-now).
+With the new conda-libmamba-solver conda can run much faster. Read more in [this blog post](https://www.anaconda.com/blog/conda-is-fast-now). For newer distributions libmamba is the default solver, and you can check which one you have and, if needed, update with
 
 ```
 conda info
