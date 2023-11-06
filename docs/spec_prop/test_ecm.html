@@ -1,0 +1,1254 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Implementation of the exciton coupling model &#8212; Computational Chemistry from  Laptop to HPC</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TX4YJ1J5XE"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/spec_prop/test_ecm';</script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../title.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
+
+
+
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electronic ground states</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/elstruct_gen.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/orbitals.html">Orbitals and basis sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/slater.html">Many-electron wave functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/operators.html">Operators and matrix elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/reduced_density.html">Reduced particle densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/natural_orbitals.html">Natural orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/integrals.html">Integrals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/spin.html">Electron spin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/correlation.html">Electron correlation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dispersion.html">Dispersion interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/pt.html">Rayleigh–Schrödinger perturbation theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/second_quant.html">Second quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/group_theory.html">Group theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/wft.html">Wave function theory</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/hartree-fock.html">Hartree–Fock</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_scf.html">SCF optimization</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcscf.html">Multiconfigurational methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/dft.html">Density functional theory</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/hohenberg.html">Hohenberg–Kohn theorems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kohn-sham.html">Kohn–Sham method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kernel_int.html">Kernel integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_scf.html">SCF optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_prop.html">First-order properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/available_xcfun.html">Available XC functionals</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Molecular structure and dynamics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/molstruct_gen.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/coordinates.html">Choice of coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/gradients.html">Gradients</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/energy_grad.html">Energy gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/property_grad.html">Property gradients</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/hessians_vib.html">Hessians and vibrations</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/hessians.html">Molecular Hessians</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/vibrations.html">Vibrational analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/opt.html">Structure optimization</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_struct.html">Optimization methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_gs.html">Ground-state structure optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/tst.html">Transition-state theory</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst_gen.html">Transition state geometry optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/impes.html">PES interpolation techniques</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/impes_calc.html">Constructing the PES by interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/md.html">Molecular dynamics</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/forcefields.html">Force fields</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/reparameterize.html">Reparameterize force fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/md_setup.html">Ensembles and time integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/md_run.html">Running a simulation</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spectra and properties</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="spectra_aspects.html">General aspects</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="resp_external.html">Responses to external fields</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mol_prop.html">Molecular properties</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="first_order.html">First-order properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_resp.html">Linear response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quad_resp.html">Quadratic response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cubic_resp.html">Cubic response</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="elec_nuc.html">Electronic and nuclear contributions</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="rovib.html">Rovibronic states</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="selection_rules.html">Selection rules</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="expt_theory.html">Experiment to theory</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="opa.html">UV/vis absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dichroism.html">Dichroism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpa.html">Two-photon absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="birefring.html">Birefringence</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tddft.html">TDDFT</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tddft_basics.html">Foundations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tddft_rpa.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tddft_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="mr_response.html">Multireference response</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="ci_response.html">CI response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa_mcscf.html">State-averaged MCSCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclr.html">Multiconfigurational linear response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mr_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="adc.html">ADC</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="adc_pp.html">Polarization propagator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adc_isr.html">Intermediate state representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adc_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adc_hpc.html">HPC-QC implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adc_exercises_new.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="excoupl.html">Exciton coupling model</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="excoupl_impl.html">Implementation of the exciton coupling model</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Environment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/localprop.html">Localized properties</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/esp.html">ESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/chelpg.html">CHELPG charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/resp.html">RESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/loprop.html">LoProp charges and polarisabilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/mol_struct.html">Molecular structure and dynamics</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/struct_vis.html">Molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/md_vis.html">MD trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/opt_vib_vis.html">Optimization and normal modes</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/elec_struct.html">Electronic structure</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/orb_vis.html">Orbitals and densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/exc_vis.html">Excited states</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/spec_prop.html">Spectra and properties</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/broadening.html">Spectrum broadening</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials and workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/workflow.html">Constructing workflows</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_build.html">Building systems</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_struct.html">Optimizing molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_scf.html">Optimizing electronic structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_construct.html">Assembling a full workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/uv_vis.html">UV/vis spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_absorption.html">Absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_fluorescence.html">Fluorescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_analysis.html">Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/vib_ir.html">Vibrational spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_calc.html">IR spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_raman.html">Raman spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_exercises.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/openshells.html">Open shells</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/rest_unrest.html">Restricted versus unrestricted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/correlation.html">Static versus dynamic correlation correlation</a></li>
+
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/xray.html">X-ray spectroscopies</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_calc.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_analysis.html">Spectrum analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_aspects.html">Special aspects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_large.html">Larger systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_nonstandard.html">Non-standard calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_exercises.html">Exercises</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_cheatsheet.html">Cheat sheet</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Bibliography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">How to cite and contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../refs.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/spec_prop/test_ecm.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/docs/spec_prop/test_ecm.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Implementation of the exciton coupling model</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-modules">Import modules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-molecule-and-basis-set">Set up molecule and basis set</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-exciton-model-driver">Set up the exciton model driver</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializes-exciton-model-hamiltonian-and-transition-dipoles">Initializes exciton model Hamiltonian and transition dipoles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-monomer-calculations">Run monomer calculations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-dimer-calculations">Run dimer calculations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#print-the-exciton-model-hamiltonian">Print the exciton model Hamiltonian</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-excitation-energies-and-transition-dipoles">Get excitation energies and transition dipoles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-absorption-and-ecd-spectra">Plot absorption and ECD spectra</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="implementation-of-the-exciton-coupling-model">
+<h1>Implementation of the exciton coupling model<a class="headerlink" href="#implementation-of-the-exciton-coupling-model" title="Permalink to this heading">#</a></h1>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h2>
+<section id="import-modules">
+<h3>Import modules<a class="headerlink" href="#import-modules" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="set-up-molecule-and-basis-set">
+<h3>Set up molecule and basis set<a class="headerlink" href="#set-up-molecule-and-basis-set" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># molecule and basis</span>
+
+<span class="n">mol_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;12</span>
+
+<span class="s2">C        0.67759997    0.00000000    0.00000000</span>
+<span class="s2">C       -0.67759997    0.00000000    0.00000000</span>
+<span class="s2">H        1.21655197    0.92414474    0.00000000</span>
+<span class="s2">H        1.21655197   -0.92414474    0.00000000</span>
+<span class="s2">H       -1.21655197   -0.92414474    0.00000000</span>
+<span class="s2">H       -1.21655197    0.92414474    0.00000000</span>
+<span class="s2">C        0.67759997    0.00000000    5.00000000</span>
+<span class="s2">C       -0.67759997    0.00000000    5.00000000</span>
+<span class="s2">H        1.21655197    0.92414474    5.00000000</span>
+<span class="s2">H        1.21655197   -0.92414474    5.00000000</span>
+<span class="s2">H       -1.21655197   -0.92414474    5.00000000</span>
+<span class="s2">H       -1.21655197    0.92414474    5.00000000&quot;&quot;&quot;</span>
+
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">mol_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;def2-svp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_1699274307398804"  style="position: relative; width: 300px; height: 300px;">
+        <p id="3dmolwarning_1699274307398804" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
+}
+
+var viewer_1699274307398804 = null;
+var warn = document.getElementById("3dmolwarning_1699274307398804");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+var viewergrid_1699274307398804 = null;
+viewergrid_1699274307398804 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1699274307398804"),{rows: 1, cols: 1, control_all: true},{backgroundColor:"white"});
+viewer_1699274307398804 = viewergrid_1699274307398804[0][0];
+viewergrid_1699274307398804[0][0].zoomTo();	viewergrid_1699274307398804[0][0].addModel("12\n\nC        0.67759997    0.00000000    0.00000000\nC       -0.67759997    0.00000000    0.00000000\nH        1.21655197    0.92414474    0.00000000\nH        1.21655197   -0.92414474    0.00000000\nH       -1.21655197   -0.92414474    0.00000000\nH       -1.21655197    0.92414474    0.00000000\nC        0.67759997    0.00000000    5.00000000\nC       -0.67759997    0.00000000    5.00000000\nH        1.21655197    0.92414474    5.00000000\nH        1.21655197   -0.92414474    5.00000000\nH       -1.21655197   -0.92414474    5.00000000\nH       -1.21655197    0.92414474    5.00000000","xyz");
+	viewergrid_1699274307398804[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1699274307398804[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1699274307398804[0][0].rotate(90,"x");
+viewergrid_1699274307398804[0][0].render();
+});
+</script></div></div>
+</div>
+</section>
+<section id="set-up-the-exciton-model-driver">
+<h3>Set up the exciton model driver<a class="headerlink" href="#set-up-the-exciton-model-driver" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># exciton model setup</span>
+<span class="n">exmod_settings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;fragments&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;atoms_per_fragment&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;charges&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;nstates&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ct_nocc&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ct_nvir&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dft&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;xcfun&#39;</span><span class="p">:</span> <span class="s1">&#39;bhandhlyp&#39;</span><span class="p">}</span>
+<span class="n">exmod_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ExcitonModelDriver</span><span class="p">()</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">exmod_settings</span><span class="p">,</span> <span class="n">method_settings</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="initializes-exciton-model-hamiltonian-and-transition-dipoles">
+<h3>Initializes exciton model Hamiltonian and transition dipoles<a class="headerlink" href="#initializes-exciton-model-hamiltonian-and-transition-dipoles" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">monomer_natoms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">natoms</span><span class="p">)</span>
+<span class="n">n_monomers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">monomer_natoms</span><span class="p">)</span>
+<span class="n">monomer_start_indices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">natoms</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">)]</span>
+
+<span class="n">npairs</span> <span class="o">=</span> <span class="n">n_monomers</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_monomers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">total_LE_states</span> <span class="o">=</span> <span class="n">n_monomers</span> <span class="o">*</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span>
+<span class="n">total_CT_states</span> <span class="o">=</span> <span class="n">npairs</span> <span class="o">*</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">ct_nocc</span> <span class="o">*</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">ct_nvir</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="n">total_num_states</span> <span class="o">=</span> <span class="n">total_LE_states</span> <span class="o">+</span> <span class="n">total_CT_states</span>
+
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="n">total_num_states</span><span class="p">))</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_num_states</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">exmod_drv</span><span class="o">.</span><span class="n">center_of_mass</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+
+<span class="n">state_strings</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_num_states</span><span class="p">)]</span>
+
+<span class="n">dimer_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">indA</span><span class="p">,</span> <span class="n">indB</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">indA</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">indB</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">indA</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_monomers</span><span class="p">)]</span>
+<span class="n">excitation_ids</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">get_excitation_ids</span><span class="p">(</span><span class="n">dimer_pairs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-monomer-calculations">
+<h3>Run monomer calculations<a class="headerlink" href="#run-monomer-calculations" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># monomer calculations</span>
+
+<span class="n">monomers_info</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">):</span>
+    <span class="n">monomer</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_sub_molecule</span><span class="p">(</span><span class="n">monomer_start_indices</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span>
+                                        <span class="n">monomer_natoms</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+    <span class="n">monomer</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">charges</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+    <span class="n">monomer</span><span class="o">.</span><span class="n">check_multiplicity</span><span class="p">()</span>
+
+    <span class="n">scf_tensors</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">monomer_scf</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">monomer</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    <span class="n">tda_results</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">monomer_tda</span><span class="p">(</span><span class="n">method_settings</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">monomer</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span>
+                                        <span class="n">scf_tensors</span><span class="p">)</span>
+
+    <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;mo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scf_tensors</span><span class="p">[</span><span class="s1">&#39;C_alpha&#39;</span><span class="p">]</span>
+    <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;exc_energies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s1">&#39;exc_energies&#39;</span><span class="p">]</span>
+    <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;exc_vectors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s1">&#39;exc_vectors&#39;</span><span class="p">]</span>
+
+    <span class="n">one_elec_ints</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">get_one_elec_integrals</span><span class="p">(</span><span class="n">monomer</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+    <span class="n">trans_dipoles</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">get_LE_trans_dipoles</span><span class="p">(</span><span class="n">monomer</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span>
+                                                   <span class="n">one_elec_ints</span><span class="p">,</span> <span class="n">scf_tensors</span><span class="p">,</span>
+                                                   <span class="n">tda_results</span><span class="p">)</span>
+
+    <span class="c1"># LE states</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">excitation_ids</span><span class="p">[</span><span class="n">ind</span><span class="p">,</span> <span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span>
+        <span class="c1"># LE energies</span>
+        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;exc_energies&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="c1"># LE transition dipoles</span>
+        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;electric&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span><span class="p">[</span><span class="n">h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;magnetic&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-dimer-calculations">
+<h3>Run dimer calculations<a class="headerlink" href="#run-dimer-calculations" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dimer calculations</span>
+
+<span class="k">for</span> <span class="n">ind_A</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_monomers</span><span class="p">):</span>
+    <span class="n">monomer_A</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_sub_molecule</span><span class="p">(</span><span class="n">monomer_start_indices</span><span class="p">[</span><span class="n">ind_A</span><span class="p">],</span>
+                                          <span class="n">monomer_natoms</span><span class="p">[</span><span class="n">ind_A</span><span class="p">])</span>
+    <span class="n">monomer_A</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">charges</span><span class="p">[</span><span class="n">ind_A</span><span class="p">])</span>
+    <span class="n">monomer_A</span><span class="o">.</span><span class="n">check_multiplicity</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">ind_B</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ind_A</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_monomers</span><span class="p">):</span>
+        <span class="n">monomer_B</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">get_sub_molecule</span><span class="p">(</span><span class="n">monomer_start_indices</span><span class="p">[</span><span class="n">ind_B</span><span class="p">],</span>
+                                              <span class="n">monomer_natoms</span><span class="p">[</span><span class="n">ind_B</span><span class="p">])</span>
+        <span class="n">monomer_B</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">charges</span><span class="p">[</span><span class="n">ind_B</span><span class="p">])</span>
+        <span class="n">monomer_B</span><span class="o">.</span><span class="n">check_multiplicity</span><span class="p">()</span>
+
+        <span class="n">dimer</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="n">monomer_A</span><span class="p">,</span> <span class="n">monomer_B</span><span class="p">)</span>
+        <span class="n">dimer</span><span class="o">.</span><span class="n">check_multiplicity</span><span class="p">()</span>
+
+        <span class="n">mo_A</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind_A</span><span class="p">][</span><span class="s1">&#39;mo&#39;</span><span class="p">]</span>
+        <span class="n">mo_B</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind_B</span><span class="p">][</span><span class="s1">&#39;mo&#39;</span><span class="p">]</span>
+
+        <span class="n">nocc_A</span> <span class="o">=</span> <span class="n">monomer_A</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+        <span class="n">nocc_B</span> <span class="o">=</span> <span class="n">monomer_B</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+        <span class="n">nvir_A</span> <span class="o">=</span> <span class="n">mo_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">nocc_A</span>
+        <span class="n">nvir_B</span> <span class="o">=</span> <span class="n">mo_B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">nocc_B</span>
+
+        <span class="n">nocc</span> <span class="o">=</span> <span class="n">nocc_A</span> <span class="o">+</span> <span class="n">nocc_B</span>
+        <span class="n">nvir</span> <span class="o">=</span> <span class="n">nvir_A</span> <span class="o">+</span> <span class="n">nvir_B</span>
+
+        <span class="n">mo</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_mo_coefficients</span><span class="p">(</span><span class="n">monomer_A</span><span class="p">,</span> <span class="n">monomer_B</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mo_A</span><span class="p">,</span>
+                                             <span class="n">mo_B</span><span class="p">)</span>
+
+        <span class="n">dimer_prop</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_properties</span><span class="p">(</span><span class="n">dimer</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mo</span><span class="p">)</span>
+
+        <span class="n">dimer_energy</span> <span class="o">=</span> <span class="n">dimer_prop</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+
+        <span class="n">exc_vectors_A</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind_A</span><span class="p">][</span><span class="s1">&#39;exc_vectors&#39;</span><span class="p">]</span>
+        <span class="n">exc_vectors_B</span> <span class="o">=</span> <span class="n">monomers_info</span><span class="p">[</span><span class="n">ind_B</span><span class="p">][</span><span class="s1">&#39;exc_vectors&#39;</span><span class="p">]</span>
+
+        <span class="n">exc_vectors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">exc_vectors</span> <span class="o">+=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_excitation_vectors_LE_A</span><span class="p">(</span>
+            <span class="n">exc_vectors_A</span><span class="p">,</span> <span class="n">ind_A</span><span class="p">,</span> <span class="n">nocc_A</span><span class="p">,</span> <span class="n">nvir_A</span><span class="p">,</span> <span class="n">nocc</span><span class="p">,</span> <span class="n">nvir</span><span class="p">,</span> <span class="n">excitation_ids</span><span class="p">)</span>
+
+        <span class="n">exc_vectors</span> <span class="o">+=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_excitation_vectors_LE_B</span><span class="p">(</span>
+            <span class="n">exc_vectors_B</span><span class="p">,</span> <span class="n">ind_B</span><span class="p">,</span> <span class="n">nocc_A</span><span class="p">,</span> <span class="n">nvir_A</span><span class="p">,</span> <span class="n">nocc</span><span class="p">,</span> <span class="n">nvir</span><span class="p">,</span> <span class="n">excitation_ids</span><span class="p">)</span>
+
+        <span class="n">exc_vectors</span> <span class="o">+=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_excitation_vectors_CT_AB</span><span class="p">(</span>
+            <span class="n">ind_A</span><span class="p">,</span> <span class="n">ind_B</span><span class="p">,</span> <span class="n">nocc_A</span><span class="p">,</span> <span class="n">nvir_A</span><span class="p">,</span> <span class="n">nocc</span><span class="p">,</span> <span class="n">nvir</span><span class="p">,</span> <span class="n">excitation_ids</span><span class="p">)</span>
+
+        <span class="n">exc_vectors</span> <span class="o">+=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_excitation_vectors_CT_BA</span><span class="p">(</span>
+            <span class="n">ind_A</span><span class="p">,</span> <span class="n">ind_B</span><span class="p">,</span> <span class="n">nocc_A</span><span class="p">,</span> <span class="n">nvir_A</span><span class="p">,</span> <span class="n">nocc</span><span class="p">,</span> <span class="n">nvir</span><span class="p">,</span> <span class="n">excitation_ids</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">c_vec</span> <span class="ow">in</span> <span class="n">exc_vectors</span><span class="p">:</span>
+            <span class="n">state_strings</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;frag&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+            <span class="n">state_strings</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">+=</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+        <span class="n">sigma_vectors</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">dimer_sigma_vectors</span><span class="p">(</span><span class="n">dimer</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">dimer_prop</span><span class="p">,</span>
+                                                      <span class="n">mo</span><span class="p">,</span> <span class="n">exc_vectors</span><span class="p">)</span>
+
+        <span class="n">one_elec_ints</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">get_one_elec_integrals</span><span class="p">(</span><span class="n">dimer</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+        <span class="n">trans_dipoles</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">get_CT_trans_dipoles</span><span class="p">(</span>
+            <span class="n">dimer</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">one_elec_ints</span><span class="p">,</span> <span class="n">mo</span><span class="p">,</span>
+            <span class="n">exc_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:])</span>
+
+        <span class="c1"># CT states</span>
+        <span class="k">for</span> <span class="n">i_vec</span><span class="p">,</span> <span class="p">(</span><span class="n">c_vec</span><span class="p">,</span> <span class="n">s_vec</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">exc_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:],</span>
+                    <span class="n">sigma_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:])):</span>
+            <span class="c1"># CT energies</span>
+            <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">])</span>
+            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">energy</span>
+            <span class="c1"># CT transition dipoles</span>
+            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">[</span>
+                <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;electric&#39;</span><span class="p">][</span><span class="n">i_vec</span><span class="p">]</span>
+            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">[</span>
+                <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="n">i_vec</span><span class="p">]</span>
+            <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span><span class="p">[</span>
+                <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">trans_dipoles</span><span class="p">[</span><span class="s1">&#39;magnetic&#39;</span><span class="p">][</span><span class="n">i_vec</span><span class="p">]</span>
+
+        <span class="c1"># LE(A)-LE(B) couplings</span>
+        <span class="k">for</span> <span class="n">c_vec</span> <span class="ow">in</span> <span class="n">exc_vectors</span><span class="p">[:</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">s_vec</span> <span class="ow">in</span> <span class="n">sigma_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span><span class="p">:</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]:</span>
+                <span class="n">coupling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">])</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+
+        <span class="c1"># LE-CT couplings</span>
+        <span class="k">for</span> <span class="n">c_vec</span> <span class="ow">in</span> <span class="n">exc_vectors</span><span class="p">[:</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">s_vec</span> <span class="ow">in</span> <span class="n">sigma_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:]:</span>
+                <span class="n">coupling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">])</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+
+        <span class="c1"># CT-CT couplings</span>
+        <span class="k">for</span> <span class="n">c_vec</span> <span class="ow">in</span> <span class="n">exc_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:]:</span>
+            <span class="k">for</span> <span class="n">s_vec</span> <span class="ow">in</span> <span class="n">sigma_vectors</span><span class="p">[</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="n">coupling</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;vec&#39;</span><span class="p">])</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+                <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">s_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">c_vec</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">coupling</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="print-the-exciton-model-hamiltonian">
+<h3>Print the exciton model Hamiltonian<a class="headerlink" href="#print-the-exciton-model-hamiltonian" title="Permalink to this heading">#</a></h3>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">nstates</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-LE(A) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-LE(B) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(A)-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(B)-LE(B) block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The LE(B)-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The CT-CT block:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:,</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">:],</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The LE(A)-LE(A) block:
+
+[[0.312809]] 
+
+The LE(A)-LE(B) block:
+
+[[-0.004085]] 
+
+The LE(A)-CT block:
+
+[] 
+
+The LE(B)-LE(B) block:
+
+[[0.312809]] 
+
+The LE(B)-CT block:
+
+[] 
+
+The CT-CT block:
+
+[] 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">state_str</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state_strings</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;diabatic state </span><span class="si">{</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">&lt;5d</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">state_str</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diabatic state 1     LE(A)   1e(1)
+diabatic state 2     LE(B)   2e(1)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="get-excitation-energies-and-transition-dipoles">
+<h3>Get excitation energies and transition dipoles<a class="headerlink" href="#get-excitation-energies-and-transition-dipoles" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exciton model energies</span>
+
+<span class="n">eigvals</span><span class="p">,</span> <span class="n">eigvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">exmod_drv</span><span class="o">.</span><span class="n">H</span><span class="p">)</span>
+
+<span class="n">elec_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">elec_trans_dipoles</span><span class="p">)</span>
+<span class="n">velo_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">velo_trans_dipoles</span><span class="p">)</span>
+<span class="n">magn_trans_dipoles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">eigvecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">exmod_drv</span><span class="o">.</span><span class="n">magn_trans_dipoles</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">magn_trans_dipoles</span><span class="p">)</span>
+
+<span class="n">excitation_energies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">oscillator_strengths</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">rotatory_strengths</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_num_states</span><span class="p">):</span>
+    <span class="n">ene</span> <span class="o">=</span> <span class="n">eigvals</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+    <span class="n">dip_strength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">elec_trans_dipoles</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dip_strength</span> <span class="o">*</span> <span class="n">ene</span>
+
+    <span class="n">velo_trans_dipoles</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">ene</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">velo_trans_dipoles</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:],</span> <span class="n">magn_trans_dipoles</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:])</span>
+    
+    <span class="n">excitation_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ene</span><span class="p">)</span>
+    <span class="n">oscillator_strengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">rotatory_strengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;S</span><span class="si">{</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">&lt;2d</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">ene</span><span class="o">*</span><span class="n">vlx</span><span class="o">.</span><span class="n">hartree_in_ev</span><span class="p">()</span><span class="si">:</span><span class="s1">10.5f</span><span class="si">}</span><span class="s1"> eV  f=</span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s1">&lt;.4f</span><span class="si">}</span><span class="s1">  R=</span><span class="si">{</span><span class="n">R</span><span class="si">:</span><span class="s1">&lt;.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[-0.        0.727054 -0.      ]
+ [ 0.        0.       -0.      ]]
+S1      8.40080 eV  f=0.0000  R=0.0000
+S2      8.62314 eV  f=1.2244  R=-0.0000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_num_states</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;S</span><span class="si">{</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">)</span>
+    <span class="n">c_squared</span> <span class="o">=</span> <span class="n">eigvecs</span><span class="p">[:,</span> <span class="n">s</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c2</span><span class="p">,</span> <span class="n">state_str</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c_squared</span><span class="p">,</span> <span class="n">state_strings</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">c2</span> <span class="o">&gt;</span> <span class="mf">0.04</span><span class="p">:</span>
+            <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c2</span><span class="p">,</span> <span class="n">state_str</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">c2</span><span class="p">,</span> <span class="n">state_str</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">c2</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s1">5.1f</span><span class="si">}</span><span class="s1">%  </span><span class="si">{</span><span class="n">state_str</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>S1:
+     50.0%  LE(B)   2e(1)
+     50.0%  LE(A)   1e(1)
+S2:
+     50.0%  LE(A)   1e(1)
+     50.0%  LE(B)   2e(1)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-absorption-and-ecd-spectra">
+<h3>Plot absorption and ECD spectra<a class="headerlink" href="#plot-absorption-and-ecd-spectra" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">xstep</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Lorentzian broadening function</span>
+<span class="sd">    </span>
+<span class="sd">    Call: xi,yi = lorentzian(energies, intensities, start energy, end energy, energy step, gamma)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">xstep</span><span class="p">);</span> <span class="n">yi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="p">(</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">yi</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">excitation_energies</span><span class="p">)</span> <span class="o">*</span> <span class="mf">27.211385</span>
+<span class="n">y_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">oscillator_strengths</span><span class="p">)</span>
+<span class="n">y_ecd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rotatory_strengths</span><span class="p">)</span>
+
+<span class="n">x0</span><span class="p">,</span><span class="n">y0</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_abs</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">y0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">x1</span><span class="p">,</span><span class="n">y1</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_ecd</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/b7d139b4a65cc64ab73fb97d4a9c2a82e0eaa65144d3e10a53046fe5473b1f04.png" src="../../_images/b7d139b4a65cc64ab73fb97d4a9c2a82e0eaa65144d3e10a53046fe5473b1f04.png" />
+<img alt="../../_images/5608f86b1c90cf57cb1403c6284a39b5319a84a29cae04f852fd3a2f608efe80.png" src="../../_images/5608f86b1c90cf57cb1403c6284a39b5319a84a29cae04f852fd3a2f608efe80.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_ref</span> <span class="o">=</span> <span class="mf">27.211385</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="mf">0.29347889</span><span class="p">,</span> <span class="mf">0.31661749</span><span class="p">,</span> <span class="mf">0.33498928</span><span class="p">,</span> <span class="mf">0.33948716</span><span class="p">,</span> <span class="mf">0.34142481</span><span class="p">,</span> <span class="mf">0.34378921</span><span class="p">,</span>
+    <span class="mf">0.35317567</span><span class="p">,</span> <span class="mf">0.35467501</span><span class="p">,</span> <span class="mf">0.37317654</span><span class="p">,</span> <span class="mf">0.37523192</span><span class="p">,</span> <span class="mf">0.38737236</span><span class="p">,</span> <span class="mf">0.38809457</span><span class="p">,</span>
+    <span class="mf">0.40824740</span><span class="p">,</span> <span class="mf">0.41131899</span><span class="p">,</span> <span class="mf">0.44405319</span><span class="p">,</span> <span class="mf">0.44836638</span><span class="p">,</span> <span class="mf">0.45442440</span><span class="p">,</span> <span class="mf">0.45618961</span><span class="p">,</span>
+    <span class="mf">0.45869117</span><span class="p">,</span> <span class="mf">0.46343516</span><span class="p">,</span> <span class="mf">0.46961985</span><span class="p">,</span> <span class="mf">0.47008569</span><span class="p">,</span> <span class="mf">0.48617428</span><span class="p">,</span> <span class="mf">0.48913889</span><span class="p">,</span>
+    <span class="mf">0.49490201</span><span class="p">,</span> <span class="mf">0.49583015</span><span class="p">,</span> <span class="mf">0.49623637</span><span class="p">,</span> <span class="mf">0.50093006</span><span class="p">,</span> <span class="mf">0.50196948</span><span class="p">,</span> <span class="mf">0.50276614</span><span class="p">,</span>
+    <span class="mf">0.54606024</span><span class="p">,</span> <span class="mf">0.54653988</span><span class="p">,</span> <span class="mf">0.54825489</span><span class="p">,</span> <span class="mf">0.54984647</span><span class="p">,</span> <span class="mf">0.55276288</span><span class="p">,</span> <span class="mf">0.55355450</span><span class="p">,</span>
+    <span class="mf">0.56052689</span><span class="p">,</span> <span class="mf">0.56204114</span><span class="p">,</span> <span class="mf">0.56307883</span><span class="p">,</span> <span class="mf">0.56521540</span><span class="p">,</span> <span class="mf">0.57830505</span><span class="p">,</span> <span class="mf">0.57987938</span><span class="p">,</span>
+    <span class="mf">0.58276149</span><span class="p">,</span> <span class="mf">0.59040369</span><span class="p">,</span> <span class="mf">0.59608911</span><span class="p">,</span> <span class="mf">0.59657872</span><span class="p">,</span> <span class="mf">0.60755394</span><span class="p">,</span> <span class="mf">0.61502897</span><span class="p">,</span>
+    <span class="mf">0.62056515</span><span class="p">,</span> <span class="mf">0.62125169</span>
+<span class="p">])</span>
+
+<span class="n">y_abs_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="mf">0.0293</span><span class="p">,</span> <span class="mf">1.1700</span><span class="p">,</span> <span class="mf">0.0189</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0008</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span>
+    <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0036</span><span class="p">,</span> <span class="mf">0.0011</span><span class="p">,</span> <span class="mf">0.0024</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span>
+    <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0076</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0042</span><span class="p">,</span> <span class="mf">0.0170</span><span class="p">,</span> <span class="mf">0.0268</span><span class="p">,</span> <span class="mf">0.0055</span><span class="p">,</span> <span class="mf">0.2073</span><span class="p">,</span>
+    <span class="mf">0.7341</span><span class="p">,</span> <span class="mf">0.7807</span><span class="p">,</span> <span class="mf">0.8590</span><span class="p">,</span> <span class="mf">0.0543</span><span class="p">,</span> <span class="mf">0.0794</span><span class="p">,</span> <span class="mf">0.0043</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0024</span><span class="p">,</span> <span class="mf">0.1701</span><span class="p">,</span>
+    <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.0190</span><span class="p">,</span> <span class="mf">0.4825</span><span class="p">,</span> <span class="mf">0.0609</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0031</span><span class="p">,</span>
+    <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.2050</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0191</span><span class="p">,</span> <span class="mf">0.0152</span>
+<span class="p">])</span>
+
+<span class="n">y_ecd_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="mf">0.144750</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.164027</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.000035</span><span class="p">,</span> <span class="mf">0.000009</span><span class="p">,</span> <span class="mf">0.014472</span><span class="p">,</span> <span class="mf">0.001995</span><span class="p">,</span> <span class="mf">0.004958</span><span class="p">,</span>
+    <span class="mf">0.000899</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.019302</span><span class="p">,</span> <span class="mf">0.000786</span><span class="p">,</span> <span class="mf">0.013440</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.007686</span><span class="p">,</span> <span class="mf">0.000918</span><span class="p">,</span> <span class="mf">0.001135</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.000005</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.000019</span><span class="p">,</span> <span class="mf">0.000222</span><span class="p">,</span> <span class="mf">0.003878</span><span class="p">,</span> <span class="mf">0.000392</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.000790</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.000002</span><span class="p">,</span>
+    <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.006479</span><span class="p">,</span> <span class="mf">0.047084</span><span class="p">,</span> <span class="mf">0.458896</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.154583</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.063050</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.217650</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.459211</span><span class="p">,</span> <span class="mf">0.383874</span><span class="p">,</span> <span class="mf">0.041366</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.032507</span><span class="p">,</span> <span class="mf">0.000123</span><span class="p">,</span> <span class="mf">0.000373</span><span class="p">,</span> <span class="mf">0.025144</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.050821</span><span class="p">,</span> <span class="mf">0.000443</span><span class="p">,</span> <span class="mf">0.003195</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.001069</span><span class="p">,</span> <span class="mf">0.000036</span><span class="p">,</span> <span class="mf">0.285024</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.269169</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.004591</span><span class="p">,</span> <span class="mf">0.000050</span><span class="p">,</span> <span class="mf">0.005488</span><span class="p">,</span> <span class="mf">0.001347</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.000665</span><span class="p">,</span> <span class="mf">0.000083</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.023592</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.011323</span>
+<span class="p">])</span>
+
+<span class="n">x0_ref</span><span class="p">,</span><span class="n">y0_ref</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x_ref</span><span class="p">,</span> <span class="n">y_abs_ref</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">y0</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Exciton model&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x0_ref</span><span class="p">,</span><span class="n">y0_ref</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;TDDFT-TDA&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">x1_ref</span><span class="p">,</span><span class="n">y1_ref</span> <span class="o">=</span> <span class="n">lorentzian</span><span class="p">(</span><span class="n">x_ref</span><span class="p">,</span> <span class="n">y_ecd_ref</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Exciton model&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1_ref</span><span class="p">,</span><span class="n">y1_ref</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;TDDFT-TDA&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/7a07a33888796fd6a0d9c99cfa2920b94bc23372320a74fb4568de794c30ccd3.png" src="../../_images/7a07a33888796fd6a0d9c99cfa2920b94bc23372320a74fb4568de794c30ccd3.png" />
+<img alt="../../_images/62443ddda2f7d1c30a749312961c14eee493ca86d842ab816c2a6455479ef08e.png" src="../../_images/62443ddda2f7d1c30a749312961c14eee493ca86d842ab816c2a6455479ef08e.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs/spec_prop"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-modules">Import modules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-molecule-and-basis-set">Set up molecule and basis set</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-exciton-model-driver">Set up the exciton model driver</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initializes-exciton-model-hamiltonian-and-transition-dipoles">Initializes exciton model Hamiltonian and transition dipoles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-monomer-calculations">Run monomer calculations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-dimer-calculations">Run dimer calculations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#print-the-exciton-model-hamiltonian">Print the exciton model Hamiltonian</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-excitation-energies-and-transition-dipoles">Get excitation energies and transition dipoles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-absorption-and-ecd-spectra">Plot absorption and ECD spectra</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The eChem team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
