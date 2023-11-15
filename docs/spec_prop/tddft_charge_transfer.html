@@ -69,6 +69,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'docs/spec_prop/tddft_charge_transfer';</script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -590,6 +592,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="charge-transfer">
 <h1>Charge transfer<a class="headerlink" href="#charge-transfer" title="Permalink to this heading">#</a></h1>
+<p>Let us study the ethylene dimer as a simple and concrete example of the issue with charge-transfer (CT) excitations in TDDFT. We first create an <em>xyz</em>-file for an H-aggregate stacked along the <em>z</em>-axis with an easy way to alter the intermolecular separation distance.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -618,8 +621,8 @@ document.write(`
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1699976173104384"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_1699976173104384" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1700037996099761"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1700037996099761" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -651,22 +654,26 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_1699976173104384 = null;
-var warn = document.getElementById("3dmolwarning_1699976173104384");
+var viewer_1700037996099761 = null;
+var warn = document.getElementById("3dmolwarning_1700037996099761");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1699976173104384 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1699976173104384"),{backgroundColor:"white"});
-viewer_1699976173104384.zoomTo();
-	viewer_1699976173104384.addModel("12\n\nC        0.67759997    0.00000000    -2.0\nC       -0.67759997    0.00000000    -2.0\nH        1.21655197    0.92414474    -2.0\nH        1.21655197   -0.92414474    -2.0\nH       -1.21655197   -0.92414474    -2.0\nH       -1.21655197    0.92414474    -2.0\nC        0.67759997    0.00000000     2.0\nC       -0.67759997    0.00000000     2.0\nH        1.21655197    0.92414474     2.0\nH        1.21655197   -0.92414474     2.0\nH       -1.21655197   -0.92414474     2.0\nH       -1.21655197    0.92414474     2.0");
-	viewer_1699976173104384.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_1699976173104384.rotate(-90,"x");
-viewer_1699976173104384.render();
+viewer_1700037996099761 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1700037996099761"),{backgroundColor:"white"});
+viewer_1700037996099761.zoomTo();
+	viewer_1700037996099761.addModel("12\n\nC        0.67759997    0.00000000    -2.0\nC       -0.67759997    0.00000000    -2.0\nH        1.21655197    0.92414474    -2.0\nH        1.21655197   -0.92414474    -2.0\nH       -1.21655197   -0.92414474    -2.0\nH       -1.21655197    0.92414474    -2.0\nC        0.67759997    0.00000000     2.0\nC       -0.67759997    0.00000000     2.0\nH        1.21655197    0.92414474     2.0\nH        1.21655197   -0.92414474     2.0\nH       -1.21655197   -0.92414474     2.0\nH       -1.21655197    0.92414474     2.0");
+	viewer_1700037996099761.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1700037996099761.rotate(-90,"x");
+viewer_1700037996099761.render();
 });
 </script></div></div>
 </div>
+<p>This system is also found in the section on  <a class="reference internal" href="selection_rules.html#sec-selection-rules"><span class="std std-ref">selection rules</span></a> and the Frenkel excitonic states, <span class="math notranslate nohighlight">\(| \sigma \rangle\)</span> and <span class="math notranslate nohighlight">\(| \gamma \rangle\)</span>, as well as the  charge-transfer states, <span class="math notranslate nohighlight">\(| \delta \rangle\)</span> and <span class="math notranslate nohighlight">\(| \rho \rangle\)</span>, were introduced. They are illustrated in the figure below together with the canonical and delocalized molecular orbitals (MOs) that are involved in the associated electronic excitation processes.</p>
 <p><img alt="H-aggregate" src="../../_images/h-aggregate.png" /></p>
+<p>The nature of the excited states is revealed by plotting the excitation energies as a function of dimer separation distance, see figure below. The excitation energy for the excitonic states is only weakly dependent on the distance whereas that of the CT states shows a strong dependence.</p>
+<p>Moreover, it is seen that excitation energy of the CT (but not excitonic) states strongly depends on the amount of exact Hartree–Fock (HF) exchange in the exchange–correlation (XC) functional. We are here adopting the B3LYP and BHANDHLYP functionals with some 20% and 50% of HF exchange, respectively.</p>
+<p>The excitation energy of the CT states is severely underestimated and unrealistic at the B3LYP level of theory.</p>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -761,6 +768,8 @@ viewer_1699976173104384.render();
 <img alt="../../_images/b657b11b80e4d75c5a1ea19e2a9d99a5f933c12c653e346140e4498c0e656bfe.png" src="../../_images/b657b11b80e4d75c5a1ea19e2a9d99a5f933c12c653e346140e4498c0e656bfe.png" />
 </div>
 </div>
+<p>The underlying data for the figure above has been calculated with use of the VeloxChem program and the subsequent code cells. You can create all data by activating the iterations over distances and functionals in the code cell.</p>
+<p>Here we will run the calculation for a single dimer separation of 20 Å and use the well-behaved BHANDHLYP functional.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
@@ -828,16 +837,61 @@ Z coordinate:    10.00
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   E (eV)  mu_x    mu_y    mu_z    m_x     m_y     m_z     f       R       
 ------------------------------------------------------------------------
-  8.1403 -0.0000  0.0000 -0.0000 -0.0000  4.9598  0.0000  0.0000  0.0000
-  8.1424 -2.0065 -0.0000  0.0000  0.0000 -0.0000 -0.0000  0.8031 -0.0000
-  9.5360 -0.0000  0.0000 -0.0214  0.0000  0.0000 -0.0000  0.0001  0.0000
-  9.5360  0.0000  0.0000  0.0011  0.0000 -0.0000 -0.0000  0.0000 -0.0000
-  9.8796 -0.0000  0.0000  0.0000  0.0000 -0.0000  0.0000  0.0000 -0.0000
-  9.8796 -0.0000  0.0000 -0.0000  0.0000  0.0000 -0.0000  0.0000  0.0000
+  8.1403 -0.0000 -0.0000  0.0000  0.0000  4.9598  0.0000  0.0000 -0.0000
+  8.1424 -2.0065  0.0000  0.0000 -0.0000 -0.0000 -0.0000  0.8031  0.0000
+  9.5360  0.0000  0.0000  0.0214  0.0000  0.0000 -0.0000  0.0001 -0.0000
+  9.5360 -0.0000 -0.0000  0.0005 -0.0000 -0.0000 -0.0000  0.0000 -0.0000
+  9.8796  0.0000  0.0000  0.0000 -0.0000  0.0000 -0.0000  0.0000  0.0000
+  9.8796 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000  0.0000  0.0000 -0.0000
 </pre></div>
 </div>
 </div>
 </div>
+<p>With data restricted to a single molecular configuration and functional, it can be less than obvious to determine the character of electronic transitions.</p>
+<p>It is a common practice to turn to the dominant elements in the excitation vectors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc_str</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lreig_results</span><span class="p">[</span><span class="s1">&#39;excitation_details&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State:&quot;</span><span class="p">,</span> <span class="n">state</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">orb_str</span> <span class="ow">in</span> <span class="n">exc_str</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">orb_str</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>State: 1
+HOMO     -&gt; LUMO+1       0.5314
+HOMO-1   -&gt; LUMO         0.5314
+HOMO-1   -&gt; LUMO+1       0.4606
+HOMO     -&gt; LUMO        -0.4606
+State: 2
+HOMO-1   -&gt; LUMO        -0.6561
+HOMO     -&gt; LUMO+1       0.6561
+HOMO     -&gt; LUMO         0.2531
+HOMO-1   -&gt; LUMO+1       0.2531
+State: 3
+HOMO     -&gt; LUMO+3       0.6106
+HOMO-1   -&gt; LUMO+2       0.5791
+HOMO-1   -&gt; LUMO+3       0.3868
+HOMO     -&gt; LUMO+2      -0.3689
+State: 4
+HOMO-1   -&gt; LUMO+2       0.6281
+HOMO     -&gt; LUMO+3      -0.5976
+HOMO     -&gt; LUMO+2      -0.3577
+HOMO-1   -&gt; LUMO+3      -0.3383
+State: 5
+HOMO-1   -&gt; LUMO+1       0.8441
+HOMO     -&gt; LUMO+1      -0.5078
+State: 6
+HOMO     -&gt; LUMO         0.8445
+HOMO-1   -&gt; LUMO         0.5071
+</pre></div>
+</div>
+</div>
+</div>
+<p>At this separation distance, excited states number 1, 2, 5, and 6 are all formed from <span class="math notranslate nohighlight">\(\pi\pi^*\)</span>-excitations, and from these coefficients alone, the character of the electronic transitions is not clear.</p>
+<p>The next level of analysis is reached by turning to the natural transition orbitals (NTOs) or detachment/attachment densities. Below we will use the Valet module to perform a subgroup division of the dimer system into monomers and give a visual presentation of the electronic transitions based on the detachment/attachment densities.</p>
+<p>States 5 and 6 amply reveal their CT character in the figure illustrations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">valet</span> <span class="kn">import</span> <span class="n">transition_analysis_utils</span> <span class="k">as</span> <span class="n">tau</span>
