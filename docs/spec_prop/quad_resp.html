@@ -787,7 +787,7 @@ of hyperpolarizabilities</p>
 <span class="s2">&quot;&quot;&quot;</span>
 
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;def2-svpd&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
@@ -803,16 +803,22 @@ of hyperpolarizabilities</p>
 <div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qrf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">QuadraticResponseDriver</span><span class="p">()</span>
 
-<span class="c1">#qrf_drv.a_operator = &quot;electric dipole&quot;</span>
-<span class="c1">#qrf_drv.b_operator = &quot;electric dipole&quot;</span>
-<span class="c1">#qrf_drv.c_operator = &quot;electric dipole&quot;</span>
+<span class="n">qrf_drv</span><span class="o">.</span><span class="n">a_operator</span> <span class="o">=</span> <span class="s2">&quot;electric dipole&quot;</span>
+<span class="n">qrf_drv</span><span class="o">.</span><span class="n">b_operator</span> <span class="o">=</span> <span class="s2">&quot;electric dipole&quot;</span>
+<span class="n">qrf_drv</span><span class="o">.</span><span class="n">c_operator</span> <span class="o">=</span> <span class="s2">&quot;electric dipole&quot;</span>
+
+<span class="c1"># other available operators</span>
+<span class="c1">#lrf.b_operator = &quot;electric dipole&quot;</span>
+<span class="c1">#lrf.b_operator = &quot;linear momentum&quot;</span>
+<span class="c1">#lrf.b_operator = &quot;angular momentum&quot;</span>
+<span class="c1">#lrf.b_operator = &quot;magnetic dipole&quot;</span>
 
 <span class="n">qrf_drv</span><span class="o">.</span><span class="n">a_component</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>
 <span class="n">qrf_drv</span><span class="o">.</span><span class="n">b_component</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>
 <span class="n">qrf_drv</span><span class="o">.</span><span class="n">c_component</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>
 
-<span class="n">qrf_drv</span><span class="o">.</span><span class="n">b_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
-<span class="n">qrf_drv</span><span class="o">.</span><span class="n">c_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
+<span class="n">qrf_drv</span><span class="o">.</span><span class="n">b_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">,</span> <span class="mf">0.1312</span><span class="p">]</span>
+<span class="n">qrf_drv</span><span class="o">.</span><span class="n">c_frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">,</span> <span class="mf">0.1312</span><span class="p">]</span>
 
 <span class="n">qrf_drv</span><span class="o">.</span><span class="n">damping</span> <span class="o">=</span> <span class="mf">0.004556</span>  <span class="c1"># 1000 cm-1</span>
 
@@ -863,10 +869,10 @@ of hyperpolarizabilities</p>
 * Info * 4 gerade trial vectors in reduced space                                                                          
 * Info * 4 ungerade trial vectors in reduced space                                                                        
                                                                                                                           
-* Info * 23.91 kB of memory used for subspace procedure on the master node                                                
-* Info * 2.84 GB of memory available for the solver on the master node                                                    
+* Info * 94.63 kB of memory used for subspace procedure on the master node                                                
+* Info * 2.57 GB of memory available for the solver on the master node                                                    
                                                                                                                           
-               *** Iteration:   1 * Residuals (Max,Min): 8.30e-01 and 1.18e-01                                            
+               *** Iteration:   1 * Residuals (Max,Min): 8.44e-01 and 5.68e-01                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -878,44 +884,44 @@ of hyperpolarizabilities</p>
 * Info * 8 gerade trial vectors in reduced space                                                                          
 * Info * 8 ungerade trial vectors in reduced space                                                                        
                                                                                                                           
-* Info * 29.03 kB of memory used for subspace procedure on the master node                                                
-* Info * 2.84 GB of memory available for the solver on the master node                                                    
+* Info * 116.39 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.57 GB of memory available for the solver on the master node                                                    
                                                                                                                           
-               *** Iteration:   2 * Residuals (Max,Min): 2.83e-02 and 4.09e-03                                            
+               *** Iteration:   2 * Residuals (Max,Min): 7.29e-02 and 5.16e-02                                            
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 7)                                                                        
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 8)                                                                        
 * Info *   batch 1/1                                                                                                      
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-* Info * 11 gerade trial vectors in reduced space                                                                         
+* Info * 12 gerade trial vectors in reduced space                                                                         
 * Info * 12 ungerade trial vectors in reduced space                                                                       
                                                                                                                           
-* Info * 33.51 kB of memory used for subspace procedure on the master node                                                
-* Info * 2.84 GB of memory available for the solver on the master node                                                    
+* Info * 138.15 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.57 GB of memory available for the solver on the master node                                                    
                                                                                                                           
-               *** Iteration:   3 * Residuals (Max,Min): 4.17e-04 and 1.83e-04                                            
+               *** Iteration:   3 * Residuals (Max,Min): 2.53e-03 and 1.87e-03                                            
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 6)                                                                        
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 10)                                                                       
 * Info *   batch 1/1                                                                                                      
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-* Info * 14 gerade trial vectors in reduced space                                                                         
-* Info * 15 ungerade trial vectors in reduced space                                                                       
+* Info * 17 gerade trial vectors in reduced space                                                                         
+* Info * 17 ungerade trial vectors in reduced space                                                                       
                                                                                                                           
-* Info * 37.35 kB of memory used for subspace procedure on the master node                                                
-* Info * 2.84 GB of memory available for the solver on the master node                                                    
+* Info * 165.35 kB of memory used for subspace procedure on the master node                                               
+* Info * 2.57 GB of memory available for the solver on the master node                                                    
                                                                                                                           
-               *** Iteration:   4 * Residuals (Max,Min): 7.59e-07 and 2.31e-07                                            
+               *** Iteration:   4 * Residuals (Max,Min): 7.36e-05 and 5.73e-05                                            
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Complex response converged in 4 iterations. Time: 0.43 sec                                             
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               *** Complex response converged in 4 iterations. Time: 1.30 sec                                             
                                                                                                                           
                                                                                                                           
 </pre></div>
@@ -930,7 +936,7 @@ of hyperpolarizabilities</p>
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-* Info * Time spent in Fock matrices: 0.21 sec                                                                            
+* Info * Time spent in Fock matrices: 0.61 sec                                                                            
                                                                                                                           
 </pre></div>
 </div>
@@ -940,31 +946,31 @@ of hyperpolarizabilities</p>
                                                                                                                           
                                                              Real             Imaginary                                   
                                    ----------------------------------------------------                                   
-                                   QRF                19.13939606           0.00000000j                                   
+                                   QRF                 6.73136841          -0.00000000j                                   
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                   Quadratic response function: &lt;&lt; z;z,z &gt;&gt;  (0.1,0.1)                                    
-                                  =====================================================                                   
+                                Quadratic response function: &lt;&lt; z;z,z &gt;&gt;  (0.0656,0.0656)                                 
+                               ===========================================================                                
                                                                                                                           
                                                              Real             Imaginary                                   
                                    ----------------------------------------------------                                   
-                                   QRF                29.00305800           0.80632843j                                   
+                                   QRF                 8.98788527           0.24601088j                                   
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-                                   Quadratic response function: &lt;&lt; z;z,z &gt;&gt;  (0.2,0.2)                                    
-                                  =====================================================                                   
+                                Quadratic response function: &lt;&lt; z;z,z &gt;&gt;  (0.1312,0.1312)                                 
+                               ===========================================================                                
                                                                                                                           
                                                              Real             Imaginary                                   
                                    ----------------------------------------------------                                   
-                                   QRF              -148.71583068          20.06444829j                                   
+                                   QRF                28.04348163           2.22700923j                                   
                                                                                                                           
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                              *** Time spent in quadratic response calculation: 0.67 sec ***                              
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                              *** Time spent in quadratic response calculation: 1.95 sec ***                              
                                                                                                                           
 </pre></div>
 </div>
@@ -974,19 +980,19 @@ of hyperpolarizabilities</p>
 <p>Third, we print the requested molecular properties.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;      Frequencies        beta_zzz&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">41</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;w1&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}{</span><span class="s1">&#39;w2&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}{</span><span class="s1">&#39;beta_zzz&#39;</span><span class="si">:</span><span class="s2">&gt;24s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">qrf_results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}{</span><span class="o">-</span><span class="n">qrf_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">:</span><span class="s2">24.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">8.4f</span><span class="si">}{</span><span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">8.4f</span><span class="si">}{</span><span class="o">-</span><span class="n">qrf_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">:</span><span class="s2">24.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      Frequencies        beta_zzz
------------------------------------------
-(&#39;qrf&#39;, 0.0, 0.0)    -19.139396-0.000000j
-(&#39;qrf&#39;, 0.1, 0.1)    -29.003058-0.806328j
-(&#39;qrf&#39;, 0.2, 0.2)   148.715831-20.064448j
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      w1      w2                beta_zzz
+----------------------------------------
+  0.0000  0.0000     -6.731368+0.000000j
+  0.0656  0.0656     -8.987885-0.246011j
+  0.1312  0.1312    -28.043482-2.227009j
 </pre></div>
 </div>
 </div>
