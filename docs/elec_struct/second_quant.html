@@ -618,7 +618,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hamiltonian">Hamiltonian</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration">Illustration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration">Illustration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-term">One-electron term</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-term">Two-electron term</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -718,16 +722,13 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OccupationNumberVector</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">occ_orbs</span><span class="o">=</span><span class="p">[]):</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># vacuum state</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occ_orbs</span><span class="p">:</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">):</span>
             <span class="n">inner_prod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">phase</span>
         <span class="k">else</span><span class="p">:</span>
@@ -735,8 +736,15 @@ document.write(`
 
         <span class="k">return</span> <span class="n">inner_prod</span>
 
-    <span class="k">def</span> <span class="nf">creation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;phase: &quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">occupation number vector: &quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">)</span>
+        <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">creation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -747,7 +755,6 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">annihilation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -769,15 +776,16 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ket</span> <span class="o">=</span> <span class="n">OccupationNumberVector</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
     <span class="n">ket</span><span class="o">.</span><span class="n">creation</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ground state:&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">.</span><span class="n">occ_num_vec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ket</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ground state: [1 1 1 1 0 0 0 0 0 0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>phase: 1
+occupation number vector: [1 1 1 1 0 0 0 0 0 0]
 </pre></div>
 </div>
 </div>
@@ -810,7 +818,6 @@ D_{pq} = \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle
 
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
-
         <span class="n">ket</span> <span class="o">=</span> <span class="n">OccupationNumberVector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
         <span class="n">ket</span><span class="o">.</span><span class="n">annihilation</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
@@ -877,6 +884,8 @@ g_{pqrs} = (\phi_p \phi_q | \hat{\omega} | \phi_r \phi_s ) \delta_{\sigma_p\sigm
 \langle 0| \hat H | 0\rangle = \sum_{pq} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle + \frac{1}{2} \sum_{pqrs} g_{pqrs} \langle 0| \hat{a}_p^\dagger \hat{a}_r^\dagger \hat{a}_s \hat{a}_q | 0\rangle
 \]</div>
 <p>We thus need to evaluate the one- and two-particle density matrices.</p>
+<section id="one-electron-term">
+<h3>One-electron term<a class="headerlink" href="#one-electron-term" title="Permalink to this heading">#</a></h3>
 <p>For the one-electron term, we notice that orbital <span class="math notranslate nohighlight">\(q\)</span> has to be occupied to obtain a nonzero  result as the annihilation operator acts to the right on <span class="math notranslate nohighlight">\(| 0\rangle\)</span>. Using the anti-commutator relation, we get</p>
 <div class="math notranslate nohighlight">
 \[
@@ -888,6 +897,33 @@ g_{pqrs} = (\phi_p \phi_q | \hat{\omega} | \phi_r \phi_s ) \delta_{\sigma_p\sigm
 \sum_{p,q} h_{pq} \langle 0| \hat{a}_p^\dagger \hat{a}_q| 0\rangle = 
 \sum_i^\mathrm{occ} h_{ii}
 \]</div>
+</section>
+<section id="two-electron-term">
+<h3>Two-electron term<a class="headerlink" href="#two-electron-term" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bra</span> <span class="o">=</span> <span class="n">OccupationNumberVector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]:</span>
+    <span class="n">ket</span> <span class="o">=</span> <span class="n">OccupationNumberVector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+    <span class="n">ket</span><span class="o">.</span><span class="n">annihilation</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">ket</span><span class="o">.</span><span class="n">annihilation</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">ket</span><span class="o">.</span><span class="n">creation</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">ket</span><span class="o">.</span><span class="n">creation</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Two-particle density matrix element:&quot;</span><span class="p">,</span> <span class="n">bra</span> <span class="o">*</span> <span class="n">ket</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Two-particle density matrix element: 1
+Two-particle density matrix element: -1
+Two-particle density matrix element: 0
+</pre></div>
+</div>
+</div>
+</div>
 <p>For the two-electron term, we notice that orbitals <span class="math notranslate nohighlight">\(q\)</span> and <span class="math notranslate nohighlight">\(s\)</span> both have to be occupied to obtain a nonzero result. We focus on <span class="math notranslate nohighlight">\(s\)</span> and will use the same trick to move <span class="math notranslate nohighlight">\(\hat{a}_i\)</span> to the left</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
@@ -916,6 +952,7 @@ g_{pqrs} = (\phi_p \phi_q | \hat{\omega} | \phi_r \phi_s ) \delta_{\sigma_p\sigm
 \langle 0| \hat H | 0\rangle = \sum_i h_{ii} + 
 \frac{1}{2} \sum_{i,j} \big( g_{jjii} - g_{ijji} \big)
 \]</div>
+</section>
 </section>
 </section>
 
@@ -992,7 +1029,11 @@ g_{pqrs} = (\phi_p \phi_q | \hat{\omega} | \phi_r \phi_s ) \delta_{\sigma_p\sigm
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hamiltonian">Hamiltonian</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration">Illustration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration">Illustration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-term">One-electron term</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-term">Two-electron term</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
