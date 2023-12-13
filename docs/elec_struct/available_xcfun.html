@@ -609,6 +609,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hartreefock">Hartree–Fock</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mp2">MP2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fci">FCI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dft">DFT</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-the-energies">Plotting the energies</a></li>
 </ul>
@@ -629,6 +630,7 @@ document.write(`
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 </pre></div>
 </div>
@@ -637,7 +639,7 @@ document.write(`
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_molecule_string</span><span class="p">(</span><span class="s2">&quot;He   0.000  0.000  0.000&quot;</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvtz&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvtz&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -647,10 +649,12 @@ document.write(`
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
 <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="n">scf_energies</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">scf_energies</span><span class="p">[</span><span class="s2">&quot;HF&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">energies</span><span class="p">[</span><span class="s2">&quot;HF&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -661,9 +665,29 @@ document.write(`
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
+<span class="n">mp2_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
 <span class="n">mp2_results</span> <span class="o">=</span> <span class="n">mp2_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 
-<span class="n">scf_energies</span><span class="p">[</span><span class="s2">&quot;MP2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp2_results</span><span class="p">[</span><span class="s2">&quot;mp2_energy&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">scf_energies</span><span class="p">[</span><span class="s2">&quot;HF&quot;</span><span class="p">]</span>
+<span class="n">energies</span><span class="p">[</span><span class="s2">&quot;MP2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp2_results</span><span class="p">[</span><span class="s2">&quot;mp2_energy&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">energies</span><span class="p">[</span><span class="s2">&quot;HF&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fci">
+<h2>FCI<a class="headerlink" href="#fci" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">()</span>
+
+<span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
+<span class="n">ci_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+
+<span class="n">energies</span><span class="p">[</span><span class="s2">&quot;FCI&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -675,18 +699,28 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">xcfun</span> <span class="ow">in</span> <span class="n">vlx</span><span class="o">.</span><span class="n">available_functionals</span><span class="p">():</span>
     <span class="n">scf_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="n">xcfun</span>
-    <span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
     <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-    <span class="n">scf_energies</span><span class="p">[</span><span class="n">xcfun</span><span class="p">]</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">scf_energies</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;HF&quot;</span><span class="p">,</span> <span class="s2">&quot;MP2&quot;</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">method</span><span class="si">:</span><span class="s1">&lt;12s</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">scf_energies</span><span class="p">[</span><span class="n">method</span><span class="p">]</span><span class="si">:</span><span class="s1">16.8f</span><span class="si">}</span><span class="s1"> a.u.&#39;</span><span class="p">)</span>
+    
+    <span class="n">energies</span><span class="p">[</span><span class="n">xcfun</span><span class="p">]</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="plotting-the-energies">
+<h2>Plotting the energies<a class="headerlink" href="#plotting-the-energies" title="Permalink to this heading">#</a></h2>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">energies</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">method</span><span class="si">:</span><span class="s2">&lt;12s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">energies</span><span class="p">[</span><span class="n">method</span><span class="p">]</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2"> a.u.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    SLATER      :      -2.72271178 a.u.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    HF          :      -2.86115334 a.u.
+    MP2         :      -2.89429091 a.u.
+    FCI         :      -2.90023217 a.u.
+    SLATER      :      -2.72271178 a.u.
     SLDA        :      -2.87143717 a.u.
     B88X        :      -2.86247050 a.u.
     BLYP        :      -2.90621759 a.u.
@@ -728,17 +762,14 @@ document.write(`
 </div>
 </div>
 </div>
-</section>
-<section id="plotting-the-energies">
-<h2>Plotting the energies<a class="headerlink" href="#plotting-the-energies" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scf_energies</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">scf_energies</span><span class="p">[</span><span class="n">method</span><span class="p">],</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energies</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">energies</span><span class="p">[</span><span class="n">method</span><span class="p">],</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scf_energies</span><span class="p">)),</span> <span class="n">scf_energies</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)),</span> <span class="n">energies</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">2.93</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.82</span><span class="p">)</span>
@@ -750,7 +781,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/40989a91094e764fc41f1e63fcbc403089e1f20451d62485f0d6ab73f4db746f.png" src="../../_images/40989a91094e764fc41f1e63fcbc403089e1f20451d62485f0d6ab73f4db746f.png" />
+<img alt="../../_images/2d75806bc958cd8a6b2b02f0e9703371f805b7ca6ae34be57dd10443a2132403.png" src="../../_images/2d75806bc958cd8a6b2b02f0e9703371f805b7ca6ae34be57dd10443a2132403.png" />
 </div>
 </div>
 </section>
@@ -821,6 +852,7 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hartreefock">Hartree–Fock</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mp2">MP2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fci">FCI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dft">DFT</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting-the-energies">Plotting the energies</a></li>
 </ul>
