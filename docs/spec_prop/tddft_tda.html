@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Tamm-Dancoff &#8212; Computational Chemistry from  Laptop to HPC</title>
+    <title>Tamm–Dancoff &#8212; Computational Chemistry from  Laptop to HPC</title>
   
   
   
@@ -309,7 +309,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="tddft_excited_states.html">Excited states</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tddft_eigenstates.html">Eigenstates</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Tamm-Dancoff</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Tamm–Dancoff</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tddft_cvs.html">Core-valence separation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tddft_triplet_inst.html">Triplet instability</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tddft_spin_flip.html">Spin-flip</a></li>
@@ -586,7 +586,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -597,11 +599,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Tamm-Dancoff</h1>
+    <h1>Tamm–Dancoff</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -611,9 +621,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="tamm-dancoff">
-<h1>Tamm-Dancoff<a class="headerlink" href="#tamm-dancoff" title="Permalink to this heading">#</a></h1>
-<p>The Tamm-Dancoff approximation (TDA) corresponds to setting <span class="math notranslate nohighlight">\(\mathbf{B}=\mathbf{0}\)</span> in the electronic Hessian <span class="math notranslate nohighlight">\(\mathbf{E}^{[2]}\)</span> and diagonalize only matrix block <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. This leads to some saving in computational cost, and typically has limited impact on the resulting spectra.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="tammdancoff">
+<h1>Tamm–Dancoff<a class="headerlink" href="#tammdancoff" title="Permalink to this heading">#</a></h1>
+<p>The Tamm–Dancoff approximation (TDA) corresponds to setting the off-diagonal <span class="math notranslate nohighlight">\({B}\)</span>-block in the electronic Hessian <span class="math notranslate nohighlight">\({E}^{[2]}\)</span> to zero and thus diagonalize the <span class="math notranslate nohighlight">\({A}\)</span>-block. This leads to a computational saving and gives a concrete representation of the excited states, and it typically has a limited impact on the resulting spectra.</p>
+<p>We will illustrate this approximation with a study of the <span class="math notranslate nohighlight">\(\pi\pi^*\)</span>-transition in ethylene.</p>
 <div class="cell tag_remove-output tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -621,16 +632,20 @@ document.write(`
 <span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
 </details>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ethene_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
 
@@ -644,11 +659,12 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1702488385803105"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_1702488385803105" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_170283806609517"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_170283806609517" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -680,170 +696,125 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_1702488385803105 = null;
-var warn = document.getElementById("3dmolwarning_1702488385803105");
+var viewer_170283806609517 = null;
+var warn = document.getElementById("3dmolwarning_170283806609517");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1702488385803105 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1702488385803105"),{backgroundColor:"white"});
-viewer_1702488385803105.zoomTo();
-	viewer_1702488385803105.addModel("6\n\nC        0.67759997    0.00000000    0.00000000\nC       -0.67759997    0.00000000    0.00000000\nH        1.21655197    0.92414474    0.00000000\nH        1.21655197   -0.92414474    0.00000000\nH       -1.21655197   -0.92414474    0.00000000\nH       -1.21655197    0.92414474    0.00000000\n");
-	viewer_1702488385803105.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_1702488385803105.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-viewer_1702488385803105.render();
+viewer_170283806609517 = $3Dmol.createViewer(document.getElementById("3dmolviewer_170283806609517"),{backgroundColor:"white"});
+viewer_170283806609517.zoomTo();
+	viewer_170283806609517.addModel("6\n\nC        0.67759997    0.00000000    0.00000000\nC       -0.67759997    0.00000000    0.00000000\nH        1.21655197    0.92414474    0.00000000\nH        1.21655197   -0.92414474    0.00000000\nH       -1.21655197   -0.92414474    0.00000000\nH       -1.21655197    0.92414474    0.00000000\n");
+	viewer_170283806609517.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_170283806609517.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewer_170283806609517.render();
 });
 </script></div></div>
 </div>
-<div class="cell tag_remove-output docutils container">
+<p>First, we optimize the SCF reference state.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_xyz_string</span><span class="p">(</span><span class="n">ethene_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;STO-3G&quot;</span><span class="p">)</span>
-
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-<span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
-<span class="n">rsp_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nstates&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
-<span class="n">lres_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">)</span>
-<span class="n">lres_out</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31g&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mo_energy</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;E_alpha&quot;</span><span class="p">]</span>
-<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
-<span class="n">norb</span> <span class="o">=</span> <span class="n">mo_energy</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">nvirt</span> <span class="o">=</span> <span class="n">norb</span> <span class="o">-</span> <span class="n">nocc</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
+
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>The matrix size in the TDA eigenvalue equation is given by the number of one-electron excitations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimension_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="n">nvirt</span> <span class="o">=</span> <span class="n">norb</span> <span class="o">-</span> <span class="n">nocc</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">*</span> <span class="n">nvirt</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occupied orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unoccupied orbitals:&quot;</span><span class="p">,</span> <span class="n">nvirt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of excitations:&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals: 8
+Number of unoccupied orbitals: 18
+Number of excitations: 144
+</pre></div>
+</div>
+</div>
+</div>
+<p>Second, we retrieve the <span class="math notranslate nohighlight">\(A\)</span>-block of the <span class="math notranslate nohighlight">\(E^{[2]}\)</span>-matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lres_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseEigenSolver</span><span class="p">()</span>
+<span class="n">lres_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 <span class="n">E2</span> <span class="o">=</span> <span class="n">lres_drv</span><span class="o">.</span><span class="n">get_e2</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 
-<span class="n">n</span> <span class="o">=</span> <span class="n">nocc</span> <span class="o">*</span> <span class="n">nvirt</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dimension of full Hessian:&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
-
-<span class="n">S2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
-<span class="n">S2</span><span class="p">[</span><span class="n">n</span><span class="p">:,</span> <span class="n">n</span><span class="p">:]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
-
-<span class="n">lrs_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
-
-<span class="n">mu_x</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">mu_y</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">mu_z</span> <span class="o">=</span> <span class="n">lrs_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s2">&quot;electric dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="n">V1x</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_x</span>
-<span class="n">V1y</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_y</span>
-<span class="n">V1z</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu_z</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dimension of V[1] vectors:&quot;</span><span class="p">,</span> <span class="n">V1x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Processing Fock builds... (batch size: 192)                                                                      
-* Info *   batch 1/1                                                                                                      
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of full Hessian:
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 96
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimension of V[1] vectors:
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 96
+<span class="n">A</span> <span class="o">=</span> <span class="n">E2</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Third, we perform a diagonalization of matrix <span class="math notranslate nohighlight">\(A\)</span> to obtain the excitation energies. The excitation energies of the five lowest states are printed out.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eigs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S2</span><span class="p">),</span> <span class="n">E2</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eigs</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
-<span class="c1"># Reorder results</span>
-<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigs</span><span class="p">)</span>
-<span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eigs</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)[:,</span> <span class="n">idx</span><span class="p">]</span>
-<span class="c1"># print first 12 positive eigenvalues:</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">eigs</span><span class="p">[</span><span class="n">n</span> <span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">12</span><span class="p">])</span>
-
-<span class="c1"># print(f&#39;Excitation energy (au): {eigs[idx] : .6f}&#39;)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reference:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lres_out</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Excitation energies (eV):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eigs</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mf">27.2114</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.36852357 0.39582117 0.41914496 0.53648534 0.59799821 0.66561384
- 0.694277   0.75545073 0.79173677 0.82446474 0.8364707  0.83957699]
-Reference:
- [0.36852357 0.39582117 0.41914496 0.53648534 0.59799821 0.66561384
- 0.694277   0.75545073 0.79173677 0.82446474 0.8364707  0.83957699]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energies (eV):
+ [8.57868869 9.00818369 9.22485575 9.60189688 9.76762482]
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eigs_tda</span><span class="p">,</span> <span class="n">X_tda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S2</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">]),</span> <span class="n">E2</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">]))</span>
-<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigs_tda</span><span class="p">)</span>
-<span class="n">eigs_tda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eigs_tda</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span>
-<span class="n">X_tda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_tda</span><span class="p">)[:,</span> <span class="n">idx</span><span class="p">]</span>
-<span class="c1"># print first 12 eigenvalues:</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">eigs_tda</span><span class="p">[:</span><span class="mi">12</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Full space:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eigs</span><span class="p">[</span><span class="n">n</span> <span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">12</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.39915917 0.40168018 0.41930052 0.53735899 0.59809649 0.66604468
- 0.69555511 0.75686368 0.79771708 0.82477564 0.84016783 0.84277658]
-
-Full space:
- [0.36852357 0.39582117 0.41914496 0.53648534 0.59799821 0.66561384
- 0.694277   0.75545073 0.79173677 0.82446474 0.8364707  0.83957699]
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can also use the <code class="docutils literal notranslate"><span class="pre">TDAExciDriver</span></code>:</p>
+<section id="reference-calculation">
+<h2>Reference calculation<a class="headerlink" href="#reference-calculation" title="Permalink to this heading">#</a></h2>
+<p>Spectra based on the TDA approach can also be obtained with the <code class="docutils literal notranslate"><span class="pre">TDAExciDriver</span></code> class. We perform a reference calculation to confirm our results.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tda_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TDAExciDriver</span><span class="p">()</span>
-<span class="n">tda_drv</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">rsp_settings</span><span class="p">)</span>
+<span class="n">tda_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">tda_drv</span><span class="o">.</span><span class="n">nstates</span> <span class="o">=</span> <span class="mi">5</span>
+
 <span class="n">tda_results</span> <span class="o">=</span> <span class="n">tda_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Plotting the results as bar spectra and comparing to full-space results:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="n">x</span> <span class="o">=</span> <span class="mf">27.2114</span> <span class="o">*</span> <span class="n">lres_out</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">lres_out</span><span class="p">[</span><span class="s2">&quot;oscillator_strengths&quot;</span><span class="p">]</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="mf">27.2114</span> <span class="o">*</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;oscillator_strengths&quot;</span><span class="p">]</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s2">&quot;Full TDDFT&quot;</span><span class="p">,</span> <span class="s2">&quot;TDA&quot;</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Excitation energies (eV):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tda_results</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">27.2114</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/33e9c4e67fe49f18f08a7dc164ea415e4aa52fd64892de575004da69bf12af64.png" src="../../_images/33e9c4e67fe49f18f08a7dc164ea415e4aa52fd64892de575004da69bf12af64.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energies (eV):
+ [8.57868811 9.00818379 9.22485652 9.60189671 9.76762549]
+</pre></div>
 </div>
 </div>
+</div>
+<p>We note that these results are in perfect agreement with those obtained above.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -900,6 +871,20 @@ Full space:
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
