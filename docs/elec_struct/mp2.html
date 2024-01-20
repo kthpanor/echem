@@ -176,13 +176,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
-
-
-
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
 </ul>
 </li>
@@ -625,7 +618,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#moller-plesset-partitioning">Møller–Plesset partitioning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mollerplesset-partitioning">Møller–Plesset partitioning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#obtaining-the-hf-reference">Obtaining the HF reference</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transforming-the-integrals">Transforming the integrals</a></li>
@@ -645,10 +638,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="moller-plesset">
-<span id="sec-mp2"></span><h1>Møller–Plesset<a class="headerlink" href="#moller-plesset" title="Permalink to this heading">#</a></h1>
-<section id="moller-plesset-partitioning">
-<h2>Møller–Plesset partitioning<a class="headerlink" href="#moller-plesset-partitioning" title="Permalink to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="mollerplesset">
+<span id="sec-mp2"></span><h1>Møller–Plesset<a class="headerlink" href="#mollerplesset" title="Permalink to this heading">#</a></h1>
+<section id="mollerplesset-partitioning">
+<h2>Møller–Plesset partitioning<a class="headerlink" href="#mollerplesset-partitioning" title="Permalink to this heading">#</a></h2>
 <p>When using <a class="reference internal" href="pt.html"><span class="doc std std-doc">perturbation theory</span></a>, a very common partitioning of the Hamiltonian is the using the Møller–Plesset (MP) <span id="id1">[<a class="reference internal" href="../refs.html#id43" title="T. Helgaker, P. Jørgensen, and J. Olsen. Molecular electronic-structure theory. John Wiley &amp; Sons, 2014. URL: https://onlinelibrary.wiley.com/doi/book/10.1002/9781119019572.">HJO14</a>, <a class="reference internal" href="../refs.html#id97" title="I. Shavitt and R. J. Bartlett. Many-Body Methods in Chemistry and Physics: MBPT and Coupled-Cluster Theory. Cambridge University Press, 2009. URL: https://doi.org/10.1017/CBO9780511596834.">SB09</a>, <a class="reference internal" href="../refs.html#id102" title="A. Szabo and N. S. Ostlund. Modern Quantum Chemistry: Introduction to Advanced Electronic Structure Theory. Courier Corporation, 2012.">SO12</a>]</span> scheme, which follows quite naturally when first approximating the desired ground state in terms of a single reference determinant. The Hamiltonian is rewritten as</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
@@ -733,27 +726,29 @@ E_{\mathrm{OS}}^{(2)} + E_{\mathrm{SS}}^{(2)}.
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-
-<span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
 <span class="s2">water                                                                                                                          </span>
 <span class="s2">O    0.000000000000        0.000000000000        0.000000000000                         </span>
 <span class="s2">H    0.000000000000        0.740848095288        0.582094932012                         </span>
 <span class="s2">H    0.000000000000       -0.740848095288        0.582094932012</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">molecule</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17057435954538848"  style="position: relative; width: 300px; height: 200px;">
-        <p id="3dmolwarning_17057435954538848" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_17057744005202692"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_17057744005202692" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -785,22 +780,31 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_17057435954538848 = null;
-var warn = document.getElementById("3dmolwarning_17057435954538848");
+var viewer_17057744005202692 = null;
+var warn = document.getElementById("3dmolwarning_17057744005202692");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17057435954538848 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17057435954538848"),{backgroundColor:"white"});
-viewer_17057435954538848.zoomTo();
-	viewer_17057435954538848.addModel("3\nwater                                                                                                                          \nO    0.000000000000        0.000000000000        0.000000000000                         \nH    0.000000000000        0.740848095288        0.582094932012                         \nH    0.000000000000       -0.740848095288        0.582094932012\n","xyz");
-	viewer_17057435954538848.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17057435954538848.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17057435954538848.rotate(90,"y");
-	viewer_17057435954538848.rotate(-90,"x");
-viewer_17057435954538848.render();
+viewer_17057744005202692 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17057744005202692"),{backgroundColor:"white"});
+viewer_17057744005202692.zoomTo();
+	viewer_17057744005202692.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_17057744005202692.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_17057744005202692.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_17057744005202692.zoomTo();
+viewer_17057744005202692.render();
 });
 </script></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can now access orbital energies and MO coefficients from the SCF driver</p>
 <div class="cell docutils container">
@@ -837,7 +841,7 @@ C_{\kappa a}\right)\right)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eridrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
-<span class="n">mknl</span> <span class="o">=</span> <span class="n">eridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">mknl</span> <span class="o">=</span> <span class="n">eridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -846,7 +850,7 @@ C_{\kappa a}\right)\right)
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">N_O</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">number_of_electrons</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">N_O</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">N_V</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="o">.</span><span class="n">number_mos</span><span class="p">()</span> <span class="o">-</span> <span class="n">N_O</span>
 
 <span class="n">mknb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mknl,lB-&gt;mknB&quot;</span><span class="p">,</span> <span class="n">mknl</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">N_O</span><span class="p">:])</span>
@@ -873,9 +877,11 @@ ijab.shape=(5, 5, 19, 19)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moeridrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MOIntegralsDriver</span><span class="p">()</span>
-<span class="n">moeri</span> <span class="o">=</span> <span class="n">moeridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="o">=</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">moints_name</span><span class="o">=</span><span class="s2">&quot;phys_OOVV&quot;</span><span class="p">)</span>
+<span class="n">moeri</span> <span class="o">=</span> <span class="n">moeridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span>
+    <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="o">=</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">,</span> <span class="n">moints_name</span><span class="o">=</span><span class="s2">&quot;phys_OOVV&quot;</span>
+<span class="p">)</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">ijab</span><span class="p">,</span> <span class="n">moeri</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.e-10</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">ijab</span><span class="p">,</span> <span class="n">moeri</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -899,13 +905,15 @@ ijab.shape=(5, 5, 19, 19)
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_V</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_V</span><span class="p">):</span>
                 <span class="c1"># enegy denominators</span>
-                <span class="n">e_ijab</span> <span class="o">=</span> <span class="n">e_ab</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">+</span> <span class="n">e_ab</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_ij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_ij</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> 
-                
+                <span class="n">e_ijab</span> <span class="o">=</span> <span class="n">e_ab</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">+</span> <span class="n">e_ab</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_ij</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_ij</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
                 <span class="c1"># update opposite-spin component of the energy</span>
                 <span class="n">e_mp2_os</span> <span class="o">-=</span> <span class="p">(</span><span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span> <span class="o">/</span> <span class="n">e_ijab</span>
-                
+
                 <span class="c1"># update same-spin component of the energy</span>
-                <span class="n">e_mp2_ss</span> <span class="o">-=</span> <span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span>  <span class="o">-</span> <span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span> <span class="o">/</span> <span class="n">e_ijab</span>
+                <span class="n">e_mp2_ss</span> <span class="o">-=</span> <span class="p">(</span>
+                    <span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">ijab</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">])</span> <span class="o">/</span> <span class="n">e_ijab</span>
+                <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -929,15 +937,22 @@ MP2 energy:               -0.2030127
 <p>Comparing to MP2 implementation in VeloxChem:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
-<span class="n">mp2drv</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
+<span class="n">mp2_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Energy difference: </span><span class="si">{</span><span class="n">e_mp2_os</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e_mp2_ss</span><span class="o">-</span><span class="w"> </span><span class="n">mp2drv</span><span class="o">.</span><span class="n">e_mp2</span><span class="si">:</span><span class="s1">.2E</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">mp2_results</span> <span class="o">=</span> <span class="n">mp2_drv</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Energy difference: </span><span class="si">{</span><span class="n">e_mp2_os</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e_mp2_ss</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mp2_results</span><span class="p">[</span><span class="s1">&#39;mp2_energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">8.2E</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy difference: 0.00E+00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy difference: -2.78E-17
 </pre></div>
 </div>
 </div>
@@ -947,9 +962,9 @@ MP2 energy:               -0.2030127
 <section id="size-consistency">
 <span id="sec-mp2-size-consistency"></span><h2>Size consistency<a class="headerlink" href="#size-consistency" title="Permalink to this heading">#</a></h2>
 <p>We see that to second order, Møller-Plesset perturbation theory only involves up to double excitations from the HF reference. It would thus be natural to consider it an approximation to CISD, and expect it to suffer from the same issue, namely a lack of size consistency. Yet this is not the case:</p>
-<div class="cell tag_remove-output docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_2_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dimer_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;6</span>
 <span class="s2">2 water 100 Å apart                                                                                                            </span>
 <span class="s2">O    0.000000000000        0.000000000000        0.000000000000                         </span>
 <span class="s2">H    0.000000000000        0.740848095288        0.582094932012                         </span>
@@ -959,48 +974,103 @@ MP2 energy:               -0.2030127
 <span class="s2">H  100.000000000000       -0.740848095288        0.582094932012</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">mol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">h2o_2_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">)</span>
-
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-<span class="n">mp2drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
-<span class="n">mp2drv</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">dimer_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MP2 Energy correction of 2 water molecules&quot;</span><span class="p">,</span> <span class="n">mp2drv</span><span class="o">.</span><span class="n">e_mp2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Twice the energy of 1 water molecule&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">e_mp2_os</span> <span class="o">+</span> <span class="n">e_mp2_ss</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MP2 Energy correction of 2 water molecules -0.4060254139814845
-Twice the energy of 1 water molecule -0.406025405146105
+<div class="output text_html"><div id="3dmolviewer_170577440100241"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_170577440100241" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
+}
+
+var viewer_170577440100241 = null;
+var warn = document.getElementById("3dmolwarning_170577440100241");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_170577440100241 = $3Dmol.createViewer(document.getElementById("3dmolviewer_170577440100241"),{backgroundColor:"white"});
+viewer_170577440100241.zoomTo();
+	viewer_170577440100241.addModel("6\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\nO            100.000000000000         0.000000000000         0.000000000000\nH            100.000000000000         0.740848095288         0.582094932012\nH            100.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_170577440100241.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_170577440100241.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_170577440100241.zoomTo();
+viewer_170577440100241.render();
+});
+</script></div></div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2_dimer_results</span> <span class="o">=</span> <span class="n">mp2_drv</span><span class="o">.</span><span class="n">compute_conventional</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    MP2 energy&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dimer:      </span><span class="si">{</span><span class="n">mp2drv</span><span class="o">.</span><span class="n">e_mp2</span><span class="si">:</span><span class="s1">9.7f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;2 monomers: </span><span class="si">{</span><span class="p">(</span><span class="n">e_mp2_os</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e_mp2_ss</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="si">:</span><span class="s1">9.7f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Difference: </span><span class="si">{</span><span class="n">mp2drv</span><span class="o">.</span><span class="n">e_mp2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">e_mp2_os</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e_mp2_ss</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="si">:</span><span class="s1">.3E</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MP2 energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dimer       : </span><span class="si">{</span><span class="n">mp2_dimer_results</span><span class="p">[</span><span class="s1">&#39;mp2_energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">16.10f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Two monomers: </span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp2_results</span><span class="p">[</span><span class="s1">&#39;mp2_energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">16.10f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    MP2 energy
--------------------
-Dimer:      -0.4060254
-2 monomers: -0.4060254
-Difference: -8.835E-09
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==============================
+MP2 energies
+------------------------------
+Dimer       :    -0.4060254140
+Two monomers:    -0.4060254051
+==============================
 </pre></div>
 </div>
 </div>
@@ -1010,20 +1080,22 @@ Difference: -8.835E-09
 </section>
 <section id="taylor-expansion-of-the-energy">
 <span id="sec-mp2-taylor"></span><h2>Taylor expansion of the energy<a class="headerlink" href="#taylor-expansion-of-the-energy" title="Permalink to this heading">#</a></h2>
-<p>When deriving at <a class="reference internal" href="pt.html"><span class="doc std std-doc">Rayleigh–Schrödinger perturbation theory</span></a> it is common to use an expansion in the perturbation strength <span class="math notranslate nohighlight">\(\lambda\)</span>, with <span class="math notranslate nohighlight">\(\hat{H} = \hat{H_0} + \lambda \hat{V}\)</span>. Each order of perturbation then corresponds to a power of <span class="math notranslate nohighlight">\(\lambda\)</span></p>
+<p>In using <a class="reference internal" href="pt.html"><span class="doc std std-doc">Rayleigh–Schrödinger perturbation theory</span></a> (RSPT), it is a common practice to use an expansion in the perturbation strength <span class="math notranslate nohighlight">\(\lambda\)</span>, with <span class="math notranslate nohighlight">\(\hat{H} = \hat{H_0} + \lambda \hat{V}\)</span>. Each order of perturbation then corresponds to a power of <span class="math notranslate nohighlight">\(\lambda\)</span></p>
 <div class="math notranslate nohighlight">
 \[
 E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 \]</div>
 <p>The RSPT equations are then simply found by collecting together equal powers of <span class="math notranslate nohighlight">\(\lambda\)</span> and at the end, <span class="math notranslate nohighlight">\(\lambda\)</span> is set to 1.0 to recover the standard Hamiltonian. With this framework, it is easy to see how RSPT is related to Taylor expansions. In this section, we will make this link more explicit.</p>
 <p>Let’s explicitly create these Hamiltonian and compute the exact energy for different values of <span class="math notranslate nohighlight">\(\lambda\)</span> using the CI driver. First let us recompute the energy with a minimal basis.</p>
-<div class="cell tag_remove-output docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;sto-3g&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">h2o_xyz</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;sto-3g&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">E</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
@@ -1034,14 +1106,14 @@ E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 <p>Now let’s create <span class="math notranslate nohighlight">\(\hat{H_0} = \hat{F}\)</span> and <span class="math notranslate nohighlight">\(\hat{V}\)</span> in molecular orbital basis. <span class="math notranslate nohighlight">\(\hat{F}\)</span> is a one-electron Hamiltonian while for <span class="math notranslate nohighlight">\(\hat{V}\)</span> we need both the one and two-electron components.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Fock matrix from SCF</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Fock matrix from SCF</span>
 <span class="n">F_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">),</span> <span class="n">C</span><span class="p">)</span>
 
 <span class="c1"># Get the 1-electron integrals</span>
 <span class="n">kin_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
-<span class="n">T_ao</span> <span class="o">=</span> <span class="n">kin_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">T_ao</span> <span class="o">=</span> <span class="n">kin_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 <span class="n">npot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
-<span class="n">V_ao</span> <span class="o">=</span> <span class="o">-</span><span class="n">npot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">V_ao</span> <span class="o">=</span> <span class="o">-</span><span class="n">npot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
 <span class="c1"># core Hamiltonian</span>
 <span class="n">h_MO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ai, ab, bj -&gt; ij&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">T_ao</span> <span class="o">+</span> <span class="n">V_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
@@ -1050,9 +1122,9 @@ E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 <span class="n">naos</span> <span class="o">=</span> <span class="n">V_ao</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">eridrv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
 <span class="n">mknl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">naos</span><span class="p">,</span> <span class="n">naos</span><span class="p">,</span> <span class="n">naos</span><span class="p">,</span> <span class="n">naos</span><span class="p">))</span>
-<span class="n">eridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mknl</span><span class="p">)</span>
+<span class="n">eridrv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mknl</span><span class="p">)</span>
 
-<span class="c1"># Transform them to the (full) MO basis </span>
+<span class="c1"># Transform them to the (full) MO basis</span>
 <span class="n">mknb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mknl,lB-&gt;mknB&quot;</span><span class="p">,</span> <span class="n">mknl</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
 <span class="n">mnab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mknB,nA-&gt;mkAB&quot;</span><span class="p">,</span> <span class="n">mknb</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
 <span class="n">mjab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mkAB,kJ-&gt;mJAB&quot;</span><span class="p">,</span> <span class="n">mnab</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
@@ -1066,21 +1138,26 @@ E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 </div>
 </div>
 <p>Solving the CI for increasing values of <span class="math notranslate nohighlight">\(\lambda\)</span>:</p>
-<div class="cell tag_remove-output docutils container">
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
 
 <span class="n">npoints</span> <span class="o">=</span> <span class="mi">21</span>
-<span class="n">CIDrv</span> <span class="o">=</span>  <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+
+<span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
+<span class="n">ci_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">()</span>
 
 <span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">):</span>
-    <span class="n">lambda_val</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">CIDrv</span><span class="o">.</span><span class="n">_update_integrals</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">(),</span> <span class="n">H0_1</span> <span class="o">+</span> <span class="n">lambda_val</span><span class="o">*</span> <span class="n">V_1</span><span class="p">,</span> <span class="n">lambda_val</span><span class="o">*</span> <span class="n">V_2</span><span class="p">)</span>
-    <span class="n">ci_results</span> <span class="o">=</span> <span class="n">CIDrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CIDrv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">())</span>
+    <span class="n">lambda_val</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="p">(</span><span class="n">npoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ci_drv</span><span class="o">.</span><span class="n">_update_integrals</span><span class="p">(</span>
+        <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">(),</span> <span class="n">H0_1</span> <span class="o">+</span> <span class="n">lambda_val</span> <span class="o">*</span> <span class="n">V_1</span><span class="p">,</span> <span class="n">lambda_val</span> <span class="o">*</span> <span class="n">V_2</span>
+    <span class="p">)</span>
+    <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1089,11 +1166,11 @@ E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Energy as a function of $\lambda$&#39;</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Energy as a function of $\lambda$&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">npoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Energy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Lambda&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (Ha)&quot;</span><span class="p">)</span>
@@ -1110,8 +1187,10 @@ E = E^{0} + \lambda E^{1} + \lambda^2 E^{2} + ...
 <p>Before going further, we notice that the energy does not start at the HF energy (-74.96033 Ha) but a much higher one. This is because the Fock Hamiltonian gives not the HF energy but twice the sum of orbital energies (+ the nuclear repulsion).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sum of orbital energies : </span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">E</span><span class="p">[:</span><span class="n">N</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mol</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Sum of orbital energies : </span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">E</span><span class="p">[:</span><span class="n">N</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Energy for lambda = 0   : </span><span class="si">{</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1130,10 +1209,12 @@ Energy for lambda = 0   : -36.642186
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">increment</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="n">small_energies</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-    <span class="n">lambda_val</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">increment</span>
-    <span class="n">CIDrv</span><span class="o">.</span><span class="n">_update_integrals</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">(),</span> <span class="n">H0_1</span> <span class="o">+</span> <span class="n">lambda_val</span><span class="o">*</span> <span class="n">V_1</span><span class="p">,</span> <span class="n">lambda_val</span><span class="o">*</span> <span class="n">V_2</span><span class="p">)</span>
-    <span class="n">ci_results</span> <span class="o">=</span> <span class="n">CIDrv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">small_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CIDrv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">())</span>
+    <span class="n">lambda_val</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">increment</span>
+    <span class="n">ci_drv</span><span class="o">.</span><span class="n">_update_integrals</span><span class="p">(</span>
+        <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">(),</span> <span class="n">H0_1</span> <span class="o">+</span> <span class="n">lambda_val</span> <span class="o">*</span> <span class="n">V_1</span><span class="p">,</span> <span class="n">lambda_val</span> <span class="o">*</span> <span class="n">V_2</span>
+    <span class="p">)</span>
+    <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">small_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1141,7 +1222,7 @@ Energy for lambda = 0   : -36.642186
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute first derivative from the first point</span>
-<span class="n">First_deriv</span> <span class="o">=</span> <span class="p">(</span><span class="n">small_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">small_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">increment</span>
+<span class="n">First_deriv</span> <span class="o">=</span> <span class="p">(</span><span class="n">small_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">small_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">increment</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SCF energy       : </span><span class="si">{</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;0th order energy : </span><span class="si">{</span><span class="n">small_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1st order energy : </span><span class="si">{</span><span class="n">small_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">First_deriv</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1153,14 +1234,15 @@ Energy for lambda = 0   : -36.642186
 <p>Let’s now see the difference between the previously computed energy and the first order approximation of it to properly visualize the contributions from higher order (and thus the correlation energy). Then let’s fit the 3 points we got for small values of <span class="math notranslate nohighlight">\(\lambda\)</span> to a second order polynomial.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Correlation as a function of $\lambda$&#39;</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="n">First_deriv</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Higher order terms&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Correlation as a function of $\lambda$&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">npoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">First_deriv</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Higher order terms&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Lambda&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1170,7 +1252,7 @@ Energy for lambda = 0   : -36.642186
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">increment</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">increment</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">small_energies</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">increment</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">small_energies</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">E0</span> <span class="o">=</span> <span class="n">coefs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="n">E1</span> <span class="o">=</span> <span class="n">coefs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">E2</span> <span class="o">=</span> <span class="n">coefs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1193,16 +1275,23 @@ quadratic term :  -0.034393
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Progressive correlation&#39;</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">npoints</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">E0</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="n">E1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">npoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">E0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">E1</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">E2</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Higher order energy&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;2nd order term&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Higher order energy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;2nd order term&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Progressive correlation&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Lambda&quot;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1213,20 +1302,21 @@ quadratic term :  -0.034393
 <p>With the second order term, we recover a decent fraction of the missing energy (i.e. of the correlation energy). Note that this what we printed here is the coefficient in front of the quadratic term, not the second derivative, the two differ by a factor of 2. However, this term can be directly compared to the MP2 energy and we see that they indeed match:</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Mp2Driver</span><span class="p">()</span>
-<span class="n">emp2</span> <span class="o">=</span> <span class="n">mp2</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mp2_results</span> <span class="o">=</span> <span class="n">mp2_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quadratic term: </span><span class="si">{</span><span class="n">E2</span><span class="si">:</span><span class="s2">9.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MP2 energy    :</span><span class="si">{</span><span class="n">mp2_results</span><span class="p">[</span><span class="s1">&#39;mp2_energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quadratic term:</span><span class="si">{</span><span class="n">E2</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Quadratic term: -0.034393
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MP2 energy    : -0.034401
+Quadratic term: -0.034393
 </pre></div>
 </div>
 </div>
@@ -1299,7 +1389,7 @@ quadratic term :  -0.034393
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#moller-plesset-partitioning">Møller–Plesset partitioning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mollerplesset-partitioning">Møller–Plesset partitioning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#obtaining-the-hf-reference">Obtaining the HF reference</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transforming-the-integrals">Transforming the integrals</a></li>
