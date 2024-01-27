@@ -176,13 +176,6 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
-
-
-
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
 </ul>
 </li>
@@ -650,7 +643,6 @@ document.write(`
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 <span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
 </pre></div>
 </div>
 </div>
@@ -660,7 +652,7 @@ document.write(`
 <p>We obtain the initial (force field optimized) structure from Open Babel, using the SMILES string (<code class="docutils literal notranslate"><span class="pre">CO</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_ff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">smiles_to_xyz</span><span class="p">(</span><span class="s1">&#39;CO&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_ff</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s1">&#39;CO&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -671,21 +663,11 @@ document.write(`
 <p>Next, set up the xTB driver and perform the structure optimization.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">methanol_ff</span><span class="p">)</span>
-<span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
-<span class="n">method_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xtb&#39;</span><span class="p">:</span><span class="s1">&#39;gfn2&#39;</span><span class="p">}</span>
-<span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="n">method_settings</span><span class="p">[</span><span class="s1">&#39;xtb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
+<span class="n">xtb_drv</span><span class="o">.</span><span class="n">set_method</span><span class="p">(</span><span class="s1">&#39;gfn2&#39;</span><span class="p">)</span>
 <span class="n">xtb_grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbGradientDriver</span><span class="p">()</span>
 <span class="n">xtb_opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">xtb_grad_drv</span><span class="p">)</span>
-<span class="n">xtb_opt</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">methanol</span><span class="p">,</span> <span class="n">xtb_drv</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Convert the results to xyz-coordinates.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_xtb</span> <span class="o">=</span> <span class="n">xtb_opt</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
+<span class="n">methanol_xtb</span> <span class="o">=</span> <span class="n">xtb_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">methanol_ff</span><span class="p">,</span> <span class="n">xtb_drv</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -694,18 +676,6 @@ document.write(`
 <section id="hf-optimization">
 <h2>HF optimization<a class="headerlink" href="#hf-optimization" title="Permalink to this heading">#</a></h2>
 <p>Set up the SCF and optimization drivers and performing the final optimization, using the xTB results as the initial structure.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">methanol_xtb</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s1">&#39;STO-3G&#39;</span><span class="p">)</span>
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
-<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-<span class="n">grad_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfGradientDriver</span><span class="p">()</span>
-<span class="n">opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">grad_drv</span><span class="p">)</span>
-<span class="n">opt_molecule</span> <span class="o">=</span> <span class="n">opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">methanol_hf</span> <span class="o">=</span> <span class="n">opt_molecule</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">()</span>
-</pre></div>
-</div>
 </section>
 <section id="comparison">
 <h2>Comparison<a class="headerlink" href="#comparison" title="Permalink to this heading">#</a></h2>
@@ -713,9 +683,9 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">viewergrid</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">linked</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_ff</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_xtb</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_hf</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_ff</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">(),</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_xtb</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">(),</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">methanol_hf</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">(),</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
 <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -723,8 +693,8 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17057444203021219"  style="position: relative; width: 500px; height: 200px;">
-        <p id="3dmolwarning_17057444203021219" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_17063549339989471"  style="position: relative; width: 500px; height: 200px;">
+        <p id="3dmolwarning_17063549339989471" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -756,46 +726,45 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_17057444203021219 = null;
-var warn = document.getElementById("3dmolwarning_17057444203021219");
+var viewer_17063549339989471 = null;
+var warn = document.getElementById("3dmolwarning_17063549339989471");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_17057444203021219 = null;
-viewergrid_17057444203021219 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_17057444203021219"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
-viewer_17057444203021219 = viewergrid_17057444203021219[0][0];
-viewergrid_17057444203021219[0][0].zoomTo();viewergrid_17057444203021219[0][1].zoomTo();viewergrid_17057444203021219[0][2].zoomTo();	viewergrid_17057444203021219[0][0].addModel("6\n\nC          1.08831       -0.02037       -0.05810\nO          2.50397       -0.03211       -0.04963\nH          0.72816       -0.12910       -1.08406\nH          0.72816        0.91913        0.36822\nH          0.72252       -0.85512        0.54441\nH          2.79936        0.71907       -0.59181\n","xyz");
-	viewergrid_17057444203021219[0][1].addModel("6\n\nC              1.091062809913        -0.008674829635        -0.066542220922\nO              2.497096825388        -0.032297069311        -0.049492283115\nH              0.696057849967        -0.126038085551        -1.081542947366\nH              0.696057846961         0.917707553946         0.364521805598\nH              0.760085627392        -0.849413052223         0.540288758324\nH              2.830119040379         0.700215482774        -0.578203112519\n","xyz");
-	viewergrid_17057444203021219[0][2].addModel("6\n\n     C        -0.355338295061         0.015832253296         0.022623869829\n     O         0.957130783496         0.544496756944        -0.204029530782\n     H        -0.479565645795        -0.368664416163         1.040410925550\n     H        -0.607609510888        -0.787365989746        -0.677656188432\n     H        -1.069087493005         0.828785331979        -0.122302379295\n     H         1.554469486523        -0.233087881063        -0.059049636847\n","xyz");
-	viewergrid_17057444203021219[0][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17057444203021219[0][1].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17057444203021219[0][2].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17057444203021219[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_17057444203021219[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_17057444203021219[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-viewergrid_17057444203021219[0][2].render();
-viewergrid_17057444203021219[0][1].render();
-viewergrid_17057444203021219[0][0].render();
+var viewergrid_17063549339989471 = null;
+viewergrid_17063549339989471 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_17063549339989471"),{rows: 1, cols: 3, control_all: false},{backgroundColor:"white"});
+viewer_17063549339989471 = viewergrid_17063549339989471[0][0];
+viewergrid_17063549339989471[0][0].zoomTo();viewergrid_17063549339989471[0][1].zoomTo();viewergrid_17063549339989471[0][2].zoomTo();	viewergrid_17063549339989471[0][0].addModel("6\n\nC              1.045800000000         0.073490000000         0.053670000000\nO              2.461460000000         0.072000000000         0.068070000000\nH              0.685650000000        -0.764510000000        -0.548150000000\nH              0.685650000000         1.017030000000        -0.363650000000\nH              0.680010000000        -0.032560000000         1.077670000000\nH              2.756850000000         0.167420000000        -0.853410000000\n","xyz");
+	viewergrid_17063549339989471[0][1].addModel("6\n\nC              1.048552514237         0.074974569440         0.039318672331\nO              2.454586434209         0.071973361124         0.068299614836\nH              0.653548649076        -0.760591580515        -0.548754909754\nH              0.653548755278         1.013319224817        -0.365046130057\nH              0.717572886460        -0.031833090786         1.070664970220\nH              2.787610760740         0.165027515920        -0.830282217576\n","xyz");
+	viewergrid_17063549339989471[0][2].addModel("6\n\nC              1.057716842650         0.074494058984         0.043960439171\nO              2.489843032585         0.069396460747         0.093170561407\nH              0.658254861775        -0.755393185659        -0.548388948039\nH              0.658256854358         1.008156180841        -0.365755828684\nH              0.691121882722        -0.031406690287         1.066568886586\nH              2.760227259684         0.167622182974        -0.855362780011\n","xyz");
+	viewergrid_17063549339989471[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_17063549339989471[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_17063549339989471[0][2].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_17063549339989471[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_17063549339989471[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_17063549339989471[0][2].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewergrid_17063549339989471[0][2].render();
+viewergrid_17063549339989471[0][1].render();
+viewergrid_17063549339989471[0][0].render();
 });
 </script></div></div>
 </div>
-<p>These structures are all very similar, featuring, <em>e.g</em>, the staggered H-O-C-H dihedral. To better see any differences in the structures, the distance matrices can be calculated using functionalities from <a class="reference external" href="https://www.rdkit.org/">RDkit</a>:</p>
+<p>These structures are all very similar, featuring, <em>e.g</em>, the staggered H-O-C-H dihedral. To better see any differences in the structures, the distance matrices can be calculated using functionalities from the molecule object:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From force field (MMFF94):&#39;</span><span class="p">)</span>
-<span class="n">m_ff</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MolFromXYZBlock</span><span class="p">(</span><span class="n">methanol_ff</span><span class="p">)</span>
-<span class="n">dm_ff</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">Get3DDistanceMatrix</span><span class="p">(</span><span class="n">m_ff</span><span class="p">)</span>
+<span class="n">dm_ff</span> <span class="o">=</span> <span class="n">methanol_ff</span><span class="o">.</span><span class="n">get_distance_matrix_in_angstrom</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dm_ff</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">()</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From xTB:&#39;</span><span class="p">)</span>
-<span class="n">m_xtb</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MolFromXYZBlock</span><span class="p">(</span><span class="n">methanol_xtb</span><span class="p">)</span>
-<span class="n">dm_xtb</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">Get3DDistanceMatrix</span><span class="p">(</span><span class="n">m_xtb</span><span class="p">)</span>
+<span class="n">dm_xtb</span> <span class="o">=</span> <span class="n">methanol_xtb</span><span class="o">.</span><span class="n">get_distance_matrix_in_angstrom</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dm_xtb</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">()</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From HF:&#39;</span><span class="p">)</span>
-<span class="n">m_hf</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MolFromXYZBlock</span><span class="p">(</span><span class="n">methanol_hf</span><span class="p">)</span>
-<span class="n">dm_hf</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">Get3DDistanceMatrix</span><span class="p">(</span><span class="n">m_hf</span><span class="p">)</span>
+<span class="n">dm_hf</span> <span class="o">=</span> <span class="n">methanol_hf</span><span class="o">.</span><span class="n">get_distance_matrix_in_angstrom</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dm_hf</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
