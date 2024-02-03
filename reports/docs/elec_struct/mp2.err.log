@@ -1,0 +1,60 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/echem/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/miniconda3/envs/echem/lib/python3.11/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+F = scf_results["F"][0]  # Fock matrix from SCF
+F_MO = np.matmul(np.matmul(C.T, F), C)
+
+# Get the 1-electron integrals
+kin_drv = vlx.KineticEnergyIntegralsDriver()
+T_ao = kin_drv.compute(molecule, basis).to_numpy()
+npot_drv = vlx.NuclearPotentialIntegralsDriver()
+V_ao = -npot_drv.compute(molecule, basis).to_numpy()
+
+# core Hamiltonian
+h_MO = np.einsum("ai, ab, bj -> ij", C, T_ao + V_ao, C)
+
+# Compute the 2-electron integrals
+naos = V_ao.shape[0]
+eridrv = vlx.ElectronRepulsionIntegralsDriver()
+mknl = np.zeros((naos, naos, naos, naos))
+eridrv.compute_in_memory(molecule, basis, mknl)
+
+# Transform them to the (full) MO basis
+mknb = np.einsum("mknl,lB->mknB", mknl, C)
+mnab = np.einsum("mknB,nA->mkAB", mknb, C)
+mjab = np.einsum("mkAB,kJ->mJAB", mnab, C)
+ijab = np.einsum("mJAB,mI->IJAB", mjab, C)
+
+H0_1 = F_MO
+V_1 = h_MO - F_MO
+V_2 = ijab
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[17], line 2[0m
+[1;32m      1[0m F [38;5;241m=[39m scf_results[[38;5;124m"[39m[38;5;124mF[39m[38;5;124m"[39m][[38;5;241m0[39m]  [38;5;66;03m# Fock matrix from SCF[39;00m
+[0;32m----> 2[0m F_MO [38;5;241m=[39m [43mnp[49m[38;5;241m.[39mmatmul(np[38;5;241m.[39mmatmul(C[38;5;241m.[39mT, F), C)
+[1;32m      4[0m [38;5;66;03m# Get the 1-electron integrals[39;00m
+[1;32m      5[0m kin_drv [38;5;241m=[39m vlx[38;5;241m.[39mKineticEnergyIntegralsDriver()
+
+[0;31mNameError[0m: name 'np' is not defined
+
