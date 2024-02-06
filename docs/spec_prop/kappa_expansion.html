@@ -650,10 +650,10 @@ document.write(`
 <p>The sum over <span class="math notranslate nohighlight">\(\omega\)</span> included both positive and negative Fourier components of the field and we have</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{V}^{-\omega} = \Big[ \hat{V}^{\omega} \Big]^\dagger; \qquad 
-F^{-\omega} =\Big[ F^{\omega} \Big]^*
+\hat{V}^{-\omega}_\alpha = \Big[ \hat{V}^{\omega}_\alpha \Big]^\dagger; \qquad 
+F^{-\omega}_\alpha =\Big[ F^{\omega}_\alpha \Big]^*
 \]</div>
-<p>There is also an implied Einstein summation over the Cartesian molecular axes <span class="math notranslate nohighlight">\(\alpha=\{x,y,x\}\)</span>.</p>
+<p>There is also an implied Einstein summation over the Cartesian molecular axes <span class="math notranslate nohighlight">\(\alpha=\{x,y,z\}\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In the electric-dipole approximation, the coupling between the system and a monochromatic sinusoidal electric field is given by</p>
@@ -664,8 +664,7 @@ F^{-\omega} =\Big[ F^{\omega} \Big]^*
 <p>In this case, the summation over <span class="math notranslate nohighlight">\(\omega\)</span> includes two terms namely <span class="math notranslate nohighlight">\(\omega = \{\pm\omega_0\}\)</span>; the coupling operator equals the electric diplole operator; and the field amplitudes are identified as equal to</p>
 <div class="math notranslate nohighlight">
 \[
-F^{\omega_0} = \frac{i}{2}
-E^{\omega_0}
+\mathbf{F}^{\omega_0} = \frac{i}{2} \mathbf{E}^{\omega_0}
 \]</div>
 </div>
 <section id="perturbation-expansions">
@@ -739,6 +738,10 @@ i \sum_\omega
 \, e^{-i\omega t}
 \end{align*}\]</div>
 <p>The MO-representation of the <span class="math notranslate nohighlight">\(\hat{\kappa}^{(1)}\)</span>-operator can be determined from linear response theory <span id="id1">[<a class="reference internal" href="../refs.html#id77" title="P. Norman, K. Ruud, and T. Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, 2018.">NRS18</a>]</span> and calculated with use of the VeloxChem program, and it is thereafter a trivial task to calculate the expectation value of its commutator with the observable <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The factor “<span class="math notranslate nohighlight">\(i\)</span>” multiplying the expectation value is typically suppressed in intermediate steps of the calculations as to return at a point of convenience.</p>
+</div>
 </section>
 <section id="response-functions">
 <h2>Response functions<a class="headerlink" href="#response-functions" title="Permalink to this heading">#</a></h2>
@@ -765,7 +768,8 @@ i \sum_\omega
 <h2>Illustration<a class="headerlink" href="#illustration" title="Permalink to this heading">#</a></h2>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 </pre></div>
 </div>
 </div>
@@ -792,16 +796,19 @@ i \sum_\omega
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;def2-svp&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
-<span class="n">nvirt</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimension_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span> <span class="o">-</span> <span class="n">nocc</span>
+<span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimension_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">nvirt</span> <span class="o">=</span> <span class="n">norb</span> <span class="o">-</span> <span class="n">nocc</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occupied orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of virtual orbitals :&quot;</span><span class="p">,</span> <span class="n">nvirt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occupied orbitals :&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of virtual orbitals  :&quot;</span><span class="p">,</span> <span class="n">nvirt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals: 8
-Number of virtual orbitals : 40
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of occupied orbitals : 8
+Number of virtual orbitals  : 40
+Number of molecular orbitals: 48
 </pre></div>
 </div>
 </div>
@@ -813,8 +820,8 @@ Number of virtual orbitals : 40
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17071236696062138"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17071236696062138" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1707233250978268"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1707233250978268" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -846,22 +853,34 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_17071236696062138 = null;
-var warn = document.getElementById("3dmolwarning_17071236696062138");
+var viewer_1707233250978268 = null;
+var warn = document.getElementById("3dmolwarning_1707233250978268");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17071236696062138 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17071236696062138"),{backgroundColor:"white"});
-viewer_17071236696062138.zoomTo();
-	viewer_17071236696062138.addModel("6\n\nC              0.677599970000         0.000000000000         0.000000000000\nC             -0.677599970000         0.000000000000         0.000000000000\nH              1.216551970000         0.924144740000         0.000000000000\nH              1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000         0.924144740000         0.000000000000\n");
-	viewer_17071236696062138.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17071236696062138.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17071236696062138.zoomTo();
-viewer_17071236696062138.render();
+viewer_1707233250978268 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707233250978268"),{backgroundColor:"white"});
+viewer_1707233250978268.zoomTo();
+	viewer_1707233250978268.addModel("6\n\nC              0.677599970000         0.000000000000         0.000000000000\nC             -0.677599970000         0.000000000000         0.000000000000\nH              1.216551970000         0.924144740000         0.000000000000\nH              1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000         0.924144740000         0.000000000000\n");
+	viewer_1707233250978268.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1707233250978268.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1707233250978268.zoomTo();
+viewer_1707233250978268.render();
 });
 </script></div></div>
 </div>
+<p>This system is subjected to an electric field along the <span class="math notranslate nohighlight">\(x\)</span>-direction with a angular frequency of <span class="math notranslate nohighlight">\(\omega = 0.0656\)</span> a.u. and an amplitude <span class="math notranslate nohighlight">\(F^\omega_x\)</span>.</p>
+<p>Within the electric-dipole approximation the perturbation operator is in this case given by</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{V}^\omega = -\hat{\mu}_x F_x^\omega
+\]</div>
+<p>and we will be concerned with the determination of the induced dipole moment along the C–C bond axis associated with the expectation value of the operator</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\Omega} = \hat{\mu}_x
+\]</div>
+<p>First, we determine the Hartree–Fock reference state.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
@@ -872,6 +891,22 @@ viewer_17071236696062138.render();
 </div>
 </div>
 </div>
+<p>Second, we get the MO representation of the operator <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dipole_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectricDipoleIntegralsDriver</span><span class="p">()</span>
+<span class="n">dipole_mats</span> <span class="o">=</span> <span class="n">dipole_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="n">mu_x_ao</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">dipole_mats</span><span class="o">.</span><span class="n">x_to_numpy</span><span class="p">()</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;C_alpha&quot;</span><span class="p">]</span>
+
+<span class="n">mu_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ap, ab, bq -&gt; pq&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">mu_x_ao</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Third, we determine the linear response parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">LinearResponseSolver</span><span class="p">()</span>
@@ -890,50 +925,34 @@ viewer_17071236696062138.render();
 </div>
 </div>
 </div>
+<p>In VeloxChem, the resulting linear response parameters are structured into 1D-arrays known as <em>response vectors</em></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{N}^\alpha(\omega) =
+\begin{pmatrix}
+\mathbf{Z}^{\alpha; \omega} \\ \mathbf{Y}^{\alpha; \omega}
+\end{pmatrix}
+\end{split}\]</div>
+<p>The response vectors are frequency dependent, <span class="math notranslate nohighlight">\(\omega\)</span>, and associated with separate Cartesian axes, <span class="math notranslate nohighlight">\(\alpha\)</span>. The elements of the response vector relate to the wave function parameters</p>
+<div class="math notranslate nohighlight">
+\[
+\kappa_{ai}^{(1)}(\omega) = i Z_{ai}^{\alpha; \omega} F^\omega_\alpha ; \qquad 
+\kappa_{ia}^{(1)}(-\omega) = i Y_{ia}^{\alpha; \omega} F^{-\omega}_\alpha 
+\]</div>
+<p>where “<span class="math notranslate nohighlight">\(ai\)</span>” and “<span class="math notranslate nohighlight">\(ia\)</span>” are thought of as MO-matrix indices for the <span class="math notranslate nohighlight">\(\kappa\)</span>-parameters but compound vector indices in the 1D-arrays.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here appears a second factor of “<span class="math notranslate nohighlight">\(i\)</span>” that combined with the first one give a overall factor of -1 in the final result.</p>
+</div>
+<p>Response vectors are obtained from VeloxChem with use of the <code class="docutils literal notranslate"><span class="pre">get_full_vector(index)</span></code> method, where indices of “<span class="math notranslate nohighlight">\(0\)</span>” and “<span class="math notranslate nohighlight">\(1\)</span>” will instruct the method to return vectors <span class="math notranslate nohighlight">\((\mathbf{Z} + \mathbf{Y})\)</span> and <span class="math notranslate nohighlight">\((\mathbf{Z} - \mathbf{Y})\)</span>, respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lrf_results</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;a_operator&#39;, &#39;a_components&#39;, &#39;b_operator&#39;, &#39;b_components&#39;, &#39;response_functions&#39;, &#39;solutions&#39;])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">lrf_results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lrf_results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>a_operator 
- electric dipole
-a_components 
- [&#39;x&#39;]
-b_operator 
- electric dipole
-b_components 
- [&#39;x&#39;]
-response_functions 
- {(&#39;x&#39;, &#39;x&#39;, 0.0656): -34.84380178137867}
-solutions 
- {(&#39;x&#39;, 0.0656): &lt;veloxchem.distributedarray.DistributedArray object at 0x116354250&gt;}
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
     <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">Y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
     <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="o">-</span> <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">)</span>
@@ -941,129 +960,90 @@ solutions
 </div>
 </div>
 </div>
+<p>A factor of -1 has here been introduced in recognition of the fact that the perturbation operator is equal to <em>minus</em> the electric dipole operator.</p>
+<p>We scatter the response parameters into an MO-matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>numpy.ndarray
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(320,)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V1</span> <span class="o">=</span> <span class="n">lrf_drv</span><span class="o">.</span><span class="n">get_prop_grad</span><span class="p">(</span><span class="s2">&quot;electric_dipole&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">scf_tensors</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(640,)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">320</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">320</span><span class="p">:]))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vector_to_matrix</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">320</span><span class="p">])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">320</span><span class="p">:])))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21.126913068826227
-13.716888712552446
-34.84380178137867
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 2.84677170e-18,  6.40687794e-15, -2.11182357e-15,  1.20237559e-03,
-        1.53100717e-16, -6.21054181e-04, -7.37271673e-15, -4.17130458e-15,
-        4.25492388e-17,  4.84015350e-18])
+    <span class="n">zymat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">,</span> <span class="n">norb</span><span class="p">):</span>
+            <span class="n">zymat</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">zymat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">zymat</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zymat</span> <span class="o">=</span> <span class="n">vector_to_matrix</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-4.37791922e-19, -6.77217934e-15,  2.04998587e-15, -1.17610685e-03,
-       -1.72605885e-16,  7.03822972e-04,  8.07940390e-15,  5.13612338e-15,
-       -3.55772385e-17, -4.52261583e-18])
+</div>
+<p>Fourth, we determine the expectation value of the commutator between <span class="math notranslate nohighlight">\(\hat{\kappa}^{(1)}(\omega)\)</span> and <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span> to determine the electric-dipole polarizability</p>
+<div class="math notranslate nohighlight">
+\[
+\alpha_{xx}(-\omega;\omega) = \langle \hat{\Omega} \rangle^{(1)} / F^\omega_x
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">commutator</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-1.03357615e-16,  1.54873464e-13, -2.62622242e-14,  1.70985304e-02,
-        9.05611160e-15, -4.25976730e-02, -3.20945404e-13,  2.03410634e-14,
-       -2.85867981e-16,  1.61836001e-16])
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">expectation_value</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>  <span class="c1"># closed shell state</span>
+
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ii -&gt;&quot;</span><span class="p">,</span> <span class="n">A</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,</span> <span class="p">:</span><span class="n">nocc</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">320</span><span class="p">:</span><span class="mi">330</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha_xx</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">expectation_value</span><span class="p">(</span><span class="n">commutator</span><span class="p">(</span><span class="n">zymat</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that the factor of -1 comes from the left out factor of <span class="math notranslate nohighlight">\(i^2\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polarizability: </span><span class="si">{</span><span class="n">alpha_xx</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1.03357615e-16, -1.54989954e-13,  2.63125402e-14, -1.70985304e-02,
-       -9.02288175e-15,  4.25976730e-02,  3.20913348e-13, -2.00927742e-14,
-        2.79808384e-16, -1.61836001e-16])
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Polarizability:  34.84380178
 </pre></div>
 </div>
 </div>
 </div>
+<p>We compare our result with the reference value from VeloxChem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference: </span><span class="si">{</span><span class="o">-</span><span class="n">lrf_results</span><span class="p">[</span><span class="s1">&#39;response_functions&#39;</span><span class="p">][(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0656</span><span class="p">)]</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Reference:  34.84380178
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that the two results are in perfect agreement.</p>
 </section>
 </section>
 
