@@ -300,6 +300,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="hf.html">Hartree–Fock</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Orbital rotations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kappa_expansion.html">Time-dependence of observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hf_quasienergy.html">Quasi-energy determination of parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ci.html">Configuration interaction</a></li>
@@ -623,9 +624,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-state-parameterization">Reference state parameterization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generator-of-orbital-rotations">Generator of orbital rotations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-isolation">Phase isolation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-symmetry">Spin symmetry</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustrations">Illustrations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-electron-excited-determinants">Multi-electron excited determinants</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-symmetry">Spin symmetry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Phase isolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Spin symmetry</a></li>
 </ul>
 </li>
 </ul>
@@ -729,12 +732,61 @@ U = e^{-i\kappa}
 </section>
 <section id="phase-isolation">
 <h2>Phase isolation<a class="headerlink" href="#phase-isolation" title="Permalink to this heading">#</a></h2>
-<p>The phase is preserved in the orbital transformation</p>
+<p>The phase is preserved in the orbital transformation in the sense that the overall phase of the reference state does not change, or in terms of orbitals</p>
 <div class="math notranslate nohighlight">
 \[
 \langle \psi_p | \tilde{\psi}_p \rangle \in {\cal R}
 \]</div>
 <p>It can therefore be used for the parameterization of phase-isolated wave functions as indicated with the overbar in <span class="math notranslate nohighlight">\(| \bar{\Psi}(t) \rangle\)</span>.</p>
+</section>
+<section id="spin-symmetry">
+<h2>Spin symmetry<a class="headerlink" href="#spin-symmetry" title="Permalink to this heading">#</a></h2>
+<p>If we wish to preserve the singlet spin symmetry of a closed-shell reference state, we use spin-adapted (normalized) creation operators</p>
+<div class="math notranslate nohighlight">
+\[
+    \hat{\kappa}(t) = \sum_{a}^\mathrm{virt} \sum_{i}^\mathrm{occ}
+    \Big[
+    \kappa_{ai}(t) \, \hat{E}^{\dagger}_{ai} +
+    \kappa_{ai}^*(t) \, \hat{E}^{\dagger}_{ia}
+    \Big]
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{E}_{pq}^\dagger = 
+\frac{1}{\sqrt{2}}
+\big(
+\hat{a}^\dagger_{p\alpha} \hat{a}_{q\alpha} +
+\hat{a}^\dagger_{p\beta} \hat{a}_{q\beta}
+\big)
+\]</div>
+<p>The introduction of a normalization factor in the excitation operators is a choice made in VeloxChem, resulting in (among other things) diagonal elements of the electronic Hessian that are close to orbital energy differences (and not two times these values). As long as a consistent choice is made, it has no consequence for the final results.</p>
+<p>Summations here run over molecular orbitals (MOs) instead of spin orbitals, and consequently, the number of parameters is reduced by a factor of four.</p>
+<p>We get</p>
+<div class="math notranslate nohighlight">
+\[
+| \bar{\Psi}(t) \rangle = | \tilde{\psi}_1, \tilde{\psi}_\bar{1}, \ldots, \tilde{\psi}_{N/2}, \tilde{\psi}_\overline{N/2} \rangle
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\tilde{\psi}_p(\mathbf{r}) = 
+\tilde{\phi}_r(\mathbf{r}) 
+\begin{pmatrix}
+1 \\ 0
+\end{pmatrix} ; \qquad
+\tilde{\psi}_\bar{p}(\mathbf{r}) = 
+\tilde{\phi}_r(\mathbf{r}) 
+\begin{pmatrix}
+0 \\ 1
+\end{pmatrix}
+\end{split}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\phi}_r(\mathbf{r}) =
+\phi_r(\mathbf{r}) \, \big[e^{-i \kappa}\big]_{rp} 
+\]</div>
 </section>
 <section id="illustrations">
 <h2>Illustrations<a class="headerlink" href="#illustrations" title="Permalink to this heading">#</a></h2>
@@ -774,7 +826,7 @@ i\pi/2 &amp; 0 &amp; 0 &amp; 0 \\
 <span class="p">)</span>
 
 <span class="n">U</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Occupied orbitals:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="o">.</span><span class="n">real</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Occupied orbitals:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="o">.</span><span class="n">real</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -789,19 +841,72 @@ i\pi/2 &amp; 0 &amp; 0 &amp; 0 \\
 </div>
 </div>
 </section>
-<section id="spin-symmetry">
-<h3>Spin symmetry<a class="headerlink" href="#spin-symmetry" title="Permalink to this heading">#</a></h3>
-<p>If we wish to preserve the singlet spin symmetry, we use spin-adapted (normalized) creation operators</p>
+<section id="id1">
+<h3>Phase isolation<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>Let us create a random generator of orbital rotations on the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\kappa = 
+\begin{bmatrix}
+0 &amp; \kappa_{ia} \\
+\kappa_{ai} &amp; 0 \\
+\end{bmatrix}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">170</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">20240208</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">kappa</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The transformed orbitals become</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transformed orbitals:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transformed orbitals:
+ [[ 0.414314-0.j       -0.272098-0.000049j -0.063249-0.357053j -0.609038-0.501889j]
+ [-0.272098+0.000049j  0.784682+0.j       -0.400653-0.136519j -0.138307-0.334586j]
+ [ 0.063249-0.357053j  0.400653-0.136519j  0.78434 +0.j       -0.265899+0.058835j]
+ [ 0.609038-0.501889j  0.138307-0.334586j -0.265899-0.058835j  0.414656-0.j      ]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that the diagonal elements are real, i.e.</p>
 <div class="math notranslate nohighlight">
 \[
-\hat{E}_{ai}^\dagger = 
-\frac{1}{\sqrt{2}}
-\big(
-\hat{a}^\dagger_{a\alpha} \hat{a}_{i\alpha} +
-\hat{a}^\dagger_{a\beta} \hat{a}_{i\beta}
-\big)
+\langle \psi_p | \tilde{\psi}_p \rangle \in {\cal R}
 \]</div>
-<p>or, in other words, <span class="math notranslate nohighlight">\(\kappa_{42} = \kappa_{31}\)</span> and <span class="math notranslate nohighlight">\(\kappa_{41} = \kappa_{32} = 0\)</span>.</p>
+</section>
+<section id="id2">
+<h3>Spin symmetry<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>The singlet spin symmetry of the closed-shell reference state, <span class="math notranslate nohighlight">\(|\psi_1, \psi_2 \rangle\)</span>, is preserved by requiring that <span class="math notranslate nohighlight">\(\kappa_{42} = \kappa_{31}\)</span> and <span class="math notranslate nohighlight">\(\kappa_{41} = \kappa_{32} = 0\)</span>.</p>
+<p>As an example, let us consider</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\kappa = 
+\begin{bmatrix}
+0 &amp; 0 &amp; -i\pi/4 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; -i\pi/4 \\
+i\pi/4 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; i\pi/4 &amp; 0 &amp; 0 \\
+\end{bmatrix}
+\end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="n">k41</span><span class="p">,</span> <span class="n">k42</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.25</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.25</span><span class="n">j</span><span class="p">)</span>
@@ -812,20 +917,122 @@ i\pi/2 &amp; 0 &amp; 0 &amp; 0 \\
 <span class="p">)</span>
 
 <span class="n">U</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Occupied orbitals:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="o">.</span><span class="n">real</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Occupied orbitals:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="o">.</span><span class="n">real</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Occupied orbitals:
- [[0.70710678 0.        ]
- [0.         0.70710678]
- [0.70710678 0.        ]
- [0.         0.70710678]]
+ [[0.707107 0.      ]
+ [0.       0.707107]
+ [0.707107 0.      ]
+ [0.       0.707107]]
 </pre></div>
 </div>
 </div>
 </div>
+<p>The resulting state can be written</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+| \bar{\Psi} \rangle &amp; =
+| \tilde{\psi_1}, \tilde{\psi_2} \rangle =
+| (\psi_1 + \psi_3)/\sqrt{2}, (\psi_2 + \psi_4)/\sqrt{2} \rangle \\
+&amp; =
+\frac{1}{2}
+\Big[
+| \psi_1, \psi_2 \rangle +
+| \psi_1, \psi_4 \rangle +
+| \psi_3, \psi_2 \rangle +
+| \psi_3, \psi_4 \rangle 
+\Big]
+\end{align*}\]</div>
+<p>where we identify the reference state and the doubly excited determinant alongside the symmetry-adapted configuration of singlet spin symmetry.</p>
+<p>Finally, let us consider a somewhat larger system with four electrons in six MOs (or 12 spin orbitals). In the spin-orbital basis, it is convenient to organize parameters in spin blocks.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\kappa =
+\begin{bmatrix}
+0 &amp; 0 &amp; \kappa_{ia} &amp; \kappa_{i\bar{a}} \\
+0 &amp; 0 &amp; \kappa_{\bar{i}a} &amp; \kappa_{\bar{i}\bar{a}} \\
+\kappa_{ai} &amp; \kappa_{a\bar{i}} &amp; 0 &amp; 0\\
+\kappa_{\bar{a}i} &amp; \kappa_{\bar{a}\bar{i}} &amp; 0 &amp; 0\\
+\end{bmatrix}
+\end{split}\]</div>
+<p>Let us perform a random transformation of the spin orbitals and print out <span class="math notranslate nohighlight">\(\tilde{\psi}_1\)</span> and <span class="math notranslate nohighlight">\(\tilde{\psi}_\bar{1}\)</span> as examples.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">k31</span><span class="p">,</span> <span class="n">k41</span><span class="p">,</span> <span class="n">k51</span><span class="p">,</span> <span class="n">k61</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="n">k42</span><span class="p">,</span> <span class="n">k52</span><span class="p">,</span> <span class="n">k62</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">k13</span><span class="p">,</span> <span class="n">k14</span><span class="p">,</span> <span class="n">k15</span><span class="p">,</span> <span class="n">k16</span><span class="p">,</span> <span class="n">k23</span><span class="p">,</span> <span class="n">k24</span><span class="p">,</span> <span class="n">k25</span><span class="p">,</span> <span class="n">k26</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">k31</span><span class="p">,</span> <span class="n">k41</span><span class="p">,</span> <span class="n">k51</span><span class="p">,</span> <span class="n">k61</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="n">k42</span><span class="p">,</span> <span class="n">k52</span><span class="p">,</span> <span class="n">k62</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k13</span><span class="p">,</span> <span class="n">k14</span><span class="p">,</span> <span class="n">k15</span><span class="p">,</span> <span class="n">k16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k23</span><span class="p">,</span> <span class="n">k24</span><span class="p">,</span> <span class="n">k25</span><span class="p">,</span> <span class="n">k26</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k13</span><span class="p">,</span> <span class="n">k14</span><span class="p">,</span> <span class="n">k15</span><span class="p">,</span> <span class="n">k16</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k23</span><span class="p">,</span> <span class="n">k24</span><span class="p">,</span> <span class="n">k25</span><span class="p">,</span> <span class="n">k26</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k41</span><span class="p">,</span> <span class="n">k42</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k51</span><span class="p">,</span> <span class="n">k52</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k61</span><span class="p">,</span> <span class="n">k62</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k41</span><span class="p">,</span> <span class="n">k42</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k51</span><span class="p">,</span> <span class="n">k52</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k61</span><span class="p">,</span> <span class="n">k62</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">U</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lowest occupied alpha-spin orbital:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lowest occupied beta-spin orbital:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lowest occupied alpha-spin orbital:
+ [ 0.195145+0.j       -0.674738-0.007566j  0.      +0.j        0.      +0.j        0.272185-0.364692j  0.150157-0.219078j -0.077445-0.261337j  0.390656+0.045347j
+  0.      +0.j        0.      +0.j        0.      +0.j        0.      +0.j      ]
+Lowest occupied beta-spin orbital:
+ [ 0.      +0.j        0.      +0.j        0.195145+0.j       -0.674738-0.007566j  0.      +0.j        0.      +0.j        0.      +0.j        0.      +0.j
+  0.272185-0.364692j  0.150157-0.219078j -0.077445-0.261337j  0.390656+0.045347j]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that the spatial parts of the two spin orbitals are identical.</p>
+<p>If we instead implement the transformation in the MO-basis, the dimension of the <span class="math notranslate nohighlight">\(\kappa\)</span>-matrix becomes reduced by a factor of two.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k13</span><span class="p">,</span> <span class="n">k14</span><span class="p">,</span> <span class="n">k15</span><span class="p">,</span> <span class="n">k16</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k23</span><span class="p">,</span> <span class="n">k24</span><span class="p">,</span> <span class="n">k25</span><span class="p">,</span> <span class="n">k26</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k41</span><span class="p">,</span> <span class="n">k42</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k51</span><span class="p">,</span> <span class="n">k52</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">k61</span><span class="p">,</span> <span class="n">k62</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">U</span> <span class="o">=</span> <span class="n">expm</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lowest occupied molecular orbital:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Lowest occupied molecular orbital:
+ [ 0.195145+0.j       -0.674738-0.007566j  0.272185-0.364692j  0.150157-0.219078j -0.077445-0.261337j  0.390656+0.045347j]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that this molecular orbital is identical to the spatial parts of the spin orbitals in the previous example.</p>
 </section>
 </section>
 </section>
@@ -897,9 +1104,11 @@ i\pi/2 &amp; 0 &amp; 0 &amp; 0 \\
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-state-parameterization">Reference state parameterization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generator-of-orbital-rotations">Generator of orbital rotations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-isolation">Phase isolation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-symmetry">Spin symmetry</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustrations">Illustrations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-electron-excited-determinants">Multi-electron excited determinants</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spin-symmetry">Spin symmetry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Phase isolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Spin symmetry</a></li>
 </ul>
 </li>
 </ul>
