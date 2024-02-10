@@ -712,7 +712,7 @@ F^{-\omega}_\alpha =\Big[ F^{\omega}_\alpha \Big]^*
 <p>where, in the second term, we have made use of the fact that we are free to change sign of the frequency summation variable in the Fourier expansion.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In VeloxChem, normalized spin-adapted electron transfer operators are adopted such that</p>
+<p>With use of spin-adapted electron transfer operators, we get</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
 \hat{\kappa}^{(1)}(\omega) &amp; =
@@ -722,12 +722,9 @@ F^{-\omega}_\alpha =\Big[ F^{\omega}_\alpha \Big]^*
 \big[\kappa^{(1)}_{ai}(-\omega)\big]^\ast \, \hat{E}^{\dagger}_{ia}
 \Big] \\
 \hat{E}^{\dagger}_{pq} &amp; =
-\frac{1}{\sqrt{2}}
-\Big[
 \hat{a}^{\dagger}_{p\alpha} \hat{a}_{q\alpha} + \hat{a}^{\dagger}_{p\beta} \hat{a}_{q\beta}
-\Big]
 \end{align*}\]</div>
-<p>Here summations run over molecular orbitals.</p>
+<p>where summations run over molecular orbitals.</p>
 </div>
 </section>
 <section id="expectation-values-of-observables">
@@ -735,7 +732,7 @@ F^{-\omega}_\alpha =\Big[ F^{\omega}_\alpha \Big]^*
 <p>In time-dependent Hartree–Fock, the expectation value of an observable becomes</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
-\langle \hat{\Omega} \rangle &amp; =
+\langle \hat{\Omega} \rangle(t) &amp; =
 \langle \Psi(t) | \hat{\Omega} | \Psi(t) \rangle = 
 \langle \bar{\Psi}(t) | \hat{\Omega} | \bar{\Psi}(t) \rangle =
 \langle 0 | e^{i\hat{\kappa}} \hat{\Omega} e^{-i\hat{\kappa}} | 0 \rangle \\
@@ -750,17 +747,30 @@ i \langle 0 | \Big[ \hat{\kappa}(t), \hat{\Omega} \Big] | 0 \rangle -
 <p>The contributions to the expectation value that are linear in the perturbation can be written</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
-\langle \hat{\Omega} \rangle^{(1)} &amp; =
+\langle \hat{\Omega} \rangle^{(1)}(t) &amp; =
 i \langle 0 | \Big[ \hat{\kappa}^{(1)}(t), \hat{\Omega} \Big] | 0 \rangle =
 i \sum_\omega
 \langle 0 | 
 \Big[ \hat{\kappa}^{(1)}(\omega), \, \hat{\Omega} \Big] | 0 \rangle 
 \, e^{-i\omega t}
+\equiv 
+\sum_\omega
+\langle \hat{\Omega} \rangle^{(1)}(\omega)
+\, e^{-i\omega t}
 \end{align*}\]</div>
 <p>The MO-representation of the <span class="math notranslate nohighlight">\(\hat{\kappa}^{(1)}\)</span>-operator can be determined from linear response theory <span id="id1">[<a class="reference internal" href="../refs.html#id77" title="P. Norman, K. Ruud, and T. Saue. Principles and practices of molecular properties. John Wiley &amp; Sons, Ltd, 2018.">NRS18</a>]</span> and calculated with use of the VeloxChem program, and it is thereafter a trivial task to calculate the expectation value of its commutator with the observable <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The factor “<span class="math notranslate nohighlight">\(i\)</span>” multiplying the expectation value is typically suppressed in intermediate steps of the calculations as to return at a point of convenience.</p>
+<p>The factor “<span class="math notranslate nohighlight">\(i\)</span>” multiplying the expectation value is typically suppressed in intermediate steps of the calculations as to return at a point of convenience. In VeloxChem, there will appear an additional factor of <span class="math notranslate nohighlight">\(\sqrt{2}\)</span> due the adoption of <em>normalzed</em> spin-adapted electron transfer operators</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{E}_{} =
+\frac{1}{\sqrt{2}}
+\Big[
+\hat{a}^{\dagger}_{p\alpha} \hat{a}_{q\alpha} + \hat{a}^{\dagger}_{p\beta} \hat{a}_{q\beta}
+\Big]
+\]</div>
+<p>Among other things, with this choice the diagonal elements in the electronic Hessian will be close to orbital energy differences and not two times these values. Whatever the choice, final results will be identical as long as it is implemented in a consistent manner.</p>
 </div>
 </section>
 <section id="response-functions">
@@ -768,11 +778,9 @@ i \sum_\omega
 <p>Response functions are defined from the order expansions of observables. The linear response functions are identified from the expression</p>
 <div class="math notranslate nohighlight">
 \[
-\langle \hat{\Omega} \rangle^{(1)} =
-\sum_\omega
+\langle \hat{\Omega} \rangle^{(1)}(\omega) =
 \langle \langle \hat{\Omega}; \hat{V}^\omega_\alpha \rangle \rangle_\omega
 \, F^\omega_\alpha
-\, e^{-i\omega t}
 \]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -840,8 +848,8 @@ Number of molecular orbitals: 48
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1707399030743358"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_1707399030743358" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1707557337897838"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1707557337897838" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -873,19 +881,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_1707399030743358 = null;
-var warn = document.getElementById("3dmolwarning_1707399030743358");
+var viewer_1707557337897838 = null;
+var warn = document.getElementById("3dmolwarning_1707557337897838");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1707399030743358 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707399030743358"),{backgroundColor:"white"});
-viewer_1707399030743358.zoomTo();
-	viewer_1707399030743358.addModel("6\n\nC              0.677599970000         0.000000000000         0.000000000000\nC             -0.677599970000         0.000000000000         0.000000000000\nH              1.216551970000         0.924144740000         0.000000000000\nH              1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000         0.924144740000         0.000000000000\n");
-	viewer_1707399030743358.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_1707399030743358.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_1707399030743358.zoomTo();
-viewer_1707399030743358.render();
+viewer_1707557337897838 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707557337897838"),{backgroundColor:"white"});
+viewer_1707557337897838.zoomTo();
+	viewer_1707557337897838.addModel("6\n\nC              0.677599970000         0.000000000000         0.000000000000\nC             -0.677599970000         0.000000000000         0.000000000000\nH              1.216551970000         0.924144740000         0.000000000000\nH              1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000        -0.924144740000         0.000000000000\nH             -1.216551970000         0.924144740000         0.000000000000\n");
+	viewer_1707557337897838.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1707557337897838.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1707557337897838.zoomTo();
+viewer_1707557337897838.render();
 });
 </script></div></div>
 </div>
@@ -970,17 +978,17 @@ viewer_1707399030743358.render();
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
     <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">Y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
     <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="o">-</span> <span class="n">lrf_results</span><span class="p">[</span><span class="s2">&quot;solutions&quot;</span><span class="p">][(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mf">0.0656</span><span class="p">)]</span><span class="o">.</span><span class="n">get_full_vector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>A factor of -1 has here been introduced in recognition of the fact that the perturbation operator is equal to <em>minus</em> the electric dipole operator.</p>
+<p>A factor of -1 has here been introduced in recognition of the fact that the perturbation operator is equal to <em>minus</em> the electric dipole operator and the factor of <span class="math notranslate nohighlight">\(\sqrt{2}\)</span> is associated with the aforementioned normalization of electron transfer operators.</p>
 <p>We scatter the response parameters into an MO-matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1010,7 +1018,7 @@ viewer_1707399030743358.render();
 <p>Fourth, we determine the expectation value of the commutator between <span class="math notranslate nohighlight">\(\hat{\kappa}^{(1)}(\omega)\)</span> and <span class="math notranslate nohighlight">\(\hat{\Omega}\)</span> to determine the electric-dipole polarizability</p>
 <div class="math notranslate nohighlight">
 \[
-\alpha_{xx}(-\omega;\omega) = \langle \hat{\Omega} \rangle^{(1)} / F^\omega_x
+\alpha_{xx}(-\omega;\omega) = \langle \hat{\Omega} \rangle^{(1)}(\omega) / F^\omega_x
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1032,12 +1040,12 @@ viewer_1707399030743358.render();
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha_xx</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">expectation_value</span><span class="p">(</span><span class="n">commutator</span><span class="p">(</span><span class="n">zymat</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha_xx</span> <span class="o">=</span> <span class="o">-</span> <span class="n">expectation_value</span><span class="p">(</span><span class="n">commutator</span><span class="p">(</span><span class="n">zymat</span><span class="p">,</span> <span class="n">mu_x</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>We note that the factor of -1 comes from the left out factor of <span class="math notranslate nohighlight">\(i^2\)</span> and the factor of <span class="math notranslate nohighlight">\(\sqrt{2}\)</span> is associated with the use of spin-adapted electron transfer operators.</p>
+<p>We note that the factor of -1 comes from the left out factor of <span class="math notranslate nohighlight">\(i^2\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polarizability: </span><span class="si">{</span><span class="n">alpha_xx</span><span class="si">:</span><span class="s2">12.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
