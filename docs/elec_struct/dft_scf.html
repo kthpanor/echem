@@ -200,6 +200,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="wft.html">Wave function theory</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="hartree-fock.html">Hartree–Fock</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fock_diagonalize.html">Fock matrix diagonalization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hf_scf.html">SCF optimization</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
@@ -221,9 +222,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="multiref.html">Multireference methods</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="mcscf.html">MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mcpdft.html">DFT for strong correlation</a></li>
-
-
+<li class="toctree-l2"><a class="reference internal" href="mcpdft.html">MC-PDFT</a></li>
 </ul>
 </li>
 </ul>
@@ -301,6 +300,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/wavefunction.html">Wave function methods</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/hf.html">Hartree–Fock</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_rot.html">Orbital rotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/kappa_expansion.html">Time-dependence of observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_param_field.html">Field-dependence of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/hf_quasienergy.html">Quasi-energy determination of parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/ci.html">Configuration interaction</a></li>
@@ -675,8 +677,8 @@ n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
 \]</div>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
 </pre></div>
 </div>
@@ -706,8 +708,8 @@ n(\mathbf{r}) = 2 \times \sum_{i=1}^{N/2} \left|\phi_i(\mathbf{r})\right|^2
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17068647566585453"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17068647566585453" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1707849690057554"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1707849690057554" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -739,19 +741,19 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_17068647566585453 = null;
-var warn = document.getElementById("3dmolwarning_17068647566585453");
+var viewer_1707849690057554 = null;
+var warn = document.getElementById("3dmolwarning_1707849690057554");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17068647566585453 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17068647566585453"),{backgroundColor:"white"});
-viewer_17068647566585453.zoomTo();
-	viewer_17068647566585453.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
-	viewer_17068647566585453.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17068647566585453.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17068647566585453.zoomTo();
-viewer_17068647566585453.render();
+viewer_1707849690057554 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707849690057554"),{backgroundColor:"white"});
+viewer_1707849690057554.zoomTo();
+	viewer_1707849690057554.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_1707849690057554.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1707849690057554.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1707849690057554.zoomTo();
+viewer_1707849690057554.render();
 });
 </script></div></div>
 </div>
@@ -805,6 +807,64 @@ Nuclear repulsion energy (in a.u.):  9.34363816
 </pre></div>
 </div>
 </div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================</span>
+<span class="c1"># integrals in AO basis</span>
+<span class="c1"># =============================================================</span>
+
+<span class="c1"># overlap matrix</span>
+<span class="n">overlap_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OverlapIntegralsDriver</span><span class="p">()</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">overlap_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># one-electron Hamiltonian</span>
+<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
+
+<span class="c1"># two-electron Hamiltonian</span>
+<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="c1"># =============================================================</span>
+<span class="c1"># DIIS convergence acceleration</span>
+<span class="c1"># =============================================================</span>
+
+
+<span class="k">def</span> <span class="nf">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">)</span>
+
+    <span class="c1"># build DIIS matrix</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e_vecs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="n">F_diis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">F_diis</span> <span class="o">+=</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">F_mats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">F_diis</span>
+</pre></div>
+</div>
+</div>
+</details>
 </div>
 </section>
 <section id="xc-contribution-to-fock-matrix">
@@ -882,7 +942,7 @@ v_\mathrm{xc}(\mathbf{r}_g)
 <span class="n">F_mats</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># initial guess from core Hamiltonian</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter       SCF energy   LDA exchange   Exact exchange   Error norm&quot;</span><span class="p">)</span>
 
@@ -913,32 +973,24 @@ v_\mathrm{xc}(\mathbf{r}_g)
         <span class="k">break</span>
 
     <span class="n">F</span> <span class="o">=</span> <span class="n">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter       SCF energy   LDA exchange   Exact exchange   Error norm
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0       -67.80508830   -10.89381306     -11.93847705     3.14e+00
+ 0       -67.80508830   -10.89381306     -11.93847705     3.14e+00
  1       -66.26792219    -6.28078058      -7.13537283     4.19e+00
  2       -74.99359878    -7.76615742      -8.60690061     8.13e-01
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 3       -75.12110246    -7.90554682      -8.73394901     5.65e-01
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 4       -75.13715465    -7.92293008      -8.75103380     4.94e-01
+ 3       -75.12110246    -7.90554682      -8.73394901     5.65e-01
+ 4       -75.13715465    -7.92293008      -8.75103380     4.94e-01
  5       -75.16585462    -7.99147909      -8.82023741     3.22e-01
- 6       -75.18739992    -8.11598421      -8.94844153     1.24e-02
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 6       -75.18739992    -8.11598421      -8.94844153     1.24e-02
  7       -75.18742612    -8.11619778      -8.94863105     6.35e-03
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 8       -75.18743428    -8.11849075      -8.95101979     7.61e-04
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 9       -75.18743440    -8.11879444      -8.95133716     1.63e-06
+ 8       -75.18743428    -8.11849075      -8.95101979     7.61e-04
+ 9       -75.18743440    -8.11879444      -8.95133716     1.63e-06
 10       -75.18743440    -8.11879427      -8.95133701     7.68e-08
 SCF iterations converged!
 </pre></div>

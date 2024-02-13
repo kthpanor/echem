@@ -76,7 +76,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="HF in VeloxChem" href="hf_example.html" />
-    <link rel="prev" title="Hartree–Fock theory" href="hf_theory.html" />
+    <link rel="prev" title="Fock matrix diagonalization" href="fock_diagonalize.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -200,6 +200,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="wft.html">Wave function theory</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="hartree-fock.html">Hartree–Fock</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fock_diagonalize.html">Fock matrix diagonalization</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">SCF optimization</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
@@ -221,9 +222,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="multiref.html">Multireference methods</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="mcscf.html">MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mcpdft.html">DFT for strong correlation</a></li>
-
-
+<li class="toctree-l2"><a class="reference internal" href="mcpdft.html">MC-PDFT</a></li>
 </ul>
 </li>
 </ul>
@@ -301,6 +300,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/wavefunction.html">Wave function methods</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/hf.html">Hartree–Fock</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_rot.html">Orbital rotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/kappa_expansion.html">Time-dependence of observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_param_field.html">Field-dependence of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/hf_quasienergy.html">Quasi-energy determination of parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/ci.html">Configuration interaction</a></li>
@@ -622,11 +624,13 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">SCF optimization</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-system">Setting up the system</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scf-energy">SCF energy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#some-system-parameters">Some system parameters</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-integrals-in-ao-basis">Getting integrals in AO basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonalization-of-the-ao-basis">Orthogonalization of the AO basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-hartreefock-equation">Solving the Hartree–Fock equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convergence-measure">Convergence measure</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scf-iterations">SCF iterations</a></li>
 </ul>
 </li>
@@ -649,18 +653,21 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="scf-optimization">
 <h1>SCF optimization<a class="headerlink" href="#scf-optimization" title="Permalink to this heading">#</a></h1>
-<p>Let us implement the presented Hartree–Fock SCF procedure. We will use the water molecule as an example and, as reference, we will first compute the Hartree–Fock energy using the built-in <code class="docutils literal notranslate"><span class="pre">compute</span></code> method in VeloxChem.</p>
-<section id="setting-up-the-system">
-<h2>Setting up the system<a class="headerlink" href="#setting-up-the-system" title="Permalink to this heading">#</a></h2>
+<p>Let us implement the presented Hartree–Fock SCF procedure. We will use the water molecule as an illustration.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
 </div>
+<section id="reference-calculation">
+<h2>Reference calculation<a class="headerlink" href="#reference-calculation" title="Permalink to this heading">#</a></h2>
+<section id="scf-energy">
+<h3>SCF energy<a class="headerlink" href="#scf-energy" title="Permalink to this heading">#</a></h3>
+<p>Let us first perform an reference calculation using the restricted closed-shell SCF driver in VeloxChem named <code class="docutils literal notranslate"><span class="pre">ScfRestrictedDriver</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o_xyz</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
@@ -676,86 +683,6 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">molecule</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1706864789022472"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_1706864789022472" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
-        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
-        </div>
-<script>
-
-var loadScriptAsync = function(uri){
-  return new Promise((resolve, reject) => {
-    //this is to ignore the existence of requirejs amd
-    var savedexports, savedmodule;
-    if (typeof exports !== 'undefined') savedexports = exports;
-    else exports = {}
-    if (typeof module !== 'undefined') savedmodule = module;
-    else module = {}
-
-    var tag = document.createElement('script');
-    tag.src = uri;
-    tag.async = true;
-    tag.onload = () => {
-        exports = savedexports;
-        module = savedmodule;
-        resolve();
-    };
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-});
-};
-
-if(typeof $3Dmolpromise === 'undefined') {
-$3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
-}
-
-var viewer_1706864789022472 = null;
-var warn = document.getElementById("3dmolwarning_1706864789022472");
-if(warn) {
-    warn.parentNode.removeChild(warn);
-}
-$3Dmolpromise.then(function() {
-viewer_1706864789022472 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1706864789022472"),{backgroundColor:"white"});
-viewer_1706864789022472.zoomTo();
-	viewer_1706864789022472.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
-	viewer_1706864789022472.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_1706864789022472.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_1706864789022472.zoomTo();
-viewer_1706864789022472.render();
-});
-</script></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_electrons</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span>
-<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span><span class="w"> </span><span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 24
-Number of doubly occupied molecular orbitals: 5
-Nuclear repulsion energy (in a.u.):  9.343638157670
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="reference-calculation">
-<h2>Reference calculation<a class="headerlink" href="#reference-calculation" title="Permalink to this heading">#</a></h2>
-<p>Let us first perform an reference calculation using the restricted closed-shell SCF driver in VeloxChem.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
@@ -779,6 +706,30 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 </div>
 </div>
 </section>
+<section id="some-system-parameters">
+<h3>Some system parameters<a class="headerlink" href="#some-system-parameters" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nuclear repulsion energy (in a.u.): </span><span class="si">{</span><span class="n">V_nuc</span><span class="w"> </span><span class="si">:</span><span class="s2"> 14.12f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 24
+Number of doubly occupied molecular orbitals: 5
+Nuclear repulsion energy (in a.u.):  9.343638157670
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 <section id="getting-integrals-in-ao-basis">
 <h2>Getting integrals in AO basis<a class="headerlink" href="#getting-integrals-in-ao-basis" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -798,95 +749,15 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 
 <span class="c1"># two-electron Hamiltonian</span>
 <span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
-<span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="orthogonalization-of-the-ao-basis">
-<h2>Orthogonalization of the AO basis<a class="headerlink" href="#orthogonalization-of-the-ao-basis" title="Permalink to this heading">#</a></h2>
-<p>We first retrieve an <em>orthogonal</em> AO (OAO) basis by means of a non-unitary transformation matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> such that</p>
-<div class="math notranslate nohighlight">
-\[
-| \overline{\chi^\mathrm{OAO}} \rangle = | \overline{\chi} \rangle \mathbf{X}
-\]</div>
-<p>and</p>
-<div class="math notranslate nohighlight">
-\[
-\mathbf{S}^\mathrm{OAO} = \mathbf{X}^\dagger \mathbf{S X} = \mathbf{I}
-\]</div>
-<p>In the absence of linear dependencies in the AO basis, the overlap matrix is symmetric (and positive-definite) and it can first be diagonalized by a unitary transformation</p>
-<div class="math notranslate nohighlight">
-\[
-\mathbf{U}^{\dagger} \mathbf{S U} = \boldsymbol{\sigma}
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\sigma}\)</span> is a diagonal matrix collecting the eigenvalues. It is then straightforward to construct explicit forms of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>. There exist two common choices:</p>
-<table class="colwidths-auto table">
-<thead>
-<tr class="row-odd"><th class="text-center head"><p>symmetric form</p></th>
-<th class="text-center head"><p>canonical form</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{U} \boldsymbol{\sigma}^{-\frac{1}{2}} \mathbf{U}^\dagger\)</span></p></td>
-<td class="text-center"><p><span class="math notranslate nohighlight">\(\mathbf{X} = \mathbf{U} \boldsymbol{\sigma}^{-\frac{1}{2}}\)</span></p></td>
-</tr>
-</tbody>
-</table>
-<p>We can readily verify that both expressions satisfy <span class="math notranslate nohighlight">\(\mathbf{X}^\dagger \mathbf{S X} = \mathbf{I}\)</span>.</p>
-<p>The expression for the associated transformation of MO coefficients is determined from the relation</p>
-<div class="math notranslate nohighlight">
-\[
-| \overline{\phi} \rangle = | \overline{\chi} \rangle \mathbf{C} =
-| \overline{\chi^\mathrm{OAO}} \rangle \mathbf{X}^{-1} \mathbf{C}
-\]</div>
-<p>We identify</p>
-<div class="math notranslate nohighlight">
-\[
-\mathbf{C}^\mathrm{OAO} = \mathbf{X}^{-1} \mathbf{C}
-\]</div>
-<p>or</p>
-<div class="math notranslate nohighlight">
-\[
-\mathbf{C} = \mathbf{X C}^\mathrm{OAO}
-\]</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># symmetric transformation</span>
-<span class="n">sigma</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,k,jk-&gt;ij&quot;</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="p">),</span> <span class="n">U</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="solving-the-hartreefock-equation">
-<h2>Solving the Hartree–Fock equation<a class="headerlink" href="#solving-the-hartreefock-equation" title="Permalink to this heading">#</a></h2>
-<p>For a given Fock matrix, we solve the Hartree–Fock equation by the following steps:</p>
-<ol class="arabic simple">
-<li><p>transform the Fock matrix to the OAO basis</p></li>
-<li><p>diagonalize the Fock matrix</p></li>
-<li><p>transform the MO coefficients back to AO basis</p></li>
-</ol>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
-
-    <span class="n">F_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ki,kl,lj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C_OAO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F_OAO</span><span class="p">)</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ik,kj-&gt;ij&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">C_OAO</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">C</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="scf-iterations">
-<h2>SCF iterations<a class="headerlink" href="#scf-iterations" title="Permalink to this heading">#</a></h2>
-<p>We form an initial guess for the density based on the core Hamiltonian and thereafter enter the SCF iterations. As a measure of convergence, we adopt the norm of the following matrix in AO basis</p>
+<section id="convergence-measure">
+<h2>Convergence measure<a class="headerlink" href="#convergence-measure" title="Permalink to this heading">#</a></h2>
+<p>As a measure of convergence, we adopt the norm of the following matrix in AO basis</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf{e} = 
@@ -905,17 +776,32 @@ F_\mathrm{vo} &amp; 0 \\
 \end{bmatrix}
 \end{split}\]</div>
 <p>where it is seen to correspond to vanishing occupied—virtual blocks in the Fock matrix.</p>
+</section>
+<section id="scf-iterations">
+<h2>SCF iterations<a class="headerlink" href="#scf-iterations" title="Permalink to this heading">#</a></h2>
+<p>We form an initial guess for the density based on the core Hamiltonian.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initial guess from core Hamiltonian</span>
+<span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next, we perform SCF iterations until convergence (or the maximum number of iterations) is reached.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_iter</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">conv_thresh</span> <span class="o">=</span> <span class="mf">1e-6</span>
 
-<span class="n">E_RH</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="c1"># initial guess from core Hamiltonian</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
+<span class="n">error_RH</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="nb">iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
 
@@ -933,13 +819,13 @@ F_\mathrm{vo} &amp; 0 \\
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vec</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">10.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">E_RH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="n">error_RH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCF iterations converged!&quot;</span><span class="p">)</span>
         <span class="k">break</span>
 
-    <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -972,7 +858,9 @@ F_\mathrm{vo} &amp; 0 \\
 24      -76.02698419    3.30e-05
 25      -76.02698419    1.88e-05
 26      -76.02698419    1.07e-05
-27      -76.02698419    6.07e-06
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27      -76.02698419    6.07e-06
 28      -76.02698419    3.45e-06
 29      -76.02698419    1.96e-06
 30      -76.02698419    1.12e-06
@@ -982,6 +870,7 @@ SCF iterations converged!
 </div>
 </div>
 </div>
+<p>We note the final energy is in perfect agreement with that of the reference calculation.</p>
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="convergence-acceleration">
@@ -1073,10 +962,10 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e_vecs</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">F_mats</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">E_DIIS</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">error_DIIS</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># initial guess from core Hamiltonian</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iter      SCF energy    Error norm&quot;</span><span class="p">)</span>
 
@@ -1097,14 +986,14 @@ w_1 \\ \vdots \\ w_n \\ \lambda
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">iter</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">E</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">10.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">E_DIIS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="n">error_DIIS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">conv_thresh</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SCF iterations converged!&quot;</span><span class="p">)</span>
         <span class="k">break</span>
 
     <span class="n">F</span> <span class="o">=</span> <span class="n">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">)</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">get_MO_coeff</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    <span class="n">epsilon</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1129,23 +1018,26 @@ SCF iterations converged!
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E_RH</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E_DIIS</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">E_RH</span><span class="p">)],[</span><span class="mf">1e-6</span><span class="p">,</span><span class="mf">1e-6</span><span class="p">],</span><span class="s1">&#39;k--&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s1">&#39;Roothan--Hall&#39;</span><span class="p">,</span><span class="s1">&#39;DIIS&#39;</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Error norm&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">error_RH</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Roothaan–Hall&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">error_DIIS</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;DIIS&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">conv_thresh</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Error norm&quot;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/932543dc463b5d02a7580c6dab9c22fccc9516ceee8b95c98bc73930239857af.png" src="../../_images/932543dc463b5d02a7580c6dab9c22fccc9516ceee8b95c98bc73930239857af.png" />
+<img alt="../../_images/50a700591e9750ba961ea7d6ccc98aa44d837a23f8203a9abdeca8cc0b0599ed.png" src="../../_images/50a700591e9750ba961ea7d6ccc98aa44d837a23f8203a9abdeca8cc0b0599ed.png" />
 </div>
 </div>
 </section>
@@ -1182,12 +1074,12 @@ SCF iterations converged!
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="hf_theory.html"
+       href="fock_diagonalize.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Hartree–Fock theory</p>
+        <p class="prev-next-title">Fock matrix diagonalization</p>
       </div>
     </a>
     <a class="right-next"
@@ -1216,11 +1108,13 @@ SCF iterations converged!
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">SCF optimization</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-system">Setting up the system</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-calculation">Reference calculation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scf-energy">SCF energy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#some-system-parameters">Some system parameters</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-integrals-in-ao-basis">Getting integrals in AO basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orthogonalization-of-the-ao-basis">Orthogonalization of the AO basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-hartreefock-equation">Solving the Hartree–Fock equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convergence-measure">Convergence measure</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scf-iterations">SCF iterations</a></li>
 </ul>
 </li>
