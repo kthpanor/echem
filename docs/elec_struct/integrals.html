@@ -636,7 +636,11 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integral-transformations">Integral transformations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">One-electron integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">One-electron integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ao-to-mo-transformation">AO to MO transformation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mo-to-ao-transformation">MO to AO transformation</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-integrals">Two-electron integrals</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conventional">Conventional</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fock-matrix-driven">Fock-matrix driven</a></li>
@@ -680,8 +684,8 @@ document.write(`
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1707848751209832"  style="position: relative; width: 300px; height: 200px;">
-        <p id="3dmolwarning_1707848751209832" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+<div class="output text_html"><div id="3dmolviewer_1707898197815872"  style="position: relative; width: 300px; height: 200px;">
+        <p id="3dmolwarning_1707898197815872" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
         <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
         </div>
 <script>
@@ -713,20 +717,20 @@ $3Dmolpromise = null;
   $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.4/3Dmol-min.js');
 }
 
-var viewer_1707848751209832 = null;
-var warn = document.getElementById("3dmolwarning_1707848751209832");
+var viewer_1707898197815872 = null;
+var warn = document.getElementById("3dmolwarning_1707898197815872");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1707848751209832 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707848751209832"),{backgroundColor:"white"});
-viewer_1707848751209832.zoomTo();
-	viewer_1707848751209832.addModel("3\n\nO    0.000000000000        0.000000000000        0.000000000000\nH    0.000000000000        0.740848095288        0.582094932012\nH    0.000000000000       -0.740848095288        0.582094932012\n","xyz");
-	viewer_1707848751209832.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_1707848751209832.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_1707848751209832.rotate(90,"y");
-	viewer_1707848751209832.rotate(-90,"x");
-viewer_1707848751209832.render();
+viewer_1707898197815872 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1707898197815872"),{backgroundColor:"white"});
+viewer_1707898197815872.zoomTo();
+	viewer_1707898197815872.addModel("3\n\nO    0.000000000000        0.000000000000        0.000000000000\nH    0.000000000000        0.740848095288        0.582094932012\nH    0.000000000000       -0.740848095288        0.582094932012\n","xyz");
+	viewer_1707898197815872.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1707898197815872.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1707898197815872.rotate(90,"y");
+	viewer_1707898197815872.rotate(-90,"x");
+viewer_1707898197815872.render();
 });
 </script></div></div>
 </div>
@@ -898,12 +902,20 @@ viewer_1707848751209832.render();
 </div>
 <section id="one-electron-integrals">
 <h3>One-electron integrals<a class="headerlink" href="#one-electron-integrals" title="Permalink to this heading">#</a></h3>
+<section id="ao-to-mo-transformation">
+<h4>AO to MO transformation<a class="headerlink" href="#ao-to-mo-transformation" title="Permalink to this heading">#</a></h4>
 <p>The transformation of one-electron integrals from the AO to the MO basis takes the form</p>
 <div class="math notranslate nohighlight">
 \[
  \Omega_{pq}^\mathrm{MO} = \sum_{\alpha, \beta} 
  c^*_{\alpha p} \Omega_{\alpha\beta}^\mathrm{AO} c_{\beta q}
- \]</div>
+\]</div>
+<p>or, equivalently,</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\Omega}^\mathrm{MO} = 
+\mathbf{C}^\dagger \boldsymbol{\Omega}^\mathrm{AO} \mathbf{C}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_z_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ap, ab, bq -&gt; pq&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">mu_z</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
@@ -911,18 +923,42 @@ viewer_1707848751209832.render();
 </div>
 </div>
 </div>
+</section>
+<section id="mo-to-ao-transformation">
+<h4>MO to AO transformation<a class="headerlink" href="#mo-to-ao-transformation" title="Permalink to this heading">#</a></h4>
+<p>To do the reversed operation, we make use of the relation</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{C}^\dagger \mathbf{S} \mathbf{C} = \mathbf{I}
+\]</div>
+<p>from which we deduce</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\mathbf{C}^{-1} &amp; = \mathbf{C}^\dagger \mathbf{S} \\
+\Big[ \mathbf{C}^\dagger\Big]^{-1} &amp; = \mathbf{S} \mathbf{C} 
+\end{align*}\]</div>
+<p>and we get</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\Omega}^\mathrm{AO} = 
+\mathbf{S} \mathbf{C} \, \boldsymbol{\Omega}^\mathrm{MO} \mathbf{C}^\dagger \mathbf{S}
+\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electronic dipole moment: </span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mu_z_mo</span><span class="p">[:</span><span class="n">nocc</span><span class="p">,:</span><span class="n">nocc</span><span class="p">]</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> a.u.&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Electronic dipole moment:  -1.391848 a.u.
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_z_ao</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ab, bp, pq, cq, cd -&gt; ad&quot;</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">mu_z_mo</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Test the forth-and-back transformations against the original AO matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">mu_z_ao</span><span class="p">,</span> <span class="n">mu_z</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="two-electron-integrals">
 <h3>Two-electron integrals<a class="headerlink" href="#two-electron-integrals" title="Permalink to this heading">#</a></h3>
@@ -1096,7 +1132,11 @@ K^{ij}_{\gamma \delta} &amp;=&amp;
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integral-transformations">Integral transformations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">One-electron integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">One-electron integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ao-to-mo-transformation">AO to MO transformation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mo-to-ao-transformation">MO to AO transformation</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-integrals">Two-electron integrals</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conventional">Conventional</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fock-matrix-driven">Fock-matrix driven</a></li>

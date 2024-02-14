@@ -663,16 +663,53 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
-
-<span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">C        0.00000000    0.00000000    0.00000000</span>
 <span class="s2">O        0.00000000    0.00000000    2.70000000</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_molecule_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;au&quot;</span><span class="p">)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
 
-<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;C_alpha&quot;</span><span class="p">]</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;D_alpha&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">scf_results</span><span class="p">[</span><span class="s2">&quot;D_beta&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">norb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of doubly occupied molecular orbitals:&quot;</span><span class="p">,</span> <span class="n">nocc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 28
+Number of doubly occupied molecular orbitals: 7
 </pre></div>
 </div>
 </div>
@@ -729,18 +766,19 @@ N \int \omega(\mathbf{r})
 n(\mathbf{r}) =
 \langle \Psi | \hat{n}(\mathbf{r}) | \Psi \rangle
 \]</div>
-<p>with</p>
+<p>where</p>
 <div class="math notranslate nohighlight">
 \[
 \hat{n}(\mathbf{r}) = 
 \sum_{i=1}^N
 \delta(\mathbf{r} - \mathbf{r}_i)
 \]</div>
-<p>Where <span class="math notranslate nohighlight">\(\delta(\mathbf{r} - \mathbf{r}_i)\)</span> is the <a class="reference external" href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta function</a>. After evaluation of this expectation value, the one-particle density matrix, <span class="math notranslate nohighlight">\(D\)</span>, is identified from the expression</p>
+<p>and <span class="math notranslate nohighlight">\(\delta(\mathbf{r} - \mathbf{r}_i)\)</span> is the <a class="reference external" href="https://en.wikipedia.org/wiki/Dirac_delta_function">Dirac delta function</a>.</p>
+<p>After evaluation of this expectation value, the one-particle density matrix, <span class="math notranslate nohighlight">\(D\)</span>, is identified from the expression</p>
 <div class="math notranslate nohighlight">
 \[
 n(\mathbf{r}) \equiv
-\sum_{p,q} \psi_p^\dagger(\mathbf{r}) D_{pq} \psi_q(\mathbf{r})
+\sum_{p,q} D_{pq} \,  \psi_p^\dagger(\mathbf{r}) \psi_q(\mathbf{r})
 \]</div>
 <p>For a state represented by a single Slater determinant, the one-electron density becomes</p>
 <div class="math notranslate nohighlight">
@@ -748,6 +786,69 @@ n(\mathbf{r}) \equiv
 n(\mathbf{r}) = \sum_{i=1}^N |\psi_i(\mathbf{r})|^2
 \]</div>
 <p>where the summation run over the <span class="math notranslate nohighlight">\(N\)</span> occupied spin orbitals. Consequently, the density matrix is in this case equal to the identity matrix in the occupied–occupied block and zero elsewhere.</p>
+<p>For a restricted closed-shell state, we get</p>
+<div class="math notranslate nohighlight">
+\[
+n(\mathbf{r}) = 2 \sum_{i}^\mathrm{occ} |\phi_i(\mathbf{r})|^2 =
+\sum_{p,q} 
+D^\mathrm{MO}_{pq} \,
+\phi_p^*(\mathbf{r})
+\phi_q(\mathbf{r})
+\]</div>
+<p>where the summations runs over molecular orbitals (MOs) and the density matrix in the MO basis equals</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbf{D}^\mathrm{MO} =
+\begin{pmatrix}
+2      &amp; \cdots &amp; 0      &amp; 0      &amp; \cdots &amp; 0 \\
+\vdots &amp; \ddots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0      &amp; \cdots &amp; 2      &amp; 0      &amp; \cdots &amp; 0 \\
+0      &amp; \cdots &amp; 0      &amp; 0      &amp; \cdots &amp; 0 \\
+\vdots &amp; \ddots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0      &amp; \cdots &amp; 0      &amp; 0      &amp; \cdots &amp; 0 \\
+\end{pmatrix}
+\end{split}\]</div>
+<p>In the atomic orbital (AO) basis, we have</p>
+<div class="math notranslate nohighlight">
+\[
+n(\mathbf{r}) = \sum_{\alpha, \beta}
+D_{\alpha\beta}^\mathrm{AO} \,
+\chi_\alpha^\ast(\mathbf{r})
+\chi_\beta(\mathbf{r})
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\alpha\beta}^\mathrm{AO} =
+2 \sum_i^\mathrm{occ}
+c^*_{\alpha i} c_{\beta i}
+\]</div>
+<p>or, equivalently,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{D}^\mathrm{AO} =
+\mathbf{C}^* \mathbf{D}^\mathrm{MO} \mathbf{C}
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D_mo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nocc</span><span class="p">):</span>
+    <span class="n">D_mo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span> <span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+<span class="n">D_ao</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ap, pq, bq -&gt; ab&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D_mo</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Test MO to AO transformation against the reference density matrix from VeloxChem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">D_ao</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="illustration">
 <h3>Illustration<a class="headerlink" href="#illustration" title="Permalink to this heading">#</a></h3>
