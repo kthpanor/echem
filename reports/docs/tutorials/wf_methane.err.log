@@ -1,0 +1,52 @@
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/miniconda3/envs/echem/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/miniconda3/envs/echem/lib/python3.10/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+def xtb_optimization(xyz_ff):
+    molecule = vlx.Molecule.read_xyz_string(xyz_ff)
+    xtb_drv = vlx.XtbDriver()
+    method_settings = {'xtb':'gfn2'}
+    xtb_drv.set_method(method_settings['xtb'].lower())
+    xtb_grad_drv = vlx.XtbGradientDriver()
+    xtb_opt_drv = vlx.OptimizationDriver(xtb_grad_drv)
+    xtb_opt = xtb_opt_drv.compute(molecule, xtb_drv)
+    return xtb_opt
+
+ch4_xtb = xtb_optimization(ch4_ff)
+h2o_xtb = xtb_optimization(h2o_ff)
+co2_xtb = xtb_optimization(co2_ff)
+o2_xtb = xtb_optimization(o2_ff)
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[3], line 11[0m
+[1;32m      8[0m     xtb_opt [38;5;241m=[39m xtb_opt_drv[38;5;241m.[39mcompute(molecule, xtb_drv)
+[1;32m      9[0m     [38;5;28;01mreturn[39;00m xtb_opt
+[0;32m---> 11[0m ch4_xtb [38;5;241m=[39m [43mxtb_optimization[49m[43m([49m[43mch4_ff[49m[43m)[49m
+[1;32m     12[0m h2o_xtb [38;5;241m=[39m xtb_optimization(h2o_ff)
+[1;32m     13[0m co2_xtb [38;5;241m=[39m xtb_optimization(co2_ff)
+
+Cell [0;32mIn[3], line 6[0m, in [0;36mxtb_optimization[0;34m(xyz_ff)[0m
+[1;32m      4[0m method_settings [38;5;241m=[39m {[38;5;124m'[39m[38;5;124mxtb[39m[38;5;124m'[39m:[38;5;124m'[39m[38;5;124mgfn2[39m[38;5;124m'[39m}
+[1;32m      5[0m xtb_drv[38;5;241m.[39mset_method(method_settings[[38;5;124m'[39m[38;5;124mxtb[39m[38;5;124m'[39m][38;5;241m.[39mlower())
+[0;32m----> 6[0m xtb_grad_drv [38;5;241m=[39m [43mvlx[49m[38;5;241;43m.[39;49m[43mXtbGradientDriver[49m[43m([49m[43m)[49m
+[1;32m      7[0m xtb_opt_drv [38;5;241m=[39m vlx[38;5;241m.[39mOptimizationDriver(xtb_grad_drv)
+[1;32m      8[0m xtb_opt [38;5;241m=[39m xtb_opt_drv[38;5;241m.[39mcompute(molecule, xtb_drv)
+
+[0;31mTypeError[0m: XtbGradientDriver.__init__() missing 1 required positional argument: 'xtb_drv'
+
