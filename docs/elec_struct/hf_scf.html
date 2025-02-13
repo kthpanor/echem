@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -80,6 +83,7 @@
     <link rel="prev" title="Fock matrix diagonalization" href="fock_diagonalize.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -684,9 +677,9 @@ document.write(`
 <p>Let us implement the presented Hartree–Fock SCF procedure. We will use the water molecule as an illustration.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
 </pre></div>
 </div>
 </div>
@@ -718,8 +711,8 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261563540925994"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261563540925994" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455478382397"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455478382397" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -747,22 +740,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261563540925994 = null;
-var warn = document.getElementById("3dmolwarning_17261563540925994");
+var viewer_1739455478382397 = null;
+var warn = document.getElementById("3dmolwarning_1739455478382397");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17261563540925994 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17261563540925994"),{backgroundColor:"white"});
-viewer_17261563540925994.zoomTo();
-	viewer_17261563540925994.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
-	viewer_17261563540925994.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17261563540925994.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17261563540925994.zoomTo();
-viewer_17261563540925994.render();
+viewer_1739455478382397 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455478382397"),{backgroundColor:"white"});
+viewer_1739455478382397.zoomTo();
+	viewer_1739455478382397.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_1739455478382397.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455478382397.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455478382397.zoomTo();
+viewer_1739455478382397.render();
 });
 </script></div></div>
 </div>
@@ -792,7 +785,7 @@ viewer_17261563540925994.render();
 <h3>Some system parameters<a class="headerlink" href="#some-system-parameters" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">()</span>
 <span class="n">nocc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">number_of_alpha_electrons</span><span class="p">()</span>
 <span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
 
@@ -817,21 +810,18 @@ Nuclear repulsion energy (in a.u.):  9.343638157670
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># overlap matrix</span>
-<span class="n">overlap_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OverlapIntegralsDriver</span><span class="p">()</span>
-<span class="n">S</span> <span class="o">=</span> <span class="n">overlap_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">compute_overlap_integrals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="c1"># one-electron Hamiltonian</span>
-<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">compute_kinetic_energy_integrals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
-<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">compute_nuclear_potential_integrals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
 <span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
 
 <span class="c1"># two-electron Hamiltonian</span>
-<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">fock_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">FockDriver</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">fock_drv</span><span class="o">.</span><span class="n">compute_eri</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -913,13 +903,9 @@ F_\mathrm{vo} &amp; 0 \\
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter      SCF energy    Error norm
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0      -68.84975229    3.09e+00
+ 0      -68.84975229    3.09e+00
  1      -69.95937641    2.88e+00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 2      -73.34743276    2.83e+00
+ 2      -73.34743276    2.83e+00
  3      -73.46688910    2.23e+00
  4      -74.74058933    2.18e+00
  5      -75.55859127    1.41e+00
@@ -961,7 +947,7 @@ SCF iterations converged!
 <h1>Convergence acceleration<a class="headerlink" href="#convergence-acceleration" title="Link to this heading">#</a></h1>
 <section id="direct-inversion-iterative-subspace">
 <h2>Direct inversion iterative subspace<a class="headerlink" href="#direct-inversion-iterative-subspace" title="Link to this heading">#</a></h2>
-<p>The Rothaan–Hall scheme suffer from poor numerical convergence and in practice some version of convergence acceleration is adopted. In the method of direct inversion of the iterative subspace (DIIS) <span id="id1">[<a class="reference internal" href="../refs.html#id86" title="P. Pulay. Convergence acceleration of iterative sequences. The case of SCF iteration. Chem. Phys. Lett., 73:393-398, 1980. URL: https://doi.org/10.1016/0009-2614(80)80396-4.">Pul80</a>, <a class="reference internal" href="../refs.html#id88" title="P. Pulay. Improved SCF convergence acceleration. J. Comput. Chem., 3:556-560, 1982. URL: https://doi.org/10.1002/jcc.540030413.">Pul82</a>, <a class="reference internal" href="../refs.html#id103" title="Harrell Sellers. The c2-diis convergence acceleration algorithm. Int. J. Quant. Chem., 45:31-41, 1993. doi:https://doi.org/10.1002/qua.560450106.">Sel93</a>]</span> information is used from not only the present but also previous iterations to form an <em>averaged</em> effective one-electron Hamiltonian, or Fock matrix, according to</p>
+<p>The Rothaan–Hall scheme suffer from poor numerical convergence and in practice some version of convergence acceleration is adopted. In the method of direct inversion of the iterative subspace (DIIS) <span id="id1">[<a class="reference internal" href="../refs.html#id88" title="P. Pulay. Convergence acceleration of iterative sequences. The case of SCF iteration. Chem. Phys. Lett., 73:393-398, 1980. URL: https://doi.org/10.1016/0009-2614(80)80396-4.">Pul80</a>, <a class="reference internal" href="../refs.html#id90" title="P. Pulay. Improved SCF convergence acceleration. J. Comput. Chem., 3:556-560, 1982. URL: https://doi.org/10.1002/jcc.540030413.">Pul82</a>, <a class="reference internal" href="../refs.html#id105" title="Harrell Sellers. The c2-diis convergence acceleration algorithm. Int. J. Quant. Chem., 45:31-41, 1993. doi:https://doi.org/10.1002/qua.560450106.">Sel93</a>]</span> information is used from not only the present but also previous iterations to form an <em>averaged</em> effective one-electron Hamiltonian, or Fock matrix, according to</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbf{F}_n^\mathrm{DIIS} = \sum_{i=1}^n w_i \mathbf{F}_i
@@ -1012,7 +998,7 @@ w_1 \\ \vdots \\ w_n \\ \lambda
 <p>We solve this equation for the weights, <span class="math notranslate nohighlight">\(w_i\)</span>, and then determine the averaged Fock matrix, <span class="math notranslate nohighlight">\(\mathbf{F}_n^\mathrm{DIIS}\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">c1diis</span><span class="p">(</span><span class="n">F_mats</span><span class="p">,</span> <span class="n">e_vecs</span><span class="p">):</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">e_vecs</span><span class="p">)</span>
 
@@ -1102,7 +1088,7 @@ SCF iterations converged!
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
@@ -1121,7 +1107,7 @@ SCF iterations converged!
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/48877ab92179d7d7236331a43de81ea7fa66e3cbc300d74066d574910d2dbe1a.png" src="../../_images/48877ab92179d7d7236331a43de81ea7fa66e3cbc300d74066d574910d2dbe1a.png" />
+<img alt="../../_images/f563b02350dee8fd4dafa7c96173fa06487cb5cef07dab5554067224d19f2c3c.png" src="../../_images/f563b02350dee8fd4dafa7c96173fa06487cb5cef07dab5554067224d19f2c3c.png" />
 </div>
 </div>
 </section>
@@ -1182,7 +1168,8 @@ SCF iterations converged!
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1256,8 +1243,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -77,9 +80,10 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Exercises" href="wft_exercises.html" />
-    <link rel="prev" title="Møller–Plesset" href="mp2.html" />
+    <link rel="prev" title="Other partitionings" href="mp2_advanced.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -653,9 +646,10 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-theory">General theory</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-n-electron-basis">The <span class="math notranslate nohighlight">\(N\)</span>-electron basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ci-hamiltonian">The CI Hamiltonian</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mo-integrals">MO integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-factor">Phase factor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ci-hamiltonian">CI Hamiltonian</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-ci">Direct CI</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrices-and-natural-orbitals">Density matrices and natural orbitals</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#truncated-ci">Truncated CI</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restricting-the-excitations">Restricting the excitations</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#size-consistency">Size consistency</a></li>
@@ -714,14 +708,14 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 <p>There are in principle an infinite number of possible <span class="math notranslate nohighlight">\(N\)</span>-electron basis to choose from, but we ideally want the expansion to converge quickly (compact expansion) and the functions to be easily manipulable to efficiently compute the Hamiltonian elements. Unfortunately, these two criteria often oppose each other.</p>
 <p>As electron correlation depends on the distance between electrons, it would be natural to use functions that depend explicitly on this distance, the same way as our Gaussian or Slater one-electron basis depends explicitly on the distance between electron and nuclei. Wave functions having these properties are typically called explicitly correlated wave functions, but this interelectronic distance makes the calculation of integrals very difficult as it couples multiple electrons together.</p>
 <p>We often drop this explicit dependence and instead use a wave function that is formed from products of one-electron functions, <em>i.e.</em>, a product of orbitals. The simplest of these basis functions is the <a class="reference external" href="https://en.wikipedia.org/wiki/Hartree_equation">Hartree product</a>, but since we know the wave function should be antisymmetric with respect to the exchange of two electrons, we instead use the antisymmetrised version of the Hartree product: <a class="reference internal" href="slater.html#sec-slater"><span class="std std-ref">Slater determinants (SDs)</span></a>. As each SD represents a different electronic configuration, the resulting method is called configuration interaction (CI). As discussed in the previous sections, this basis of SDs constitutes a complete basis within a specified one-electron basis set, and thus the solution obtained by minimizing the energy of this wave function is the exact ground state within that one-electron basis.</p>
-<p>In some codes, <a class="reference external" href="https://en.wikipedia.org/wiki/Configuration_state_function">configuration state functions (CSFs)</a> are used instead of SDs. CSFs are fixed linear combinations of SDs but with the attractive properties that they are also eigenfunctions of the <span class="math notranslate nohighlight">\(\hat{S}^2\)</span> spin operator. This spin constraints means that the resulting wave function will always be spin-adapted and also that CSFs are less numerous than Slater determinants, which has advantages on a computational standpoint. However, SDs can be expressed as ordered “strings” of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> creating operators, and this separation of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> electrons allows for efficient computer implementations, outweighing the benefits of the slightly smaller expansion of CSF.</p>
+<p>In some codes, <a class="reference external" href="https://en.wikipedia.org/wiki/Configuration_state_function">configuration state functions (CSFs)</a> are used instead of SDs. CSFs are fixed linear combinations of SDs but with the attractive properties that they are also eigenfunctions of the <span class="math notranslate nohighlight">\(\hat{S}^2\)</span> spin operator. This spin constraints means that the resulting wave function will always be spin-adapted and also that CSFs are less numerous than Slater determinants, which has advantages on a computational standpoint. However, SDs can be expressed as ordered “strings” of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> creation operators, and this separation of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> electrons allows for efficient computer implementations, outweighing the benefits of the slightly smaller expansion of CSF.</p>
 <p>Having chosen SDs as our basis functions, we now need an efficient way to create our expansion, <em>i.e.</em>, a direct link between a given index in our expansion and the corresponding occupation of the SDs. This link should work both ways, matching a given occupation to the corresponding index in the expansion. A common choice is the so-called lexical ordering or the reverse lexical ordering. The details are beyond the scope of this page, but fortunately, the MultiPsi package provides the tools to do this.</p>
-<p>Let’s start by initializing a calculation for O<span class="math notranslate nohighlight">\(_2\)</span>. We will first run a Hartree–Fock (HF) calculation to generate starting orbitals. The ground state of this molecule is a triplet, so we will use unrestricted HF. Note that full CI is exact and does not depend on the actual shape of the orbitals, so we could have run a singlet calculation instead without changing the result.</p>
+<p>Let’s start by initializing a calculation for O<span class="math notranslate nohighlight">\(_2\)</span>. We will first run a Hartree–Fock (HF) calculation to generate starting orbitals. The ground state of this molecule is a triplet, so we will use restricted open-shell HF. Note that full CI is exact and does not depend on the actual shape of the orbitals, so we could have run a singlet calculation instead without changing the result.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multipsi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mtp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
 </pre></div>
 </div>
 </div>
@@ -748,8 +742,8 @@ L = E - \epsilon(\sum_k c_k^2 -1)
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_1726156314506804"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_1726156314506804" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455422078322"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455422078322" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -777,28 +771,28 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_1726156314506804 = null;
-var warn = document.getElementById("3dmolwarning_1726156314506804");
+var viewer_1739455422078322 = null;
+var warn = document.getElementById("3dmolwarning_1739455422078322");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_1726156314506804 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1726156314506804"),{backgroundColor:"white"});
-viewer_1726156314506804.zoomTo();
-	viewer_1726156314506804.addModel("2\n\nO             -0.600000000000         0.000000000000         0.000000000000\nO              0.600000000000         0.000000000000         0.000000000000\n");
-	viewer_1726156314506804.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_1726156314506804.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_1726156314506804.zoomTo();
-viewer_1726156314506804.render();
+viewer_1739455422078322 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455422078322"),{backgroundColor:"white"});
+viewer_1739455422078322.zoomTo();
+	viewer_1739455422078322.addModel("2\n\nO             -0.600000000000         0.000000000000         0.000000000000\nO              0.600000000000         0.000000000000         0.000000000000\n");
+	viewer_1739455422078322.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455422078322.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455422078322.zoomTo();
+viewer_1739455422078322.render();
 });
 </script></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfUnrestrictedDriver</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedOpenDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
 <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
@@ -816,28 +810,26 @@ viewer_1726156314506804.render();
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          CI expansion:
-          -------------
-Number of determinants:      1200
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               CI expansion:
+               -------------
+               Number of determinants:      1200
 </pre></div>
 </div>
 </div>
 </div>
-<p>Printing the expansion shows the number of Slater determinants. As you can see, the number is already fairly large. This is not an issue in a real calculation, but for testing purposes, we will restrict this number a bit. For this, we will simply exclude the 1s and 2s of the oxygen from the calculation, which corresponds to “freezing” 4 orbitals.</p>
+<p>Printing the expansion shows the number of Slater determinants. As you can see, the number is already fairly large. This is not an issue in a real calculation, but for testing purposes, we will restrict this number a bit. For this, we will simply exclude the 1s and 2s of the oxygen from the calculation, which corresponds to “freezing” 4 orbitals. Borrowing from the MCSCF naming conventions, the 1s orbitals will be called “inactive” while the rest of the orbital space will be called “active”.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">(</span><span class="n">n_frozen</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-
 <span class="n">expansion</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIExpansion</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
-
 <span class="nb">print</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>          CI expansion:
-          -------------
-Number of determinants:      120
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               CI expansion:
+               -------------
+               Number of determinants:      120
 </pre></div>
 </div>
 </div>
@@ -977,102 +969,34 @@ baaa22 [1, 2, 3, 4, 5] [0, 4, 5]
 </div>
 </div>
 </section>
-<section id="the-ci-hamiltonian">
-<h2>The CI Hamiltonian<a class="headerlink" href="#the-ci-hamiltonian" title="Link to this heading">#</a></h2>
-<p>Now that we have the list of determinants, we only need to form the CI Hamiltonian. For this, we need to be able to calculate the matrix elements.</p>
-<p>MultiPsi also provides a function to do that. For this, we initialize the <code class="docutils literal notranslate"><span class="pre">CIOperator</span></code> class and set it to the Hamiltonian operator. This class then compute the integrals in the molecular basis and provides several functions to use them in a CI calculation.</p>
+<section id="mo-integrals">
+<h2>MO integrals<a class="headerlink" href="#mo-integrals" title="Link to this heading">#</a></h2>
+<p>Now that we have the list of determinants, we need to form the CI Hamiltonian. For this, we need to be able to calculate the matrix elements.</p>
+<p>CI is most easily performed using integrals in the molecular orbital basis. First, we use VeloxChem to compute the integrals in the atomic orbital basis:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ci_ham</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIOperator</span><span class="p">(</span><span class="n">expansion</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#############################</span>
+<span class="c1">## Get integrals and V_Nuc ##</span>
+<span class="c1">#############################</span>
+<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
 
-<span class="n">ci_ham</span><span class="o">.</span><span class="n">compute_Hints</span><span class="p">(</span>
-    <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span>
-<span class="p">)</span>  <span class="c1"># Set the operator to be the molecular Hamiltonian</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can now construct the Hamiltonian. The easiest is to simply do a double loop over SD and compute the matrix element using the <code class="docutils literal notranslate"><span class="pre">Hij</span></code> function of <code class="docutils literal notranslate"><span class="pre">CIOperator</span></code>:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H_CI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">,</span> <span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">))</span>
+<span class="c1"># one-electron Hamiltonian</span>
+<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyDriver</span><span class="p">()</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">full_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
-    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">jdet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
-        <span class="n">H_CI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">ci_ham</span><span class="o">.</span><span class="n">Hij</span><span class="p">(</span><span class="n">idet</span><span class="p">,</span> <span class="n">jdet</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>If we diagonalize this Hamiltonian, we obtain all the energies of the system, both ground and excited states:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">H_CI</span><span class="p">)</span>
+<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialDriver</span><span class="p">()</span>
+<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">full_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-147.72339194 -147.49488796 -147.49488796 -147.48991742 -147.39178263
- -147.39178263 -147.31022148 -147.27297821 -147.27297821 -147.14365547
- -147.14365547 -147.08916312 -147.08916312 -147.08242927 -147.07852818
- -147.05836503 -147.05836503 -147.00699461 -147.00699461 -146.99905665
- -146.99905665 -146.97927131 -146.97927131 -146.95353201 -146.9354175
- -146.93382892 -146.93382892 -146.88967934 -146.88967934 -146.88480791
- -146.83509186 -146.83509186 -146.82598782 -146.75346539 -146.75346539
- -146.75077715 -146.75077715 -146.74829521 -146.74125314 -146.74125314
- -146.71397134 -146.71397134 -146.70255217 -146.70255217 -146.64273756
- -146.6366741  -146.6366741  -146.56810118 -146.53923066 -146.48989258
- -146.48989258 -146.48113701 -146.48113701 -146.47615159 -146.43900556
- -146.43900556 -146.43155944 -146.41314138 -146.40393925 -146.37524854
- -146.37524854 -146.34672641 -146.33446114 -146.33446114 -146.27975068
- -146.2749686  -146.2749686  -146.26378644 -146.22065448 -146.21747518
- -146.20946767 -146.20946767 -146.19236321 -146.19236321 -146.17110856
- -146.17110856 -146.16624582 -146.16624582 -146.13162568 -146.10690359
- -146.10690359 -146.0604229  -146.05944823 -146.05944823 -146.05247853
- -146.05247853 -146.04847397 -146.04847397 -145.97547061 -145.97547061
- -145.89703574 -145.89703574 -145.89485308 -145.89424117 -145.88770488
- -145.88770488 -145.80696382 -145.80696382 -145.77118848 -145.76968622
- -145.76968622 -145.76657329 -145.76657329 -145.75603435 -145.75598202
- -145.75598202 -145.70968766 -145.70968766 -145.69813332 -145.68735456
- -145.68735456 -145.66670629 -145.66467605 -145.66467605 -145.08963409
- -144.99400313 -144.89601606 -144.89601606 -144.86160532 -144.86160532]
-</pre></div>
-</div>
-</div>
-</div>
-<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree–Fock level, due to electron correlation. However, it is important to note that some of the states obtained here are not actually triplet but have a higher multiplicity.</p>
-<p>As we discussed in the previous section, the basis of SDs is not spin-adapted. The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electrons than <span class="math notranslate nohighlight">\(\beta\)</span>. This excludes singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
-<p>We can also print the first eigenvector:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;float_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span> 
 
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.969 0.000 -0.000 -0.000 0.000 -0.000 -0.000 0.000 0.000 0.176 0.000
- -0.000 0.000 0.071 -0.015 0.000 0.015 0.071 -0.000 -0.000 -0.000 -0.000
- -0.000 -0.000 0.000 -0.000 0.000 0.004 -0.001 0.000 -0.000 -0.000 0.000
- 0.000 -0.000 -0.000 0.000 0.000 0.000 0.000 -0.000 -0.000 0.000 -0.000
- 0.000 0.000 0.000 0.001 0.004 0.000 0.000 0.000 -0.000 0.000 -0.000
- -0.000 0.000 0.000 -0.000 0.000 0.000 -0.000 -0.076 0.016 -0.000 -0.016
- -0.076 0.000 0.000 -0.000 0.066 -0.000 0.000 -0.000 -0.000 0.000 0.000
- -0.000 0.000 -0.036 0.000 -0.009 0.000 -0.000 -0.002 0.000 0.000 -0.000
- -0.000 -0.000 -0.000 0.019 0.000 -0.000 -0.000 -0.000 -0.000 0.000 -0.000
- 0.000 -0.000 0.002 -0.000 0.000 -0.009 -0.000 -0.000 -0.000 0.000 0.000
- 0.000 0.000 0.019 -0.000 -0.000 0.000 -0.000 -0.000 0.000 -0.000]
+<span class="c1"># two-electron Hamiltonian</span>
+<span class="n">fock_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">FockDriver</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">fock_drv</span><span class="o">.</span><span class="n">compute_eri</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>One can see that the largest coefficient is the first one, corresponding to the ‘222aa0’ determinant, which indeed is the expected ground state configuration.</p>
-<p>You may be curious as to what happens in the <code class="docutils literal notranslate"><span class="pre">Hij</span></code> function, that is, how we compute the <span class="math notranslate nohighlight">\(\langle i | H | j \rangle \)</span> matrix elements. The answer to this is the Slater–Condon rules, see the section on <a class="reference internal" href="slater.html#sec-slater"><span class="std std-ref">Slater determinants</span></a>. This rules define the matrix elements in terms of molecular integrals, depending on the difference in occupation between the two determinants. The difference in occupation is easily formulated in terms of excitations, with different rules depending on if <span class="math notranslate nohighlight">\(|j \rangle\)</span> is singly or doubly excited compared to <span class="math notranslate nohighlight">\(|i \rangle\)</span>. Any higher excitation will simply lead to 0.</p>
-<p>These rules are relatively easy to derive, both in standard and second quantization formulation. The idea is that the Hamiltonian has to “reconcile” the excitations. Being a two-electron operator, the Hamiltonian can reconcile at most two excitations.</p>
-<p>First we need to obtain the necessary integrals. Those are the standard one- and two-electron integrals but in the MO basis, as the expressions are simpler in this basis. Since we are leaving some occupied orbitals outside of the CI space (the s orbitals), also called inactive orbitals, we also need to include their interaction with the electrons in our CI. This is done by replacing the one-electron integrals by the inactive Fock matrix defined as</p>
+<p>Then we need to compute the one and two-electron matrix elements in the MO basis. Note that the one-electron matrix element for the valence orbitals also contain interactions with the core electrons that we have excluded from the CI. This one-electron matrix is thus a Fock matrix but using the density of the inactive orbitals.</p>
 <div class="math notranslate nohighlight">
 \[
 F^I_{pq} = h_{pq} + \sum_{i \in \mathrm{inactive}} 2 (pq|ii) - (pi|qi) 
@@ -1099,110 +1023,186 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nIn</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">n_inactive</span>  <span class="c1"># number of inactive orbitals</span>
-<span class="n">nAct</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">n_active</span>  <span class="c1"># number of active orbitals</span>
-<span class="n">nbas</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">n_orbitals</span>  <span class="c1"># total number of orbitals</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">##################################</span>
+<span class="c1">## Compute inactive Fock matrix ##</span>
+<span class="c1">##################################</span>
 
-<span class="c1">############################</span>
-<span class="c1">## Get integrals and V_NN ##</span>
-<span class="c1">############################</span>
-<span class="n">V_nuc</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span><span class="p">()</span>
+<span class="c1"># Active space sizes</span>
+<span class="n">n_inactive</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">n_inactive</span>  <span class="c1"># number of inactive orbitals</span>
+<span class="n">n_active</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">n_active</span>  <span class="c1"># number of active orbitals</span>
 
-<span class="c1"># one-electron Hamiltonian</span>
-<span class="n">kinetic_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">KineticEnergyIntegralsDriver</span><span class="p">()</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">kinetic_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-<span class="n">nucpot_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">NuclearPotentialIntegralsDriver</span><span class="p">()</span>
-<span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="n">nucpot_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-<span class="n">h</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="n">V</span>
-
-<span class="c1"># two-electron Hamiltonian</span>
-<span class="n">eri_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ElectronRepulsionIntegralsDriver</span><span class="p">()</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">eri_drv</span><span class="o">.</span><span class="n">compute_in_memory</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
-
-<span class="c1">#################################</span>
-<span class="c1">## Compute the needed matrices ##</span>
-<span class="c1">#################################</span>
+<span class="c1"># MO coefficients</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="o">.</span><span class="n">alpha_to_numpy</span><span class="p">()</span>
-<span class="n">Cact</span> <span class="o">=</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">nIn</span> <span class="p">:</span> <span class="n">nIn</span> <span class="o">+</span> <span class="n">nAct</span><span class="p">]</span>  <span class="c1"># active MOs</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The inactive Fock matrix and energy is determined.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the inactive density matrix</span>
-<span class="n">Din</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mi,ni-&gt;mn&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nIn</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">nIn</span><span class="p">])</span>
+
+<span class="c1"># Compute the inactive density matrix</span>
+<span class="n">D_inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mi,ni-&gt;mn&quot;</span><span class="p">,</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n_inactive</span><span class="p">],</span> <span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n_inactive</span><span class="p">])</span>
 
 <span class="c1"># Compute the inactive Fock matrix in AO</span>
-<span class="n">Jin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mnls,ls-&gt;mn&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">Din</span><span class="p">)</span>  <span class="c1"># Coulomb term</span>
-<span class="n">Kin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mlns,ls-&gt;mn&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">Din</span><span class="p">)</span>  <span class="c1"># Exchange term</span>
-<span class="n">Fin</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Jin</span> <span class="o">-</span> <span class="n">Kin</span>  <span class="c1"># Fock matrix</span>
+<span class="n">J_inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mnls,ls-&gt;mn&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D_inactive</span><span class="p">)</span>  <span class="c1"># Coulomb term</span>
+<span class="n">K_inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;mlns,ls-&gt;mn&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">D_inactive</span><span class="p">)</span>  <span class="c1"># Exchange term</span>
+<span class="n">F_inactive</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J_inactive</span> <span class="o">-</span> <span class="n">K_inactive</span>  <span class="c1"># Fock matrix</span>
 
 <span class="c1"># Compute the inactive energy:</span>
-<span class="n">Ein</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">Fin</span><span class="p">,</span> <span class="n">Din</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
+<span class="n">E_inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;&quot;</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="n">F_inactive</span><span class="p">,</span> <span class="n">D_inactive</span><span class="p">)</span> <span class="o">+</span> <span class="n">V_nuc</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transform the Fock matrix to active MO basis</span>
-<span class="n">Ftu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pq,qu, pt-&gt;tu&quot;</span><span class="p">,</span> <span class="n">Fin</span><span class="p">,</span> <span class="n">Cact</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">###########################</span>
+<span class="c1">## Transform to MO basis ##</span>
+<span class="c1">###########################</span>
+<span class="n">C_active</span> <span class="o">=</span> <span class="n">C</span><span class="p">[:,</span> <span class="n">n_inactive</span> <span class="p">:</span> <span class="n">n_inactive</span> <span class="o">+</span> <span class="n">n_active</span><span class="p">]</span>  <span class="c1"># active MOs</span>
+
+<span class="c1"># Transform the Fock matrix to active MO basis</span>
+<span class="n">F_tu</span> <span class="o">=</span> <span class="n">C_active</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">F_inactive</span> <span class="o">@</span> <span class="n">C_active</span>
 
 <span class="c1"># Transform the 2-electron integrals to active MO basis</span>
-<span class="n">pqrw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqrs,sw-&gt;pqrw&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
-<span class="n">pqvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqrw,rv-&gt;pqvw&quot;</span><span class="p">,</span> <span class="n">pqrw</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
-<span class="n">puvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqvw,qu-&gt;puvw&quot;</span><span class="p">,</span> <span class="n">pqvw</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
-<span class="n">tuvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;puvw,pt-&gt;tuvw&quot;</span><span class="p">,</span> <span class="n">puvw</span><span class="p">,</span> <span class="n">Cact</span><span class="p">)</span>
+<span class="n">pqrw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqrs,sw-&gt;pqrw&quot;</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">C_active</span><span class="p">)</span>
+<span class="n">pqvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqrw,rv-&gt;pqvw&quot;</span><span class="p">,</span> <span class="n">pqrw</span><span class="p">,</span> <span class="n">C_active</span><span class="p">)</span>
+<span class="n">puvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;pqvw,qu-&gt;puvw&quot;</span><span class="p">,</span> <span class="n">pqvw</span><span class="p">,</span> <span class="n">C_active</span><span class="p">)</span>
+<span class="n">tuvw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;puvw,pt-&gt;tuvw&quot;</span><span class="p">,</span> <span class="n">puvw</span><span class="p">,</span> <span class="n">C_active</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>We can compare our results to those provided directly by <code class="docutils literal notranslate"><span class="pre">ci_ham</span></code> if needed:</p>
+<p>We can compare these integrals to the ones computed by MultiPsi.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Ein</span> <span class="o">-</span> <span class="n">ci_ham</span><span class="o">.</span><span class="n">inEne</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0e-8</span>
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">Ftu</span><span class="p">,</span> <span class="n">ci_ham</span><span class="o">.</span><span class="n">Ftu</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">tuvw</span><span class="p">,</span> <span class="n">ci_ham</span><span class="o">.</span><span class="n">tuvw</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute CI integrals</span>
+<span class="n">mcham</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">MC_Hamiltonian</span><span class="p">()</span>
+<span class="n">mcham</span><span class="o">.</span><span class="n">init_integrals</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+<span class="n">ref_energy</span><span class="p">,</span> <span class="n">ref_Einactive</span><span class="p">,</span> <span class="n">ref_Ftu</span><span class="p">,</span> <span class="n">ref_tuvw</span> <span class="o">=</span> <span class="n">mcham</span><span class="o">.</span><span class="n">ci_gradients</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">E_inactive</span> <span class="o">-</span> <span class="n">ref_Einactive</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0e-8</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">F_tu</span><span class="p">,</span> <span class="n">ref_Ftu</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">tuvw</span><span class="p">,</span> <span class="n">ref_tuvw</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Using those integrals, we can now implement the Slater–Condon rules:</p>
+<p>With these, we can now write a function to compute the energy of a given determinant:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">SC_diag</span><span class="p">(</span><span class="n">occa</span><span class="p">,</span> <span class="n">occb</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">SC_diag</span><span class="p">(</span><span class="n">occ_alpha</span><span class="p">,</span> <span class="n">occ_beta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The energy of a given SD, as a function of its list of occupied orbitals</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ein</span>  <span class="c1"># Inactive energy (inc. nuclear repulsion)</span>
+    <span class="n">e_SD</span> <span class="o">=</span> <span class="n">E_inactive</span>  <span class="c1"># Inactive energy (inc. nuclear repulsion)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
-        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>  <span class="c1"># 1-e term = inactive Fock matrix</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occa</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occ_alpha</span><span class="p">:</span>
+        <span class="c1"># alpha 1-electron energy</span>
+        <span class="n">e_SD</span> <span class="o">+=</span> <span class="n">F_tu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occ_alpha</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>  <span class="c1"># Coulomb-Exchange</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-            <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                <span class="c1"># alpha-alpha Coulomb and exchange</span>
+                <span class="n">e_SD</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
-        <span class="n">Hij</span> <span class="o">+=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occb</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occ_beta</span><span class="p">:</span>
+        <span class="c1"># beta 1-electron energy</span>
+        <span class="n">e_SD</span> <span class="o">+=</span> <span class="n">F_tu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occ_beta</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
-                <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">Hij</span>
+                <span class="c1"># beta-beta Coulomb and exchange</span>
+                <span class="n">e_SD</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
 
+    <span class="c1"># alpha - beta Coulomb</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">occ_alpha</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">occ_beta</span><span class="p">:</span>
+            <span class="n">e_SD</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">e_SD</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can check that the energy of the first determinant matches the SCF energy:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">det</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">())</span> <span class="c1"># First determinant</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Determinant energy:&quot;</span><span class="p">,</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ROHF energy:       &quot;</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Determinant energy: -147.63165532121647
+ROHF energy:        -147.63165532121653
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="phase-factor">
+<h2>Phase factor<a class="headerlink" href="#phase-factor" title="Link to this heading">#</a></h2>
+<p>The function above provides us with the diagonal elements of the CI Hamiltonian matrix. To compute the off-diagonal, we need to be careful about phase factors.</p>
+<p>Phase factors are a consequence of the antisymmetry of the wavefunction. The matrix element of an excitation operator between two Slater Determinants <span class="math notranslate nohighlight">\( \langle Y | a_a^\dagger a_i |X \rangle\)</span> can be 0, 1 or -1. A simple way to think about it is to consider the action of the excitation operator on the ket side first, creating a new SD:</p>
+<div class="math notranslate nohighlight">
+\[ |X^{ia} \rangle = a_a^\dagger a_i |X \rangle \]</div>
+<p>Then we compute the overlap between this new SD and the bra <span class="math notranslate nohighlight">\( \langle Y | X^{ia} \rangle\)</span>. If <span class="math notranslate nohighlight">\(|Y\rangle\)</span> and <span class="math notranslate nohighlight">\(|X^{ia}\rangle\)</span> have any occupation difference the overlap will be 0. Otherwise, it can be -1 or 1 depending on the order of the operators.</p>
+<p>MultiPsi provides SD such that their list of occupied orbitals is always sorted in ascending order. When <span class="math notranslate nohighlight">\(a_i\)</span> is applied, it removes an electron from orbital <span class="math notranslate nohighlight">\(i\)</span> (if there is one), and gives a phase factor depending on the number of occupied orbitals in <span class="math notranslate nohighlight">\(|X\rangle\)</span> that are before orbital <span class="math notranslate nohighlight">\(i\)</span>. For simplicity it is often useful to cancel the phase factor when applying <span class="math notranslate nohighlight">\(a_a^\dagger\)</span> by putting <span class="math notranslate nohighlight">\(a\)</span> in the same position as <span class="math notranslate nohighlight">\(i\)</span> was before (since this action takes the same number of permutation and the total number of permutation becomes even).</p>
+<p>Taking for example the first determinant in our list, it has beta occupations <span class="math notranslate nohighlight">\(|0, 1, 2 \rangle\)</span>. Restricting ourselves to <span class="math notranslate nohighlight">\(\beta\)</span> creation/annihilation opertators, applying <span class="math notranslate nohighlight">\(a_{1}\)</span> generates <span class="math notranslate nohighlight">\(-|0, 2 \rangle\)</span> and then applying <span class="math notranslate nohighlight">\( a_3^\dagger\)</span> creates <span class="math notranslate nohighlight">\(-|0, 2, 3\rangle\)</span> which is identical to <span class="math notranslate nohighlight">\(|0, 3, 2\rangle\)</span>. Clearly we simply replaced 1 by 3 in the same position.</p>
+<p>This resulting determinant has overlap only with determinant 3, but determinant 3 is defined as <span class="math notranslate nohighlight">\(|0, 2, 3\rangle\)</span>, so we need one permutation to get a match, and thus the resulting matrix element is -1.</p>
+<p>For our code, we can implement a function returning the differences between two occupation vectors, and then one computing the phase factor to apply an excitation and sort to ascending occupations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">differences</span><span class="p">(</span><span class="n">occ1</span><span class="p">,</span> <span class="n">occ2</span><span class="p">):</span>
+    <span class="c1"># Which orbitals left when removing those also in the other one</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">occ1</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">occ2</span><span class="p">)),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">occ2</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">occ1</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_and_phase</span><span class="p">(</span><span class="n">occ</span><span class="p">,</span> <span class="n">diff_from</span><span class="p">,</span> <span class="n">diff_to</span><span class="p">):</span>
+
+    <span class="c1"># 1) apply the difference</span>
+    <span class="n">new_occ</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">occ</span><span class="p">)</span> <span class="c1"># copy occ vector</span>
+    <span class="n">idiff</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_occ</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">new_occ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">diff_from</span><span class="p">[</span><span class="n">idiff</span><span class="p">]:</span>
+            <span class="n">new_occ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_to</span><span class="p">[</span><span class="n">idiff</span><span class="p">]</span>
+            <span class="n">idiff</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">idiff</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff_from</span><span class="p">):</span>
+                <span class="k">break</span>
+    <span class="c1"># 2) sort</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_occ</span><span class="p">)):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">new_occ</span><span class="p">[</span><span class="n">i</span><span class="p">:])</span> <span class="c1"># Find lowest in new_occ:</span>
+        <span class="n">jval</span> <span class="o">=</span> <span class="n">new_occ</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="c1"># save value of lowest</span>
+        <span class="n">new_occ</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">)</span> <span class="c1"># remove the lowest from where it was</span>
+        <span class="n">new_occ</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">jval</span><span class="p">)</span> <span class="c1"># insert it here</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># if odd number of displacements</span>
+            <span class="n">phase</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">phase</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for beta electrons of determinant 1 and 3</span>
+<span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span> <span class="o">=</span> <span class="n">differences</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">sort_and_phase</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ci-hamiltonian">
+<h2>CI Hamiltonian<a class="headerlink" href="#ci-hamiltonian" title="Link to this heading">#</a></h2>
+<p>We can now finally compute the entire CI Hamiltonian. For this, the last thing remaining is the calculation of the off-diagonal elements using the Slater–Condon rules.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ss_occ</span><span class="p">,</span> <span class="n">os_occ</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Slater-Condon between a SD and a singly excited determinant,</span>
 <span class="sd">    depending on the excited orbitals (i,a) and the same-spin</span>
 <span class="sd">    (compared to spin of the excited electron) and opposite-spin occupation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Hij</span> <span class="o">=</span> <span class="n">Ftu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span>
+    <span class="n">Hij</span> <span class="o">=</span> <span class="n">F_tu</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ss_occ</span><span class="p">:</span>
         <span class="n">Hij</span> <span class="o">+=</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span>
@@ -1212,7 +1212,7 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
     <span class="k">return</span> <span class="n">Hij</span>
 
 
-<span class="k">def</span> <span class="nf">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SC_ss_2exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Slater-Condon between a SD and a doubly excited determinant,</span>
 <span class="sd">    with both excited electrons having the same spin</span>
@@ -1220,7 +1220,7 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
     <span class="k">return</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">tuvw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SC_os_2exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Slater-Condon between a SD and a doubly excited determinant,</span>
 <span class="sd">    with the excited electrons having opposite spin</span>
@@ -1230,76 +1230,114 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
 </div>
 </div>
 </div>
-<p>The difficult part is to make sure that the occupations of the Slater determinants are brought to maximum concordance. The expansion produced by lexical ordering may not have this property, but one can switch electrons until we reach this maximum concordance, introducing a negative phase factor at each electron exchange.</p>
-<p>MultiPsi provides a convenient way to achieve this. The idea is to explicitly create the singly excited determinant (or doubly excited by applying the operation twice) and then keep track of the number of exchanges to bring it to natural ordering. The <code class="docutils literal notranslate"><span class="pre">excite_alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">excite_beta</span></code> functions do this, providing both the excited determinant and the phase factor. The <code class="docutils literal notranslate"><span class="pre">index()</span></code> function of the determinants then provides the index of the given determinant in the expansion, in order to associate the energy to the correct position in the Hamiltonian.</p>
-<p>With these new tools and our Slater–Condon functions, we can now rewrite the above code. We replace the double loop by a simple loop and then an explicit construction of all singly and doubly excited determinants. The resulting code looks more complex but is relatively easy to follow.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ham</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">,</span> <span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">Hij</span><span class="p">(</span><span class="n">idet</span><span class="p">,</span> <span class="n">jdet</span><span class="p">):</span>
+    <span class="c1"># check differences</span>
+    <span class="n">a_from</span><span class="p">,</span> <span class="n">a_to</span> <span class="o">=</span> <span class="n">differences</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">jdet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span>
+    <span class="n">b_from</span><span class="p">,</span> <span class="n">b_to</span> <span class="o">=</span> <span class="n">differences</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">jdet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+    <span class="n">n_adiff</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a_from</span><span class="p">)</span>
+    <span class="n">n_bdiff</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b_from</span><span class="p">)</span>
     <span class="c1"># Diagonal term</span>
-    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">idet</span><span class="p">]</span> <span class="o">=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
-
-    <span class="c1"># Single excitations alpha</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-            <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
-            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span>
-                <span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">()</span>
-            <span class="p">)</span>
-
-            <span class="c1"># alpha-alpha excitation</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-            <span class="c1"># alpha-beta excitation</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-    <span class="c1"># Single excitations beta</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-            <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
-            <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span>
-                <span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">()</span>
-            <span class="p">)</span>
-
-            <span class="c1"># beta-beta excitation</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                    <span class="n">Ham</span><span class="p">[</span><span class="n">idet</span><span class="p">,</span> <span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">=</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_adiff</span> <span class="o">+</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+    <span class="c1"># Single excitations</span>
+    <span class="k">elif</span> <span class="n">n_adiff</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">a_from</span><span class="p">,</span> <span class="n">a_to</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">a_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">n_adiff</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">b_from</span><span class="p">,</span> <span class="n">b_to</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">b_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span>
+    <span class="c1"># Double excitations    </span>
+    <span class="k">elif</span> <span class="n">n_adiff</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">a_from</span><span class="p">,</span> <span class="n">a_to</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_ss_2exc</span><span class="p">(</span><span class="n">a_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a_from</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">a_to</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">n_adiff</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">b_from</span><span class="p">,</span> <span class="n">b_to</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_ss_2exc</span><span class="p">(</span><span class="n">b_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_from</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b_to</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">n_adiff</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_bdiff</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">a_from</span><span class="p">,</span> <span class="n">a_to</span><span class="p">)</span>
+        <span class="n">phase</span> <span class="o">*=</span> <span class="n">sort_and_phase</span><span class="p">(</span><span class="n">idet</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">b_from</span><span class="p">,</span> <span class="n">b_to</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">SC_os_2exc</span><span class="p">(</span><span class="n">a_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b_to</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># Beyond, 0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>The advantage of this loop structure is that we only compute the non-zero elements. It can be easily verified that we obtain the same result:</p>
+<p>We can now form the Hamiltonian by computing the matrix elements between every pair of determinant. We then diagonalize it to obtain all the energies of the system, both ground and excited states:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Ham</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Form the Hamiltonian</span>
+<span class="n">H_CI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">,</span> <span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">jdet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
+        <span class="n">H_CI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Hij</span><span class="p">(</span><span class="n">idet</span><span class="p">,</span> <span class="n">jdet</span><span class="p">)</span>
+
+<span class="c1"># Diagonalize it</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">H_CI</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-147.723 -147.495 -147.495]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-147.72142572 -147.49304169 -147.49304169 -147.48807552 -147.3873587
+ -147.3873587  -147.30200524 -147.27544175 -147.27544175 -147.14731015
+ -147.14731015 -147.08159065 -147.08159065 -147.07878348 -147.07001287
+ -147.06034613 -147.06034613 -147.00846109 -147.00846109 -146.9956644
+ -146.9956644  -146.97297098 -146.97297098 -146.94721038 -146.93555355
+ -146.93555355 -146.92638432 -146.8851956  -146.8851956  -146.88031319
+ -146.83656167 -146.83656167 -146.8194181  -146.74951724 -146.74951724
+ -146.7444825  -146.7444825  -146.73931587 -146.7380768  -146.7380768
+ -146.71308896 -146.71308896 -146.69767334 -146.69767334 -146.65702461
+ -146.63644115 -146.63644115 -146.56808066 -146.53474693 -146.49721331
+ -146.49721331 -146.49222219 -146.48988297 -146.48988297 -146.43557548
+ -146.43557548 -146.43157041 -146.41342432 -146.39421472 -146.36844193
+ -146.36844193 -146.34140472 -146.33447137 -146.33447137 -146.27735346
+ -146.27735346 -146.27295048 -146.26022031 -146.22089316 -146.21143536
+ -146.20231493 -146.20231493 -146.19364401 -146.19364401 -146.16203131
+ -146.16203131 -146.16052966 -146.16052966 -146.12448418 -146.10706774
+ -146.10706774 -146.06279699 -146.05373213 -146.05373213 -146.05166257
+ -146.05166257 -146.04811384 -146.04811384 -145.97639961 -145.97639961
+ -145.89737526 -145.89737526 -145.89541644 -145.89452505 -145.8879828
+ -145.8879828  -145.80699569 -145.80699569 -145.77058046 -145.77002018
+ -145.77002018 -145.76483211 -145.76483211 -145.75718118 -145.75483376
+ -145.75483376 -145.71098624 -145.71098624 -145.69867907 -145.68762972
+ -145.68762972 -145.66194027 -145.66043364 -145.66043364 -145.10614438
+ -145.00547389 -144.90619332 -144.90619332 -144.87085696 -144.87085696]
 </pre></div>
 </div>
 </div>
 </div>
+<p>Note how the first (and lowest) energy is indeed lower than the one found at the Hartree–Fock level, due to electron correlation. However, it is important to note that some of the states obtained here are not actually triplet but have a higher multiplicity.</p>
+<p>As we discussed in the previous section, the basis of SDs is not spin-adapted. The only constraint in our expansion is the value of <span class="math notranslate nohighlight">\(m_s\)</span>, here <span class="math notranslate nohighlight">\(m_s = 1\)</span>, meaning we have two more <span class="math notranslate nohighlight">\(\alpha\)</span> electrons than <span class="math notranslate nohighlight">\(\beta\)</span>. This excludes singlet (which can only have <span class="math notranslate nohighlight">\(m_s=0\)</span>) but does not exclude some quintets or higher.</p>
+<p>We can also print the first eigenvector:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;float_kind&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.970 0.000 0.000 0.000 0.000 -0.000 -0.000 -0.000 -0.000 -0.179 0.000
+ -0.000 0.000 -0.009 0.071 -0.000 -0.071 -0.009 0.000 -0.000 -0.000 -0.000
+ -0.000 -0.000 0.000 0.000 0.000 -0.000 0.003 -0.000 -0.000 0.000 0.000
+ 0.000 0.000 0.001 0.000 0.000 -0.000 0.000 0.000 -0.000 0.000 -0.000
+ 0.000 -0.000 -0.000 -0.003 -0.000 0.000 0.000 0.000 0.000 0.000 0.000
+ -0.000 0.000 0.000 0.001 -0.000 0.000 0.000 0.009 -0.075 0.000 0.075
+ 0.009 0.000 0.000 -0.000 -0.061 0.000 -0.000 0.000 0.000 0.000 -0.000
+ -0.000 0.000 0.033 -0.000 0.001 -0.000 0.000 0.007 -0.000 -0.000 -0.000
+ 0.000 0.000 0.000 -0.019 -0.000 -0.000 -0.000 0.000 -0.000 0.000 -0.000
+ -0.000 -0.000 -0.007 0.000 -0.000 0.001 0.000 0.000 -0.000 0.000 0.000
+ -0.000 -0.000 -0.019 -0.000 -0.000 -0.000 -0.000 -0.000 0.000 0.000]
+</pre></div>
+</div>
+</div>
+</div>
+<p>One can see that the largest coefficient is the first one, corresponding to the ‘222aa0’ determinant, which indeed is the expected ground state configuration.</p>
 </section>
 <section id="direct-ci">
 <h2>Direct CI<a class="headerlink" href="#direct-ci" title="Link to this heading">#</a></h2>
@@ -1329,85 +1367,15 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="cell tag_hide-input docutils container">
-<details class="hide above-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell source</span>
-<span class="expanded">Hide code cell source</span>
-</summary>
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sigma</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
-        <span class="c1"># Diagonal term</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">+=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-
-        <span class="c1"># Single excitations alpha</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="n">phase</span>
-                    <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
-                    <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-                <span class="p">)</span>
-
-                <span class="c1"># alpha-alpha excitation</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_alpha</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
-                            <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_alpha</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-                        <span class="p">)</span>
-
-                <span class="c1"># alpha-beta excitation</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_os1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-                        <span class="p">)</span>
-
-        <span class="c1"># Single excitations beta</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                <span class="n">phase</span><span class="p">,</span> <span class="n">excdet</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">excdet</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="p">(</span>
-                    <span class="n">phase</span>
-                    <span class="o">*</span> <span class="n">SC_1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">())</span>
-                    <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-                <span class="p">)</span>
-
-                <span class="c1"># beta-beta excitation</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">det</span><span class="o">.</span><span class="n">unocc_beta</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
-                            <span class="k">continue</span>
-                        <span class="n">phase2</span><span class="p">,</span> <span class="n">exc2det</span> <span class="o">=</span> <span class="n">excdet</span><span class="o">.</span><span class="n">excite_beta</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-                        <span class="n">result</span><span class="p">[</span><span class="n">exc2det</span><span class="o">.</span><span class="n">index</span><span class="p">()]</span> <span class="o">+=</span> <span class="p">(</span>
-                            <span class="n">phase</span> <span class="o">*</span> <span class="n">phase2</span> <span class="o">*</span> <span class="n">SC_ss1exc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span>
-                        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
-</div>
-</details>
-</div>
-<p>We can check that we get the same result as using the explicit Hamiltonian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vec0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>  <span class="c1"># Create a random vector</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sigma</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
 
-<span class="c1"># Check that one gets the same result with</span>
-<span class="c1">#  this new function as doing explicitely H.C</span>
-<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ham</span><span class="p">,</span> <span class="n">vec0</span><span class="p">),</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">jdet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Hij</span><span class="p">(</span><span class="n">idet</span><span class="p">,</span> <span class="n">jdet</span><span class="p">)</span> <span class="o">*</span> <span class="n">vector</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 </div>
 </div>
@@ -1415,204 +1383,86 @@ E^I = V_{NN} + \sum_{pq} D^I_{\mu\nu} ( h_{\mu\nu} + F^I_{\mu\nu} )
 <p>We have now all the tools needed to optimize our CI vector. We will first initialize the CI vector to the dominant Slater determinant (conveniently, the first one) and perform the Davidson steps until convergence.</p>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute Hdiag</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute diagonal of the Hamiltonian</span>
 <span class="n">Hdiag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">idet</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">determinant_list</span><span class="p">()):</span>
     <span class="n">Hdiag</span><span class="p">[</span><span class="n">idet</span><span class="p">]</span> <span class="o">=</span> <span class="n">SC_diag</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">occ_alpha</span><span class="p">(),</span> <span class="n">det</span><span class="o">.</span><span class="n">occ_beta</span><span class="p">())</span>
 
-<span class="n">vec0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
-<span class="n">lowest_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">Hdiag</span><span class="p">)</span>
+<span class="c1"># Compute guess as the lowest element (HF reference)</span>
+<span class="n">vec_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expansion</span><span class="o">.</span><span class="n">n_determinants</span><span class="p">)</span>
+<span class="n">lowest_det</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">Hdiag</span><span class="p">)</span>
+<span class="n">vec_0</span><span class="p">[</span><span class="n">lowest_det</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-<span class="n">vec0</span><span class="p">[</span><span class="n">lowest_state</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Initialise to the HF reference</span>
-
+<span class="c1"># Start iterating</span>
 <span class="n">resnorm</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">istep</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">while</span> <span class="n">resnorm</span> <span class="o">&gt;</span> <span class="mf">0.0001</span><span class="p">:</span>  <span class="c1"># As long as the residual norm is large</span>
+<span class="k">while</span> <span class="n">resnorm</span> <span class="o">&gt;</span> <span class="mf">0.0001</span> <span class="ow">and</span> <span class="n">istep</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>  <span class="c1"># As long as the residual norm is large</span>
     <span class="n">istep</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">sigvec0</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span>
+    <span class="n">sigma_0</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec_0</span><span class="p">)</span>
     <span class="c1"># Note that above technically does not need to be recomputed from scratch at each iteration</span>
-    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span> <span class="n">sigvec0</span><span class="p">)</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_0</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Energy at step&quot;</span><span class="p">,</span> <span class="n">istep</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="n">energy</span><span class="p">)</span>
 
     <span class="c1"># Compute residual and its norm</span>
-    <span class="n">residual</span> <span class="o">=</span> <span class="n">sigvec0</span> <span class="o">-</span> <span class="n">energy</span> <span class="o">*</span> <span class="n">vec0</span>
+    <span class="n">residual</span> <span class="o">=</span> <span class="n">sigma_0</span> <span class="o">-</span> <span class="n">energy</span> <span class="o">*</span> <span class="n">vec_0</span>
     <span class="n">resnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span>
 
     <span class="c1"># Compute Davidson update</span>
     <span class="n">preconditioner</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">Hdiag</span> <span class="o">-</span> <span class="n">energy</span> <span class="o">+</span> <span class="mf">0.0001</span><span class="p">)</span>  <span class="c1"># 0.0001 to prevent divergence</span>
-    <span class="n">vec1</span> <span class="o">=</span> <span class="n">preconditioner</span> <span class="o">*</span> <span class="n">residual</span>
+    <span class="n">vec_1</span> <span class="o">=</span> <span class="n">preconditioner</span> <span class="o">*</span> <span class="n">residual</span>
 
     <span class="c1"># Orthonormalize with vec0</span>
-    <span class="n">vec1</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec0</span><span class="p">)</span> <span class="o">*</span> <span class="n">vec0</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
-    <span class="n">vec1</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">norm</span>
-    <span class="n">sigvec1</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
+    <span class="n">vec_1</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_1</span><span class="p">,</span> <span class="n">vec_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">vec_0</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_1</span><span class="p">)</span>
+    <span class="n">vec_1</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">norm</span>
+    <span class="n">sigma_1</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">(</span><span class="n">vec_1</span><span class="p">)</span>
 
     <span class="c1"># Create small hamiltonian</span>
     <span class="n">smallHam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">energy</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span> <span class="n">sigvec1</span><span class="p">)</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">sigvec0</span><span class="p">)</span>
-    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">sigvec1</span><span class="p">)</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_0</span><span class="p">,</span> <span class="n">sigma_1</span><span class="p">)</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_1</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">)</span>
+    <span class="n">smallHam</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_1</span><span class="p">,</span> <span class="n">sigma_1</span><span class="p">)</span>
 
     <span class="c1"># Form the updated CI vector using the eigenvector</span>
-    <span class="n">w</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">smallHam</span><span class="p">)</span>
-    <span class="n">vec0</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec0</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec1</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec0</span><span class="p">)</span>
-    <span class="n">vec0</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">norm</span>
+    <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">smallHam</span><span class="p">)</span>
+    <span class="n">vec_0</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec_0</span> <span class="o">+</span> <span class="n">eigenvectors</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">vec_1</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_0</span><span class="p">)</span>
+    <span class="n">vec_0</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">norm</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.6295384002183
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 1 = -147.63165532121647
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.71968391849808
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 2 = -147.7181398811031
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.72321777896394
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 3 = -147.72127958352286
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.7233740548353
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 4 = -147.72141102020527
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.7233896748483
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 5 = -147.72142391020057
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72339153114982
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 6 = -147.72142540553318
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.7233918622651
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 7 = -147.72142566304663
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.7233919231172
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 8 = -147.72142570868073
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 9 = -147.72339193479917
-</pre></div>
-</div>
-</div>
-</div>
-<p>We can compare this to the CI optimization in MultiPsi:</p>
-<div class="cell tag_output_scroll docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
-<span class="c1"># By default, the guess is done by diagonalising a small segment of the full Hamiltonian</span>
-<span class="c1"># here set the dimension of this Hamiltonian to 1, which corresponds to simply starting from a single SD</span>
-<span class="n">ci_drv</span><span class="o">.</span><span class="n">n_guess</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                          Configuration Interaction Driver
-                         ==================================
-                                                                                                                          
-
-          Active space definition:
-          ------------------------
-Number of inactive (occupied) orbitals: 4
-Number of active orbitals:              6
-Number of virtual orbitals:             0
-
-    This is a CASSCF wavefunction: CAS(8,6)
-
-          CI expansion:
-          -------------
-Number of determinants:      120
-
-
-        ╭────────────────────────────────────╮
-        │          Driver settings           │
-        ╰────────────────────────────────────╯
-          Max. iterations         : 40
-          Initial diagonalization : 1
-          Max subspace size       : 10
-          Convergence thresholds:
-            - Energy change       : 1e-08
-            - Residual square norm: 1e-08
-          Standard Davidson step
-                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-        CI Iterations
-        -------------
-                                                                                                                          
-     Iter. | Average Energy | E. Change | Grad. Norm |   Time
-     ----------------------------------------------------------
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -147.629538400     0.0e+00      1.6e-01   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -147.719683999    -9.0e-02      8.2e-03   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -147.723357326    -3.7e-03      4.2e-05   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -147.723390739    -3.3e-05      1.7e-06   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -147.723391934    -1.2e-06      5.4e-09   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -147.723391938    -3.9e-09      3.9e-11   0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-** Convergence reached in 6 iterations
-                                                                                                                          
-        Final results
-        -------------
-                                                                                                                          
-                                                                                                                          
-* State 1
-- Energy: -147.72339193755803
-- S^2   : 2.00  (multiplicity = 3.0 )
-- Natural orbitals
-1.95550 1.95550 1.96583 1.04380 1.04380 0.03557
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy at step 9 = -147.72142571712175
 </pre></div>
 </div>
 </div>
 </div>
-<p>The CI code is of course more efficient, being fully optimized, and converge in slightly fewer iterations than our test code. This is done despite a stricter convergence threshold, and is a result of by keeping old vectors when forming the small Hamiltonian (up to 10 by default).</p>
-</section>
-<section id="density-matrices-and-natural-orbitals">
-<h2>Density matrices and natural orbitals<a class="headerlink" href="#density-matrices-and-natural-orbitals" title="Link to this heading">#</a></h2>
-<p>In order to compute expectation values, which us useful for properties as well as an intermediate for some electronic structure methods (such as <a class="reference internal" href="mcscf.html#sec-static-correlation"><span class="std std-ref">MCSCF</span></a>), we often need to compute density matrices.</p>
-<p>The one-particle density matrix (in MO basis) is defined in second quantization as</p>
-<div class="math notranslate nohighlight">
-\[
-D_{pq} = \langle 0 | \hat{a}_p^\dagger \hat{a}_q | 0 \rangle
-\]</div>
-<p>It is easy to see that for a single SD, this simplifies to</p>
-<div class="math notranslate nohighlight">
-\[
-D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm{HF} \rangle = \delta_{pq}
-\]</div>
-<p>for <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> occupied, and 0 otherwise.</p>
-<p>However, for CI wave functions, the resulting equation is more complex. In <a class="reference internal" href="wft_exercises.html#sec-ci-exercises"><span class="std std-ref">exercises</span></a> we will try to implement this using a similar structure as the code for the <span class="math notranslate nohighlight">\(\sigma\)</span> vector.</p>
-<p>One of the uses of the one-particle density matrix is that it allows an intuitive look at the correlated wave function by looking at the occupation number of the so-called natural orbitals. Indeed, while orbitals are originally born out of a mean-field theory and are technically not appropriate representations of a real (<em>i.e.</em>, correlated) wave function, their intuitive power is undeniable.</p>
-<p><a class="reference internal" href="natural_orbitals.html"><span class="doc std std-doc">Natural orbitals</span></a> generalize the concept of orbitals to correlated wave functions. The occupation numbers are now non-integer between 2 and 0, representing a sort of weighted average of the occupations across all configurations. By doing so, the occupation number offer a measure of correlation — occupations far from an integer value reflecting significant deviations from the mean-field picture, and thus significant correlation effects. Further discussion of these natural orbitals is included in the chapter on multiconfigurational methods.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Dpq</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_active_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Get the density for state 0</span>
-
-<span class="n">w</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Dpq</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Natural occupation numbers for O2: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Natural occupation numbers for O2:  [1.966 1.955 1.955 1.044 1.044 0.036]
-</pre></div>
-</div>
-</div>
-</div>
-<p>Here we recognize the dominant configuration that we found earlier (222aa0), but with deviations coming from electron correlation. It is interesting to note how the occupation often work in pairs summing up approximately to an integer. This reflects that the dominant correlation (especially in this minimal basis case) is often within a bond itself, between the bonding and anti-bonding orbitals. In this example, the first and last orbitals correspond to the <span class="math notranslate nohighlight">\(\sigma\)</span> and <span class="math notranslate nohighlight">\(\sigma^*\)</span> with 2 electrons in total while orbitals 2 and 3 are <span class="math notranslate nohighlight">\(\pi\)</span> and 4 and 5 are <span class="math notranslate nohighlight">\(\pi^*\)</span> with 3 electrons in each orbital pairs.</p>
+<p>We can confirm the final energy matches the one from the diagonalization.</p>
 </section>
 <section id="truncated-ci">
 <span id="sec-truncated-ci"></span><h2>Truncated CI<a class="headerlink" href="#truncated-ci" title="Link to this heading">#</a></h2>
@@ -1642,8 +1492,8 @@ D^\mathrm{HF}_{pq} = \langle \mathrm{HF} | \hat{a}_p^\dagger \hat{a}_q | \mathrm
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261563159024906"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261563159024906" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455427041142"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455427041142" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -1671,22 +1521,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261563159024906 = null;
-var warn = document.getElementById("3dmolwarning_17261563159024906");
+var viewer_1739455427041142 = null;
+var warn = document.getElementById("3dmolwarning_1739455427041142");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17261563159024906 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17261563159024906"),{backgroundColor:"white"});
-viewer_17261563159024906.zoomTo();
-	viewer_17261563159024906.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
-	viewer_17261563159024906.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17261563159024906.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17261563159024906.zoomTo();
-viewer_17261563159024906.render();
+viewer_1739455427041142 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455427041142"),{backgroundColor:"white"});
+viewer_1739455427041142.zoomTo();
+	viewer_1739455427041142.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_1739455427041142.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455427041142.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455427041142.zoomTo();
+viewer_1739455427041142.render();
 });
 </script></div></div>
 </div>
@@ -1713,20 +1563,20 @@ viewer_17261563159024906.render();
 <span class="k">for</span> <span class="n">excitations</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
     <span class="n">space</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="n">excitations</span><span class="p">)</span>  <span class="c1"># Compute CIS, CISD, CISDT and CISDTQ</span>
     <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">H2O</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
-    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">())</span>
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
 
 <span class="n">space</span><span class="o">.</span><span class="n">fci</span><span class="p">()</span>  <span class="c1"># Compute fullCI</span>
 <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">H2O</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
-<span class="n">E_FCI</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="n">E_FCI</span> <span class="o">=</span> <span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">corr_perc</span> <span class="o">=</span> <span class="p">(</span><span class="n">energies</span> <span class="o">-</span> <span class="n">E_hf</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">E_FCI</span> <span class="o">-</span> <span class="n">E_hf</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CIS&quot;</span><span class="p">,</span> <span class="s2">&quot;CISD&quot;</span><span class="p">,</span> <span class="s2">&quot;CISDT&quot;</span><span class="p">,</span> <span class="s2">&quot;CISDTQ&quot;</span><span class="p">]</span>
@@ -1755,9 +1605,9 @@ viewer_17261563159024906.render();
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/b31881c36424f38a09481df4219abdbf60c7dd7cf5f33549beea1427897996d3.png" src="../../_images/b31881c36424f38a09481df4219abdbf60c7dd7cf5f33549beea1427897996d3.png" />
+<img alt="../../_images/c516bd50ba64c8826b864b916a67b924b7ca70e25530e15389380c185c56c85a.png" src="../../_images/c516bd50ba64c8826b864b916a67b924b7ca70e25530e15389380c185c56c85a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Recovered electron correlation:
-  CIS   : 9.445e-11
+  CIS   : 2.099e-11
   CISD  : 95.14
   CISDT : 95.84
   CISDTQ: 99.88
@@ -1798,8 +1648,8 @@ viewer_17261563159024906.render();
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261563205907419"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261563205907419" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455439575302"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455439575302" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -1827,22 +1677,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261563205907419 = null;
-var warn = document.getElementById("3dmolwarning_17261563205907419");
+var viewer_1739455439575302 = null;
+var warn = document.getElementById("3dmolwarning_1739455439575302");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17261563205907419 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17261563205907419"),{backgroundColor:"white"});
-viewer_17261563205907419.zoomTo();
-	viewer_17261563205907419.addModel("6\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\nO            100.000000000000         0.000000000000         0.000000000000\nH            100.000000000000         0.740848095288         0.582094932012\nH            100.000000000000        -0.740848095288         0.582094932012\n");
-	viewer_17261563205907419.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17261563205907419.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17261563205907419.zoomTo();
-viewer_17261563205907419.render();
+viewer_1739455439575302 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455439575302"),{backgroundColor:"white"});
+viewer_1739455439575302.zoomTo();
+	viewer_1739455439575302.addModel("6\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.740848095288         0.582094932012\nH              0.000000000000        -0.740848095288         0.582094932012\nO            100.000000000000         0.000000000000         0.000000000000\nH            100.000000000000         0.740848095288         0.582094932012\nH            100.000000000000        -0.740848095288         0.582094932012\n");
+	viewer_1739455439575302.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455439575302.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455439575302.zoomTo();
+viewer_1739455439575302.render();
 });
 </script></div></div>
 </div>
@@ -1854,7 +1704,7 @@ viewer_17261563205907419.render();
 <span class="n">space</span><span class="o">.</span><span class="n">cisd</span><span class="p">()</span>
 <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
 
-<span class="n">E_2h2o</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="n">E_2h2o</span> <span class="o">=</span> <span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1910,13 +1760,13 @@ Difference  :     0.009163
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Weight of the HF determinant for the dimer</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;ci_vectors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Determinant                  coef.    weight 
-22222222220000000000000000  -0.965    0.932 
+22222222220000000000000000   0.965    0.932 
 </pre></div>
 </div>
 </div>
@@ -1924,6 +1774,7 @@ Difference  :     0.009163
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Recompute 1 water molecule</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">H2O</span><span class="p">,</span> <span class="s2">&quot;6-31G&quot;</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">H2O</span><span class="p">,</span> <span class="n">H2O_orbs</span><span class="p">)</span>
 <span class="n">space</span><span class="o">.</span><span class="n">cisd</span><span class="p">()</span>
 <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">H2O</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
@@ -1934,13 +1785,13 @@ Difference  :     0.009163
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Weight of the HF determinant for the monomer</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;ci_vectors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Determinant     coef.    weight 
-2222200000000  -0.981    0.962 
+2222200000000   0.981    0.962 
 </pre></div>
 </div>
 </div>
@@ -1948,7 +1799,7 @@ Difference  :     0.009163
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E_D_2H2O</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.932</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">E_2h2o</span> <span class="o">-</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">get_scf_energy</span><span class="p">())</span> <span class="o">+</span> <span class="n">E_2h2o</span>
-<span class="n">E_D_H2O</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.962</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span> <span class="o">-</span> <span class="n">E_hf</span><span class="p">)</span> <span class="o">+</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="n">E_D_H2O</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.962</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">E_hf</span><span class="p">)</span> <span class="o">+</span> <span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">26</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Davidson corrected energy&quot;</span><span class="p">)</span>
@@ -2009,12 +1860,12 @@ Difference  :     0.002056
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mp2.html"
+       href="mp2_advanced.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Møller–Plesset</p>
+        <p class="prev-next-title">Other partitionings</p>
       </div>
     </a>
     <a class="right-next"
@@ -2033,7 +1884,8 @@ Difference  :     0.002056
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2044,9 +1896,10 @@ Difference  :     0.002056
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-theory">General theory</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-n-electron-basis">The <span class="math notranslate nohighlight">\(N\)</span>-electron basis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ci-hamiltonian">The CI Hamiltonian</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mo-integrals">MO integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-factor">Phase factor</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ci-hamiltonian">CI Hamiltonian</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-ci">Direct CI</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrices-and-natural-orbitals">Density matrices and natural orbitals</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#truncated-ci">Truncated CI</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restricting-the-excitations">Restricting the excitations</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#size-consistency">Size consistency</a></li>
@@ -2100,8 +1953,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

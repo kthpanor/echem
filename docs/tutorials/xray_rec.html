@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -80,6 +83,7 @@
     <link rel="prev" title="Non-standard calculations" href="xray_nonstandard.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -686,16 +679,16 @@ document.write(`
 <ul class="simple">
 <li><p><strong>Coupled cluster:</strong></p>
 <ul>
-<li><p>CCSD has been noted to provide good precision and reasonable accuracy for XAS and XES <span id="id2">[<a class="reference internal" href="../refs.html#id11" title="N. A. Besley. Equation of motion coupled cluster theory calculations of the x-ray emission spectroscopy of water. Chem. Phys. Lett., 542:42-46, 2012. URL: https://doi.org/10.1016/j.cplett.2012.05.059.">Bes12</a>, <a class="reference internal" href="../refs.html#id119" title="M. L. Vidal, X. Feng, E. Epifanovsky, A. I. Krylov, and S. Coriani. New and efficient equation-of-motion coupled-cluster framework for core-excited and core-ionized states. J. Chem. Theory Comput., 15:3117-3133, 2019. URL: https://doi.org/10.1021/acs.jctc.9b00039.">VFE+19</a>]</span></p></li>
-<li><p>CC3 has been shown to improve XAS results, and can be used in a multilayer manner <span id="id3">[<a class="reference internal" href="../refs.html#id82" title="A. C. Paul, Myhre, R. H, and H. Koch. A new and efficient implementation of CC3. J. Chem. Theory Comput., 12:117, 2021. URL: https://doi.org/10.1021/acs.jctc.0c00686.">PMK21</a>]</span></p></li>
+<li><p>CCSD has been noted to provide good precision and reasonable accuracy for XAS and XES <span id="id2">[<a class="reference internal" href="../refs.html#id11" title="N. A. Besley. Equation of motion coupled cluster theory calculations of the x-ray emission spectroscopy of water. Chem. Phys. Lett., 542:42-46, 2012. URL: https://doi.org/10.1016/j.cplett.2012.05.059.">Bes12</a>, <a class="reference internal" href="../refs.html#id121" title="M. L. Vidal, X. Feng, E. Epifanovsky, A. I. Krylov, and S. Coriani. New and efficient equation-of-motion coupled-cluster framework for core-excited and core-ionized states. J. Chem. Theory Comput., 15:3117-3133, 2019. URL: https://doi.org/10.1021/acs.jctc.9b00039.">VFE+19</a>]</span></p></li>
+<li><p>CC3 has been shown to improve XAS results, and can be used in a multilayer manner <span id="id3">[<a class="reference internal" href="../refs.html#id84" title="A. C. Paul, Myhre, R. H, and H. Koch. A new and efficient implementation of CC3. J. Chem. Theory Comput., 12:117, 2021. URL: https://doi.org/10.1021/acs.jctc.0c00686.">PMK21</a>]</span></p></li>
 <li><p>If computational cost is a concern, CC2 has been shown to work quite well <span id="id4">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>]</span></p></li>
 </ul>
 </li>
 <li><p><strong>Algebraic-diagrammatic construction scheme:</strong></p>
 <ul>
-<li><p>ADC(2) yields good accuracy for XES, and works quite well for the valence states in XAS (the shift to higher-lying features are likely to be compressed, however) <span id="id5">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>, <a class="reference internal" href="../refs.html#id32" title="T. Fransson and A. Dreuw. Simulating x-ray emission spectroscopy with algebraic diagrammatic construction schemes for the polarization propagator. J. Chem. Theory Comput., 15:546-556, 2019. URL: https://doi.org/10.1021/acs.jctc.8b01046.">FD19</a>]</span></p></li>
-<li><p>ADC(2)-x has been noted to yield best results for XAS and high precision for XES, despite being less reliable for valence excitations <span id="id6">[<a class="reference internal" href="../refs.html#id129" title="J. Wenzel, A. Holzer, M. Wormit, and A. Dreuw. Analysis and comparison of CVS-ADC approaches up to third order for the calculation of core-excited states. J. Chem. Phys., 142:214104, 2015. URL: https://doi.org/10.1063/1.4921841.">WHWD15</a>]</span>. This has been identified as a result of balancing effects for capturing the strong relaxation in core transitions, yielding good results for X-ray spectroscopies</p></li>
-<li><p>ADC(3/2) has been noted to yield a poorer description of both XAS and XES, despite its higher level of theory and higher computational cost <span id="id7">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>, <a class="reference internal" href="../refs.html#id32" title="T. Fransson and A. Dreuw. Simulating x-ray emission spectroscopy with algebraic diagrammatic construction schemes for the polarization propagator. J. Chem. Theory Comput., 15:546-556, 2019. URL: https://doi.org/10.1021/acs.jctc.8b01046.">FD19</a>, <a class="reference internal" href="../refs.html#id129" title="J. Wenzel, A. Holzer, M. Wormit, and A. Dreuw. Analysis and comparison of CVS-ADC approaches up to third order for the calculation of core-excited states. J. Chem. Phys., 142:214104, 2015. URL: https://doi.org/10.1063/1.4921841.">WHWD15</a>]</span>. <em>However</em>, for X-ray emission spectra of systems in an environment, double-excitations may interfere with the emission lines for ADC(2) and ADC(2)-x, and ADC(3/2) may then be most suitable</p></li>
+<li><p>ADC(2) yields good accuracy for XES, and works quite well for the valence states in XAS (the shift to higher-lying features are likely to be compressed, however) <span id="id5">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>, <a class="reference internal" href="../refs.html#id34" title="T. Fransson and A. Dreuw. Simulating x-ray emission spectroscopy with algebraic diagrammatic construction schemes for the polarization propagator. J. Chem. Theory Comput., 15:546-556, 2019. URL: https://doi.org/10.1021/acs.jctc.8b01046.">FD19</a>]</span></p></li>
+<li><p>ADC(2)-x has been noted to yield best results for XAS and high precision for XES, despite being less reliable for valence excitations <span id="id6">[<a class="reference internal" href="../refs.html#id131" title="J. Wenzel, A. Holzer, M. Wormit, and A. Dreuw. Analysis and comparison of CVS-ADC approaches up to third order for the calculation of core-excited states. J. Chem. Phys., 142:214104, 2015. URL: https://doi.org/10.1063/1.4921841.">WHWD15</a>]</span>. This has been identified as a result of balancing effects for capturing the strong relaxation in core transitions, yielding good results for X-ray spectroscopies</p></li>
+<li><p>ADC(3/2) has been noted to yield a poorer description of both XAS and XES, despite its higher level of theory and higher computational cost <span id="id7">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>, <a class="reference internal" href="../refs.html#id34" title="T. Fransson and A. Dreuw. Simulating x-ray emission spectroscopy with algebraic diagrammatic construction schemes for the polarization propagator. J. Chem. Theory Comput., 15:546-556, 2019. URL: https://doi.org/10.1021/acs.jctc.8b01046.">FD19</a>, <a class="reference internal" href="../refs.html#id131" title="J. Wenzel, A. Holzer, M. Wormit, and A. Dreuw. Analysis and comparison of CVS-ADC approaches up to third order for the calculation of core-excited states. J. Chem. Phys., 142:214104, 2015. URL: https://doi.org/10.1063/1.4921841.">WHWD15</a>]</span>. <em>However</em>, for X-ray emission spectra of systems in an environment, double-excitations may interfere with the emission lines for ADC(2) and ADC(2)-x, and ADC(3/2) may then be most suitable</p></li>
 </ul>
 </li>
 </ul>
@@ -706,11 +699,11 @@ document.write(`
 </ul>
 <p>If static correlation becomes substantial, methods based on a single Slater determinant reference will become unsuitable. ADC will be worst off, on account of the MP reference, with CC being slightly more successful for these cases. Spin-flip ADC and CC can improve the situation for certain few-reference systems, and TDDFT will be a bit more capable of addressing these cases compared to pure CC and ADC. However, systems with strong static correlation should be considered carefully, and multi-reference methods are likely the safest way forward.</p>
 <p>Transition metal (TM) complexes often have strong static correlation, which would point towards using multi-reference methods. TDDFT can also work quite well, and in some cases ADC or CC provide reliable results too. Care needs to be taken if the latter methods are used. Furthermore, TM complexes may require the inclusion of (spin-orbit) relativistic effects and may involve quadruple-allowed transitions.</p>
-<p>A plethora of other methods for considering X-ray properties are available, for which guides and recommendations may be found elsewhere (<em>e.g.</em> <span id="id10">[<a class="reference internal" href="../refs.html#id80" title="P. Norman and A. Dreuw. Simulating x-ray spectroscopies and calculating core-excited states of molecules. Chem. Rev., 118:7208-7248, 2018. URL: https://doi.org/10.1021/acs.chemrev.8b00156.">ND18</a>]</span>).</p>
+<p>A plethora of other methods for considering X-ray properties are available, for which guides and recommendations may be found elsewhere (<em>e.g.</em> <span id="id10">[<a class="reference internal" href="../refs.html#id82" title="P. Norman and A. Dreuw. Simulating x-ray spectroscopies and calculating core-excited states of molecules. Chem. Rev., 118:7208-7248, 2018. URL: https://doi.org/10.1021/acs.chemrev.8b00156.">ND18</a>]</span>).</p>
 </section>
 <section id="basis-set-selection">
 <h2>Basis set selection<a class="headerlink" href="#basis-set-selection" title="Link to this heading">#</a></h2>
-<p>As <a class="reference internal" href="xray_aspects.html#sec-xray-topics-basis"><span class="std std-ref">previously discussed</span></a>, standard basis sets often include a minimal, or close to minimal, description for the core region, as computational chemistry usually focuses on the valence region. For core spectroscopies, the core region thus often needs to be augmented. This can be done by decontracting the core basis functions, by including core-polarizing functions, by augmenting the basis set with basis functions for <span class="math notranslate nohighlight">\(Z+1\)</span> or <span class="math notranslate nohighlight">\(Z+1/2\)</span>, or some other method <span id="id11">[<a class="reference internal" href="../refs.html#id2" title="M. A. Ambroise, A. Dreuw, and F. Jensen. Probing basis set requirements for calculating core ionization and core excitation spectra using correlated wave function methods. J. Chem. Theory Comput., 17:2832, 2021. URL: https://doi.org/10.1021/acs.jctc.1c00042.">ADJ21</a>, <a class="reference internal" href="../refs.html#id41" title="M. W. D. Hanson-Heine, M. W. George, and N. A. Besley. Basis sets for the calculation of core-electron binding energies. Chem. Phys. Lett., 699:279-285, 2018. URL: https://doi.org/10.1016/j.cplett.2018.03.066.">HHGB18</a>]</span>. It can be noted, however, that this augmentation is not always necessary for high precision, provided that the lacking description of the core region yields similar errors for different states and atomic sites <span id="id12">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>]</span>. The lack of the additional flexibility in the core region is then likely to yield absolute energies away from the complete basis set limits, but reasonable relative energies.</p>
+<p>As <a class="reference internal" href="xray_aspects.html#sec-xray-topics-basis"><span class="std std-ref">previously discussed</span></a>, standard basis sets often include a minimal, or close to minimal, description for the core region, as computational chemistry usually focuses on the valence region. For core spectroscopies, the core region thus often needs to be augmented. This can be done by decontracting the core basis functions, by including core-polarizing functions, by augmenting the basis set with basis functions for <span class="math notranslate nohighlight">\(Z+1\)</span> or <span class="math notranslate nohighlight">\(Z+1/2\)</span>, or some other method <span id="id11">[<a class="reference internal" href="../refs.html#id2" title="M. A. Ambroise, A. Dreuw, and F. Jensen. Probing basis set requirements for calculating core ionization and core excitation spectra using correlated wave function methods. J. Chem. Theory Comput., 17:2832, 2021. URL: https://doi.org/10.1021/acs.jctc.1c00042.">ADJ21</a>, <a class="reference internal" href="../refs.html#id43" title="M. W. D. Hanson-Heine, M. W. George, and N. A. Besley. Basis sets for the calculation of core-electron binding energies. Chem. Phys. Lett., 699:279-285, 2018. URL: https://doi.org/10.1016/j.cplett.2018.03.066.">HHGB18</a>]</span>. It can be noted, however, that this augmentation is not always necessary for high precision, provided that the lacking description of the core region yields similar errors for different states and atomic sites <span id="id12">[<a class="reference internal" href="../refs.html#id30" title="T. Fransson, I. E. Brumboiu, M. L. Vidal, P. Norman, S. Coriani, and A. Dreuw. XABOOM: an x-ray absorption benchmark of organic molecules based on carbon, nitrogen, and oxygen 1s-&gt;pi* transitions. J. Chem. Theory Comput., 17:1618, 2021. URL: https://doi.org/10.1021/acs.jctc.0c01082.">FBV+21</a>]</span>. The lack of the additional flexibility in the core region is then likely to yield absolute energies away from the complete basis set limits, but reasonable relative energies.</p>
 <p>Nevertheless, a general recommendation would be to use cc-pCVTZ (or similar) for the atoms probed, and cc-pVTZ for the remaining atoms. The Dunning basis set 6-311G** has also been shown to perform quite well, and the core basis functions can here be decontracted for u6-311G**. Hydrogen atoms and atoms away from the probed core orbitals can likely be dropped to a double-<span class="math notranslate nohighlight">\(\zeta\)</span> desciption. A double-<span class="math notranslate nohighlight">\(\zeta\)</span> (<em>e.g.</em> cc-pVDZ/cc-pCVDZ or 6-31G*/u6-31G*) can be used with some care for larger systems and more approximate methods. More specific recommendations include:</p>
 <ul class="simple">
 <li><p><strong>XPS:</strong> If a <span class="math notranslate nohighlight">\(\Delta\textrm{SCF}\)</span> method is used, a flexible description of the core and valence region is desirable</p></li>
@@ -782,7 +775,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -843,8 +837,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

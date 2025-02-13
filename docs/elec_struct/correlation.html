@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -80,6 +83,7 @@
     <link rel="prev" title="Electron spin" href="spin.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -689,7 +682,7 @@ n(\mathbf{r}, \mathbf{r}') = n(\mathbf{r}) n(\mathbf{r}')
 \[
 E_{\textrm{corr}} = E_{\textrm{exact}} - E_{\textrm{HF}} 
 \]</div>
-<p>In work with approximate methods such as the plethora of wave function models, it is convenient to introduce a method specific correlation energy following Löwdin <span id="id1">[<a class="reference internal" href="../refs.html#id71" title="P.-O. Löwdin. Molecular structure calculations. Adv. Quantum Chem., 12:263-316, 1980. URL: https://doi.org/10.1016/S0065-3276(08)60318-4.">Low80</a>]</span></p>
+<p>In work with approximate methods such as the plethora of wave function models, it is convenient to introduce a method specific correlation energy following Löwdin <span id="id1">[<a class="reference internal" href="../refs.html#id73" title="P.-O. Löwdin. Molecular structure calculations. Adv. Quantum Chem., 12:263-316, 1980. URL: https://doi.org/10.1016/S0065-3276(08)60318-4.">Low80</a>]</span></p>
 <div class="math notranslate nohighlight">
 \[
 E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}  
@@ -698,10 +691,10 @@ E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}
 <p>To illustrate these concepts, we will use the full configuration interaction (FCI) method to study the H<span class="math notranslate nohighlight">\(_2\)</span> molecule. The obtained results provide the exact correlation energy for the given basis set.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">multipsi</span> <span class="k">as</span> <span class="nn">mtp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multipsi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mtp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">170</span><span class="p">)</span>
 
@@ -712,7 +705,7 @@ E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}
 <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_molecule_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;au&quot;</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span><span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-<span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">()</span>
 
 <span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
 <span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
@@ -729,8 +722,8 @@ E_{\textrm{corr}} = E_{\textrm{WF}} - E_{\textrm{HF}}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261563249099844"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261563249099844" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455455649299"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455455649299" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -758,22 +751,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261563249099844 = null;
-var warn = document.getElementById("3dmolwarning_17261563249099844");
+var viewer_1739455455649299 = null;
+var warn = document.getElementById("3dmolwarning_1739455455649299");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17261563249099844 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17261563249099844"),{backgroundColor:"white"});
-viewer_17261563249099844.zoomTo();
-	viewer_17261563249099844.addModel("2\n\nH              0.000000000000         0.000000000000        -0.370424047632\nH              0.000000000000         0.000000000000         0.370424047632\n");
-	viewer_17261563249099844.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17261563249099844.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17261563249099844.zoomTo();
-viewer_17261563249099844.render();
+viewer_1739455455649299 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455455649299"),{backgroundColor:"white"});
+viewer_1739455455649299.zoomTo();
+	viewer_1739455455649299.addModel("2\n\nH              0.000000000000         0.000000000000        -0.370424047632\nH              0.000000000000         0.000000000000         0.370424047632\n");
+	viewer_1739455455649299.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455455649299.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455455649299.zoomTo();
+viewer_1739455455649299.render();
 });
 </script></div></div>
 </div>
@@ -785,7 +778,7 @@ viewer_17261563249099844.render();
 <span class="n">ci_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">CIDriver</span><span class="p">()</span>
 <span class="n">ci_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
 <span class="n">ci_results</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
-<span class="n">ci_energy</span> <span class="o">=</span> <span class="n">ci_drv</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+<span class="n">ci_energy</span> <span class="o">=</span> <span class="n">ci_results</span><span class="p">[</span><span class="s2">&quot;energies&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -823,11 +816,11 @@ Correlation energy: -0.03468928
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_orbital_values</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">):</span>
     <span class="n">orbital_values</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">))</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vis_drv</span><span class="o">.</span><span class="n">get_mo</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mol_orbs</span><span class="o">.</span><span class="n">alpha_to_numpy</span><span class="p">(),</span> <span class="n">i</span><span class="p">))</span>
         <span class="n">orbital_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">orbital_values</span>
@@ -839,7 +832,7 @@ Correlation energy: -0.03468928
 <p>In the MO basis, the HF density matrix is diagonal with elements 2 and 0 for occupied and unoccupied orbitals, respectively. For CI, it is a bit more complicated, but the density matrix is provided by the CI driver.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_n1</span><span class="p">(</span><span class="n">orbital_values</span><span class="p">):</span>
 
     <span class="n">hf_onepart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span> <span class="n">norb</span><span class="p">))</span>
     <span class="n">hf_onepart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># first MO is doubly occupied</span>
@@ -885,7 +878,7 @@ Correlation energy: -0.03468928
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/3300c2694686717c5e12a36e7c7c4a32856f7615f167bce82bfb2141490509cd.png" src="../../_images/3300c2694686717c5e12a36e7c7c4a32856f7615f167bce82bfb2141490509cd.png" />
+<img alt="../../_images/4a96e7da56ad323425ac68a60112d08fe86311d81769126d99ec53f151043265.png" src="../../_images/4a96e7da56ad323425ac68a60112d08fe86311d81769126d99ec53f151043265.png" />
 </div>
 </div>
 <p>The differences one-particle densities at the HF and FCI levels of theory are very minor. Upon close inspection of the FCI density, it is possible to discern a small decrease in the middle of the bond, compensated for by a minor increase around the nuclei.</p>
@@ -895,7 +888,7 @@ Correlation energy: -0.03468928
 <p>Given the nature of electron correlation, it is in the two-particle density that approximate method shortcomings are expected to more clearly reveal themselves.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_n12</span><span class="p">(</span><span class="n">orbital_values_1</span><span class="p">,</span> <span class="n">orbital_values_2</span><span class="p">):</span>
 
     <span class="n">hf_twopart_denmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">,</span><span class="n">norb</span><span class="p">))</span>
     <span class="n">hf_twopart_denmat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># first MO is doubly occupied</span>
@@ -954,7 +947,7 @@ Correlation energy: -0.03468928
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/cbc3ddac4d17b152a007a6becf59aa270eb4b5475f852e31a3464d1e7590f2f0.png" src="../../_images/cbc3ddac4d17b152a007a6becf59aa270eb4b5475f852e31a3464d1e7590f2f0.png" />
+<img alt="../../_images/0ad6a85d2dd2d0bede9d1f4673edfb1328797550171f6f2ba4f0d627662b7e6e.png" src="../../_images/0ad6a85d2dd2d0bede9d1f4673edfb1328797550171f6f2ba4f0d627662b7e6e.png" />
 </div>
 </div>
 <p>It is here clearly shown how the HF wave functions fails to describe the asymmetry in the two-particle density.</p>
@@ -977,10 +970,10 @@ Correlation energy: -0.03468928
 <span class="c1"># one- and two-particle densities for each basis set in lists</span>
 <span class="n">n12_fci_l</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">for</span> <span class="n">basis_set</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sto-3g&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvtz&quot;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">basis_set</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sto-3g&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvdz&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvtz&quot;</span><span class="p">,</span> <span class="s2">&quot;cc-pvqz&quot;</span><span class="p">]:</span>
 
     <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set</span><span class="p">)</span>
-    <span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+    <span class="n">norb</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">()</span>
     <span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
     <span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
@@ -1004,6 +997,7 @@ Correlation energy: -0.03468928
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;STO-3G&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;cc-pVDZ&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;cc-pVTZ&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n12_fci_l</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;cc-pVQZ&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -1017,7 +1011,7 @@ Correlation energy: -0.03468928
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/2502e874c547a21a2656bcb5170095a61e90b6b07aecb688ae811e8b174cd0b8.png" src="../../_images/2502e874c547a21a2656bcb5170095a61e90b6b07aecb688ae811e8b174cd0b8.png" />
+<img alt="../../_images/b3ffca2ee0e6de15eeb066637f610eb66319d53f374a3a533ff7eb7d27c2279b.png" src="../../_images/b3ffca2ee0e6de15eeb066637f610eb66319d53f374a3a533ff7eb7d27c2279b.png" />
 </div>
 </div>
 <p>The basis set effect is seen to be large – with the minimal STO-3G basis set there are no virtual orbitals and therefore the electron correlation is not captured. With increased basis set quality, the cusp gets sharper but convergence is slow. This illustrates why correlated wave function methods require large and flexible basis sets to converge.</p>
@@ -1081,7 +1075,8 @@ Correlation energy: -0.03468928
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1145,8 +1140,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

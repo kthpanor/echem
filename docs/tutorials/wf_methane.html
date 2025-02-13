@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -80,6 +83,7 @@
     <link rel="prev" title="Assembling a full workflow" href="wf_construct.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -680,9 +673,9 @@ document.write(`
 <p>We calculate this reaction energy by constructing equilibrium structures of each molecule, calculating the total energy of each molecule in turn, and taking the energy difference between the reactants and products. This example is inspired by <a class="reference external" href="https://doi.org/10.1021/acs.jchemed.1c01243">this paper</a>, in which the authors discuss the practical aspects of calculating the methane combustion energy, taking into account the competing concerns of computational cost and accuracy. More details on the impact of electron correlation, basis set selection, and extrapolation to the complete basis set (CBS) limit can be found therein.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">py3Dmol</span> <span class="k">as</span> <span class="nn">p3d</span>
-<span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">py3Dmol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3d</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
 </pre></div>
 </div>
 </div>
@@ -708,7 +701,7 @@ document.write(`
 <p>Set up xTB driver and perform xTB optimization.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">xtb_optimization</span><span class="p">(</span><span class="n">xyz_ff</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">xtb_optimization</span><span class="p">(</span><span class="n">xyz_ff</span><span class="p">):</span>
 
     <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">xyz_ff</span><span class="p">)</span>
     <span class="n">xtb_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">XtbDriver</span><span class="p">()</span>
@@ -747,8 +740,8 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261569393240943"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261569393240943" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739456212290126"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739456212290126" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -776,34 +769,34 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261569393240943 = null;
-var warn = document.getElementById("3dmolwarning_17261569393240943");
+var viewer_1739456212290126 = null;
+var warn = document.getElementById("3dmolwarning_1739456212290126");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-var viewergrid_17261569393240943 = null;
-viewergrid_17261569393240943 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_17261569393240943"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
-viewer_17261569393240943 = viewergrid_17261569393240943[0][0];
-viewergrid_17261569393240943[0][0].zoomTo();viewergrid_17261569393240943[0][1].zoomTo();viewergrid_17261569393240943[1][0].zoomTo();viewergrid_17261569393240943[1][1].zoomTo();	viewergrid_17261569393240943[0][0].addModel("5\n\nC              1.050329957695         0.056201590833        -0.065635391954\nH              2.132501561964         0.056206362000        -0.065640324107\nH              0.689607106641         0.659715518846         0.757009697875\nH              0.689610027296        -0.957987634056         0.045701699791\nH              0.689601346405         0.466874162378        -0.999615681605\n","xyz");
-	viewergrid_17261569393240943[0][1].addModel("2\n\nO              0.972433323395         0.062100005419        -0.077240006740\nO              2.182246676605         0.062099994581        -0.077239993260\n","xyz");
-	viewergrid_17261569393240943[1][0].addModel("3\n\nO              1.063155661546         0.022859996632        -0.073279989202\nC              2.206809999973         0.022860000036        -0.073280000115\nO              3.350464338481         0.022860003332        -0.073280010683\n","xyz");
-	viewergrid_17261569393240943[1][1].addModel("3\n\nO              0.941142496889        -0.030437461914         0.072367908499\nH              1.900171406450        -0.041885527258         0.087274867073\nH              0.639196096661        -0.585047010828         0.794397224428\n","xyz");
-	viewergrid_17261569393240943[0][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17261569393240943[0][1].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17261569393240943[1][0].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17261569393240943[1][1].setViewStyle({"style": "outline", "width": 0.05});
-	viewergrid_17261569393240943[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_17261569393240943[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_17261569393240943[1][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewergrid_17261569393240943[1][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-viewergrid_17261569393240943[1][1].render();
-viewergrid_17261569393240943[1][0].render();
-viewergrid_17261569393240943[0][1].render();
-viewergrid_17261569393240943[0][0].render();
+var viewergrid_1739456212290126 = null;
+viewergrid_1739456212290126 = $3Dmol.createViewerGrid(document.getElementById("3dmolviewer_1739456212290126"),{rows: 2, cols: 2, control_all: false},{backgroundColor:"white"});
+viewer_1739456212290126 = viewergrid_1739456212290126[0][0];
+viewergrid_1739456212290126[0][0].zoomTo();viewergrid_1739456212290126[0][1].zoomTo();viewergrid_1739456212290126[1][0].zoomTo();viewergrid_1739456212290126[1][1].zoomTo();	viewergrid_1739456212290126[0][0].addModel("5\n\nC             -1.061172995296         0.122413190034         1.016564361133\nH             -1.635677992122         1.031718515131         0.896965794711\nH             -0.951566266169        -0.099093701265         2.070185301878\nH             -1.574196832575        -0.695384647273         0.527474191803\nH             -0.083250913838         0.252412643373         0.571632350474\n","xyz");
+	viewergrid_1739456212290126[0][1].addModel("2\n\nO              0.097769235542         1.459560641217        -1.851900113406\nO              0.618029764458         0.889994358783        -2.783869886594\n","xyz");
+	viewergrid_1739456212290126[1][0].addModel("3\n\nO              3.149165675417        -0.302360560862        -0.261044213360\nC              3.324917997188         0.466198989973         0.567427676518\nO              3.500670327395         1.234758570889         1.395899536842\n","xyz");
+	viewergrid_1739456212290126[1][1].addModel("3\n\nO             -0.234620641331         0.062224824188         1.620608963903\nH             -0.857724502393         0.740766922246         1.353359122086\nH              0.394437143724         0.473244253565         2.216804914011\n","xyz");
+	viewergrid_1739456212290126[0][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1739456212290126[0][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1739456212290126[1][0].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1739456212290126[1][1].setViewStyle({"style": "outline", "width": 0.05});
+	viewergrid_1739456212290126[0][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1739456212290126[0][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1739456212290126[1][0].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewergrid_1739456212290126[1][1].setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+viewergrid_1739456212290126[1][1].render();
+viewergrid_1739456212290126[1][0].render();
+viewergrid_1739456212290126[0][1].render();
+viewergrid_1739456212290126[0][0].render();
 });
 </script></div></div>
 </div>
@@ -818,7 +811,7 @@ viewergrid_17261569393240943[0][0].render();
 </div>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scf_calculation</span><span class="p">(</span><span class="n">molecule_xyz</span><span class="p">,</span> <span class="n">basis_set</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">scf_calculation</span><span class="p">(</span><span class="n">molecule_xyz</span><span class="p">,</span> <span class="n">basis_set</span><span class="p">,</span> <span class="n">xc</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">molecule_xyz</span><span class="p">)</span>
     <span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis_set</span><span class="p">,</span> <span class="n">ostream</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -969,7 +962,8 @@ viewergrid_17261569393240943[0][0].render();
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1034,8 +1028,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -16,30 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -80,6 +83,7 @@
     <link rel="prev" title="General aspects" href="elstruct_gen.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -95,19 +99,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -115,7 +108,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -123,8 +115,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -140,7 +132,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -170,21 +163,17 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
@@ -221,7 +210,15 @@
 <li class="toctree-l3"><a class="reference internal" href="hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mp2_theory.html">Møller–Plesset partitioning</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="mp2_advanced.html">Other partitionings</a></li>
+
+
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wft_exercises.html">Exercises</a></li>
 </ul>
@@ -365,7 +362,6 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mclr.html">Linear response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
 </ul>
 </details></li>
@@ -464,9 +460,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -610,24 +611,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -832,7 +825,7 @@ c_{\alpha p} \chi_\alpha(\mathbf{r} - \mathbf{R}_\alpha)
 <p>Considering carbon monoxide using a minimal basis set</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">veloxchem</span> <span class="k">as</span> <span class="nn">vlx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
 
 <span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;2</span>
 
@@ -856,8 +849,8 @@ c_{\alpha p} \chi_\alpha(\mathbf{r} - \mathbf{R}_\alpha)
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17261564340785959"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17261564340785959" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1739455536487709"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1739455536487709" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -885,32 +878,32 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.2.1-post1/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
 }
 
-var viewer_17261564340785959 = null;
-var warn = document.getElementById("3dmolwarning_17261564340785959");
+var viewer_1739455536487709 = null;
+var warn = document.getElementById("3dmolwarning_1739455536487709");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17261564340785959 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17261564340785959"),{backgroundColor:"white"});
-viewer_17261564340785959.zoomTo();
-	viewer_17261564340785959.addModel("2\n\nC              0.000000000000         0.000000000000        -0.715000000000\nO              0.000000000000         0.000000000000         0.715000000000\n");
-	viewer_17261564340785959.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17261564340785959.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17261564340785959.zoomTo();
-viewer_17261564340785959.render();
+viewer_1739455536487709 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1739455536487709"),{backgroundColor:"white"});
+viewer_1739455536487709.zoomTo();
+	viewer_1739455536487709.addModel("2\n\nC              0.000000000000         0.000000000000        -0.715000000000\nO              0.000000000000         0.000000000000         0.715000000000\n");
+	viewer_1739455536487709.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1739455536487709.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1739455536487709.zoomTo();
+viewer_1739455536487709.render();
 });
 </script></div></div>
 </div>
 <p>The order of basis functions become</p>
-<p><span class="math notranslate nohighlight">\(\chi_{1s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{O}\)</span>
+<p><span class="math notranslate nohighlight">\(\chi_{1s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{1s}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2s}^{O}\)</span>,
 <span class="math notranslate nohighlight">\(\chi_{2py}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2py}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2pz}^{O}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{C}\)</span>, <span class="math notranslate nohighlight">\(\chi_{2px}^{O}\)</span></p>
 <p>And the resulting MO coefficients are available as</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">170</span><span class="p">)</span>
 
@@ -921,16 +914,16 @@ viewer_17261564340785959.render();
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MO coefficient matrix:
- [[ 0.001  0.994  0.091  0.228 -0.109  0.     0.    -0.     0.     0.105]
- [-0.004  0.024 -0.26  -0.836  0.47  -0.    -0.     0.    -0.    -0.536]
- [ 0.995  0.     0.231 -0.114 -0.036  0.    -0.     0.    -0.    -0.089]
- [ 0.023 -0.005 -0.856  0.526  0.196 -0.     0.    -0.     0.     0.547]
- [-0.     0.     0.     0.    -0.    -0.038 -0.429 -0.002  0.912 -0.   ]
- [ 0.     0.    -0.     0.     0.    -0.074 -0.844  0.001 -0.548  0.   ]
- [-0.004  0.004 -0.141  0.003 -0.621  0.    -0.     0.    -0.    -0.942]
- [-0.003  0.002  0.112  0.38   0.578 -0.     0.     0.     0.    -0.852]
- [ 0.     0.     0.    -0.     0.     0.429 -0.038 -0.912 -0.002 -0.   ]
- [ 0.    -0.    -0.     0.     0.     0.844 -0.074  0.548  0.001  0.   ]]
+ [[ 0.001  0.994 -0.091 -0.228 -0.109 -0.    -0.    -0.    -0.    -0.105]
+ [-0.004  0.024  0.26   0.836  0.47   0.     0.     0.     0.     0.536]
+ [ 0.995  0.    -0.231  0.114 -0.036 -0.    -0.     0.     0.     0.089]
+ [ 0.023 -0.005  0.856 -0.526  0.196  0.     0.    -0.    -0.    -0.547]
+ [ 0.    -0.     0.    -0.     0.    -0.01  -0.431  0.19   0.892 -0.   ]
+ [ 0.     0.    -0.     0.     0.    -0.02  -0.847 -0.114 -0.536  0.   ]
+ [-0.004  0.004  0.141 -0.003 -0.621 -0.    -0.     0.     0.     0.942]
+ [-0.003  0.002 -0.112 -0.38   0.578  0.     0.     0.     0.     0.852]
+ [-0.     0.     0.     0.    -0.     0.431 -0.01  -0.892  0.19  -0.   ]
+ [ 0.     0.    -0.     0.    -0.     0.847 -0.02   0.536 -0.114  0.   ]]
 </pre></div>
 </div>
 </div>
@@ -1003,7 +996,7 @@ S_{\alpha\beta} = \langle \chi_\alpha | \chi_\beta \rangle
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available basis sets for carbon:
- [&#39;6-31++G&#39;, &#39;6-31++G*&#39;, &#39;6-31++G**&#39;, &#39;6-31+G&#39;, &#39;6-31+G*&#39;, &#39;6-31+G**&#39;, &#39;6-311++G&#39;, &#39;6-311++G(2D,2P)&#39;, &#39;6-311++G(3DF,3PD)&#39;, &#39;6-311++G*&#39;, &#39;6-311++G**&#39;, &#39;6-311+G&#39;, &#39;6-311+G(2D,P)&#39;, &#39;6-311+G*&#39;, &#39;6-311+G**&#39;, &#39;6-311G&#39;, &#39;6-311G(2DF,2PD)&#39;, &#39;6-311G*&#39;, &#39;6-311G**&#39;, &#39;6-31G&#39;, &#39;6-31G(2DF,P)&#39;, &#39;6-31G(3DF,3PD)&#39;, &#39;6-31G*&#39;, &#39;6-31G**&#39;, &#39;ANO-L-MB&#39;, &#39;ANO-L-VDZP&#39;, &#39;ANO-L-VQZP&#39;, &#39;ANO-L-VTZP&#39;, &#39;ANO-S-MB&#39;, &#39;ANO-S-VDZP&#39;, &#39;AO-START-GUESS&#39;, &#39;AUG-CC-PCV5Z&#39;, &#39;AUG-CC-PCVDZ&#39;, &#39;AUG-CC-PCVQZ&#39;, &#39;AUG-CC-PCVTZ&#39;, &#39;AUG-CC-PV5Z&#39;, &#39;AUG-CC-PV6Z&#39;, &#39;AUG-CC-PVDZ&#39;, &#39;AUG-CC-PVQZ&#39;, &#39;AUG-CC-PVTZ&#39;, &#39;AUG-PCSEG-0&#39;, &#39;AUG-PCSEG-1&#39;, &#39;AUG-PCSEG-2&#39;, &#39;AUG-PCSEG-3&#39;, &#39;AUG-PCSEG-4&#39;, &#39;AUG-PCX-1&#39;, &#39;AUG-PCX-2&#39;, &#39;AUG-PCX-3&#39;, &#39;AUG-PCX-4&#39;, &#39;CC-PCV5Z&#39;, &#39;CC-PCVDZ&#39;, &#39;CC-PCVQZ&#39;, &#39;CC-PCVTZ&#39;, &#39;CC-PV5Z&#39;, &#39;CC-PV6Z&#39;, &#39;CC-PVDZ&#39;, &#39;CC-PVQZ&#39;, &#39;CC-PVTZ&#39;, &#39;DAUG-CC-PCV5Z&#39;, &#39;DAUG-CC-PCVDZ&#39;, &#39;DAUG-CC-PCVQZ&#39;, &#39;DAUG-CC-PCVTZ&#39;, &#39;DAUG-CC-PV5Z&#39;, &#39;DAUG-CC-PV6Z&#39;, &#39;DAUG-CC-PVDZ&#39;, &#39;DAUG-CC-PVQZ&#39;, &#39;DAUG-CC-PVTZ&#39;, &#39;DEF2-QZVP&#39;, &#39;DEF2-QZVPD&#39;, &#39;DEF2-QZVPP&#39;, &#39;DEF2-QZVPPD&#39;, &#39;DEF2-SV(P)&#39;, &#39;DEF2-SVP&#39;, &#39;DEF2-SVPD&#39;, &#39;DEF2-TZVP&#39;, &#39;DEF2-TZVPD&#39;, &#39;DEF2-TZVPP&#39;, &#39;DEF2-TZVPPD&#39;, &#39;PCSEG-0&#39;, &#39;PCSEG-1&#39;, &#39;PCSEG-2&#39;, &#39;PCSEG-3&#39;, &#39;PCSEG-4&#39;, &#39;PCX-1&#39;, &#39;PCX-2&#39;, &#39;PCX-3&#39;, &#39;PCX-4&#39;, &#39;SADLEJ-PVTZ&#39;, &#39;STO-3G&#39;, &#39;STO-3G-OLD&#39;, &#39;STO-6G&#39;, &#39;TAUG-CC-PCV5Z&#39;, &#39;TAUG-CC-PCVDZ&#39;, &#39;TAUG-CC-PCVQZ&#39;, &#39;TAUG-CC-PCVTZ&#39;, &#39;TAUG-CC-PV5Z&#39;, &#39;TAUG-CC-PV6Z&#39;, &#39;TAUG-CC-PVDZ&#39;, &#39;TAUG-CC-PVQZ&#39;, &#39;TAUG-CC-PVTZ&#39;]
+ [&#39;6-31++G&#39;, &#39;6-31++G*&#39;, &#39;6-31++G**&#39;, &#39;6-31+G&#39;, &#39;6-31+G*&#39;, &#39;6-31+G**&#39;, &#39;6-311++G&#39;, &#39;6-311++G(2D,2P)&#39;, &#39;6-311++G(3DF,3PD)&#39;, &#39;6-311++G*&#39;, &#39;6-311++G**&#39;, &#39;6-311+G&#39;, &#39;6-311+G(2D,P)&#39;, &#39;6-311+G*&#39;, &#39;6-311+G**&#39;, &#39;6-311G&#39;, &#39;6-311G(2DF,2PD)&#39;, &#39;6-311G*&#39;, &#39;6-311G**&#39;, &#39;6-31G&#39;, &#39;6-31G(2DF,P)&#39;, &#39;6-31G(3DF,3PD)&#39;, &#39;6-31G*&#39;, &#39;6-31G**&#39;, &#39;ANO-L-MB&#39;, &#39;ANO-L-VDZP&#39;, &#39;ANO-L-VQZP&#39;, &#39;ANO-L-VTZP&#39;, &#39;ANO-RCC-MB&#39;, &#39;ANO-S-MB&#39;, &#39;ANO-S-VDZP&#39;, &#39;AO-START-GUESS&#39;, &#39;AUG-CC-PCV5Z&#39;, &#39;AUG-CC-PCVDZ&#39;, &#39;AUG-CC-PCVQZ&#39;, &#39;AUG-CC-PCVTZ&#39;, &#39;AUG-CC-PV5Z&#39;, &#39;AUG-CC-PV6Z&#39;, &#39;AUG-CC-PVDZ&#39;, &#39;AUG-CC-PVQZ&#39;, &#39;AUG-CC-PVTZ&#39;, &#39;AUG-PCSEG-0&#39;, &#39;AUG-PCSEG-1&#39;, &#39;AUG-PCSEG-2&#39;, &#39;AUG-PCSEG-3&#39;, &#39;AUG-PCSEG-4&#39;, &#39;AUG-PCX-1&#39;, &#39;AUG-PCX-2&#39;, &#39;AUG-PCX-3&#39;, &#39;AUG-PCX-4&#39;, &#39;CC-PCV5Z&#39;, &#39;CC-PCVDZ&#39;, &#39;CC-PCVQZ&#39;, &#39;CC-PCVTZ&#39;, &#39;CC-PV5Z&#39;, &#39;CC-PV6Z&#39;, &#39;CC-PVDZ&#39;, &#39;CC-PVQZ&#39;, &#39;CC-PVTZ&#39;, &#39;DAUG-CC-PCV5Z&#39;, &#39;DAUG-CC-PCVDZ&#39;, &#39;DAUG-CC-PCVQZ&#39;, &#39;DAUG-CC-PCVTZ&#39;, &#39;DAUG-CC-PV5Z&#39;, &#39;DAUG-CC-PV6Z&#39;, &#39;DAUG-CC-PVDZ&#39;, &#39;DAUG-CC-PVQZ&#39;, &#39;DAUG-CC-PVTZ&#39;, &#39;DEF2-QZVP&#39;, &#39;DEF2-QZVPD&#39;, &#39;DEF2-QZVPP&#39;, &#39;DEF2-QZVPPD&#39;, &#39;DEF2-SV(P)&#39;, &#39;DEF2-SVP&#39;, &#39;DEF2-SVPD&#39;, &#39;DEF2-TZVP&#39;, &#39;DEF2-TZVPD&#39;, &#39;DEF2-TZVPP&#39;, &#39;DEF2-TZVPPD&#39;, &#39;PCSEG-0&#39;, &#39;PCSEG-1&#39;, &#39;PCSEG-2&#39;, &#39;PCSEG-3&#39;, &#39;PCSEG-4&#39;, &#39;PCX-1&#39;, &#39;PCX-2&#39;, &#39;PCX-3&#39;, &#39;PCX-4&#39;, &#39;SADLEJ-PVTZ&#39;, &#39;STO-3G&#39;, &#39;STO-3G-OLD&#39;, &#39;STO-6G&#39;, &#39;TAUG-CC-PCV5Z&#39;, &#39;TAUG-CC-PCVDZ&#39;, &#39;TAUG-CC-PCVQZ&#39;, &#39;TAUG-CC-PCVTZ&#39;, &#39;TAUG-CC-PV5Z&#39;, &#39;TAUG-CC-PV6Z&#39;, &#39;TAUG-CC-PVDZ&#39;, &#39;TAUG-CC-PVQZ&#39;, &#39;TAUG-CC-PVTZ&#39;]
 </pre></div>
 </div>
 </div>
@@ -1046,8 +1039,8 @@ S_{\alpha\beta} = \langle \chi_\alpha | \chi_\beta \rangle
 <p>The number of contracted and primitive basis functions are available from the <code class="docutils literal notranslate"><span class="pre">get_dimensions_of_basis</span></code> and <code class="docutils literal notranslate"><span class="pre">get_dimensions_of_primitive_basis</span></code> methods, respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nbas</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
-<span class="n">nprim</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_primitive_basis</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nbas</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_basis</span><span class="p">()</span>
+<span class="n">nprim</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">get_dimensions_of_primitive_basis</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="n">nbas</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of primitive basis functions:&quot;</span><span class="p">,</span> <span class="n">nprim</span><span class="p">)</span>
@@ -1081,20 +1074,20 @@ Number of primitive basis functions: 68
 <p>and additional basis set information is available:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">molecule</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;Atomic Basis&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Molecular Basis (CC-PVDZ)
-===========================
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Molecular Basis (Atomic Basis)               
+              ================================              
 
 Basis: CC-PVDZ                                              
 
   Atom Contracted GTOs           Primitive GTOs                
 
-  O   (3S,2P,1D)                (17S,4P,1D)                   
-  C   (3S,2P,1D)                (17S,4P,1D)                   
+  C     (3S,2P,1D)                (17S,4P,1D)                   
+  O     (3S,2P,1D)                (17S,4P,1D)                   
 
 Contracted Basis Functions : 28                             
 Primitive Basis Functions  : 68                             
@@ -1161,7 +1154,8 @@ Primitive Basis Functions  : 68
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1231,8 +1225,8 @@ By The eChem team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
