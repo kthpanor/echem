@@ -1,0 +1,345 @@
+Traceback (most recent call last):
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/asyncio/base_events.py", line 686, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+mol_str = """
+H 0.0000 0.0000 -0.4
+H 0.0000 0.0000  0.4
+"""
+molecule = vlx.Molecule.read_molecule_string(mol_str, units="angstrom")
+basis = vlx.MolecularBasis.read(molecule, "cc-pvdz", ostream=None)
+
+bs_tensor = bs_drv.compute(molecule, basis)
+space = mtp.OrbSpace(molecule, bs_drv.mol_orbs)
+space.cas(2, 2)
+mcscf_drv = mtp.McscfDriver()
+mcscf_drv.compute(molecule, basis, space)
+
+den = vlx.AODensityMatrix([mcscf_drv.get_total_density()], vlx.denmat.rest)
+rho1 = np.array(vis_drv.get_density(coords, molecule, basis, den, "alpha"))
+ontop1 = get_ontop(
+    coords, molecule, basis, space, mcscf_drv.ci_driver.get_active_2body_density(0)
+)
+
+mol_str = """
+H 0.0000 0.0000 -1.0
+H 0.0000 0.0000  1.0
+"""
+molecule = vlx.Molecule.read_molecule_string(mol_str, units="angstrom")
+basis = vlx.MolecularBasis.read(molecule, "cc-pvdz", ostream=None)
+
+bs_tensor = bs_drv.compute(molecule, basis)
+space = mtp.OrbSpace(molecule, bs_drv.mol_orbs)
+space.cas(2, 2)
+mcscf_drv = mtp.McscfDriver()
+mcscf_drv.compute(molecule, basis, space)
+
+den = vlx.AODensityMatrix([mcscf_drv.get_total_density()], vlx.denmat.rest)
+rho2 = np.array(vis_drv.get_density(coords, molecule, basis, den, "alpha"))
+ontop2 = get_ontop(
+    coords, molecule, basis, space, mcscf_drv.ci_driver.get_active_2body_density(0)
+)
+------------------
+
+----- stdout -----
+                                                                                                                          
+                          Multi-Configurational Self-Consistent Field Driver
+                         ====================================================
+                                                                                                                          
+
+               Active space definition:
+               ------------------------
+               Number of inactive (occupied) orbitals: 0
+               Number of active orbitals:              2
+               Number of virtual orbitals:             8
+
+               This is a CASSCF wavefunction: CAS(2,2)
+
+               CI expansion:
+               -------------
+               Number of determinants:      4
+
+
+                                                                                                                          
+               ╭────────────────────────────────────╮
+               │          Driver settings           │
+               ╰────────────────────────────────────╯
+                                                                                                                          
+                                                                                                                          
+               Number of states              :   1
+               State-specific calculation
+                - State of interest          :   1
+               Max. iterations               :   50
+               BFGS window                   :   5
+               Convergence thresholds:
+                - Energy change              :   1e-08
+                - Gradient sq. norm          :   1e-08
+                                                                                                                          
+                                                                                                                          
+                          MCSCF Iterations
+                         -------------------
+                                                                                                                          
+     Iter. | Average Energy | E. Change | Grad. Norm | CI Iter. | Trust rad. |  Time
+     ---------------------------------------------------------------------------------
+----- stdout -----
+        1     -1.132732364     0.0e+00      8.7e-04          0        0.40    0:00:00
+----- stdout -----
+        2     -1.144265764    -1.2e-02      3.0e-04          0        0.40    0:00:00
+----- stdout -----
+        3     -1.144120342     1.5e-04      2.0e-04          0        0.56    0:00:00
+----- stdout -----
+        4     -1.146782281    -2.7e-03      7.8e-05          0        0.28    0:00:00
+----- stdout -----
+        5     -1.146923513    -1.4e-04      5.1e-06          0        0.34    0:00:00
+----- stdout -----
+        6     -1.146972984    -4.9e-05      2.3e-06          0        0.34    0:00:00
+----- stdout -----
+        7     -1.146973773    -7.9e-07      2.7e-07          0        0.34    0:00:00
+----- stdout -----
+        8     -1.146973861    -8.8e-08      4.7e-11          0        0.40    0:00:00
+----- stdout -----
+        9     -1.146973861    -8.8e-11      1.4e-12          0        0.40    0:00:00
+** Convergence reached in 9 iterations
+----- stdout -----
+       10     -1.146973861    -1.2e-12      7.3e-14          0        0.40    0:00:00
+                                                                                                                          
+               Final results
+               -------------
+                                                                                                                          
+* State 1
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -1.146973861449398
+  - Natural orbitals
+1.97146 0.02854
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.971 Energy:   -0.56621 a.u.                                                                  
+               (   1 H   1s  :     0.41) (   1 H   2s  :     0.18) (   2 H   1s  :     0.41)                              
+               (   2 H   2s  :     0.18)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.029 Energy:    0.55088 a.u.                                                                  
+               (   1 H   1s  :     0.93) (   1 H   2s  :     0.25) (   2 H   1s  :    -0.93)                              
+               (   2 H   2s  :    -0.25)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.49509 a.u.                                                                  
+               (   1 H   1s  :     0.72) (   1 H   2s  :    -0.73) (   2 H   1s  :     0.72)                              
+               (   2 H   2s  :    -0.73)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.56751 a.u.                                                                  
+               (   1 H   1s  :    -0.53) (   1 H   2s  :     2.37) (   1 H   1p0 :     0.24)                              
+               (   2 H   1s  :     0.53) (   2 H   2s  :    -2.37) (   2 H   1p0 :     0.24)                              
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.29102 a.u.                                                                  
+               (   1 H   1p+1:    -0.55) (   1 H   1p-1:     0.22) (   2 H   1p+1:    -0.55)                              
+               (   2 H   1p-1:     0.22)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.29102 a.u.                                                                  
+               (   1 H   1p+1:    -0.22) (   1 H   1p-1:    -0.55) (   2 H   1p+1:    -0.22)                              
+               (   2 H   1p-1:    -0.55)
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[9], line 16[0m
+[1;32m     14[0m den [38;5;241m=[39m vlx[38;5;241m.[39mAODensityMatrix([mcscf_drv[38;5;241m.[39mget_total_density()], vlx[38;5;241m.[39mdenmat[38;5;241m.[39mrest)
+[1;32m     15[0m rho1 [38;5;241m=[39m np[38;5;241m.[39marray(vis_drv[38;5;241m.[39mget_density(coords, molecule, basis, den, [38;5;124m"[39m[38;5;124malpha[39m[38;5;124m"[39m))
+[0;32m---> 16[0m ontop1 [38;5;241m=[39m [43mget_ontop[49m[43m([49m
+[1;32m     17[0m [43m    [49m[43mcoords[49m[43m,[49m[43m [49m[43mmolecule[49m[43m,[49m[43m [49m[43mbasis[49m[43m,[49m[43m [49m[43mspace[49m[43m,[49m[43m [49m[43mmcscf_drv[49m[38;5;241;43m.[39;49m[43mci_driver[49m[38;5;241;43m.[39;49m[43mget_active_2body_density[49m[43m([49m[38;5;241;43m0[39;49m[43m)[49m
+[1;32m     18[0m [43m)[49m
+[1;32m     20[0m mol_str [38;5;241m=[39m [38;5;124m"""[39m
+[1;32m     21[0m [38;5;124mH 0.0000 0.0000 -1.0[39m
+[1;32m     22[0m [38;5;124mH 0.0000 0.0000  1.0[39m
+[1;32m     23[0m [38;5;124m"""[39m
+[1;32m     24[0m molecule [38;5;241m=[39m vlx[38;5;241m.[39mMolecule[38;5;241m.[39mread_molecule_string(mol_str, units[38;5;241m=[39m[38;5;124m"[39m[38;5;124mangstrom[39m[38;5;124m"[39m)
+
+Cell [0;32mIn[8], line 7[0m, in [0;36mget_ontop[0;34m(coords, molecule, basis, space, TwoDM)[0m
+[1;32m      4[0m orbital_values [38;5;241m=[39m []
+[1;32m      5[0m [38;5;28;01mfor[39;00m i [38;5;129;01min[39;00m space[38;5;241m.[39mactive_orbitals:
+[1;32m      6[0m     values [38;5;241m=[39m np[38;5;241m.[39marray(
+[0;32m----> 7[0m         [43mvis_drv[49m[38;5;241;43m.[39;49m[43mget_mo[49m[43m([49m
+[1;32m      8[0m [43m            [49m[43mcoords[49m[43m,[49m[43m [49m[43mmolecule[49m[43m,[49m[43m [49m[43mbasis[49m[43m,[49m[43m [49m[43mspace[49m[38;5;241;43m.[39;49m[43mmolecular_orbitals[49m[38;5;241;43m.[39;49m[43malpha_to_numpy[49m[43m([49m[43m)[49m[43m,[49m[43m [49m[43mi[49m[43m,[49m[43m [49m[38;5;124;43m"[39;49m[38;5;124;43malpha[39;49m[38;5;124;43m"[39;49m
+[1;32m      9[0m [43m        [49m[43m)[49m
+[1;32m     10[0m     )
+[1;32m     11[0m     orbital_values[38;5;241m.[39mappend(values)
+[1;32m     13[0m den_i [38;5;241m=[39m vlx[38;5;241m.[39mAODensityMatrix([space[38;5;241m.[39m_get_inactive_density()], vlx[38;5;241m.[39mdenmat[38;5;241m.[39mrest)
+
+File [0;32m~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/visualizationdriver.py:297[0m, in [0;36mVisualizationDriver.get_mo[0;34m(self, *args)[0m
+[1;32m    294[0m [38;5;28;01mdef[39;00m[38;5;250m [39m[38;5;21mget_mo[39m([38;5;28mself[39m, [38;5;241m*[39margs):
+[1;32m    296[0m     [38;5;28;01mif[39;00m [38;5;28mself[39m[38;5;241m.[39mrank [38;5;241m==[39m mpi_master():
+[0;32m--> 297[0m         [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_vis_drv[49m[38;5;241;43m.[39;49m[43mget_mo[49m[43m([49m[38;5;241;43m*[39;49m[43margs[49m[43m)[49m
+[1;32m    298[0m     [38;5;28;01melse[39;00m:
+[1;32m    299[0m         [38;5;28;01mreturn[39;00m [38;5;28;01mNone[39;00m
+
+[0;31mTypeError[0m: get_mo(): incompatible function arguments. The following argument types are supported:
+    1. (self: veloxchem.veloxchemlib._VisualizationDriver, coords: list[list[float]], molecule: veloxchem.veloxchemlib.Molecule, basis: veloxchem.veloxchemlib.MolecularBasis, mocoefs: numpy.ndarray[numpy.float64], moidx: int) -> list[float]
+
+Invoked with: <veloxchem.veloxchemlib._VisualizationDriver object at 0x795642875f30>, array([[ 0.        ,  0.        , -4.        ],
+       [ 0.        ,  0.        , -3.91919192],
+       [ 0.        ,  0.        , -3.83838384],
+       [ 0.        ,  0.        , -3.75757576],
+       [ 0.        ,  0.        , -3.67676768],
+       [ 0.        ,  0.        , -3.5959596 ],
+       [ 0.        ,  0.        , -3.51515152],
+       [ 0.        ,  0.        , -3.43434343],
+       [ 0.        ,  0.        , -3.35353535],
+       [ 0.        ,  0.        , -3.27272727],
+       [ 0.        ,  0.        , -3.19191919],
+       [ 0.        ,  0.        , -3.11111111],
+       [ 0.        ,  0.        , -3.03030303],
+       [ 0.        ,  0.        , -2.94949495],
+       [ 0.        ,  0.        , -2.86868687],
+       [ 0.        ,  0.        , -2.78787879],
+       [ 0.        ,  0.        , -2.70707071],
+       [ 0.        ,  0.        , -2.62626263],
+       [ 0.        ,  0.        , -2.54545455],
+       [ 0.        ,  0.        , -2.46464646],
+       [ 0.        ,  0.        , -2.38383838],
+       [ 0.        ,  0.        , -2.3030303 ],
+       [ 0.        ,  0.        , -2.22222222],
+       [ 0.        ,  0.        , -2.14141414],
+       [ 0.        ,  0.        , -2.06060606],
+       [ 0.        ,  0.        , -1.97979798],
+       [ 0.        ,  0.        , -1.8989899 ],
+       [ 0.        ,  0.        , -1.81818182],
+       [ 0.        ,  0.        , -1.73737374],
+       [ 0.        ,  0.        , -1.65656566],
+       [ 0.        ,  0.        , -1.57575758],
+       [ 0.        ,  0.        , -1.49494949],
+       [ 0.        ,  0.        , -1.41414141],
+       [ 0.        ,  0.        , -1.33333333],
+       [ 0.        ,  0.        , -1.25252525],
+       [ 0.        ,  0.        , -1.17171717],
+       [ 0.        ,  0.        , -1.09090909],
+       [ 0.        ,  0.        , -1.01010101],
+       [ 0.        ,  0.        , -0.92929293],
+       [ 0.        ,  0.        , -0.84848485],
+       [ 0.        ,  0.        , -0.76767677],
+       [ 0.        ,  0.        , -0.68686869],
+       [ 0.        ,  0.        , -0.60606061],
+       [ 0.        ,  0.        , -0.52525253],
+       [ 0.        ,  0.        , -0.44444444],
+       [ 0.        ,  0.        , -0.36363636],
+       [ 0.        ,  0.        , -0.28282828],
+       [ 0.        ,  0.        , -0.2020202 ],
+       [ 0.        ,  0.        , -0.12121212],
+       [ 0.        ,  0.        , -0.04040404],
+       [ 0.        ,  0.        ,  0.04040404],
+       [ 0.        ,  0.        ,  0.12121212],
+       [ 0.        ,  0.        ,  0.2020202 ],
+       [ 0.        ,  0.        ,  0.28282828],
+       [ 0.        ,  0.        ,  0.36363636],
+       [ 0.        ,  0.        ,  0.44444444],
+       [ 0.        ,  0.        ,  0.52525253],
+       [ 0.        ,  0.        ,  0.60606061],
+       [ 0.        ,  0.        ,  0.68686869],
+       [ 0.        ,  0.        ,  0.76767677],
+       [ 0.        ,  0.        ,  0.84848485],
+       [ 0.        ,  0.        ,  0.92929293],
+       [ 0.        ,  0.        ,  1.01010101],
+       [ 0.        ,  0.        ,  1.09090909],
+       [ 0.        ,  0.        ,  1.17171717],
+       [ 0.        ,  0.        ,  1.25252525],
+       [ 0.        ,  0.        ,  1.33333333],
+       [ 0.        ,  0.        ,  1.41414141],
+       [ 0.        ,  0.        ,  1.49494949],
+       [ 0.        ,  0.        ,  1.57575758],
+       [ 0.        ,  0.        ,  1.65656566],
+       [ 0.        ,  0.        ,  1.73737374],
+       [ 0.        ,  0.        ,  1.81818182],
+       [ 0.        ,  0.        ,  1.8989899 ],
+       [ 0.        ,  0.        ,  1.97979798],
+       [ 0.        ,  0.        ,  2.06060606],
+       [ 0.        ,  0.        ,  2.14141414],
+       [ 0.        ,  0.        ,  2.22222222],
+       [ 0.        ,  0.        ,  2.3030303 ],
+       [ 0.        ,  0.        ,  2.38383838],
+       [ 0.        ,  0.        ,  2.46464646],
+       [ 0.        ,  0.        ,  2.54545455],
+       [ 0.        ,  0.        ,  2.62626263],
+       [ 0.        ,  0.        ,  2.70707071],
+       [ 0.        ,  0.        ,  2.78787879],
+       [ 0.        ,  0.        ,  2.86868687],
+       [ 0.        ,  0.        ,  2.94949495],
+       [ 0.        ,  0.        ,  3.03030303],
+       [ 0.        ,  0.        ,  3.11111111],
+       [ 0.        ,  0.        ,  3.19191919],
+       [ 0.        ,  0.        ,  3.27272727],
+       [ 0.        ,  0.        ,  3.35353535],
+       [ 0.        ,  0.        ,  3.43434343],
+       [ 0.        ,  0.        ,  3.51515152],
+       [ 0.        ,  0.        ,  3.5959596 ],
+       [ 0.        ,  0.        ,  3.67676768],
+       [ 0.        ,  0.        ,  3.75757576],
+       [ 0.        ,  0.        ,  3.83838384],
+       [ 0.        ,  0.        ,  3.91919192],
+       [ 0.        ,  0.        ,  4.        ]]), <veloxchem.veloxchemlib.Molecule object at 0x79564223ed30>, <veloxchem.veloxchemlib.MolecularBasis object at 0x79564229cf30>, array([[ 4.06069463e-01,  9.28869746e-01,  7.15417187e-01,
+        -5.29313778e-01, -2.13129357e-15,  9.63723600e-17,
+        -4.30059161e-01,  8.31986489e-20, -6.22940913e-20,
+         2.02589917e+00],
+       [ 1.79621534e-01,  2.49368631e-01, -7.30240669e-01,
+         2.37435888e+00,  2.15027934e-15,  1.47249578e-15,
+         2.16587581e-01, -1.99783382e-20, -8.05826580e-20,
+         1.56470804e-01],
+       [ 4.06069463e-01, -9.28869733e-01,  7.15417141e-01,
+         5.29313864e-01,  2.02810705e-15,  1.07425898e-16,
+        -4.30059157e-01, -6.80688197e-20, -3.10534206e-20,
+        -2.02589917e+00],
+       [ 1.79621537e-01, -2.49368645e-01, -7.30240384e-01,
+        -2.37435896e+00, -2.01388815e-15, -1.70799137e-15,
+         2.16587578e-01,  5.53207509e-20, -9.66632623e-20,
+        -1.56470803e-01],
+       [-1.39169704e-19, -1.93922415e-18,  4.73284509e-17,
+         1.15526650e-16,  2.16256126e-01, -5.49083248e-01,
+         7.44863691e-17,  9.40399186e-01,  4.15043205e-02,
+         3.72424883e-16],
+       [-5.13081255e-20, -1.72807845e-18,  4.73356405e-17,
+         1.15477537e-16,  2.16256126e-01, -5.49083248e-01,
+         7.45572026e-17, -9.40399186e-01, -4.15043205e-02,
+         3.72384837e-16],
+       [ 1.73383757e-02, -1.56386816e-02,  2.13819637e-02,
+         2.40580382e-01, -1.30387895e-15,  5.23342662e-16,
+         6.93110650e-01, -1.42377009e-20, -1.54405251e-19,
+         1.87891637e+00],
+       [-1.73383753e-02, -1.56386881e-02, -2.13819866e-02,
+         2.40580381e-01, -1.20158083e-15,  4.29184662e-16,
+        -6.93110645e-01, -8.27571296e-20,  1.74866444e-19,
+         1.87891638e+00],
+       [ 3.21670015e-19,  1.43475361e-17, -9.12607632e-18,
+         4.76755355e-16, -5.49083248e-01, -2.16256126e-01,
+        -3.66568156e-17, -4.15043205e-02,  9.40399186e-01,
+        -7.91064295e-16],
+       [-2.75896634e-19,  1.42938675e-17, -9.17166870e-18,
+         4.76767917e-16, -5.49083248e-01, -2.16256126e-01,
+        -3.70913165e-17,  4.15043205e-02, -9.40399186e-01,
+        -7.91053984e-16]]), 0, 'alpha'
+

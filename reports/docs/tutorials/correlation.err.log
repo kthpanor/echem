@@ -1,0 +1,224 @@
+Traceback (most recent call last):
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/asyncio/base_events.py", line 686, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/emi/miniconda3/envs/echem/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+z = np.linspace(-1, 2, n)
+coords[:, 2] = z
+vis_drv = vlx.VisualizationDriver()
+
+orbital_values = get_orbital_values(coords/bohr_to_Å, eq_molecule, basis, eq_orbitals)
+orbital_values_at_H1 = get_orbital_values([[0, 0, 0]], eq_molecule, basis, eq_orbitals)
+n12_hf, n12_fci = get_n12(eq_2density, orbital_values_at_H1, orbital_values)
+
+plt.figure(figsize=(6,4))
+plt.title('Pair density at equilibrium distance')
+plt.plot(z,n12_hf, label='HF')
+plt.plot(z,n12_fci, label='FullCI')
+plt.axvline(x = 0, color = 'k', linestyle = ':')
+plt.xlabel("Internuclear axis coordinate (Å)")
+plt.ylabel("Two-particle density (a.u.)")
+plt.legend()
+plt.tight_layout(); plt.show()
+
+z = np.linspace(-2, 8, n)
+coords[:, 2] = z
+
+orbital_values = get_orbital_values(coords/bohr_to_Å, molecule, basis, scf_drv.mol_orbs)
+orbital_values_at_H1 = get_orbital_values([[0, 0, 0]], molecule, basis, scf_drv.mol_orbs)
+ci_twopart_denmat = ci_drv.get_active_2body_density(0)
+n12_hf, n12_fci = get_n12(ci_twopart_denmat, orbital_values_at_H1, orbital_values)
+
+plt.figure(figsize=(6,4))
+plt.title('Pair density at dissociation')
+plt.plot(z,n12_hf, label='HF')
+plt.plot(z,n12_fci, label='FullCI')
+plt.axvline(x = 0, color = 'k', linestyle = ':')
+plt.xlabel("Internuclear axis coordinate (Å)")
+plt.ylabel("Two-particle density (a.u.)")
+plt.legend()
+plt.tight_layout(); plt.show()
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mTypeError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[5], line 5[0m
+[1;32m      2[0m coords[:, [38;5;241m2[39m] [38;5;241m=[39m z
+[1;32m      3[0m vis_drv [38;5;241m=[39m vlx[38;5;241m.[39mVisualizationDriver()
+[0;32m----> 5[0m orbital_values [38;5;241m=[39m [43mget_orbital_values[49m[43m([49m[43mcoords[49m[38;5;241;43m/[39;49m[43mbohr_to_Å[49m[43m,[49m[43m [49m[43meq_molecule[49m[43m,[49m[43m [49m[43mbasis[49m[43m,[49m[43m [49m[43meq_orbitals[49m[43m)[49m
+[1;32m      6[0m orbital_values_at_H1 [38;5;241m=[39m get_orbital_values([[[38;5;241m0[39m, [38;5;241m0[39m, [38;5;241m0[39m]], eq_molecule, basis, eq_orbitals)
+[1;32m      7[0m n12_hf, n12_fci [38;5;241m=[39m get_n12(eq_2density, orbital_values_at_H1, orbital_values)
+
+Cell [0;32mIn[4], line 11[0m, in [0;36mget_orbital_values[0;34m(coords, molecule, basis, mol_orbs)[0m
+[1;32m      8[0m orbital_values [38;5;241m=[39m []
+[1;32m     10[0m [38;5;28;01mfor[39;00m i [38;5;129;01min[39;00m [38;5;28mrange[39m(norb):
+[0;32m---> 11[0m     values [38;5;241m=[39m np[38;5;241m.[39marray([43mvis_drv[49m[38;5;241;43m.[39;49m[43mget_mo[49m[43m([49m[43mcoords[49m[43m,[49m[43m [49m[43mmolecule[49m[43m,[49m[43m [49m[43mbasis[49m[43m,[49m[43m [49m[43mmol_orbs[49m[38;5;241;43m.[39;49m[43malpha_to_numpy[49m[43m([49m[43m)[49m[43m,[49m[43m [49m[43mi[49m[43m,[49m[43m [49m[38;5;124;43m"[39;49m[38;5;124;43malpha[39;49m[38;5;124;43m"[39;49m[43m)[49m)
+[1;32m     12[0m     orbital_values[38;5;241m.[39mappend(values)
+[1;32m     14[0m [38;5;28;01mreturn[39;00m orbital_values
+
+File [0;32m~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/visualizationdriver.py:297[0m, in [0;36mVisualizationDriver.get_mo[0;34m(self, *args)[0m
+[1;32m    294[0m [38;5;28;01mdef[39;00m[38;5;250m [39m[38;5;21mget_mo[39m([38;5;28mself[39m, [38;5;241m*[39margs):
+[1;32m    296[0m     [38;5;28;01mif[39;00m [38;5;28mself[39m[38;5;241m.[39mrank [38;5;241m==[39m mpi_master():
+[0;32m--> 297[0m         [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[38;5;241;43m.[39;49m[43m_vis_drv[49m[38;5;241;43m.[39;49m[43mget_mo[49m[43m([49m[38;5;241;43m*[39;49m[43margs[49m[43m)[49m
+[1;32m    298[0m     [38;5;28;01melse[39;00m:
+[1;32m    299[0m         [38;5;28;01mreturn[39;00m [38;5;28;01mNone[39;00m
+
+[0;31mTypeError[0m: get_mo(): incompatible function arguments. The following argument types are supported:
+    1. (self: veloxchem.veloxchemlib._VisualizationDriver, coords: list[list[float]], molecule: veloxchem.veloxchemlib.Molecule, basis: veloxchem.veloxchemlib.MolecularBasis, mocoefs: numpy.ndarray[numpy.float64], moidx: int) -> list[float]
+
+Invoked with: <veloxchem.veloxchemlib._VisualizationDriver object at 0x763942993470>, array([[ 0.        ,  0.        , -1.88972688],
+       [ 0.        ,  0.        , -1.83246243],
+       [ 0.        ,  0.        , -1.77519798],
+       [ 0.        ,  0.        , -1.71793353],
+       [ 0.        ,  0.        , -1.66066907],
+       [ 0.        ,  0.        , -1.60340462],
+       [ 0.        ,  0.        , -1.54614017],
+       [ 0.        ,  0.        , -1.48887572],
+       [ 0.        ,  0.        , -1.43161127],
+       [ 0.        ,  0.        , -1.37434682],
+       [ 0.        ,  0.        , -1.31708237],
+       [ 0.        ,  0.        , -1.25981792],
+       [ 0.        ,  0.        , -1.20255347],
+       [ 0.        ,  0.        , -1.14528902],
+       [ 0.        ,  0.        , -1.08802457],
+       [ 0.        ,  0.        , -1.03076012],
+       [ 0.        ,  0.        , -0.97349566],
+       [ 0.        ,  0.        , -0.91623121],
+       [ 0.        ,  0.        , -0.85896676],
+       [ 0.        ,  0.        , -0.80170231],
+       [ 0.        ,  0.        , -0.74443786],
+       [ 0.        ,  0.        , -0.68717341],
+       [ 0.        ,  0.        , -0.62990896],
+       [ 0.        ,  0.        , -0.57264451],
+       [ 0.        ,  0.        , -0.51538006],
+       [ 0.        ,  0.        , -0.45811561],
+       [ 0.        ,  0.        , -0.40085116],
+       [ 0.        ,  0.        , -0.34358671],
+       [ 0.        ,  0.        , -0.28632225],
+       [ 0.        ,  0.        , -0.2290578 ],
+       [ 0.        ,  0.        , -0.17179335],
+       [ 0.        ,  0.        , -0.1145289 ],
+       [ 0.        ,  0.        , -0.05726445],
+       [ 0.        ,  0.        ,  0.        ],
+       [ 0.        ,  0.        ,  0.05726445],
+       [ 0.        ,  0.        ,  0.1145289 ],
+       [ 0.        ,  0.        ,  0.17179335],
+       [ 0.        ,  0.        ,  0.2290578 ],
+       [ 0.        ,  0.        ,  0.28632225],
+       [ 0.        ,  0.        ,  0.34358671],
+       [ 0.        ,  0.        ,  0.40085116],
+       [ 0.        ,  0.        ,  0.45811561],
+       [ 0.        ,  0.        ,  0.51538006],
+       [ 0.        ,  0.        ,  0.57264451],
+       [ 0.        ,  0.        ,  0.62990896],
+       [ 0.        ,  0.        ,  0.68717341],
+       [ 0.        ,  0.        ,  0.74443786],
+       [ 0.        ,  0.        ,  0.80170231],
+       [ 0.        ,  0.        ,  0.85896676],
+       [ 0.        ,  0.        ,  0.91623121],
+       [ 0.        ,  0.        ,  0.97349566],
+       [ 0.        ,  0.        ,  1.03076012],
+       [ 0.        ,  0.        ,  1.08802457],
+       [ 0.        ,  0.        ,  1.14528902],
+       [ 0.        ,  0.        ,  1.20255347],
+       [ 0.        ,  0.        ,  1.25981792],
+       [ 0.        ,  0.        ,  1.31708237],
+       [ 0.        ,  0.        ,  1.37434682],
+       [ 0.        ,  0.        ,  1.43161127],
+       [ 0.        ,  0.        ,  1.48887572],
+       [ 0.        ,  0.        ,  1.54614017],
+       [ 0.        ,  0.        ,  1.60340462],
+       [ 0.        ,  0.        ,  1.66066907],
+       [ 0.        ,  0.        ,  1.71793353],
+       [ 0.        ,  0.        ,  1.77519798],
+       [ 0.        ,  0.        ,  1.83246243],
+       [ 0.        ,  0.        ,  1.88972688],
+       [ 0.        ,  0.        ,  1.94699133],
+       [ 0.        ,  0.        ,  2.00425578],
+       [ 0.        ,  0.        ,  2.06152023],
+       [ 0.        ,  0.        ,  2.11878468],
+       [ 0.        ,  0.        ,  2.17604913],
+       [ 0.        ,  0.        ,  2.23331358],
+       [ 0.        ,  0.        ,  2.29057803],
+       [ 0.        ,  0.        ,  2.34784248],
+       [ 0.        ,  0.        ,  2.40510694],
+       [ 0.        ,  0.        ,  2.46237139],
+       [ 0.        ,  0.        ,  2.51963584],
+       [ 0.        ,  0.        ,  2.57690029],
+       [ 0.        ,  0.        ,  2.63416474],
+       [ 0.        ,  0.        ,  2.69142919],
+       [ 0.        ,  0.        ,  2.74869364],
+       [ 0.        ,  0.        ,  2.80595809],
+       [ 0.        ,  0.        ,  2.86322254],
+       [ 0.        ,  0.        ,  2.92048699],
+       [ 0.        ,  0.        ,  2.97775144],
+       [ 0.        ,  0.        ,  3.03501589],
+       [ 0.        ,  0.        ,  3.09228035],
+       [ 0.        ,  0.        ,  3.1495448 ],
+       [ 0.        ,  0.        ,  3.20680925],
+       [ 0.        ,  0.        ,  3.2640737 ],
+       [ 0.        ,  0.        ,  3.32133815],
+       [ 0.        ,  0.        ,  3.3786026 ],
+       [ 0.        ,  0.        ,  3.43586705],
+       [ 0.        ,  0.        ,  3.4931315 ],
+       [ 0.        ,  0.        ,  3.55039595],
+       [ 0.        ,  0.        ,  3.6076604 ],
+       [ 0.        ,  0.        ,  3.66492485],
+       [ 0.        ,  0.        ,  3.7221893 ],
+       [ 0.        ,  0.        ,  3.77945376]]), <veloxchem.veloxchemlib.Molecule object at 0x76394308d3b0>, <veloxchem.veloxchemlib.MolecularBasis object at 0x763990759ef0>, array([[ 4.02503966e-01, -1.52093174e-01, -7.03216432e-01,
+        -7.73244166e-01, -4.59406955e-16,  2.61980410e-18,
+         4.42008209e-01, -5.45925714e-15,  9.97463169e-16,
+        -2.58592575e+00],
+       [ 1.76100969e-01, -1.92891886e+00,  7.26706915e-01,
+         1.61098506e+00,  8.39860877e-16, -3.30814014e-18,
+        -2.20226530e-01,  1.98738914e-15, -4.14347847e-16,
+        -6.88324649e-02],
+       [ 4.02503966e-01,  1.52093174e-01, -7.03216432e-01,
+         7.73244166e-01, -4.22789182e-17, -2.49234864e-18,
+         4.42008209e-01, -6.31034303e-15,  1.13506517e-15,
+         2.58592575e+00],
+       [ 1.76100969e-01,  1.92891886e+00,  7.26706915e-01,
+        -1.61098506e+00, -4.30984327e-16,  3.40261091e-18,
+        -2.20226530e-01,  3.81255630e-15, -7.09440478e-16,
+         6.88324649e-02],
+       [-1.64587990e-17, -3.24859891e-17, -6.69845226e-17,
+         2.37245419e-16, -5.80879737e-01,  3.83974862e-04,
+         1.25034250e-14,  9.69715023e-01, -1.56781915e-01,
+         1.79229111e-16],
+       [ 1.35599306e-17,  7.52680855e-18,  1.78550313e-16,
+        -5.19148112e-17, -5.80879737e-01,  3.83974862e-04,
+        -1.29204436e-14, -9.69715023e-01,  1.56781915e-01,
+        -1.05019867e-16],
+       [ 2.23570836e-02, -1.38472655e-02, -1.30832896e-02,
+         4.01662435e-01,  2.17505025e-16, -1.85735175e-18,
+        -7.20675665e-01,  9.58181757e-15, -1.92760571e-15,
+        -1.99908604e+00],
+       [-2.23570836e-02, -1.38472655e-02,  1.30832896e-02,
+         4.01662435e-01, -1.28761529e-16, -1.53027475e-18,
+         7.20675665e-01, -9.51554547e-15,  1.91689530e-15,
+        -1.99908604e+00],
+       [ 5.58528588e-17,  7.67166337e-19, -6.06082376e-17,
+         1.97227150e-18,  3.83974862e-04,  5.80879737e-01,
+        -4.73444730e-16,  1.56781915e-01,  9.69715023e-01,
+        -9.16354318e-20],
+       [-5.59096526e-17,  7.69150456e-19,  6.07839985e-17,
+         1.97617585e-18,  3.83974862e-04,  5.80879737e-01,
+         4.73328756e-16, -1.56781915e-01, -9.69715023e-01,
+        -9.29784977e-20]]), 0, 'alpha'
+

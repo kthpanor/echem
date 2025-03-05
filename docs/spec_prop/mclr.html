@@ -1,0 +1,1586 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Linear response &#8212; Computational Chemistry from  Laptop to HPC</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TX4YJ1J5XE"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/spec_prop/mclr';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Exercises" href="mr_exercises.html" />
+    <link rel="prev" title="State-averaged MCSCF" href="sa_mcscf.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../title.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="Computational Chemistry from  Laptop to HPC - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electronic ground states</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/elstruct_gen.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/orbitals.html">Orbitals and basis sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/slater.html">Many-electron wave functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/operators.html">Operators and matrix elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/reduced_density.html">Reduced particle densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/natural_orbitals.html">Natural orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/integrals.html">Integrals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/spin.html">Electron spin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/correlation.html">Electron correlation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dispersion.html">Dispersion interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/pt.html">Rayleigh–Schrödinger perturbation theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/second_quant.html">Second quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/group_theory.html">Symmetry</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/wft.html">Wave function theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/hartree-fock.html">Hartree–Fock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/fock_diagonalize.html">Fock matrix diagonalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_scf.html">SCF optimization</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/dft.html">Density functional theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/hohenberg.html">Hohenberg–Kohn theorems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kohn-sham.html">Kohn–Sham method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kernel_int.html">Kernel integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_scf.html">SCF optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_prop.html">First-order properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/available_xcfun.html">Available XC functionals</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/multiref.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcscf.html">MCSCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcpdft.html">MC-PDFT</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Molecular structure and dynamics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/molstruct_gen.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/coordinates.html">Choice of coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/symmetry.html">Molecular symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst.html">Transition-state theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_struct.html">Optimization methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/gradients.html">Gradients</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/energy_grad.html">Energy gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/property_grad.html">Property gradients</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/hessians_vib.html">Hessians and vibrations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/hessians.html">Molecular Hessians</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/vibrations.html">Vibrational analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/opt.html">Structure optimization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_gs.html">Ground state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_constrained.html">Constrained coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/conformer.html">Conformer search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst_gen.html">Transition state</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/impes_calc.html">Constructing the PES by interpolation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/md.html">Molecular dynamics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/forcefields.html">Force fields</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/reparameterize.html">Reparameterize force fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/md_setup.html">Ensembles and time integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/md_run.html">Running a simulation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spectra and properties</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="spectra_aspects.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="resp_external.html">Responses to external fields</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mol_prop.html">Molecular properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="first_order.html">First-order properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_resp.html">Linear Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quad_resp.html">Quadratic response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cubic_resp.html">Cubic response</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="elec_nuc.html">Electronic and nuclear contributions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="rovib.html">Rovibronic states</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="dipole_equiv.html">Dipole equivalence relations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finite_field.html">Finite field method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nto.html">Natural transition orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selection_rules.html">Selection rules</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="excoupl.html">Exciton coupling model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="excoupl_impl.html">Implementation</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="expt_theory.html">Experiment to theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="uv_vis.html">UV/vis absorption</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="opa.html">One-photon absorption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tpa.html">Two-photon absorption</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="optact.html">Optical activity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ecd.html">Electronic Circular Dichroism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="or.html">Optical Rotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tpcd.html">Two-photon circular dichroism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tpor.html">Two-photon optical rotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="more_optact.html">More birefringences &amp; dichroisms</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="wavefunction.html">Wave function methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="hf.html">Hartree–Fock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="orb_rot.html">Orbital rotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kappa_expansion.html">Time-dependence of observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orb_param_field.html">Field-dependence of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hf_param_energy.html">Energy determination of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hf_quasienergy.html">Quasi-energy determination of parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="ci.html">Configuration interaction</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="adc.html">Algebraic-diagrammatic construction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="adc_pp.html">Polarization propagator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc_isr.html">Intermediate state representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc_hpc.html">HPC-QC implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adc_exercises_new.html">Exercises</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tddft.html">Time-dependent DFT</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tddft_foundation.html">Foundations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tddft_quasienergy.html">Quasi-energy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tddft_linear_response.html">Linear response</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tddft_lr_theory.html">Theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tddft_lr_implementation.html">Implementation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tddft_excited_states.html">Excited states</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tddft_rpa.html">RPA equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tddft_tda.html">Tamm–Dancoff approximation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tddft_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tddft_triplet_inst.html">Triplet instability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tddft_spin_flip.html">Spin-flip</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="tddft_charge_transfer.html">Charge transfer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mr_response.html">Multireference methods</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="sa_mcscf.html">State-averaged MCSCF</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Linear response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mr_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Environment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/localprop.html">Localized properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/esp.html">ESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/chelpg.html">CHELPG charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/resp.html">RESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/loprop.html">LoProp charges and polarisabilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/mol_struct.html">Molecular structure and dynamics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/struct_vis.html">Molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/md_vis.html">MD trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/opt_vib_vis.html">Optimization and normal modes</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/elec_struct.html">Electronic structure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/orb_vis.html">Orbitals and densities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/spec_prop.html">Spectra and properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/exc_vis.html">Excited states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/broadening.html">Spectrum broadening</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials and workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/workflow.html">Constructing workflows</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_build.html">Building systems</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_struct.html">Optimizing molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_scf.html">Optimizing electronic structure</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../tutorials/wf_construct.html">Assembling a full workflow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_methane.html">Methane combustion energy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_gwp.html">Global warming potential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_spectra.html">From structure to spectrum</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/uv_vis.html">UV/vis spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_absorption.html">Absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_fluorescence.html">Fluorescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_analysis.html">Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/vib_ir.html">Vibrational spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_calc.html">IR spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_raman.html">Raman spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/openshells.html">Open shells</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/rest_unrest.html">Restricted versus unrestricted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/correlation.html">Static versus dynamic correlation correlation</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/xray.html">X-ray spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_calc.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_analysis.html">Spectrum analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_aspects.html">Special aspects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/dire_xps.html">Core-hole localization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_large.html">Larger systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_nonstandard.html">Non-standard calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_exercises.html">Exercises</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_cheatsheet.html">Cheat sheet</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/colab.html">Google Colab notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Bibliography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">How to cite and contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../refs.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/spec_prop/mclr.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/docs/spec_prop/mclr.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Linear response</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concept">Concept</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustrative-calculations">Illustrative calculations</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="linear-response">
+<h1>Linear response<a class="headerlink" href="#linear-response" title="Link to this heading">#</a></h1>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Link to this heading">#</a></h2>
+<p>So-far we have seen CI response and how pure CASCI response can fail dramatically due to the neglect of orbital relaxation. We fixed it in a simple way using state-averaging, but this also introduced some difficulties, such as the dependency of the result on the number of states and the need to include all orbitals involved in the excitation in the active space.</p>
+<p>These difficulties can be avoided altogether by deriving a proper linear response for MCSCF. For this, we introduce our parameterization</p>
+<div class="math notranslate nohighlight">
+\[
+  | \bar{\psi}(t) \rangle = e^{-i\hat{\kappa}(t)} e^{-i\hat{R}(t)} |0\rangle 
+\]</div>
+<p>which contains both the orbital rotation operator similar to HF or DFT response</p>
+<div class="math notranslate nohighlight">
+\[
+  \hat{\kappa}(t) =
+  \sum_a^\mathrm{act,unocc} \sum_i^\mathrm{occ,act} \left[
+    \kappa_{ai}(t) \hat{a}^\dagger_a \hat{a}_i + \kappa_{ai}^*(t) \hat{a}^\dagger_i \hat{a}_a
+    \right]
+\]</div>
+<p>but also the CI state-transfer operator</p>
+<div class="math notranslate nohighlight">
+\[
+  \hat{R}(t) = \sum_n R_{n0}(t) | n \rangle \langle 0 | + R^*_{0n}(t) | 0 \rangle \langle n | \]</div>
+<p>For CASSCF wave functions, there is a redundancy between the active-active orbital response parameters and the CI response parameters, so these orbital response terms are dropped. The orbital rotations are thus restricted to inactive-active, inactive-virtual and active-virtual.</p>
+<p>This theory can thus be seen as CASCI response but with added orbital excitations to and from non-active orbitals. Hence, it fixes the lack of orbital relaxation of CASCI and also lifts the need to include all orbitals involved in the excitations within our active space. The only difference between having the orbitals inside or outside the active space is the description of the reference state (typically the ground state) and the fact that the CI state-transfer includes all order of excitations while the orbital operators are restricted to single excitations.</p>
+</section>
+<section id="illustrative-calculations">
+<h2>Illustrative calculations<a class="headerlink" href="#illustrative-calculations" title="Link to this heading">#</a></h2>
+<p>Let us go back to our water example.</p>
+<div class="cell tag_hide-output tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multipsi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mtp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;3</span>
+
+<span class="s2">O       0.0000000000     0.0000000000     0.1178336003</span>
+<span class="s2">H      -0.7595754146    -0.0000000000    -0.4713344012</span>
+<span class="s2">H       0.7595754146     0.0000000000    -0.4713344012</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">mol_str</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;6-31g&quot;</span><span class="p">)</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3Dmol</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3d</span>
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">p3d</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">mol_str</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setViewStyle</span><span class="p">({</span><span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;outline&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">&quot;stick&quot;</span><span class="p">:{},</span><span class="s2">&quot;sphere&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;scale&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_17392746549262598"  style="position: relative; width: 300px; height: 200px;">
+        <p id="3dmolwarning_17392746549262598" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+}
+
+var viewer_17392746549262598 = null;
+var warn = document.getElementById("3dmolwarning_17392746549262598");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_17392746549262598 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17392746549262598"),{backgroundColor:"white"});
+viewer_17392746549262598.zoomTo();
+	viewer_17392746549262598.addModel("3\n\nO       0.0000000000     0.0000000000     0.1178336003\nH      -0.7595754146    -0.0000000000    -0.4713344012\nH       0.7595754146     0.0000000000    -0.4713344012\n","xyz");
+	viewer_17392746549262598.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_17392746549262598.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_17392746549262598.rotate(-90,"x");
+viewer_17392746549262598.render();
+});
+</script></div></div>
+</div>
+<div class="cell tag_hide-output tag_output_scroll docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># CAS(6,5) calculation of water</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">OrbSpace</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">mol_orbs</span><span class="p">)</span>
+<span class="n">space</span><span class="o">.</span><span class="n">cas</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># 3 O_2p and 2 H_1s</span>
+
+<span class="c1"># CASSCF calculation</span>
+<span class="n">mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
+<span class="n">mcscf_results</span> <span class="o">=</span> <span class="n">mcscf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                          Multi-Configurational Self-Consistent Field Driver
+                         ====================================================
+                                                                                                                          
+
+               Active space definition:
+               ------------------------
+               Number of inactive (occupied) orbitals: 2
+               Number of active orbitals:              5
+               Number of virtual orbitals:             6
+
+               This is a CASSCF wavefunction: CAS(6,5)
+
+               CI expansion:
+               -------------
+               Number of determinants:      100
+
+
+                                                                                                                          
+               ╭────────────────────────────────────╮
+               │          Driver settings           │
+               ╰────────────────────────────────────╯
+                                                                                                                          
+                                                                                                                          
+               Number of states              :   1
+               State-specific calculation
+                - State of interest          :   1
+               Max. iterations               :   50
+               BFGS window                   :   5
+               Convergence thresholds:
+                - Energy change              :   1e-08
+                - Gradient sq. norm          :   1e-08
+                                                                                                                          
+                                                                                                                          
+                          MCSCF Iterations
+                         -------------------
+                                                                                                                          
+     Iter. | Average Energy | E. Change | Grad. Norm | CI Iter. | Trust rad. |  Time
+     ---------------------------------------------------------------------------------
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        1     -75.991312026     0.0e+00      5.7e-04          0        0.40    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        2     -76.006166338    -1.5e-02      1.9e-03          0        0.40    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        3     -76.032227066    -2.6e-02      6.1e-04          0        0.56    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        4     -76.031421785     8.1e-04      1.3e-03          0        0.78    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        5     -76.037415898    -6.0e-03      1.2e-04          0        0.39    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        6     -76.037698943    -2.8e-04      2.2e-05          0        0.47    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        7     -76.037780505    -8.2e-05      7.7e-06          0        0.47    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -76.037840886    -6.0e-05      3.2e-06          0        0.66    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -76.037842682    -1.8e-06      7.6e-07          0        0.66    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       10     -76.037843309    -6.3e-07      4.4e-08          0        0.79    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       11     -76.037843332    -2.3e-08      1.2e-08          0        0.79    0:00:00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       12     -76.037843341    -8.6e-09      4.5e-10          0        0.80    0:00:00
+** Convergence reached in 12 iterations
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       13     -76.037843341    -3.5e-10      7.9e-11          0        0.80    0:00:00
+                                                                                                                          
+               Final results
+               -------------
+                                                                                                                          
+* State 1
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -76.03784334095118
+  - Natural orbitals
+1.99931 1.97806 1.97495 0.02400 0.02368
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -20.55485 a.u.                                                                  
+               (   1 O   1s  :    -1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.07302 a.u.                                                                  
+               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.48) (   1 O   3s  :    -0.57)                              
+               (   1 O   1p0 :    -0.24) (   1 O   2p0 :    -0.19)                                                        
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.999 Energy:   -0.50216 a.u.                                                                  
+               (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.51)                                                        
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.978 Energy:   -0.83591 a.u.                                                                  
+               (   1 O   1p0 :    -0.51) (   1 O   2p0 :    -0.35) (   2 H   1s  :     0.21)                              
+               (   3 H   1s  :     0.21)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.975 Energy:   -0.70221 a.u.                                                                  
+               (   1 O   1p+1:    -0.51) (   1 O   2p+1:    -0.25) (   2 H   1s  :     0.27)                              
+               (   3 H   1s  :    -0.27)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.024 Energy:    0.75291 a.u.                                                                  
+               (   1 O   1p+1:     0.87) (   2 H   1s  :     0.46) (   2 H   2s  :     0.30)                              
+               (   3 H   1s  :    -0.46) (   3 H   2s  :    -0.30)                                                        
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.024 Energy:    0.73045 a.u.                                                                  
+               (   1 O   2s  :     0.50) (   1 O   3s  :     0.17) (   1 O   1p0 :    -0.77)                              
+               (   1 O   2p0 :     0.18) (   2 H   1s  :    -0.43) (   2 H   2s  :    -0.20)                              
+               (   3 H   1s  :    -0.43) (   3 H   2s  :    -0.20)                                                        
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.68035 a.u.                                                                  
+               (   1 O   2s  :    -0.19) (   1 O   3s  :     1.21) (   1 O   1p0 :     0.41)                              
+               (   1 O   2p0 :    -0.76) (   2 H   1s  :     0.40) (   2 H   2s  :    -1.13)                              
+               (   3 H   1s  :     0.40) (   3 H   2s  :    -1.13)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.78476 a.u.                                                                  
+               (   1 O   1p+1:     0.28) (   1 O   2p+1:    -0.73) (   2 H   1s  :     0.62)                              
+               (   2 H   2s  :    -1.60) (   3 H   1s  :    -0.62) (   3 H   2s  :     1.60)                              
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_output_scroll tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcrpa</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">Mclr_EigenSolver</span><span class="p">()</span>
+<span class="c1"># We only need 4 states but use 5 states to help a bit with convergence</span>
+<span class="n">rsp_dict</span> <span class="o">=</span> <span class="n">mcrpa</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mcscf_drv</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                          Multi-Configurational Linear response Eigenvalue Solver
+                         =========================================================
+                                                                                                                          
+                                                                                                                          
+               ╭────────────────────────────────────╮
+               │          Driver settings           │
+               ╰────────────────────────────────────╯
+                                                                                                                          
+               Number of states              :   5
+               Full MC-RPA calculation
+                                                                                                                          
+               Max. iterations               :   50
+               Residual sq. norm threshold   :   1e-08
+                                                                                                                          
+               Trial vector settings:
+                 - Lin. dep. threshold       :   1e-10
+                 - Max. trial vectors        :   20
+                 - Max. trial vectors        :   60
+                                                                                                                          
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Number of parameters:
+                - CI                         :   99
+                - Orbital                    :   52
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Results computed in CI response and SA-MCSCF</span>
+<span class="n">FCI_excitation_energies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">8.44992</span><span class="p">,</span> <span class="mf">10.68451</span><span class="p">,</span> <span class="mf">10.97654</span><span class="p">,</span> <span class="mf">13.37692</span><span class="p">]</span>
+<span class="n">CIS_excitation_energies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">9.38059</span><span class="p">,</span> <span class="mf">11.30739</span><span class="p">,</span> <span class="mf">11.83172</span><span class="p">,</span> <span class="mf">13.90237</span><span class="p">]</span>
+<span class="n">CASCI_excitation_energies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">18.61974291</span><span class="p">,</span> <span class="mf">18.73087038</span><span class="p">,</span> <span class="mf">26.61579239</span><span class="p">,</span> <span class="mf">28.51654574</span><span class="p">]</span>
+<span class="n">SA_CASSCF_excitation_energies</span> <span class="o">=</span> <span class="p">[</span><span class="mf">7.55787583</span><span class="p">,</span> <span class="mf">9.83566209</span><span class="p">,</span> <span class="mf">10.32868402</span><span class="p">,</span> <span class="mf">12.56323891</span><span class="p">]</span>
+<span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
+
+<span class="c1"># Multiconfigurational linear response for CAS(6,5)</span>
+<span class="n">MCRPA_6_5_excitation_energies</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">rsp_dict</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full CI Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">FCI_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CIS Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CIS_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SA-CASSCF Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">SA_CASSCF_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CASCI Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CASCI_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC-RPA Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MCRPA_6_5_excitation_energies</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">9</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">au2ev</span> <span class="o">=</span> <span class="mf">27.211386</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="c1"># Multiconfigurational linear response for CAS(6,5)</span>
+<span class="ne">----&gt; </span><span class="mi">9</span> <span class="n">MCRPA_6_5_excitation_energies</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">rsp_dict</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full CI Energies&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="nb">print</span><span class="p">(</span><span class="n">FCI_excitation_energies</span><span class="p">)</span>
+
+<span class="ne">TypeError</span>: &#39;NoneType&#39; object is not subscriptable
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can see that this multiconfigurational response results is significantly better than CASCI, and is actually even better than SA-CASSCF and CIS.</p>
+<p>It is also useful to look at the output of the calculation to understand what is happening. In particular, the code prints the number of trial vectors that are used to converge the calculation. We can see that MC-RPA uses both CI vectors and orbital vectors, corresponding to the 2 parts of our parametrization. The final response vector is a linear combination of both. We can also print the excitation character analysis to see this:</p>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcrpa</span><span class="o">.</span><span class="n">get_excitation_character</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+    Excitation characters
+    ---------------------
+                                                                                                                          
+* State 1
+- Exc. energy: 0.3310413425168189
+ Electrons     Excitation
+ 0.391    :    3  -&gt;    8
+ 0.574    :    3  -&gt;    7
+ CI weight: 0.616  Orb weight: 0.384
+                                                                                                                          
+* State 2
+- Exc. energy: 0.40903703907882255
+ Electrons     Excitation
+ 0.275    :    3  -&gt;    9
+ 0.664    :    3  -&gt;    6
+ CI weight: 0.700  Orb weight: 0.300
+                                                                                                                          
+* State 3
+- Exc. energy: 0.43116672307762466
+ Electrons     Excitation
+ 0.279    :    4  -&gt;    8
+ 0.207    :    2  -&gt;    7
+ 0.158    :    2  -&gt;    8
+ 0.332    :    4  -&gt;    7
+ CI weight: 0.335  Orb weight: 0.665
+                                                                                                                          
+* State 4
+- Exc. energy: 0.5113203161722654
+ Electrons     Excitation
+ 0.223    :    2  -&gt;    6
+ 0.215    :    4  -&gt;    9
+ 0.106    :    2  -&gt;    9
+ 0.386    :    4  -&gt;    6
+ CI weight: 0.415  Orb weight: 0.585
+                                                                                                                          
+* State 5
+- Exc. energy: 0.5783868256049328
+ Electrons     Excitation
+ 0.437    :    5  -&gt;    8
+ 0.519    :    5  -&gt;    7
+ CI weight: 0.541  Orb weight: 0.459
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<p>The orbital analysis shows the weights of the CI and orbital contribution to each response vector. Even if all of those states correspond broadly to excitations between valence orbitals which are all in the active space, all contain a sizeable contribution to the orbital response, which explains why they were so poorly described by CASCI.</p>
+<p>We can go even further and drop the oxygen lone pair from our active space. As seen in the occupation number of the CASSCF calculation, the first orbital (the lone pair) is almost perfectly doubly occupied, and was only added in our active space because it is the HOMO of our system and is thus excited in the lowest excited states. Since we now also include excitations outside of the active space, we can safely remove this orbital and focus on the 2 pairs of O-H <span class="math notranslate nohighlight">\(\sigma\)</span> and <span class="math notranslate nohighlight">\(\sigma^*\)</span> (4 electrons in 4 orbitals):</p>
+<div class="cell tag_output_scroll tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span><span class="o">.</span><span class="n">cas</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># Remove the first orbital</span>
+<span class="c1"># CASSCF calculation</span>
+<span class="n">mcscf_drv</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">McscfDriver</span><span class="p">()</span>
+<span class="n">mcscf_results</span> <span class="o">=</span> <span class="n">mcscf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                          Multi-Configurational Self-Consistent Field Driver
+                         ====================================================
+                                                                                                                          
+        ╭────────────────────────────────────╮
+        │          Driver settings           │
+        ╰────────────────────────────────────╯
+          State-specific calculation
+          Max. iterations         : 50
+          BFGS window             : 5
+          Convergence thresholds:
+            - Energy change       : 1e-08
+            - Gradient norm       : 0.0001
+                                                                                                                          
+          Integrals in memory
+                                                                                                                          
+
+          Active space definition:
+          ------------------------
+Number of inactive (occupied) orbitals: 3
+Number of active orbitals:              4
+Number of virtual orbitals:             6
+
+    This is a CASSCF wavefunction: CAS(4,4)
+
+          CI expansion:
+          -------------
+Number of determinants:      21
+
+
+                                                                                                                          
+        MCSCF Iterations
+        ----------------
+                                                                                                                          
+     Iter. | Average Energy | E. Change | Grad. Norm | CI Iter. |   Time
+     ---------------------------------------------------------------------
+        1     -76.037271059     0.0e+00      2.6e-03          1   0:00:00
+        2     -76.037273348    -2.3e-06      6.5e-04          1   0:00:00
+        3     -76.037273801    -4.5e-07      3.2e-04          1   0:00:00
+        4     -76.037273988    -1.9e-07      2.6e-04          1   0:00:00
+        5     -76.037274022    -3.4e-08      1.6e-04          1   0:00:00
+        6     -76.037274031    -8.7e-09      6.4e-05          1   0:00:00
+                                                                                                                          
+** Convergence reached in 6 iterations
+                                                                                                                          
+        Final results
+        -------------
+                                                                                                                          
+                                                                                                                          
+* State 1
+- Energy: -76.03727403103234
+- S^2   : -0.00  (multiplicity = 1.0 )
+- Natural orbitals
+1.97794 1.97490 0.02386 0.02330
+                                                                                                                          
+                                                 Spin Restricted Orbitals                                                 
+                                                 ------------------------                                                 
+                                                                                                                          
+               Molecular Orbital No.   1:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:  -20.55475 a.u.                                                                  
+               (   1 O   1s  :     1.00)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   2:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -1.07554 a.u.                                                                  
+               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.49) (   1 O   3s  :    -0.58)                              
+               (   1 O   1p0 :    -0.24) (   1 O   2p0 :    -0.19)                                                        
+                                                                                                                          
+               Molecular Orbital No.   3:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 2.000 Energy:   -0.50212 a.u.                                                                  
+               (   1 O   1p-1:     0.64) (   1 O   2p-1:     0.51)                                                        
+                                                                                                                          
+               Molecular Orbital No.   4:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.978 Energy:   -0.83329 a.u.                                                                  
+               (   1 O   1p0 :    -0.51) (   1 O   2p0 :    -0.35) (   2 H   1s  :     0.21)                              
+               (   3 H   1s  :     0.21)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   5:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 1.975 Energy:   -0.70218 a.u.                                                                  
+               (   1 O   1p+1:    -0.51) (   1 O   2p+1:    -0.25) (   2 H   1s  :     0.27)                              
+               (   3 H   1s  :    -0.27)                                                                                  
+                                                                                                                          
+               Molecular Orbital No.   6:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.024 Energy:    0.75297 a.u.                                                                  
+               (   1 O   1p+1:    -0.87) (   2 H   1s  :    -0.46) (   2 H   2s  :    -0.30)                              
+               (   3 H   1s  :     0.46) (   3 H   2s  :     0.30)                                                        
+                                                                                                                          
+               Molecular Orbital No.   7:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.023 Energy:    0.73237 a.u.                                                                  
+               (   1 O   2s  :     0.49) (   1 O   3s  :     0.17) (   1 O   1p0 :    -0.78)                              
+               (   1 O   2p0 :     0.18) (   2 H   1s  :    -0.43) (   2 H   2s  :    -0.20)                              
+               (   3 H   1s  :    -0.43) (   3 H   2s  :    -0.20)                                                        
+                                                                                                                          
+               Molecular Orbital No.   8:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.67755 a.u.                                                                  
+               (   1 O   2s  :    -0.18) (   1 O   3s  :     1.21) (   1 O   1p0 :     0.41)                              
+               (   1 O   2p0 :    -0.76) (   2 H   1s  :     0.40) (   2 H   2s  :    -1.13)                              
+               (   3 H   1s  :     0.40) (   3 H   2s  :    -1.13)                                                        
+                                                                                                                          
+               Molecular Orbital No.   9:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    0.78413 a.u.                                                                  
+               (   1 O   1p+1:     0.27) (   1 O   2p+1:    -0.72) (   2 H   1s  :     0.62)                              
+               (   2 H   2s  :    -1.60) (   3 H   1s  :    -0.62) (   3 H   2s  :     1.60)                              
+                                                                                                                          
+               Molecular Orbital No.  10:                                                                                 
+               --------------------------                                                                                 
+               Occupation: 0.000 Energy:    1.16377 a.u.                                                                  
+               (   1 O   1p-1:     0.96) (   1 O   2p-1:    -1.04)                                                        
+                                                                                                                          
+                                                                                                                          
+Total MCSCF time: 00:00:00
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell tag_output_scroll tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcrpa</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">Mclr_EigenSolver</span><span class="p">()</span>
+<span class="n">rsp_dict</span> <span class="o">=</span> <span class="n">mcrpa</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mcscf_drv</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+Initialization time: 00:00:00
+                                                                                                                          
+          Linear eigensolver
+          ------------------
+                                                                                                                          
+CI parameters:      20
+Orbital parameters: 54
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          
+        MC-RPA Iterations
+        -----------------
+                                                                                                                          
+     Iter. | Average Energy | Grad. Norm | Converged | CI+Orb vec. | Time
+     -----------------------------------------------------------------------
+        1       0.710081794      2.4e-01      0/  4     4 +   4      0:00:00    
+        2       0.504438122      7.0e-02      0/  4     4 +  12      0:00:00    
+        3       0.460463894      4.4e-02      1/  4     4 +  20      0:00:00    
+        4       0.438810895      6.4e-03      1/  4     6 +  24      0:00:00    
+        5       0.436944673      2.4e-03      2/  4     8 +  27      0:00:00    
+        6       0.423462081      1.1e-02      2/  4     8 +  31      0:00:00    
+        7       0.421356042      3.8e-03      2/  4    10 +  33      0:00:00    
+        8       0.420278497      4.0e-04      2/  4    12 +  35      0:00:00    
+        9       0.420223667      3.4e-05      2/  4    12 +  39      0:00:00    
+       10       0.420210977      2.3e-06      2/  4    16 +  39      0:00:00    
+       11       0.420210806      8.3e-08      2/  4    16 +  43      0:00:00    
+       12       0.420210790      6.9e-09      4/  4    18 +  45      0:00:00    
+                                                                                                                          
+** Convergence reached in 12 iterations
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          
+                                                 Oscillator strength (au)
+ Transition   Energy (Ha)    Energy (eV)    Velocity gauge     Length gauge 
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1     0.3305460      8.99462          0.0389589        0.0121782
+          2     0.4084733     11.11512          0.0000000        0.0000000
+          3     0.4307439     11.72114          0.1738522        0.1284474
+          4     0.5110800     13.90719          0.1450456        0.1453738
+                                                                                                                          
+                                                                                                                          
+                                                 Rotatory strength (cgs)
+ Transition   Energy (Ha)    Energy (eV)    Velocity gauge     Length gauge 
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1     0.3305460      8.99462          0.0000000        0.0000000
+          2     0.4084733     11.11512          0.0000000        0.0000000
+          3     0.4307439     11.72114         -0.0000000       -0.0000000
+          4     0.5110800     13.90719         -0.0000000        0.0000000
+                                                                                                                          
+Total MC-RPA time: 00:00:00
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MCRPA_4_4_excitation_energies</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">rsp_dict</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full CI Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">FCI_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CIS Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CIS_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SA-CASSCF Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">SA_CASSCF_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC-RPA Energies CAS(6,5)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MCRPA_6_5_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC-RPA Energies CAS(4,4)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MCRPA_4_4_excitation_energies</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full CI Energies
+[8.44992, 10.68451, 10.97654, 13.37692]
+CIS Energies
+[9.38059, 11.30739, 11.83172, 13.90237]
+SA-CASSCF Energies
+[7.55787583, 9.83566209, 10.32868402, 12.56323891]
+MC-RPA Energies CAS(6,5)
+[ 9.00809375 11.13046476 11.73264413 13.91373449]
+MC-RPA Energies CAS(4,4)
+[ 8.99461578 11.11512359 11.72113816 13.90719454]
+</pre></div>
+</div>
+</div>
+</div>
+<p>As expected, since this orbital was almost perfectly doubly occupied, removing it from the active space made almost no difference in the excitation energies (this would not be true in SA-CASSCF).</p>
+<p>As a result, the MC-RPA calculation used fewer CI trial vectors, and we can also see it in the excitation character analysis where the first 2 states are now purely described by the orbital response parameters:</p>
+<div class="cell tag_output_scroll docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcrpa</span><span class="o">.</span><span class="n">get_excitation_character</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+    Excitation characters
+    ---------------------
+                                                                                                                          
+* State 1
+- Exc. energy: 0.3305460361595478
+ Electrons     Excitation
+ 0.578    :    3  -&gt;    7
+ 0.393    :    3  -&gt;    8
+ CI weight: 0.000  Orb weight: 1.000
+                                                                                                                          
+* State 2
+- Exc. energy: 0.40847326146200613
+ Electrons     Excitation
+ 0.670    :    3  -&gt;    6
+ 0.275    :    3  -&gt;    9
+ CI weight: 0.000  Orb weight: 1.000
+                                                                                                                          
+* State 3
+- Exc. energy: 0.4307438863711089
+ Electrons     Excitation
+ 0.282    :    4  -&gt;    8
+ 0.205    :    2  -&gt;    7
+ 0.157    :    2  -&gt;    8
+ 0.332    :    4  -&gt;    7
+ CI weight: 0.335  Orb weight: 0.665
+                                                                                                                          
+* State 4
+- Exc. energy: 0.5110799773765147
+ Electrons     Excitation
+ 0.221    :    2  -&gt;    6
+ 0.216    :    4  -&gt;    9
+ 0.105    :    2  -&gt;    9
+ 0.388    :    4  -&gt;    6
+ CI weight: 0.417  Orb weight: 0.583
+                                                                                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, as for HF or DFT response, we can invoke the Tamm-Dancoff approximation (TDA), which typically gives rather moderate error compared to the full RPA response although leads to only modest gains in computational time:</p>
+<div class="cell tag_output_scroll tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcrpa</span> <span class="o">=</span> <span class="n">mtp</span><span class="o">.</span><span class="n">Mclr_EigenSolver</span><span class="p">()</span>
+<span class="n">mcrpa</span><span class="o">.</span><span class="n">tda</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">rsp_dict</span> <span class="o">=</span> <span class="n">mcrpa</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">mcscf_drv</span><span class="p">,</span> <span class="n">n_states</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+Initialization time: 00:00:00
+                                                                                                                          
+          Linear eigensolver
+          ------------------
+                                                                                                                          
+CI parameters:      20
+Orbital parameters: 54
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          
+        MC-RPA Iterations
+        -----------------
+                                                                                                                          
+     Iter. | Average Energy | Grad. Norm | Converged | CI+Orb vec. | Time
+     -----------------------------------------------------------------------
+        1       0.710081794      2.4e-01      0/  4     4 +   4      0:00:00    
+        2       0.504438122      7.0e-02      0/  4     4 +  12      0:00:00    
+        3       0.460463894      4.4e-02      1/  4     4 +  20      0:00:00    
+        4       0.438810895      6.4e-03      1/  4     6 +  24      0:00:00    
+        5       0.436944673      2.4e-03      2/  4     8 +  27      0:00:00    
+        6       0.423462081      1.1e-02      2/  4     8 +  31      0:00:00    
+        7       0.421356042      3.8e-03      2/  4    10 +  33      0:00:00    
+        8       0.420278497      4.0e-04      2/  4    12 +  35      0:00:00    
+        9       0.420223667      3.4e-05      2/  4    12 +  39      0:00:00    
+       10       0.420210977      2.3e-06      2/  4    16 +  39      0:00:00    
+       11       0.420210806      8.3e-08      2/  4    16 +  43      0:00:00    
+       12       0.420210790      6.9e-09      4/  4    18 +  45      0:00:00    
+                                                                                                                          
+** Convergence reached in 12 iterations
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          
+                                                 Oscillator strength (au)
+ Transition   Energy (Ha)    Energy (eV)    Velocity gauge     Length gauge 
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1     0.3305460      8.99462          0.0389589        0.0121782
+          2     0.4084733     11.11512          0.0000000        0.0000000
+          3     0.4307439     11.72114          0.1738522        0.1284474
+          4     0.5110800     13.90719          0.1450456        0.1453738
+                                                                                                                          
+                                                                                                                          
+                                                 Rotatory strength (cgs)
+ Transition   Energy (Ha)    Energy (eV)    Velocity gauge     Length gauge 
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1     0.3305460      8.99462          0.0000000        0.0000000
+          2     0.4084733     11.11512          0.0000000        0.0000000
+          3     0.4307439     11.72114         -0.0000000       -0.0000000
+          4     0.5110800     13.90719         -0.0000000        0.0000000
+                                                                                                                          
+Total MC-RPA time: 00:00:00
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MCTDA_4_4_excitation_energies</span> <span class="o">=</span> <span class="n">au2ev</span> <span class="o">*</span> <span class="n">rsp_dict</span><span class="p">[</span><span class="s2">&quot;eigenvalues&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full CI Energies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">FCI_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC-RPA Energies CAS(4,4)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MCRPA_4_4_excitation_energies</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MC-TDA Energies CAS(4,4)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">MCTDA_4_4_excitation_energies</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full CI Energies
+[8.44992, 10.68451, 10.97654, 13.37692]
+MC-RPA Energies CAS(4,4)
+[ 8.99461578 11.11512359 11.72113816 13.90719454]
+MC-TDA Energies CAS(4,4)
+[ 8.99461578 11.11512359 11.72113816 13.90719454]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs/spec_prop"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sa_mcscf.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">State-averaged MCSCF</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mr_exercises.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Exercises</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concept">Concept</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustrative-calculations">Illustrative calculations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The eChem team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
