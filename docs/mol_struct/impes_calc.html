@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -221,9 +221,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
-</ul>
-</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
 </ul>
@@ -383,6 +381,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/pcm.html">Polarizable continuum models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/cpcm.html">Conductor-like polarizable continuum model</a></li>
 </ul>
 </details></li>
 </ul>
@@ -670,7 +672,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="constructing-the-pes-by-interpolation">
 <h1>Constructing the PES by interpolation<a class="headerlink" href="#constructing-the-pes-by-interpolation" title="Link to this heading">#</a></h1>
-<p>The idea behind PES interpolation techniques is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically (QM). For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. On the other hand, the use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost <span id="id1">[<a class="reference internal" href="../refs.html#id96" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
+<p>The idea behind PES interpolation techniques is to construct the global PES of the molecular ground or excited-state from a set of data points (configurations) calculated quantum-mechanically (QM). For small molecules with few degrees of freedom, depending on the level of theory, the interpolated PES can have similar computational cost as constructing the PES <em>ab initio</em>. On the other hand, the use of an interpolated PES becomes very advantageous, especially when the molecule of interest is embedded in a larger environment (e.g. fluorescent probe in a protein), where this technique allows performing dynamics on the ground or excited state with quantum chemical accuracy, but at molecular mechanics computational cost <span id="id1">[<a class="reference internal" href="../refs.html#id97" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>The idea behind PES interpolation is to write the potential energy at a new configuration <span class="math notranslate nohighlight">\(\mathbf{q}\)</span> as a weighted average between potentials defined from a set of <em>ab initio</em> data points <span class="math notranslate nohighlight">\(\{\mathbf{q}_a\}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -691,14 +693,14 @@ w_a = \frac{v_a}{\sum_i v_i}\,
 \[
 v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
 \]</div>
-<p>The exponent <span class="math notranslate nohighlight">\(2p\)</span> determines how fast the algorithm switches between data points <span id="id2">[<a class="reference internal" href="../refs.html#id60" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the Fenna–Matthews–Olson complex. J. Chem. Theory Comput., 12:5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>.</p>
-<p>Another approach to determine the un-normalized weights is the Shepard weighting scheme <span id="id3">[<a class="reference internal" href="../refs.html#id60" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the Fenna–Matthews–Olson complex. J. Chem. Theory Comput., 12:5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>:</p>
+<p>The exponent <span class="math notranslate nohighlight">\(2p\)</span> determines how fast the algorithm switches between data points <span id="id2">[<a class="reference internal" href="../refs.html#id61" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the Fenna–Matthews–Olson complex. J. Chem. Theory Comput., 12:5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>.</p>
+<p>Another approach to determine the un-normalized weights is the Shepard weighting scheme <span id="id3">[<a class="reference internal" href="../refs.html#id61" title="C. W. Kim and Y. M. Rhee. Constructing an interpolated potential energy surface of a large molecule: a case study with bacteriochlorophyll a model in the Fenna–Matthews–Olson complex. J. Chem. Theory Comput., 12:5235-5246, 2016. URL: https://doi.org/10.1021/acs.jctc.6b00647.">KR16</a>]</span>:</p>
 <div class="math notranslate nohighlight">
 \[
 v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2q} \right]^{-1},
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(r_a\)</span> is the confidence radius for <span class="math notranslate nohighlight">\(\mathbf{q_a}\)</span>.</p>
-<p>For a good overview of potential energy surfaces by interpolation, see <span id="id4">[<a class="reference internal" href="../refs.html#id96" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
+<p>For a good overview of potential energy surfaces by interpolation, see <span id="id4">[<a class="reference internal" href="../refs.html#id97" title="Y. M. Rhee and J. W. Park. Interpolation for molecular dynamics simulations: from ions in gas phase to proteins in solution. Int. J. Quant. Chem., 116:573-577, 2016. URL: https://doi.org/10.1002/qua.25064.">RP16</a>]</span>.</p>
 <p>In this tutorial we will get familiar with constructing the ground state potential energy surface (PES) of a molecule by interpolation.</p>
 <section id="the-ground-state-potential-energy-surface-of-water">
 <h2>The ground state potential energy surface of water<a class="headerlink" href="#the-ground-state-potential-energy-surface-of-water" title="Link to this heading">#</a></h2>
@@ -749,8 +751,8 @@ v_a = \left[ \left(\frac{|\mathbf{q}-\mathbf{q_a}|}{r_a}\right)^{2p} + \left(\fr
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17477649101475663"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17477649101475663" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_17520134412821162"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_17520134412821162" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -778,22 +780,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@2.5.1/build/3Dmol-min.js');
 }
 
-var viewer_17477649101475663 = null;
-var warn = document.getElementById("3dmolwarning_17477649101475663");
+var viewer_17520134412821162 = null;
+var warn = document.getElementById("3dmolwarning_17520134412821162");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17477649101475663 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17477649101475663"),{backgroundColor:"white"});
-viewer_17477649101475663.zoomTo();
-	viewer_17477649101475663.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.895700000000        -0.316700000000\nH              0.000000000000         0.000000000000         1.100000000000\n");
-	viewer_17477649101475663.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17477649101475663.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17477649101475663.zoomTo();
-viewer_17477649101475663.render();
+viewer_17520134412821162 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17520134412821162"),{backgroundColor:"white"});
+viewer_17520134412821162.zoomTo();
+	viewer_17520134412821162.addModel("3\n\nO              0.000000000000         0.000000000000         0.000000000000\nH              0.000000000000         0.895700000000        -0.316700000000\nH              0.000000000000         0.000000000000         1.100000000000\n");
+	viewer_17520134412821162.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_17520134412821162.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_17520134412821162.zoomTo();
+viewer_17520134412821162.render();
 });
 </script></div></div>
 </div>
@@ -1130,8 +1132,12 @@ B_{ij} = \frac{\partial q_i}{\partial x_j}\,.
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.75 A...
-Calculating the energies, gradients and Hessians for OH =  0.95 A...
-Calculating the energies, gradients and Hessians for OH =  1.35 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  0.95 A...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculating the energies, gradients and Hessians for OH =  1.35 A...
 </pre></div>
 </div>
 </div>
@@ -1281,7 +1287,7 @@ V_a(\mathbf{q}) = E_a + \boldsymbol{\Delta}^\mathrm{T}_a \mathbf{g}_a + \frac{1}
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<img alt="../../_images/5f164a4afa9d8d6158f6c739032fb94e4e3256255b01133e6244a68512539624.png" src="../../_images/5f164a4afa9d8d6158f6c739032fb94e4e3256255b01133e6244a68512539624.png" />
+<img alt="../../_images/25a20630bd0d8a507211e8abeb962e8c0a3c37bfd9a1804b6c8ea523df66e659.png" src="../../_images/25a20630bd0d8a507211e8abeb962e8c0a3c37bfd9a1804b6c8ea523df66e659.png" />
 </div>
 </details>
 </div>
@@ -1387,7 +1393,7 @@ v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/0250a9cdaec97a9c26ec2e0c129daa09c823149399c5ad01ebbac78a70c4c818.png" src="../../_images/0250a9cdaec97a9c26ec2e0c129daa09c823149399c5ad01ebbac78a70c4c818.png" />
+<img alt="../../_images/7824fa1d71efda25c48812b8902fdd55a2e725aa357e6554a6a649ea34d02f9d.png" src="../../_images/7824fa1d71efda25c48812b8902fdd55a2e725aa357e6554a6a649ea34d02f9d.png" />
 </div>
 </div>
 <div class="cell tag_hide-output docutils container">
@@ -1423,7 +1429,7 @@ v_a = \frac{1}{|\mathbf{q}-\mathbf{q_a}|^{2p}}.
 <span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
-<img alt="../../_images/32a241e58c6d099b5e2e1bf8180b8f17a650e2a15971278261f58fdf005ca4fa.png" src="../../_images/32a241e58c6d099b5e2e1bf8180b8f17a650e2a15971278261f58fdf005ca4fa.png" />
+<img alt="../../_images/9d240a8f6e65c1d7c624af0e9616076b046ba0b3c6d72a1a76621469876af531.png" src="../../_images/9d240a8f6e65c1d7c624af0e9616076b046ba0b3c6d72a1a76621469876af531.png" />
 </div>
 </details>
 </div>

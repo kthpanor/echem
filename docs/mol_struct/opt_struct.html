@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -221,9 +221,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
-</ul>
-</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
 </ul>
@@ -383,6 +381,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/pcm.html">Polarizable continuum models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/cpcm.html">Conductor-like polarizable continuum model</a></li>
 </ul>
 </details></li>
 </ul>
@@ -683,7 +685,7 @@ document.write(`
 <img alt="../../_images/PES.png" src="../../_images/PES.png" />
 </figure>
 <p>In practical terms, the ingredients to perform a geometry optimization include: (1) the initial molecular coordinates, (2) a choice of coordinate system, (3) the energy at a specific geometry <span class="math notranslate nohighlight">\(E(\mathbf{x})\)</span>, (4) the gradient <span class="math notranslate nohighlight">\(\mathbf{g}(\mathbf{x})=\nabla E(\mathbf{x})\)</span>, (5) the Hessian, and (6) a procedure to update the coordinates and Hessian and move on the potential energy surface towards lower energy.</p>
-<p>Having addressed <a class="reference internal" href="coordinates.html#sec-coord"><span class="std std-ref">the issue of coordinate system</span></a>, the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton–Raphson, quasi-Newton). For a detailed review of minimization techniques, see <span id="id1">[<a class="reference internal" href="../refs.html#id110" title="J. A. Snyman. Practical mathematical optimization. Springer, 2005.">Sny05</a>]</span>.</p>
+<p>Having addressed <a class="reference internal" href="coordinates.html#sec-coord"><span class="std std-ref">the issue of coordinate system</span></a>, the remaining question is what procedure to use to move along the potential energy surface and arrive at a local energy minimum. There are several iterative methods to do this, some of which need only information on the energy gradient (e.g. gradient-descent, conjugate gradient), while others take into account also the Hessian (Newton–Raphson, quasi-Newton). For a detailed review of minimization techniques, see <span id="id1">[<a class="reference internal" href="../refs.html#id111" title="J. A. Snyman. Practical mathematical optimization. Springer, 2005.">Sny05</a>]</span>.</p>
 <p>In the following, we will illustrate the performance of different optimization methods using a mathematical 2D function for which we can visualize the surface and calculate the gradient and Hessian analytically.</p>
 <div class="cell tag_remove-output docutils container">
 <div class="cell_input docutils container">
@@ -770,14 +772,14 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/a4a1ba61502788e835d702f2a168dd75dd7b0ae18333064cea73ec9f3ca1a807.png" src="../../_images/a4a1ba61502788e835d702f2a168dd75dd7b0ae18333064cea73ec9f3ca1a807.png" />
+<img alt="../../_images/0a4fbb22d4a56134cd0c09ebf6ea9b44bb02c2e833f9db77608ed417766f8b50.png" src="../../_images/0a4fbb22d4a56134cd0c09ebf6ea9b44bb02c2e833f9db77608ed417766f8b50.png" />
 </div>
 </div>
 <section id="gradient-descent">
 <h2>Gradient descent<a class="headerlink" href="#gradient-descent" title="Link to this heading">#</a></h2>
 <p>The simplest optimization procedure is to repeatedly take a step in the direction opposite to the local gradient</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6945ce40-654a-469d-93cc-e897c03e78b3">
-<span class="eqno">(6)<a class="headerlink" href="#equation-6945ce40-654a-469d-93cc-e897c03e78b3" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-8582f9f4-2491-4a6d-b48b-25e71309e7ec">
+<span class="eqno">(6)<a class="headerlink" href="#equation-8582f9f4-2491-4a6d-b48b-25e71309e7ec" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \mathbf{x}_{i+1} = \mathbf{x}_i - k_i\mathbf{g}(\mathbf{x}_i) \nonumber 
 \end{equation}\]</div>
 <p>where by <span class="math notranslate nohighlight">\(\mathbf{x}_{i+1}\)</span> we denote the new coordinates (in a generic coordinate system – either Cartesian or internal coordinates), <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> are the coordinates at the previous step <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(\nabla E\)</span> is the energy gradient and <span class="math notranslate nohighlight">\(k_i\)</span> is the step size. The step size can either be kept constant, or adjusted at each iteration, e.g. by the line search procedure.</p>
@@ -902,7 +904,7 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/847a194e6fc9bd092687cd1cd949fe8ada1d7f92c63433ab0af660044c2384a6.png" src="../../_images/847a194e6fc9bd092687cd1cd949fe8ada1d7f92c63433ab0af660044c2384a6.png" />
+<img alt="../../_images/9ce5a3ada82266922c412b35a4d0a57d620c7502b14d9759e98e15c7a4effeb9.png" src="../../_images/9ce5a3ada82266922c412b35a4d0a57d620c7502b14d9759e98e15c7a4effeb9.png" />
 </div>
 </div>
 </section>
@@ -910,18 +912,18 @@ document.write(`
 <section id="conjugate-gradient">
 <h2>Conjugate gradient<a class="headerlink" href="#conjugate-gradient" title="Link to this heading">#</a></h2>
 <p>An improved method over the gradient-descent approach is to use the “gradient history” (steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span>) to determine the coordinates at step <span class="math notranslate nohighlight">\(i+1\)</span></p>
-<div class="amsmath math notranslate nohighlight" id="equation-07ad8aba-729e-4580-bfae-87731f6ae1b3">
-<span class="eqno">(7)<a class="headerlink" href="#equation-07ad8aba-729e-4580-bfae-87731f6ae1b3" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-2ca12df8-2ab8-41ee-b4e6-7da43a34b888">
+<span class="eqno">(7)<a class="headerlink" href="#equation-2ca12df8-2ab8-41ee-b4e6-7da43a34b888" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \mathbf{x}_{i+1} = \mathbf{x}_i - k_i \mathbf{h}_i \nonumber
 \end{equation}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\mathbf{h}_i = \mathbf{g}(\mathbf{x}_i)+\gamma_i\mathbf{h}_{i-1}\)</span>. The function <span class="math notranslate nohighlight">\(\gamma_i\)</span> contains gradient information from steps <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i-1\)</span> and can be defined in different ways. For example, in the Fletcher-Reeves conjugate gradient method</p>
-<div class="amsmath math notranslate nohighlight" id="equation-eef2a383-5bf6-4e75-b752-faeb9ab5e4d3">
-<span class="eqno">(8)<a class="headerlink" href="#equation-eef2a383-5bf6-4e75-b752-faeb9ab5e4d3" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-430af0cc-e3a6-421a-b1bb-cbf3778cc3cc">
+<span class="eqno">(8)<a class="headerlink" href="#equation-430af0cc-e3a6-421a-b1bb-cbf3778cc3cc" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \gamma_i = \frac{|\mathbf{g}(\mathbf{x}_i)|^2}{|\mathbf{g}(\mathbf{x}_{i-1})|^2} \nonumber
 \end{equation}\]</div>
 <p>Another option, is the Polak-Ribiere method,</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8169ad20-8151-428d-8399-2a290bda3100">
-<span class="eqno">(9)<a class="headerlink" href="#equation-8169ad20-8151-428d-8399-2a290bda3100" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-4353e9a8-4a92-49cf-8412-6215d113953b">
+<span class="eqno">(9)<a class="headerlink" href="#equation-4353e9a8-4a92-49cf-8412-6215d113953b" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \gamma_i = \frac{\left[\mathbf{g}(\mathbf{x}_i)-\mathbf{g}(\mathbf{x}_{i-1})\right]^\mathrm{T}\mathbf{g}(\mathbf{x}_i)}{|\mathbf{g}(\mathbf{x}_{i-1})|^2} \nonumber
 \end{equation}\]</div>
 <section id="id2">
@@ -1024,7 +1026,7 @@ Polak-Ribiere converged in 81 iterations!
 <p>Let’s plot the conjugate gradient results in comparison to gradient descent.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../../_images/0b5361a8bbc88444b17a97b5a6def72a05a3045a001b5629001c4a4d3b3d389e.png" src="../../_images/0b5361a8bbc88444b17a97b5a6def72a05a3045a001b5629001c4a4d3b3d389e.png" />
+<img alt="../../_images/875b5b3a3b01e1ca1af99764b5211adbe8fb7ef4f7b50032f6a6a9f6c24a810a.png" src="../../_images/875b5b3a3b01e1ca1af99764b5211adbe8fb7ef4f7b50032f6a6a9f6c24a810a.png" />
 </div>
 </div>
 </section>
@@ -1036,8 +1038,8 @@ $<span class="math notranslate nohighlight">\(
     E(\mathbf{x}+\Delta\mathbf{x}) \approx E(\mathbf{x}) + \mathbf{g}(\mathbf{x})\Delta\mathbf{x} + \frac{1}{2}\Delta\mathbf{x}^\mathrm{T}\mathbf{H}\Delta\mathbf{x}
 \)</span>$</p>
 <p>Here, <span class="math notranslate nohighlight">\(\Delta \mathbf{x}\)</span> is the Newton step used to update the coordinates</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a90ddbf8-dd41-467b-aebb-81aa99c0ad74">
-<span class="eqno">(10)<a class="headerlink" href="#equation-a90ddbf8-dd41-467b-aebb-81aa99c0ad74" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c7d138ef-b487-49ed-883c-b05195dbf2f6">
+<span class="eqno">(10)<a class="headerlink" href="#equation-c7d138ef-b487-49ed-883c-b05195dbf2f6" title="Permalink to this equation">#</a></span>\[\begin{align}
    \Delta \mathbf{x} &amp;= -\mathbf{H}^{-1}\mathbf{g}(\mathbf{x})\\
    \mathbf{x}_\mathrm{i+1} &amp;= \mathbf{x}_\mathrm{i}+\Delta \mathbf{x}
 \end{align}\]</div>
@@ -1154,7 +1156,7 @@ $<span class="math notranslate nohighlight">\(
 <p>Let’s plot the trajectory followed by the Newton-Raphson optimization and compare it with gradient descent and conjugate gradient.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../../_images/413adb7cbf143c0184c68ba2ab78c47ec32375514a5b2e67c76702a5dbcc2b89.png" src="../../_images/413adb7cbf143c0184c68ba2ab78c47ec32375514a5b2e67c76702a5dbcc2b89.png" />
+<img alt="../../_images/e34667aa924f7af0dcc85fdc0010379ab028c8d821ba047032145aec0915899c.png" src="../../_images/e34667aa924f7af0dcc85fdc0010379ab028c8d821ba047032145aec0915899c.png" />
 </div>
 </div>
 <p>The Newton-Raphson algorithm converges very fast, but it converges to the nearest stationary point. This can be a transition state, rather than a local minimum, as shown by the graph above. For this reason, one must always make sure that the coordinates found by Newton-Raphson correspond to a minimum, e.g. by checking that the Hessian has no imaginary eigenvalues.</p>
@@ -1163,13 +1165,13 @@ $<span class="math notranslate nohighlight">\(
 <section id="quasi-newton">
 <h2>Quasi-Newton<a class="headerlink" href="#quasi-newton" title="Link to this heading">#</a></h2>
 <p>The methods illustrated here can easily be adapted to use the molecular energy gradient and molecular coordinates and obtain optimized molecular structures. However, in the case of the Newton-Raphson method, the second order derivatives of the energy with respect to nuclear displacements are required to generate the Newton step. The direct computation of these derivatives (which compose the Hessian matrix) is quite expensive, but good <em>approximations</em> for the Hessian can be constructed using the gradient history. For example, the Broyden-Fletcher-Goldfarb-Shanno (BFGS, used by <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a>) approach uses the relation:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6627986f-973a-42d8-a441-0d45e80c8f70">
-<span class="eqno">(11)<a class="headerlink" href="#equation-6627986f-973a-42d8-a441-0d45e80c8f70" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-1545804f-b199-4e8c-8fac-9fe4e3351127">
+<span class="eqno">(11)<a class="headerlink" href="#equation-1545804f-b199-4e8c-8fac-9fe4e3351127" title="Permalink to this equation">#</a></span>\[\begin{align}
 \mathbf{H}_{i+1} &amp;= \mathbf{H}_i + \frac{\mathbf{h}^{}_i\mathbf{h}_i^\mathrm{T}}{\mathbf{h}_i^\mathrm{T}\mathbf{s}^{}_i} - \frac{\mathbf{H}_i\mathbf{s}_i\left(\mathbf{H}_i\mathbf{s}_i\right)_{}^\mathrm{T}}{\mathbf{s}_i^\mathrm{T}\mathbf{H}_i^{}\mathbf{s}_i^{}} \, ,\nonumber
 \end{align}\]</div>
 <p>with,</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b1583254-6821-4d45-8cef-59a51745588f">
-<span class="eqno">(12)<a class="headerlink" href="#equation-b1583254-6821-4d45-8cef-59a51745588f" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-fdf03923-645f-4044-947c-5e16b9facace">
+<span class="eqno">(12)<a class="headerlink" href="#equation-fdf03923-645f-4044-947c-5e16b9facace" title="Permalink to this equation">#</a></span>\[\begin{align}
 \mathbf{h}_i &amp;= \mathbf{g}(\mathbf{x}_{i+1}) - \mathbf{g}(\mathbf{x}_i) \, \nonumber \\
 \mathbf{s}_i &amp;= \mathbf{x}_{i+1} - \mathbf{x}_{i} \nonumber \,,
 \end{align}\]</div>
@@ -1181,9 +1183,9 @@ $<span class="math notranslate nohighlight">\(
 </figure>
 <div class="note admonition">
 <p class="admonition-title">Note</p>
-<p>Geometry optimizations can be run using differet coordinate systems. For example, <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a> offers: Cartesian coordinates, delocalized internal coordinates (DLC), hybrid delocalized internal coordinates (HDLC), as well as translation-rotation internal coordinates (TRIC). The choice of coordinates can, to some extent, influence the optimization process. In particular, some care must be taken when redundant internal coordinates are used. In this case, it is important to ensure that the displacements are only performed in the non-redundant region of the internal coordinate space. This can be achieved by applying a projector <span class="math notranslate nohighlight">\(\mathbf{P}=\mathbf{G}^{-}\mathbf{G}\)</span> to the gradient and Hessian before constructing the Newton step <span id="id4">[<a class="reference internal" href="../refs.html#id78" title="F. Neese et al. Orca. An Ab Initio, DFT and Semiempirical electronic structure package, 2009.">Neal09</a>]</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9b8afe35-ec13-4815-ac2e-8ef0ae9aea09">
-<span class="eqno">(13)<a class="headerlink" href="#equation-9b8afe35-ec13-4815-ac2e-8ef0ae9aea09" title="Permalink to this equation">#</a></span>\[\begin{align}
+<p>Geometry optimizations can be run using differet coordinate systems. For example, <a class="reference external" href="https://github.com/leeping/geomeTRIC">geomeTRIC</a> offers: Cartesian coordinates, delocalized internal coordinates (DLC), hybrid delocalized internal coordinates (HDLC), as well as translation-rotation internal coordinates (TRIC). The choice of coordinates can, to some extent, influence the optimization process. In particular, some care must be taken when redundant internal coordinates are used. In this case, it is important to ensure that the displacements are only performed in the non-redundant region of the internal coordinate space. This can be achieved by applying a projector <span class="math notranslate nohighlight">\(\mathbf{P}=\mathbf{G}^{-}\mathbf{G}\)</span> to the gradient and Hessian before constructing the Newton step <span id="id4">[<a class="reference internal" href="../refs.html#id79" title="F. Neese et al. Orca. An Ab Initio, DFT and Semiempirical electronic structure package, 2009.">Neal09</a>]</span>:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-b55ea0c8-7cf6-4bf3-9ddc-4567d8c1c4cf">
+<span class="eqno">(13)<a class="headerlink" href="#equation-b55ea0c8-7cf6-4bf3-9ddc-4567d8c1c4cf" title="Permalink to this equation">#</a></span>\[\begin{align}
 \tilde{\mathbf{g}}_q &amp;= \mathbf{P}\mathbf{g}(\mathbf{q}) \, , \nonumber \\
 \tilde{\mathbf{H}}_q &amp;= \mathbf{P}\mathbf{H}_q\mathbf{P}+\alpha(1-\mathbf{P}) \nonumber \,,
 \end{align}\]</div>
