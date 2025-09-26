@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -265,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_constrained.html">Constrained coordinates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/conformer.html">Conformer search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst_gen.html">Transition state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/ts_guesser.html">Guessing transition states with force fireld interpolation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -679,7 +680,8 @@ document.write(`
 <p>For the analysis of obtained spectra we will focus on the carbon X-ray absorption spectrum of vinylfluoride, with emphasis on how the obtained spectra can be decomposed in terms of the polarization of incoming radiation, and the atomic origin of the features. Additional analysis in terms of MOs, different <a class="reference internal" href="../visualize/exc_vis.html"><span class="doc std std-doc">visualization</span></a> schemes and descriptors thereof, will be added at a later date, as well as more details on assignment. Analysis of features in X-ray emission spectra tends to be easier to interpret (fewer states, probing occupied states of relatively large energy shifts, etc.), and focus will thus here be on XAS.</p>
 <p>Vinylfluride (C<span class="math notranslate nohighlight">\(_2\)</span>H<span class="math notranslate nohighlight">\(_3\)</span>F) is a fluorine-substituted ethene derivate, which possess large shifts in features for the -<strong>C</strong>HF site due to interaction with the very electronegative fluorine. This <em>chemical shift</em> is significant and a strong indicator of the local chemical environment. This can be seen by comparing the experimental spectra of ethene, vinylfluoride, and 1,1-difluoroethene, as digitized from <a class="reference external" href="https://doi.org/10.1103/PhysRevA.36.1683">experimental measurements</a>. We here mark position (and number of contributing carbon sites) of strong <span class="math notranslate nohighlight">\(1s \rightarrow \pi^{\ast}\)</span> transitions.</p>
 <figure class="align-default" id="expt-ethene">
-<img alt="../../_images/expt_ethene.svg" src="../../_images/expt_ethene.svg" /></figure>
+<img alt="../../_images/expt_ethene.svg" src="../../_images/expt_ethene.svg" />
+</figure>
 <p>We see that a single substitution yields a shift of about 2 eV, and a double substitution (at the same site) of about 4 eV. The behaviour of the chemical shifts for different spectroscopies will be further deliberated on in <a class="reference internal" href="xray_exercises.html#sec-xray-ex-chem"><span class="std std-ref">exercises</span></a>.</p>
 <p>Calculating the vinylfluoride spectrum using CVS-ADC(2)-x and CPP-DFT (with the B3LYP xc-functional):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vinyl_mol_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -698,8 +700,8 @@ document.write(`
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17580169818725057"  style="position: relative; width: 300px; height: 200px;">
-        <p id="3dmolwarning_17580169818725057" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1752014621833913"  style="position: relative; width: 300px; height: 200px;">
+        <p id="3dmolwarning_1752014621833913" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -727,22 +729,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@2.5.1/build/3Dmol-min.js');
 }
 
-var viewer_17580169818725057 = null;
-var warn = document.getElementById("3dmolwarning_17580169818725057");
+var viewer_1752014621833913 = null;
+var warn = document.getElementById("3dmolwarning_1752014621833913");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17580169818725057 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17580169818725057"),{backgroundColor:"white"});
-viewer_17580169818725057.zoomTo();
-	viewer_17580169818725057.addModel("6\n\n C     0.000000    -0.246412    -1.271068\n C     0.000000     0.457081    -0.154735\n F     0.000000    -0.119195     1.052878\n H     0.000000     0.272328    -2.210194\n H     0.000000    -1.319906    -1.249847\n H     0.000000     1.530323    -0.095954\n","xyz");
-	viewer_17580169818725057.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17580169818725057.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17580169818725057.rotate(90,"y");
-viewer_17580169818725057.render();
+viewer_1752014621833913 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1752014621833913"),{backgroundColor:"white"});
+viewer_1752014621833913.zoomTo();
+	viewer_1752014621833913.addModel("6\n\n C     0.000000    -0.246412    -1.271068\n C     0.000000     0.457081    -0.154735\n F     0.000000    -0.119195     1.052878\n H     0.000000     0.272328    -2.210194\n H     0.000000    -1.319906    -1.249847\n H     0.000000     1.530323    -0.095954\n","xyz");
+	viewer_1752014621833913.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1752014621833913.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1752014621833913.rotate(90,"y");
+viewer_1752014621833913.render();
 });
 </script></div></div>
 </div>
@@ -813,7 +815,8 @@ viewer_17580169818725057.render();
 </pre></div>
 </div>
 <figure class="align-default" id="xray-vinyl-calc">
-<a class="reference internal image-reference" href="../../_images/vinyl_calc.svg"><img alt="../../_images/vinyl_calc.svg" height="345" src="../../_images/vinyl_calc.svg" width="552" /></a>
+<a class="reference internal image-reference" href="../../_images/vinyl_calc.svg"><img alt="../../_images/vinyl_calc.svg" src="../../_images/vinyl_calc.svg" style="width: 552.96px; height: 345.59999999999997px;" />
+</a>
 </figure>
 <section id="looking-at-solution-vectors">
 <span id="sec-xray-anal-amp"></span><h2>Looking at solution vectors<a class="headerlink" href="#looking-at-solution-vectors" title="Link to this heading">#</a></h2>
@@ -931,7 +934,8 @@ First transition from &#39;homolumo&#39; format, which use HOMO/LUMO/HOCO format
 </pre></div>
 </div>
 <figure class="align-default" id="xray-adc-decomp">
-<a class="reference internal image-reference" href="../../_images/adc_decomp.svg"><img alt="../../_images/adc_decomp.svg" height="276" src="../../_images/adc_decomp.svg" width="483" /></a>
+<a class="reference internal image-reference" href="../../_images/adc_decomp.svg"><img alt="../../_images/adc_decomp.svg" src="../../_images/adc_decomp.svg" style="width: 483.84px; height: 276.48px;" />
+</a>
 </figure>
 <p>We here clearly see the chemical shift due to fluorine-substitution.</p>
 <p>This manner of decomposing the atomic contributions should be taken with some care, as it involves explicit calculation for each atomic site in turn, which:</p>
@@ -1018,7 +1022,8 @@ First transition from &#39;homolumo&#39; format, which use HOMO/LUMO/HOCO format
 </pre></div>
 </div>
 <figure class="align-default" id="xray-dft-decomp">
-<a class="reference internal image-reference" href="../../_images/dft_decomp.svg"><img alt="../../_images/dft_decomp.svg" height="276" src="../../_images/dft_decomp.svg" width="483" /></a>
+<a class="reference internal image-reference" href="../../_images/dft_decomp.svg"><img alt="../../_images/dft_decomp.svg" src="../../_images/dft_decomp.svg" style="width: 483.84px; height: 276.48px;" />
+</a>
 </figure>
 <p>Where we again clearly see the chemical shift and different contributions.</p>
 </section>
@@ -1062,7 +1067,8 @@ First transition from &#39;homolumo&#39; format, which use HOMO/LUMO/HOCO format
 </pre></div>
 </div>
 <figure class="align-default" id="xray-adc-pol">
-<a class="reference internal image-reference" href="../../_images/adc_pol.svg"><img alt="../../_images/adc_pol.svg" height="276" src="../../_images/adc_pol.svg" width="483" /></a>
+<a class="reference internal image-reference" href="../../_images/adc_pol.svg"><img alt="../../_images/adc_pol.svg" src="../../_images/adc_pol.svg" style="width: 483.84px; height: 276.48px;" />
+</a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="c1"># Extract frequencies</span>
@@ -1086,7 +1092,8 @@ First transition from &#39;homolumo&#39; format, which use HOMO/LUMO/HOCO format
 </pre></div>
 </div>
 <figure class="align-default" id="xray-dft-pol">
-<a class="reference internal image-reference" href="../../_images/dft_pol.svg"><img alt="../../_images/dft_pol.svg" height="276" src="../../_images/dft_pol.svg" width="483" /></a>
+<a class="reference internal image-reference" href="../../_images/dft_pol.svg"><img alt="../../_images/dft_pol.svg" src="../../_images/dft_pol.svg" style="width: 483.84px; height: 276.48px;" />
+</a>
 </figure>
 <p>We see that the first two transitions are out-of-plane, correspond to the two strong <span class="math notranslate nohighlight">\(1s \rightarrow \pi^{\ast}\)</span> excitations. As such, if the molecule is rotated in space, these two lines would provide very good probes on the angle with respect to the out-of-plane direction.</p>
 </section>

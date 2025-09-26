@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -265,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_constrained.html">Constrained coordinates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/conformer.html">Conformer search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst_gen.html">Transition state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/ts_guesser.html">Guessing transition states with force fireld interpolation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -763,34 +764,32 @@ document.write(`
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.52369 a.u.                                                                  
-               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.47) (   1 O   2p0 :    -0.23)                              
-               (   2 O   3s  :     0.28) (   2 O   1p0 :     0.47) (   2 O   2p0 :     0.23)                              
+               (   1 O   3s  :    -0.28) (   1 O   1p0 :     0.47) (   1 O   2p0 :     0.23)                              
+               (   2 O   3s  :    -0.28) (   2 O   1p0 :    -0.47) (   2 O   2p0 :    -0.23)                              
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50972 a.u.                                                                  
-               (   1 O   1p-1:    -0.45) (   1 O   2p-1:    -0.27) (   2 O   1p-1:    -0.45)                              
-               (   2 O   2p-1:    -0.27)                                                                                  
+               (   1 O   1p-1:     0.44) (   1 O   2p-1:     0.27) (   2 O   1p-1:     0.44)                              
+               (   2 O   2p-1:     0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50972 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.27) (   2 O   1p+1:    -0.45)                              
-               (   2 O   2p+1:    -0.27)                                                                                  
+               (   1 O   1p+1:     0.44) (   1 O   2p+1:     0.27) (   2 O   1p+1:     0.44)                              
+               (   2 O   2p+1:     0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.20092 a.u.                                                                  
-               (   1 O   1p+1:     0.29) (   1 O   1p-1:    -0.45) (   1 O   2p+1:     0.21)                              
-               (   1 O   2p-1:    -0.33) (   2 O   1p+1:    -0.29) (   2 O   1p-1:     0.45)                              
-               (   2 O   2p+1:    -0.21) (   2 O   2p-1:     0.33)                                                        
+               (   1 O   1p-1:    -0.53) (   1 O   2p-1:    -0.39) (   2 O   1p-1:     0.53)                              
+               (   2 O   2p-1:     0.39)                                                                                  
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.20092 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   1p-1:    -0.29) (   1 O   2p+1:    -0.33)                              
-               (   1 O   2p-1:    -0.21) (   2 O   1p+1:     0.45) (   2 O   1p-1:     0.29)                              
-               (   2 O   2p+1:     0.33) (   2 O   2p-1:     0.21)                                                        
+               (   1 O   1p+1:    -0.53) (   1 O   2p+1:    -0.39) (   2 O   1p+1:     0.53)                              
+               (   2 O   2p+1:     0.39)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -808,14 +807,16 @@ document.write(`
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.83473 a.u.                                                                  
-               (   1 O   1p-1:    -0.67) (   1 O   2p-1:     0.63) (   2 O   1p-1:    -0.67)                              
-               (   2 O   2p-1:     0.63)                                                                                  
+               (   1 O   1p+1:     0.20) (   1 O   1p-1:    -0.64) (   1 O   2p+1:    -0.19)                              
+               (   1 O   2p-1:     0.60) (   2 O   1p+1:     0.20) (   2 O   1p-1:    -0.64)                              
+               (   2 O   2p+1:    -0.19) (   2 O   2p-1:     0.60)                                                        
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.83473 a.u.                                                                  
-               (   1 O   1p+1:    -0.67) (   1 O   2p+1:     0.63) (   2 O   1p+1:    -0.67)                              
-               (   2 O   2p+1:     0.63)                                                                                  
+               (   1 O   1p+1:     0.64) (   1 O   1p-1:     0.20) (   1 O   2p+1:    -0.60)                              
+               (   1 O   2p-1:    -0.19) (   2 O   1p+1:     0.64) (   2 O   1p-1:     0.20)                              
+               (   2 O   2p+1:    -0.60) (   2 O   2p-1:    -0.19)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -836,14 +837,16 @@ document.write(`
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.56129 a.u.                                                                  
-               (   1 O   1p+1:    -0.47) (   1 O   2p+1:    -0.26) (   2 O   1p+1:    -0.47)                              
-               (   2 O   2p+1:    -0.26)                                                                                  
+               (   1 O   1p+1:     0.36) (   1 O   1p-1:    -0.30) (   1 O   2p+1:     0.20)                              
+               (   1 O   2p-1:    -0.17) (   2 O   1p+1:     0.36) (   2 O   1p-1:    -0.30)                              
+               (   2 O   2p+1:     0.20) (   2 O   2p-1:    -0.17)                                                        
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.56129 a.u.                                                                  
-               (   1 O   1p-1:     0.47) (   1 O   2p-1:     0.26) (   2 O   1p-1:     0.47)                              
-               (   2 O   2p-1:     0.26)                                                                                  
+               (   1 O   1p+1:     0.30) (   1 O   1p-1:     0.36) (   1 O   2p+1:     0.17)                              
+               (   1 O   2p-1:     0.20) (   2 O   1p+1:     0.30) (   2 O   1p-1:     0.36)                              
+               (   2 O   2p+1:     0.17) (   2 O   2p-1:     0.20)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
@@ -854,16 +857,14 @@ document.write(`
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.29937 a.u.                                                                  
-               (   1 O   1p+1:    -0.49) (   1 O   1p-1:    -0.21) (   1 O   2p+1:    -0.36)                              
-               (   1 O   2p-1:    -0.15) (   2 O   1p+1:     0.49) (   2 O   1p-1:     0.21)                              
-               (   2 O   2p+1:     0.36) (   2 O   2p-1:     0.15)                                                        
+               (   1 O   1p-1:     0.54) (   1 O   2p-1:     0.39) (   2 O   1p-1:    -0.54)                              
+               (   2 O   2p-1:    -0.39)                                                                                  
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.29937 a.u.                                                                  
-               (   1 O   1p+1:    -0.21) (   1 O   1p-1:     0.49) (   1 O   2p+1:    -0.15)                              
-               (   1 O   2p-1:     0.36) (   2 O   1p+1:     0.21) (   2 O   1p-1:    -0.49)                              
-               (   2 O   2p+1:     0.15) (   2 O   2p-1:    -0.36)                                                        
+               (   1 O   1p+1:     0.54) (   1 O   2p+1:     0.39) (   2 O   1p+1:    -0.54)                              
+               (   2 O   2p+1:    -0.39)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -881,14 +882,14 @@ document.write(`
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.80682 a.u.                                                                  
-               (   1 O   1p-1:    -0.66) (   1 O   2p-1:     0.63) (   2 O   1p-1:    -0.66)                              
-               (   2 O   2p-1:     0.63)                                                                                  
+               (   1 O   1p+1:     0.65) (   1 O   2p+1:    -0.62) (   2 O   1p+1:     0.65)                              
+               (   2 O   2p+1:    -0.62)                                                                                  
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.80682 a.u.                                                                  
-               (   1 O   1p+1:     0.66) (   1 O   2p+1:    -0.63) (   2 O   1p+1:     0.66)                              
-               (   2 O   2p+1:    -0.63)                                                                                  
+               (   1 O   1p-1:    -0.65) (   1 O   2p-1:     0.62) (   2 O   1p-1:    -0.65)                              
+               (   2 O   2p-1:     0.62)                                                                                  
                                                                                                                           
                Molecular Orbital No.  14:                                                                                 
                --------------------------                                                                                 
@@ -902,46 +903,48 @@ document.write(`
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -1.25526 a.u.                                                                  
-               (   1 O   2s  :     0.32) (   1 O   3s  :     0.26) (   1 O   1p0 :     0.19)                              
-               (   2 O   2s  :     0.32) (   2 O   3s  :     0.26) (   2 O   1p0 :    -0.19)                              
+               (   1 O   2s  :    -0.32) (   1 O   3s  :    -0.26) (   1 O   1p0 :    -0.19)                              
+               (   2 O   2s  :    -0.32) (   2 O   3s  :    -0.26) (   2 O   1p0 :     0.19)                              
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.74211 a.u.                                                                  
-               (   1 O   2s  :     0.35) (   1 O   3s  :     0.45) (   2 O   2s  :    -0.35)                              
-               (   2 O   3s  :    -0.45)                                                                                  
+               (   1 O   2s  :    -0.35) (   1 O   3s  :    -0.45) (   2 O   2s  :     0.35)                              
+               (   2 O   3s  :     0.45)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.50336 a.u.                                                                  
-               (   1 O   3s  :    -0.29) (   1 O   1p0 :     0.46) (   1 O   2p0 :     0.23)                              
-               (   2 O   3s  :    -0.29) (   2 O   1p0 :    -0.46) (   2 O   2p0 :    -0.23)                              
+               (   1 O   3s  :     0.29) (   1 O   1p0 :    -0.46) (   1 O   2p0 :    -0.23)                              
+               (   2 O   3s  :     0.29) (   2 O   1p0 :     0.46) (   2 O   2p0 :     0.23)                              
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.45864 a.u.                                                                  
-               (   1 O   1p-1:     0.43) (   1 O   2p-1:     0.28) (   2 O   1p-1:     0.43)                              
-               (   2 O   2p-1:     0.28)                                                                                  
+               (   1 O   1p+1:     0.37) (   1 O   1p-1:     0.24) (   1 O   2p+1:     0.24)                              
+               (   1 O   2p-1:     0.15) (   2 O   1p+1:     0.37) (   2 O   1p-1:     0.24)                              
+               (   2 O   2p+1:     0.24) (   2 O   2p-1:     0.15)                                                        
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.000 Energy:   -0.45864 a.u.                                                                  
-               (   1 O   1p+1:    -0.43) (   1 O   2p+1:    -0.28) (   2 O   1p+1:    -0.43)                              
-               (   2 O   2p+1:    -0.28)                                                                                  
+               (   1 O   1p+1:     0.24) (   1 O   1p-1:    -0.37) (   1 O   2p+1:     0.15)                              
+               (   1 O   2p-1:    -0.24) (   2 O   1p+1:     0.24) (   2 O   1p-1:    -0.37)                              
+               (   2 O   2p+1:     0.15) (   2 O   2p-1:    -0.24)                                                        
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:   -0.10410 a.u.                                                                  
-               (   1 O   1p+1:    -0.22) (   1 O   1p-1:     0.45) (   1 O   2p+1:    -0.20)                              
-               (   1 O   2p-1:     0.40) (   2 O   1p+1:     0.22) (   2 O   1p-1:    -0.45)                              
-               (   2 O   2p+1:     0.20) (   2 O   2p-1:    -0.40)                                                        
+               (   1 O   1p+1:    -0.47) (   1 O   1p-1:     0.18) (   1 O   2p+1:    -0.42)                              
+               (   1 O   2p-1:     0.16) (   2 O   1p+1:     0.47) (   2 O   1p-1:    -0.18)                              
+               (   2 O   2p+1:     0.42) (   2 O   2p-1:    -0.16)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:   -0.10410 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   1p-1:    -0.22) (   1 O   2p+1:    -0.40)                              
-               (   1 O   2p-1:    -0.20) (   2 O   1p+1:     0.45) (   2 O   1p-1:     0.22)                              
-               (   2 O   2p+1:     0.40) (   2 O   2p-1:     0.20)                                                        
+               (   1 O   1p+1:     0.18) (   1 O   1p-1:     0.47) (   1 O   2p+1:     0.16)                              
+               (   1 O   2p-1:     0.42) (   2 O   1p+1:    -0.18) (   2 O   1p-1:    -0.47)                              
+               (   2 O   2p+1:    -0.16) (   2 O   2p-1:    -0.42)                                                        
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
@@ -953,14 +956,15 @@ document.write(`
                Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.80590 a.u.                                                                  
-               (   1 O   3s  :     1.12) (   1 O   1p0 :    -0.66) (   1 O   2p0 :     1.45)                              
-               (   2 O   3s  :    -1.12) (   2 O   1p0 :    -0.66) (   2 O   2p0 :     1.45)                              
+               (   1 O   3s  :    -1.12) (   1 O   1p0 :     0.66) (   1 O   2p0 :    -1.45)                              
+               (   2 O   3s  :     1.12) (   2 O   1p0 :     0.66) (   2 O   2p0 :    -1.45)                              
                                                                                                                           
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.86451 a.u.                                                                  
-               (   1 O   1p-1:     0.68) (   1 O   2p-1:    -0.62) (   2 O   1p-1:     0.68)                              
-               (   2 O   2p-1:    -0.62)                                                                                  
+               (   1 O   1p+1:    -0.18) (   1 O   1p-1:    -0.66) (   1 O   2p+1:     0.17)                              
+               (   1 O   2p-1:     0.60) (   2 O   1p+1:    -0.18) (   2 O   1p-1:    -0.66)                              
+               (   2 O   2p+1:     0.17) (   2 O   2p-1:     0.60)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -1071,39 +1075,39 @@ CASSCF(2,2) energy:  -149.60946112
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.52746 a.u.                                                                  
-               (   1 O   3s  :    -0.28) (   1 O   1p0 :     0.47) (   1 O   2p0 :     0.23)                              
-               (   2 O   3s  :    -0.28) (   2 O   1p0 :    -0.47) (   2 O   2p0 :    -0.23)                              
+               (   1 O   3s  :     0.28) (   1 O   1p0 :    -0.47) (   1 O   2p0 :    -0.23)                              
+               (   2 O   3s  :     0.28) (   2 O   1p0 :     0.47) (   2 O   2p0 :     0.23)                              
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.51773 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.28) (   2 O   1p+1:    -0.45)                              
-               (   2 O   2p+1:    -0.28)                                                                                  
+               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.27) (   2 O   1p+1:    -0.45)                              
+               (   2 O   2p+1:    -0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.50968 a.u.                                                                  
-               (   1 O   1p-1:     0.46) (   1 O   2p-1:     0.27) (   2 O   1p-1:     0.46)                              
-               (   2 O   2p-1:     0.27)                                                                                  
+               (   1 O   1p-1:    -0.46) (   1 O   2p-1:    -0.27) (   2 O   1p-1:    -0.46)                              
+               (   2 O   2p-1:    -0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.24089 a.u.                                                                  
-               (   1 O   1p-1:     0.53) (   1 O   2p-1:     0.41) (   2 O   1p-1:    -0.53)                              
-               (   2 O   2p-1:    -0.41)                                                                                  
+               (   1 O   1p-1:    -0.53) (   1 O   2p-1:    -0.41) (   2 O   1p-1:     0.53)                              
+               (   2 O   2p-1:     0.41)                                                                                  
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:   -0.17013 a.u.                                                                  
-               (   1 O   1p+1:    -0.52) (   1 O   2p+1:    -0.42) (   2 O   1p+1:     0.52)                              
-               (   2 O   2p+1:     0.42)                                                                                  
+               (   1 O   1p+1:     0.52) (   1 O   2p+1:     0.42) (   2 O   1p+1:    -0.52)                              
+               (   2 O   2p+1:    -0.42)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.23373 a.u.                                                                  
-               (   1 O   2s  :    -0.21) (   1 O   3s  :    -1.05) (   1 O   1p0 :    -0.50)                              
-               (   1 O   2p0 :    -0.99) (   2 O   2s  :     0.21) (   2 O   3s  :     1.05)                              
-               (   2 O   1p0 :    -0.50) (   2 O   2p0 :    -0.99)                                                        
+               (   1 O   2s  :     0.21) (   1 O   3s  :     1.05) (   1 O   1p0 :     0.50)                              
+               (   1 O   2p0 :     0.99) (   2 O   2s  :    -0.21) (   2 O   3s  :    -1.05)                              
+               (   2 O   1p0 :     0.50) (   2 O   2p0 :     0.99)                                                        
                                                                                                                           
                Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
@@ -1114,8 +1118,8 @@ CASSCF(2,2) energy:  -149.60946112
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.82293 a.u.                                                                  
-               (   1 O   1p+1:     0.67) (   1 O   2p+1:    -0.63) (   2 O   1p+1:     0.67)                              
-               (   2 O   2p+1:    -0.63)                                                                                  
+               (   1 O   1p+1:    -0.67) (   1 O   2p+1:     0.62) (   2 O   1p+1:    -0.67)                              
+               (   2 O   2p+1:     0.62)                                                                                  
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
@@ -1141,8 +1145,8 @@ CASSCF(2,2) energy:  -149.60946112
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Closed-shell singlet relative to triplet ground state (in kcal/mol)
-    restricted triplet state:    36.92128399
-  unrestricted triplet state:    39.29472211
+    restricted triplet state:    36.92128408
+  unrestricted triplet state:    39.29472220
 </pre></div>
 </div>
 </div>
@@ -1177,8 +1181,8 @@ CASSCF(2,2) energy:  -149.60946112
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Excitation energy (in kcal/mol):     -11.732361
 
 Open-shell singlet energy relative to triplet ground state (in kcal/mol)
-    restricted triplet state:    25.18892341
-  unrestricted triplet state:    27.56236154
+    restricted triplet state:    25.18892320
+  unrestricted triplet state:    27.56236133
 </pre></div>
 </div>
 </div>
@@ -1203,7 +1207,7 @@ Open-shell singlet energy relative to triplet ground state (in kcal/mol)
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RDFT singlet:  -150.27130784
-UDFT singlet:  -150.27130784
+UDFT singlet:  -150.31750082
 </pre></div>
 </div>
 </div>
@@ -1244,8 +1248,8 @@ UDFT singlet:  -150.27130784
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 4.000 Energy:   -1.01237 a.u.                                                                  
-               (   1 O   2s  :     0.32) (   1 O   3s  :     0.38) (   2 O   2s  :     0.32)                              
-               (   2 O   3s  :     0.38)                                                                                  
+               (   1 O   2s  :    -0.32) (   1 O   3s  :    -0.38) (   2 O   2s  :    -0.32)                              
+               (   2 O   3s  :    -0.38)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -1256,50 +1260,52 @@ UDFT singlet:  -150.27130784
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
                Occupation: 3.999 Energy:   -0.51076 a.u.                                                                  
-               (   1 O   1p+1:     0.21) (   1 O   1p-1:    -0.40) (   1 O   2p-1:    -0.24)                              
-               (   2 O   1p+1:     0.21) (   2 O   1p-1:    -0.40) (   2 O   2p-1:    -0.24)                              
+               (   1 O   1p-1:    -0.45) (   1 O   2p-1:    -0.27) (   2 O   1p-1:    -0.45)                              
+               (   2 O   2p-1:    -0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 3.999 Energy:   -0.51076 a.u.                                                                  
-               (   1 O   1p+1:     0.40) (   1 O   1p-1:     0.21) (   1 O   2p+1:     0.24)                              
-               (   2 O   1p+1:     0.40) (   2 O   1p-1:     0.21) (   2 O   2p+1:     0.24)                              
+               (   1 O   1p+1:     0.45) (   1 O   2p+1:     0.27) (   2 O   1p+1:     0.45)                              
+               (   2 O   2p+1:     0.27)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.20217 a.u.                                                                  
-               (   1 O   1p+1:     0.52) (   1 O   2p+1:     0.38) (   2 O   1p+1:    -0.52)                              
-               (   2 O   2p+1:    -0.38)                                                                                  
+               (   1 O   1p-1:     0.54) (   1 O   2p-1:     0.40) (   2 O   1p-1:    -0.54)                              
+               (   2 O   2p-1:    -0.40)                                                                                  
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -0.20217 a.u.                                                                  
-               (   1 O   1p-1:     0.52) (   1 O   2p-1:     0.38) (   2 O   1p-1:    -0.52)                              
-               (   2 O   2p-1:    -0.38)                                                                                  
+               (   1 O   1p+1:    -0.54) (   1 O   2p+1:    -0.40) (   2 O   1p+1:     0.54)                              
+               (   2 O   2p+1:     0.40)                                                                                  
                                                                                                                           
                Molecular Orbital No.  10:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.001 Energy:    0.91738 a.u.                                                                  
-               (   1 O   1p+1:     0.66) (   1 O   2p+1:    -0.59) (   2 O   1p+1:     0.66)                              
-               (   2 O   2p+1:    -0.59)                                                                                  
+               (   1 O   1p+1:    -0.65) (   1 O   1p-1:    -0.19) (   1 O   2p+1:     0.57)                              
+               (   1 O   2p-1:     0.17) (   2 O   1p+1:    -0.65) (   2 O   1p-1:    -0.19)                              
+               (   2 O   2p+1:     0.57) (   2 O   2p-1:     0.17)                                                        
                                                                                                                           
                Molecular Orbital No.  11:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.001 Energy:    0.91738 a.u.                                                                  
-               (   1 O   1p-1:    -0.66) (   1 O   2p-1:     0.59) (   2 O   1p-1:    -0.66)                              
-               (   2 O   2p-1:     0.59)                                                                                  
+               (   1 O   1p+1:    -0.19) (   1 O   1p-1:     0.65) (   1 O   2p+1:     0.17)                              
+               (   1 O   2p-1:    -0.57) (   2 O   1p+1:    -0.19) (   2 O   1p-1:     0.65)                              
+               (   2 O   2p+1:     0.17) (   2 O   2p-1:    -0.57)                                                        
                                                                                                                           
                Molecular Orbital No.  12:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.001 Energy:    2.65807 a.u.                                                                  
-               (   1 O   1d+2:     0.30) (   1 O   1d-2:     0.66) (   2 O   1d+2:    -0.30)                              
-               (   2 O   1d-2:    -0.66)                                                                                  
+               (   1 O   1d+2:    -0.67) (   1 O   1d-2:     0.28) (   2 O   1d+2:     0.67)                              
+               (   2 O   1d-2:    -0.28)                                                                                  
                                                                                                                           
                Molecular Orbital No.  13:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    2.34841 a.u.                                                                  
-               (   1 O   1d+2:    -0.29) (   1 O   1d-2:    -0.63) (   2 O   1d+2:    -0.29)                              
-               (   2 O   1d-2:    -0.63)                                                                                  
+               (   1 O   1d+2:    -0.64) (   1 O   1d-2:     0.27) (   2 O   1d+2:    -0.64)                              
+               (   2 O   1d-2:     0.27)                                                                                  
                                                                                                                           
 </pre></div>
 </div>
@@ -1357,7 +1363,7 @@ UDFT singlet:  -150.27130784
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated singlet-triplet gap:  20.61633437
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated singlet-triplet gap:  20.61633356
 </pre></div>
 </div>
 </div>
@@ -1469,10 +1475,10 @@ Second singlet relative energy:    39.02179644
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Wavefunction for state 1
 Determinant     coef.    weight 
-222ab0          0.687    0.472 
-222ba0         -0.687    0.472 
-2ab220         -0.110    0.012 
-2ba220          0.110    0.012 
+222ab0         -0.687    0.472 
+222ba0          0.687    0.472 
+2ab220          0.110    0.012 
+2ba220         -0.110    0.012 
 
 Wavefunction for state 2
 Determinant     coef.    weight 
@@ -1483,17 +1489,17 @@ Determinant     coef.    weight
 
 Wavefunction for state 3
 Determinant     coef.    weight 
-222ab0          0.681    0.464 
-222ba0          0.681    0.464 
-2ab220          0.150    0.022 
-2ba220          0.150    0.022 
+222ab0         -0.681    0.464 
+222ba0         -0.681    0.464 
+2ab220         -0.150    0.022 
+2ba220         -0.150    0.022 
 
 Wavefunction for state 4
 Determinant     coef.    weight 
-222200         -0.673    0.454 
-222020         -0.673    0.454 
-220220          0.181    0.033 
-202220          0.181    0.033 
+222200          0.673    0.454 
+222020          0.673    0.454 
+220220         -0.181    0.033 
+202220         -0.181    0.033 
 </pre></div>
 </div>
 </div>

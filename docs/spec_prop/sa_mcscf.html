@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -265,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/opt_constrained.html">Constrained coordinates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/conformer.html">Conformer search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mol_struct/tst_gen.html">Transition state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mol_struct/ts_guesser.html">Guessing transition states with force fireld interpolation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mol_struct/impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -704,8 +705,8 @@ document.write(`
 </div>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output text_html"><div id="3dmolviewer_17580168283609824"  style="position: relative; width: 400px; height: 300px;">
-        <p id="3dmolwarning_17580168283609824" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+<div class="output text_html"><div id="3dmolviewer_1752014123319718"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1752014123319718" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
         </div>
 <script>
 
@@ -733,22 +734,22 @@ var loadScriptAsync = function(uri){
 
 if(typeof $3Dmolpromise === 'undefined') {
 $3Dmolpromise = null;
-  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+  $3Dmolpromise = loadScriptAsync('https://cdn.jsdelivr.net/npm/3dmol@2.5.1/build/3Dmol-min.js');
 }
 
-var viewer_17580168283609824 = null;
-var warn = document.getElementById("3dmolwarning_17580168283609824");
+var viewer_1752014123319718 = null;
+var warn = document.getElementById("3dmolwarning_1752014123319718");
 if(warn) {
     warn.parentNode.removeChild(warn);
 }
 $3Dmolpromise.then(function() {
-viewer_17580168283609824 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17580168283609824"),{backgroundColor:"white"});
-viewer_17580168283609824.zoomTo();
-	viewer_17580168283609824.addModel("3\n\nO              0.000000000000         0.000000000000         0.117833600300\nH             -0.759575414600        -0.000000000000        -0.471334401200\nH              0.759575414600         0.000000000000        -0.471334401200\n");
-	viewer_17580168283609824.setViewStyle({"style": "outline", "width": 0.05});
-	viewer_17580168283609824.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
-	viewer_17580168283609824.zoomTo();
-viewer_17580168283609824.render();
+viewer_1752014123319718 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1752014123319718"),{backgroundColor:"white"});
+viewer_1752014123319718.zoomTo();
+	viewer_1752014123319718.addModel("3\n\nO              0.000000000000         0.000000000000         0.117833600300\nH             -0.759575414600        -0.000000000000        -0.471334401200\nH              0.759575414600         0.000000000000        -0.471334401200\n");
+	viewer_1752014123319718.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1752014123319718.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1752014123319718.zoomTo();
+viewer_1752014123319718.render();
 });
 </script></div></div>
 </div>
@@ -827,8 +828,9 @@ CASCI Energies
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -875,7 +877,7 @@ CASCI Energies
                                                                                                                           
 * State 1
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -76.03784334099895
+  - Energy : -76.0378433409989
   - Natural orbitals
 1.99931 1.97806 1.97495 0.02400 0.02368
                                                                                                                           
@@ -890,19 +892,19 @@ CASCI Energies
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.07302 a.u.                                                                  
-               (   1 O   1s  :    -0.22) (   1 O   2s  :     0.48) (   1 O   3s  :     0.57)                              
-               (   1 O   1p0 :     0.24) (   1 O   2p0 :     0.19)                                                        
+               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.48) (   1 O   3s  :    -0.57)                              
+               (   1 O   1p0 :    -0.24) (   1 O   2p0 :    -0.19)                                                        
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.999 Energy:   -0.50216 a.u.                                                                  
-               (   1 O   1p-1:     0.64) (   1 O   2p-1:     0.51)                                                        
+               (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.51)                                                        
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.978 Energy:   -0.83590 a.u.                                                                  
-               (   1 O   1p0 :     0.51) (   1 O   2p0 :     0.35) (   2 H   1s  :    -0.21)                              
-               (   3 H   1s  :    -0.21)                                                                                  
+               (   1 O   1p0 :    -0.51) (   1 O   2p0 :    -0.35) (   2 H   1s  :     0.21)                              
+               (   3 H   1s  :     0.21)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -933,8 +935,8 @@ CASCI Energies
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.78475 a.u.                                                                  
-               (   1 O   1p+1:    -0.28) (   1 O   2p+1:     0.73) (   2 H   1s  :    -0.62)                              
-               (   2 H   2s  :     1.60) (   3 H   1s  :     0.62) (   3 H   2s  :    -1.60)                              
+               (   1 O   1p+1:     0.28) (   1 O   2p+1:    -0.73) (   2 H   1s  :     0.62)                              
+               (   2 H   2s  :    -1.60) (   3 H   1s  :    -0.62) (   3 H   2s  :     1.60)                              
                                                                                                                           
 </pre></div>
 </div>
@@ -942,7 +944,7 @@ CASCI Energies
                                                 Dipole moment for state 1                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
                                    Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.981838 a.u.        -2.495584 Debye                                     
                                  Total :         0.981838 a.u.         2.495584 Debye                                     
@@ -957,8 +959,9 @@ Total MCSCF time: 00:00:00
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -1034,14 +1037,14 @@ Total MCSCF time: 00:00:00
                -------------
                                                                                                                           
 * State 1
-  - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.99867538837442
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -75.99867538837437
   - Natural orbitals
 1.98064 1.98062 0.01721 1.99899 0.02255
                                                                                                                           
 * State 2
-  - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.64246481146726
+  - S^2    : -0.00  (multiplicity = 1.0 )
+  - Energy : -75.64246481146712
   - Natural orbitals
 1.99396 1.97991 1.00091 1.00000 0.02521
                                                                                                                           
@@ -1056,8 +1059,8 @@ Total MCSCF time: 00:00:00
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.18833 a.u.                                                                  
-               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.50) (   1 O   3s  :    -0.54)                              
-               (   1 O   1p0 :    -0.27) (   1 O   2p0 :    -0.19)                                                        
+               (   1 O   1s  :    -0.21) (   1 O   2s  :     0.50) (   1 O   3s  :     0.54)                              
+               (   1 O   1p0 :     0.27) (   1 O   2p0 :     0.19)                                                        
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -1074,8 +1077,8 @@ Total MCSCF time: 00:00:00
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.001 Energy:    0.12396 a.u.                                                                  
-               (   1 O   1p+1:    -0.37) (   1 O   2p+1:    -0.71) (   2 H   1s  :    -0.16)                              
-               (   2 H   2s  :    -1.25) (   3 H   1s  :     0.16) (   3 H   2s  :     1.25)                              
+               (   1 O   1p+1:     0.37) (   1 O   2p+1:     0.71) (   2 H   1s  :     0.16)                              
+               (   2 H   2s  :     1.25) (   3 H   1s  :    -0.16) (   3 H   2s  :    -1.25)                              
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -1085,9 +1088,9 @@ Total MCSCF time: 00:00:00
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.025 Energy:    0.52545 a.u.                                                                  
-               (   1 O   2s  :    -0.42) (   1 O   3s  :    -0.41) (   1 O   1p0 :     0.67)                              
-               (   2 H   1s  :     0.47) (   2 H   2s  :     0.33) (   3 H   1s  :     0.47)                              
-               (   3 H   2s  :     0.33)                                                                                  
+               (   1 O   2s  :     0.42) (   1 O   3s  :     0.41) (   1 O   1p0 :    -0.67)                              
+               (   2 H   1s  :    -0.47) (   2 H   2s  :    -0.33) (   3 H   1s  :    -0.47)                              
+               (   3 H   2s  :    -0.33)                                                                                  
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
@@ -1099,8 +1102,8 @@ Total MCSCF time: 00:00:00
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.99710 a.u.                                                                  
-               (   1 O   2p+1:    -0.65) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.62)                              
-               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.62)                                                        
+               (   1 O   2p+1:     0.65) (   2 H   1s  :     0.97) (   2 H   2s  :    -0.62)                              
+               (   3 H   1s  :    -0.97) (   3 H   2s  :     0.62)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -1127,7 +1130,7 @@ Total MCSCF time: 00:00:00
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-Total MCSCF time: 00:00:00
+Total MCSCF time: 00:00:01
 </pre></div>
 </div>
 </div>
@@ -1159,8 +1162,9 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -1220,130 +1224,130 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -75.606581228    -2.8e-03      2.5e-03          0        0.27    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -75.603831960     2.7e-03      3.3e-02          0        0.38    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -75.603872438     2.7e-03      3.3e-02          0        0.38    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       10     -75.609327821    -5.5e-03      2.2e-03          0        0.19    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       10     -75.609337925    -5.5e-03      2.2e-03          0        0.19    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       11     -75.587383869     2.2e-02      4.2e-02          0        0.19    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       11     -75.586334602     2.3e-02      4.4e-02          0        0.19    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       12     -75.608689847    -2.1e-02      2.3e-02          0        0.10    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       12     -75.608208824    -2.2e-02      2.3e-02          0        0.10    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       13     -75.595596133     1.3e-02      2.7e-02          0        0.13    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       13     -75.595640388     1.3e-02      2.7e-02          0        0.13    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       14     -75.606472824    -1.1e-02      4.6e-03          0        0.07    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       14     -75.606460065    -1.1e-02      4.8e-03          0        0.07    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       15     -75.604665108     1.8e-03      2.2e-01          0        0.08    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       15     -75.610468047    -4.0e-03      1.4e-03          0        0.08    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       16     -75.609456908    -4.8e-03      1.6e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       16     -75.572806443     3.8e-02      4.9e-01          0        0.10    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       17     -75.610755954    -1.3e-03      1.3e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       17     -75.596176427    -2.3e-02      2.3e-01          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       18     -75.604384312     6.4e-03      3.5e-02          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       18     -75.593186060     3.0e-03      3.3e-01          0        0.07    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       19     -75.611320919    -6.9e-03      2.4e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       19     -75.608532025    -1.5e-02      1.3e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       20     -75.608002052     3.3e-03      3.2e-02          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       20     -75.610679742    -2.1e-03      9.4e-03          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       21     -75.609764762    -1.8e-03      4.4e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       21     -75.592808452     1.8e-02      1.0e-01          0        0.07    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       22     -75.601293887     8.5e-03      2.1e-01          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       22     -75.605169953    -1.2e-02      3.7e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       23     -75.610316990    -9.0e-03      1.5e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       23     -75.609771321    -4.6e-03      3.8e-03          0        0.06    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       24     -75.610682834    -3.7e-04      1.2e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       24     -75.610649741    -8.8e-04      1.8e-03          0        0.06    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       25     -75.607507641     3.2e-03      3.0e-02          0        0.05    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       25     -75.605341026     5.3e-03      8.0e-02          0        0.06    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       26     -75.611095108    -3.6e-03      1.1e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       26     -75.611292802    -6.0e-03      1.2e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       27     -75.611078073     1.7e-05      6.8e-03          0        0.05    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       27     -75.610598846     6.9e-04      9.1e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       28     -75.611254721    -1.8e-04      1.5e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       28     -75.611430414    -8.3e-04      8.2e-04          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       29     -75.611218300     3.6e-05      1.8e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       29     -75.604576504     6.9e-03      6.9e-02          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       30     -75.610639471     5.8e-04      3.5e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       30     -75.611151268    -6.6e-03      1.6e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       31     -75.610907192    -2.7e-04      2.7e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       31     -75.608798835     2.4e-03      6.2e-03          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       32     -75.606068744     4.8e-03      1.0e-01          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       32     -75.610070132    -1.3e-03      1.9e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       33     -75.610262660    -4.2e-03      1.4e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       33     -75.610931707    -8.6e-04      3.5e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       34     -75.610928335    -6.7e-04      1.3e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       34     -75.602994069     7.9e-03      8.7e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       35     -75.609981209     9.5e-04      6.3e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       35     -75.611206788    -8.2e-03      1.2e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       36     -75.610992320    -1.0e-03      1.2e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       36     -75.610538616     6.7e-04      2.8e-03          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       37     -75.608828645     2.2e-03      1.9e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       37     -75.611104135    -5.7e-04      1.1e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       38     -75.611167592    -2.3e-03      1.0e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       38     -75.607135046     4.0e-03      4.2e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       39     -75.606100514     5.1e-03      1.2e-01          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       39     -75.611289988    -4.2e-03      8.4e-04          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       40     -75.611292868    -5.2e-03      1.0e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       40     -75.611358595    -6.9e-05      8.0e-04          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       41     -75.611406986    -1.1e-04      9.4e-04          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       41     -75.604465711     6.9e-03      9.5e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       42     -75.603491151     7.9e-03      4.5e-02          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       42     -75.611461803    -7.0e-03      6.6e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       43     -75.608584900    -5.1e-03      2.8e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       43     -75.610546749     9.2e-04      1.2e-03          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       44     -75.590773550     1.8e-02      4.0e-01          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       44     -75.610281550     2.7e-04      3.8e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       45     -75.608023123    -1.7e-02      1.7e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       45     -75.611171592    -8.9e-04      2.0e-03          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       46     -75.609378504    -1.4e-03      5.3e-03          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       46     -75.601715612     9.5e-03      7.2e-02          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       47     -75.610742228    -1.4e-03      2.0e-03          0        0.05    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       47     -75.610573728    -8.9e-03      2.5e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       48     -75.600162993     1.1e-02      4.7e-02          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       48     -75.598748591     1.2e-02      2.2e-01          0        0.05    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       49     -75.608633971    -8.5e-03      3.0e-02          0        0.04    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       49     -75.605339430    -6.6e-03      7.8e-02          0        0.04    0:00:00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       50     -75.609612913    -9.8e-04      4.1e-03          0        0.06    0:00:00
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       50     -75.608736976    -3.4e-03      1.9e-02          0        0.05    0:00:00
 ** Convergence not reached after 50 iterations
 </pre></div>
 </div>
@@ -1353,81 +1357,82 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
                                                                                                                           
 * State 1
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.9631399746566
+  - Energy : -75.96501757187585
   - Natural orbitals
-1.98385 1.99321 1.99956 0.01643 0.00695
+1.99957 1.98440 0.00676 1.99314 0.01612
                                                                                                                           
 * State 2
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.70064273167479
+  - Energy : -75.70270319216573
   - Natural orbitals
-1.98666 1.99741 1.02734 0.01692 0.97167
+1.00048 1.98753 1.99732 0.99845 0.01622
                                                                                                                           
 * State 3
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.61493471650806
+  - Energy : -75.61741109477028
   - Natural orbitals
-1.99474 1.99010 1.00687 0.99048 0.01782
+1.01385 1.99526 1.98208 0.02478 0.98404
                                                                                                                           
 * State 4
   - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.60961291258096
+  - Energy : -75.60873697571489
   - Natural orbitals
-1.96505 1.20102 1.99767 0.03934 0.79692
+1.96048 1.99564 1.20245 0.79517 0.04625
                                                                                                                           
                                                  Spin Restricted Orbitals                                                 
                                                  ------------------------                                                 
                                                                                                                           
                Molecular Orbital No.   1:                                                                                 
                --------------------------                                                                                 
-               Occupation: 2.000 Energy:  -20.71804 a.u.                                                                  
+               Occupation: 2.000 Energy:  -20.71949 a.u.                                                                  
                (   1 O   1s  :    -1.00)                                                                                  
                                                                                                                           
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
-               Occupation: 2.000 Energy:   -1.45051 a.u.                                                                  
-               (   1 O   1s  :    -0.21) (   1 O   2s  :     0.49) (   1 O   3s  :     0.47)                              
-               (   1 O   1p0 :    -0.16)                                                                                  
+               Occupation: 2.000 Energy:   -1.45314 a.u.                                                                  
+               (   1 O   1s  :     0.21) (   1 O   2s  :    -0.49) (   1 O   3s  :    -0.47)                              
+               (   1 O   1p0 :     0.16)                                                                                  
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
-               Occupation: 1.998 Energy:   -0.66488 a.u.                                                                  
-               (   1 O   1p+1:    -0.18) (   1 O   1p-1:    -0.64) (   1 O   2p-1:    -0.45)                              
+               Occupation: 1.996 Energy:   -0.69310 a.u.                                                                  
+               (   1 O   1p+1:     0.29) (   1 O   1p-1:     0.59) (   1 O   2p+1:     0.15)                              
+               (   1 O   2p-1:     0.40)                                                                                  
                                                                                                                           
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
-               Occupation: 1.965 Energy:   -0.79756 a.u.                                                                  
-               (   1 O   1p+1:    -0.53) (   1 O   1p-1:     0.21) (   1 O   2p+1:    -0.28)                              
-               (   2 H   1s  :     0.21) (   3 H   1s  :    -0.22)                                                        
+               Occupation: 1.960 Energy:   -0.76984 a.u.                                                                  
+               (   1 O   1p+1:    -0.48) (   1 O   1p-1:     0.34) (   1 O   2p+1:    -0.25)                              
+               (   1 O   2p-1:     0.24) (   2 H   1s  :     0.20) (   3 H   1s  :    -0.20)                              
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
-               Occupation: 1.201 Energy:   -0.28048 a.u.                                                                  
-               (   1 O   3s  :     0.50) (   1 O   1p0 :    -0.60) (   1 O   2p0 :    -0.58)                              
-               (   2 H   2s  :    -0.58) (   3 H   2s  :    -0.57)                                                        
+               Occupation: 1.202 Energy:   -0.29127 a.u.                                                                  
+               (   1 O   3s  :     0.48) (   1 O   1p0 :    -0.60) (   1 O   2p0 :    -0.58)                              
+               (   2 H   2s  :    -0.55) (   3 H   2s  :    -0.56)                                                        
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
-               Occupation: 0.797 Energy:   -0.14322 a.u.                                                                  
-               (   1 O   2s  :    -0.28) (   1 O   3s  :    -0.99) (   1 O   1p0 :    -0.24)                              
-               (   2 H   1s  :     0.16) (   2 H   2s  :     0.76) (   3 H   1s  :     0.16)                              
-               (   3 H   2s  :     0.76)                                                                                  
+               Occupation: 0.795 Energy:   -0.13448 a.u.                                                                  
+               (   1 O   2s  :     0.28) (   1 O   3s  :     1.00) (   1 O   1p0 :     0.23)                              
+               (   2 H   1s  :    -0.16) (   2 H   2s  :    -0.76) (   3 H   1s  :    -0.15)                              
+               (   3 H   2s  :    -0.78)                                                                                  
                                                                                                                           
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
-               Occupation: 0.039 Energy:    0.25722 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.66) (   2 H   1s  :    -0.16)                              
-               (   2 H   2s  :    -1.20) (   3 H   1s  :     0.16) (   3 H   2s  :     1.20)                              
+               Occupation: 0.046 Energy:    0.25788 a.u.                                                                  
+               (   1 O   1p+1:     0.45) (   1 O   2p+1:     0.67) (   2 H   1s  :     0.18)                              
+               (   2 H   2s  :     1.20) (   3 H   1s  :    -0.18) (   3 H   2s  :    -1.18)                              
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
-               Occupation: 0.000 Energy:    0.99624 a.u.                                                                  
-               (   1 O   2p+1:    -0.73) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.56)                              
-               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.57)                                                        
+               Occupation: 0.000 Energy:    0.99214 a.u.                                                                  
+               (   1 O   2p+1:     0.70) (   2 H   1s  :     0.97) (   2 H   2s  :    -0.61)                              
+               (   3 H   1s  :    -0.96) (   3 H   2s  :     0.60)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
-               Occupation: 0.000 Energy:    1.04290 a.u.                                                                  
+               Occupation: 0.000 Energy:    1.04190 a.u.                                                                  
                (   1 O   1p-1:     0.94) (   1 O   2p-1:    -1.06)                                                        
                                                                                                                           
 </pre></div>
@@ -1436,10 +1441,10 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
                                                 Dipole moment for state 1                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.107769 a.u.        -0.273922 Debye                                     
-                                   Y   :        -0.043589 a.u.        -0.110792 Debye                                     
-                                   Z   :        -1.179598 a.u.        -2.998240 Debye                                     
-                                 Total :         1.185313 a.u.         3.012765 Debye                                     
+                                   X   :        -0.080523 a.u.        -0.204670 Debye                                     
+                                   Y   :        -0.002618 a.u.        -0.006655 Debye                                     
+                                   Z   :         2.039047 a.u.         5.182741 Debye                                     
+                                 Total :         2.040638 a.u.         5.186785 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
@@ -1447,23 +1452,21 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
                                                 Dipole moment for state 2                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.055439 a.u.        -0.140912 Debye                                     
-                                   Y   :        -0.024967 a.u.        -0.063461 Debye                                     
-                                   Z   :         0.181286 a.u.         0.460782 Debye                                     
-                                 Total :         0.191210 a.u.         0.486008 Debye                                     
+                                   X   :        -0.081469 a.u.        -0.207075 Debye                                     
+                                   Y   :        -0.007144 a.u.        -0.018158 Debye                                     
+                                   Z   :         1.451095 a.u.         3.688315 Debye                                     
+                                 Total :         1.453398 a.u.         3.694168 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                Dipole moment for state 3                                                 
+                                                Dipole moment for state 3                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.015526 a.u.         0.039463 Debye                                     
-                                   Y   :        -0.010553 a.u.        -0.026822 Debye                                     
-                                   Z   :         0.356883 a.u.         0.907107 Debye                                     
-                                 Total :         0.357377 a.u.         0.908361 Debye                                     
+                                   X   :        -0.013867 a.u.        -0.035246 Debye                                     
+                                   Y   :        -0.007749 a.u.        -0.019696 Debye                                     
+                                   Z   :         2.734143 a.u.         6.949499 Debye                                     
+                                 Total :         2.734190 a.u.         6.949617 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
@@ -1471,15 +1474,15 @@ Corresponding (2nd) FCI excitation energy    = 10.6845
                                                 Dipole moment for state 4                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.042934 a.u.        -0.109127 Debye                                     
-                                   Y   :        -0.014454 a.u.        -0.036738 Debye                                     
-                                   Z   :        -0.631153 a.u.        -1.604230 Debye                                     
-                                 Total :         0.632776 a.u.         1.608357 Debye                                     
+                                   X   :        -0.087225 a.u.        -0.221704 Debye                                     
+                                   Y   :        -0.003325 a.u.        -0.008451 Debye                                     
+                                   Z   :         0.166119 a.u.         0.422232 Debye                                     
+                                 Total :         0.187656 a.u.         0.476974 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-Total MCSCF time: 00:00:01
+Total MCSCF time: 00:00:06
 </pre></div>
 </div>
 </div>
@@ -1544,18 +1547,19 @@ SA-CASSCF Energies
 </pre></div>
 </div>
 </div>
-<details class="admonition hide below-input">
+<details class="hide below-input">
 <summary aria-label="Toggle hidden content">
-<p class="collapsed admonition-title">Show code cell output</p>
-<p class="expanded admonition-title">Hide code cell output</p>
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
 </summary>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -1613,9 +1617,7 @@ SA-CASSCF Energies
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        8     -75.864897243    -4.9e-09      1.8e-10          0        0.80    0:00:00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>** Convergence reached in 8 iterations
+** Convergence reached in 8 iterations
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        9     -75.864897243    -2.0e-10      1.2e-11          0        0.80    0:00:00
@@ -1624,14 +1626,14 @@ SA-CASSCF Energies
                -------------
                                                                                                                           
 * State 1
-  - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -76.01351106913253
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -76.01351106913249
   - Natural orbitals
 1.98571 1.97737 1.99925 0.01512 0.02254
                                                                                                                           
 * State 2
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.71628341744069
+  - Energy : -75.71628341744072
   - Natural orbitals
 1.99623 1.97627 1.00000 1.00146 0.02604
                                                                                                                           
@@ -1646,8 +1648,8 @@ SA-CASSCF Energies
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.19269 a.u.                                                                  
-               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.51) (   1 O   3s  :    -0.56)                              
-               (   1 O   1p0 :    -0.22) (   1 O   2p0 :    -0.16)                                                        
+               (   1 O   1s  :    -0.22) (   1 O   2s  :     0.51) (   1 O   3s  :     0.56)                              
+               (   1 O   1p0 :     0.22) (   1 O   2p0 :     0.16)                                                        
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -1658,8 +1660,8 @@ SA-CASSCF Energies
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.973 Energy:   -0.76522 a.u.                                                                  
-               (   1 O   1p+1:    -0.54) (   1 O   2p+1:    -0.27) (   2 H   1s  :     0.25)                              
-               (   3 H   1s  :    -0.25)                                                                                  
+               (   1 O   1p+1:     0.54) (   1 O   2p+1:     0.27) (   2 H   1s  :    -0.25)                              
+               (   3 H   1s  :     0.25)                                                                                  
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
@@ -1675,14 +1677,14 @@ SA-CASSCF Energies
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.028 Energy:    0.60891 a.u.                                                                  
-               (   1 O   1p+1:     0.82) (   2 H   1s  :     0.43) (   2 H   2s  :     0.44)                              
-               (   3 H   1s  :    -0.43) (   3 H   2s  :    -0.44)                                                        
+               (   1 O   1p+1:    -0.82) (   2 H   1s  :    -0.43) (   2 H   2s  :    -0.44)                              
+               (   3 H   1s  :     0.43) (   3 H   2s  :     0.44)                                                        
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.84500 a.u.                                                                  
-               (   1 O   1p+1:     0.29) (   1 O   2p+1:    -0.56) (   2 H   1s  :     0.70)                              
-               (   2 H   2s  :    -1.51) (   3 H   1s  :    -0.70) (   3 H   2s  :     1.51)                              
+               (   1 O   1p+1:    -0.29) (   1 O   2p+1:     0.56) (   2 H   1s  :    -0.70)                              
+               (   2 H   2s  :     1.51) (   3 H   1s  :     0.70) (   3 H   2s  :    -1.51)                              
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -1696,7 +1698,7 @@ SA-CASSCF Energies
                                                ---------------------------                                                
                                                                                                                           
                                    X   :         0.000000 a.u.         0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.914415 a.u.        -2.324211 Debye                                     
                                  Total :         0.914415 a.u.         2.324211 Debye                                     
                                                                                                                           
@@ -1706,7 +1708,7 @@ SA-CASSCF Energies
                                                 Dipole moment for state 2                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :         0.066692 a.u.         0.169513 Debye                                     
                                  Total :         0.066692 a.u.         0.169513 Debye                                     
@@ -1732,8 +1734,9 @@ List of rotatory strengths greather than 1e-10
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -1801,7 +1804,7 @@ List of rotatory strengths greather than 1e-10
                                                                                                                           
 * State 1
   - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -76.00986341043219
+  - Energy : -76.0098634104323
   - Natural orbitals
 1.98623 1.99931 1.97762 0.01412 0.02272
                                                                                                                           
@@ -1812,8 +1815,8 @@ List of rotatory strengths greather than 1e-10
 1.99620 1.00000 1.97731 1.00100 0.02548
                                                                                                                           
 * State 3
-  - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.44853672371441
+  - S^2    : -0.00  (multiplicity = 1.0 )
+  - Energy : -75.4485367237144
   - Natural orbitals
 1.99442 1.99771 1.00266 0.99771 0.00751
                                                                                                                           
@@ -1828,8 +1831,8 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.25118 a.u.                                                                  
-               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.52) (   1 O   3s  :    -0.56)                              
-               (   1 O   1p0 :    -0.18)                                                                                  
+               (   1 O   1s  :    -0.22) (   1 O   2s  :     0.52) (   1 O   3s  :     0.56)                              
+               (   1 O   1p0 :     0.18)                                                                                  
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -1840,13 +1843,13 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   4:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.666 Energy:   -0.50141 a.u.                                                                  
-               (   1 O   1p-1:     0.66) (   1 O   2p-1:     0.48)                                                        
+               (   1 O   1p-1:    -0.66) (   1 O   2p-1:    -0.48)                                                        
                                                                                                                           
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.648 Energy:   -0.70435 a.u.                                                                  
-               (   1 O   1p+1:     0.55) (   1 O   2p+1:     0.28) (   2 H   1s  :    -0.25)                              
-               (   3 H   1s  :     0.25)                                                                                  
+               (   1 O   1p+1:    -0.55) (   1 O   2p+1:    -0.28) (   2 H   1s  :     0.25)                              
+               (   3 H   1s  :    -0.25)                                                                                  
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -1857,19 +1860,19 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.023 Energy:    0.55591 a.u.                                                                  
-               (   1 O   1p+1:    -0.77) (   1 O   2p+1:    -0.18) (   2 H   1s  :    -0.44)                              
-               (   2 H   2s  :    -0.51) (   3 H   1s  :     0.44) (   3 H   2s  :     0.51)                              
+               (   1 O   1p+1:     0.77) (   1 O   2p+1:     0.18) (   2 H   1s  :     0.44)                              
+               (   2 H   2s  :     0.51) (   3 H   1s  :    -0.44) (   3 H   2s  :    -0.51)                              
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.84550 a.u.                                                                  
-               (   1 O   1p+1:     0.26) (   1 O   2p+1:    -0.40) (   2 H   1s  :     0.75)                              
-               (   2 H   2s  :    -1.44) (   3 H   1s  :    -0.75) (   3 H   2s  :     1.44)                              
+               (   1 O   1p+1:    -0.26) (   1 O   2p+1:     0.40) (   2 H   1s  :    -0.75)                              
+               (   2 H   2s  :     1.44) (   3 H   1s  :     0.75) (   3 H   2s  :    -1.44)                              
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.08882 a.u.                                                                  
-               (   1 O   1p-1:     0.95) (   1 O   2p-1:    -1.05)                                                        
+               (   1 O   1p-1:    -0.95) (   1 O   2p-1:     1.05)                                                        
                                                                                                                           
 </pre></div>
 </div>
@@ -1877,8 +1880,8 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 1                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.902880 a.u.        -2.294892 Debye                                     
                                  Total :         0.902880 a.u.         2.294892 Debye                                     
                                                                                                                           
@@ -1888,8 +1891,8 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 2                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
-                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
                                    Z   :         0.071924 a.u.         0.182813 Debye                                     
                                  Total :         0.071924 a.u.         0.182813 Debye                                     
                                                                                                                           
@@ -1899,7 +1902,7 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 3                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
                                    Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.220125 a.u.        -0.559501 Debye                                     
                                  Total :         0.220125 a.u.         0.559501 Debye                                     
@@ -1926,8 +1929,9 @@ List of rotatory strengths greather than 1e-10
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -1998,25 +2002,25 @@ List of rotatory strengths greather than 1e-10
                                                                                                                           
 * State 1
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.99698121055864
+  - Energy : -75.99698121055859
   - Natural orbitals
 1.98702 1.98210 1.99942 0.01415 0.01731
                                                                                                                           
 * State 2
   - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.70831745311067
+  - Energy : -75.70831745311062
   - Natural orbitals
 1.99704 1.98460 1.00000 1.00024 0.01813
                                                                                                                           
 * State 3
-  - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.6240533690539
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -75.62405336905377
   - Natural orbitals
 1.98743 1.99379 1.00000 0.02056 0.99822
                                                                                                                           
 * State 4
-  - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.44843518488976
+  - S^2    : -0.00  (multiplicity = 1.0 )
+  - Energy : -75.44843518488968
   - Natural orbitals
 1.99702 1.00111 1.99835 0.99825 0.00526
                                                                                                                           
@@ -2031,8 +2035,8 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.24525 a.u.                                                                  
-               (   1 O   1s  :    -0.22) (   1 O   2s  :     0.52) (   1 O   3s  :     0.55)                              
-               (   1 O   1p0 :     0.20)                                                                                  
+               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.52) (   1 O   3s  :    -0.55)                              
+               (   1 O   1p0 :    -0.20)                                                                                  
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -2049,7 +2053,7 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   5:                                                                                 
                --------------------------                                                                                 
                Occupation: 1.499 Energy:   -0.46605 a.u.                                                                  
-               (   1 O   1p-1:     0.67) (   1 O   2p-1:     0.48)                                                        
+               (   1 O   1p-1:    -0.67) (   1 O   2p-1:    -0.48)                                                        
                                                                                                                           
                Molecular Orbital No.   6:                                                                                 
                --------------------------                                                                                 
@@ -2060,14 +2064,14 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   7:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.267 Energy:    0.23802 a.u.                                                                  
-               (   1 O   1p+1:    -0.45) (   1 O   2p+1:    -0.67) (   2 H   1s  :    -0.18)                              
-               (   2 H   2s  :    -1.19) (   3 H   1s  :     0.18) (   3 H   2s  :     1.19)                              
+               (   1 O   1p+1:     0.45) (   1 O   2p+1:     0.67) (   2 H   1s  :     0.18)                              
+               (   2 H   2s  :     1.19) (   3 H   1s  :    -0.18) (   3 H   2s  :    -1.19)                              
                                                                                                                           
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    0.99722 a.u.                                                                  
-               (   1 O   2p+1:     0.62) (   2 H   1s  :     0.97) (   2 H   2s  :    -0.66)                              
-               (   3 H   1s  :    -0.97) (   3 H   2s  :     0.66)                                                        
+               (   1 O   2p+1:    -0.62) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.66)                              
+               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.66)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -2080,8 +2084,8 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 1                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.865079 a.u.        -2.198812 Debye                                     
                                  Total :         0.865079 a.u.         2.198812 Debye                                     
                                                                                                                           
@@ -2091,8 +2095,8 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 2                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
-                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
                                    Z   :         0.085985 a.u.         0.218553 Debye                                     
                                  Total :         0.085985 a.u.         0.218553 Debye                                     
                                                                                                                           
@@ -2102,7 +2106,7 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 3                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.042742 a.u.        -0.108641 Debye                                     
                                  Total :         0.042742 a.u.         0.108641 Debye                                     
@@ -2113,15 +2117,15 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 4                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000001 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.237138 a.u.        -0.602745 Debye                                     
                                  Total :         0.237138 a.u.         0.602745 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-Total MCSCF time: 00:00:00
+Total MCSCF time: 00:00:01
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -2140,8 +2144,9 @@ List of rotatory strengths greather than 1e-10
                           Multi-Configurational Self-Consistent Field Driver
                          ====================================================
                                                                                                                           
-
-               Active space definition:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               Active space definition:
                ------------------------
                Number of inactive (occupied) orbitals: 2
                Number of active orbitals:              5
@@ -2208,32 +2213,32 @@ List of rotatory strengths greather than 1e-10
                -------------
                                                                                                                           
 * State 1
-  - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.98214396904915
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -75.98214396904912
   - Natural orbitals
 1.98461 1.99145 1.99958 0.01560 0.00875
                                                                                                                           
 * State 2
-  - S^2    : 0.00  (multiplicity = 1.0 )
+  - S^2    : -0.00  (multiplicity = 1.0 )
   - Energy : -75.70439717085155
   - Natural orbitals
 1.98783 1.99722 1.00000 0.01582 0.99913
                                                                                                                           
 * State 3
-  - S^2    : 0.00  (multiplicity = 1.0 )
-  - Energy : -75.62069022907521
+  - S^2    : -0.00  (multiplicity = 1.0 )
+  - Energy : -75.62069022907518
   - Natural orbitals
 1.99499 1.99411 1.00000 0.99764 0.01326
                                                                                                                           
 * State 4
   - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.60257216026118
+  - Energy : -75.60257216026119
   - Natural orbitals
 1.96066 1.22366 1.99968 0.04213 0.77386
                                                                                                                           
 * State 5
-  - S^2    : -0.00  (multiplicity = 1.0 )
-  - Energy : -75.5204536960408
+  - S^2    : 0.00  (multiplicity = 1.0 )
+  - Energy : -75.52045369604085
   - Natural orbitals
 1.97487 1.01895 1.99956 0.97610 0.03052
                                                                                                                           
@@ -2248,7 +2253,7 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   2:                                                                                 
                --------------------------                                                                                 
                Occupation: 2.000 Energy:   -1.44678 a.u.                                                                  
-               (   1 O   1s  :    -0.22) (   1 O   2s  :     0.49) (   1 O   3s  :     0.48)                              
+               (   1 O   1s  :     0.22) (   1 O   2s  :    -0.49) (   1 O   3s  :    -0.48)                              
                                                                                                                           
                Molecular Orbital No.   3:                                                                                 
                --------------------------                                                                                 
@@ -2282,8 +2287,8 @@ List of rotatory strengths greather than 1e-10
                Molecular Orbital No.   8:                                                                                 
                --------------------------                                                                                 
                Occupation: 0.000 Energy:    1.00726 a.u.                                                                  
-               (   1 O   2p+1:     0.69) (   2 H   1s  :     0.97) (   2 H   2s  :    -0.59)                              
-               (   3 H   1s  :    -0.97) (   3 H   2s  :     0.59)                                                        
+               (   1 O   2p+1:    -0.69) (   2 H   1s  :    -0.97) (   2 H   2s  :     0.59)                              
+               (   3 H   1s  :     0.97) (   3 H   2s  :    -0.59)                                                        
                                                                                                                           
                Molecular Orbital No.   9:                                                                                 
                --------------------------                                                                                 
@@ -2296,8 +2301,8 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 1                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :        -0.847570 a.u.        -2.154309 Debye                                     
                                  Total :         0.847570 a.u.         2.154309 Debye                                     
                                                                                                                           
@@ -2307,7 +2312,7 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 2                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :         0.000000 a.u.         0.000000 Debye                                     
                                    Z   :         0.071706 a.u.         0.182257 Debye                                     
                                  Total :         0.071706 a.u.         0.182257 Debye                                     
@@ -2318,7 +2323,7 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 3                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Y   :         0.000000 a.u.         0.000000 Debye                                     
                                    Z   :        -0.023140 a.u.        -0.058815 Debye                                     
                                  Total :         0.023140 a.u.         0.058815 Debye                                     
@@ -2329,7 +2334,7 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 4                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   X   :         0.000000 a.u.         0.000000 Debye                                     
                                    Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :         0.110856 a.u.         0.281768 Debye                                     
                                  Total :         0.110856 a.u.         0.281768 Debye                                     
@@ -2340,15 +2345,15 @@ List of rotatory strengths greather than 1e-10
                                                 Dipole moment for state 5                                                 
                                                ---------------------------                                                
                                                                                                                           
-                                   X   :         0.000000 a.u.         0.000000 Debye                                     
-                                   Y   :         0.000000 a.u.         0.000000 Debye                                     
+                                   X   :        -0.000000 a.u.        -0.000000 Debye                                     
+                                   Y   :        -0.000000 a.u.        -0.000000 Debye                                     
                                    Z   :         0.135447 a.u.         0.344272 Debye                                     
                                  Total :         0.135447 a.u.         0.344272 Debye                                     
                                                                                                                           
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
-Total MCSCF time: 00:00:00
+Total MCSCF time: 00:00:01
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
@@ -2387,7 +2392,7 @@ List of rotatory strengths greather than 1e-10
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/38a560e8fa153296aabef82af143a955ebb398b0be3bf351eec8baabc74e6054.png" src="../../_images/38a560e8fa153296aabef82af143a955ebb398b0be3bf351eec8baabc74e6054.png" />
+<img alt="../../_images/886727ea3bc913339a56d1d0bf7b0df20d20224fa56e17e732d7c72ad64cc7ba.png" src="../../_images/886727ea3bc913339a56d1d0bf7b0df20d20224fa56e17e732d7c72ad64cc7ba.png" />
 </div>
 </div>
 <p>While for 2 states, the first excitation energy was relatively close to the fullCI, it degrades significantly as more states are added, with a difference of more than 0.5 eV going from 2 to 5 states. Adding dynamical correlation on-top of the CASSCF typically reduces this error, but it is still an undesirable behaviour.</p>

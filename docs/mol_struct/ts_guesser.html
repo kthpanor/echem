@@ -1,0 +1,1653 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Guessing transition states with force fireld interpolation &#8212; Computational Chemistry from  Laptop to HPC</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TX4YJ1J5XE"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-TX4YJ1J5XE');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/mol_struct/ts_guesser';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PES interpolation techniques" href="impes.html" />
+    <link rel="prev" title="Transition state" href="tst_gen.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../title.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Computational Chemistry from  Laptop to HPC - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Computational Chemistry from  Laptop to HPC - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../intro.html">Getting started</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics_notebook.html">Using Jupyter notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../units_notation.html">Units and notation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electronic ground states</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/elstruct_gen.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/orbitals.html">Orbitals and basis sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/slater.html">Many-electron wave functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/operators.html">Operators and matrix elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/reduced_density.html">Reduced particle densities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/natural_orbitals.html">Natural orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/integrals.html">Integrals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/spin.html">Electron spin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/correlation.html">Electron correlation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dispersion.html">Dispersion interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/pt.html">Rayleigh–Schrödinger perturbation theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/second_quant.html">Second quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/group_theory.html">Symmetry</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/wft.html">Wave function theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../elec_struct/hartree-fock.html">Hartree–Fock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_theory.html">Hartree–Fock theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/fock_diagonalize.html">Fock matrix diagonalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_scf.html">SCF optimization</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../elec_struct/hf_example.html">HF in VeloxChem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mp2.html">Møller–Plesset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/ci.html">Configuration interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/wft_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/dft.html">Density functional theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/hohenberg.html">Hohenberg–Kohn theorems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kohn-sham.html">Kohn–Sham method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/kernel_int.html">Kernel integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_scf.html">SCF optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/dft_prop.html">First-order properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/available_xcfun.html">Available XC functionals</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../elec_struct/multiref.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcscf.html">MCSCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elec_struct/mcpdft.html">MC-PDFT</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Molecular structure and dynamics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="molstruct_gen.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="coordinates.html">Choice of coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="symmetry.html">Molecular symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tst.html">Transition-state theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opt_struct.html">Optimization methods</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="gradients.html">Gradients</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="energy_grad.html">Energy gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property_grad.html">Property gradients</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="hessians_vib.html">Hessians and vibrations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="hessians.html">Molecular Hessians</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vibrations.html">Vibrational analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="opt.html">Structure optimization</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="opt_gs.html">Ground state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opt_constrained.html">Constrained coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conformer.html">Conformer search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tst_gen.html">Transition state</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Guessing transition states with force fireld interpolation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="impes_calc.html">Constructing the PES by interpolation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="md.html">Molecular dynamics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="forcefields.html">Force fields</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="reparameterize.html">Reparameterize force fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md_setup.html">Ensembles and time integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="md_run.html">Running a simulation</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Spectra and properties</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/spectra_aspects.html">General aspects</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/resp_external.html">Responses to external fields</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/mol_prop.html">Molecular properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/first_order.html">First-order properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/linear_resp.html">Linear Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/quad_resp.html">Quadratic response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/cubic_resp.html">Cubic response</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/elec_nuc.html">Electronic and nuclear contributions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/rovib.html">Rovibronic states</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/dipole_equiv.html">Dipole equivalence relations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/finite_field.html">Finite field method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/nto.html">Natural transition orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/selection_rules.html">Selection rules</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/excoupl.html">Exciton coupling model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/excoupl_impl.html">Implementation</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/expt_theory.html">Experiment to theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/uv_vis.html">UV/vis absorption</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/opa.html">One-photon absorption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tpa.html">Two-photon absorption</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/optact.html">Optical activity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/ecd.html">Electronic Circular Dichroism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/or.html">Optical Rotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tpcd.html">Two-photon circular dichroism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tpor.html">Two-photon optical rotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/more_optact.html">More birefringences &amp; dichroisms</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/wavefunction.html">Wave function methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/hf.html">Hartree–Fock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_rot.html">Orbital rotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/kappa_expansion.html">Time-dependence of observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/orb_param_field.html">Field-dependence of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/hf_param_energy.html">Energy determination of parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/hf_quasienergy.html">Quasi-energy determination of parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/ci.html">Configuration interaction</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/adc.html">Algebraic-diagrammatic construction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/adc_pp.html">Polarization propagator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/adc_isr.html">Intermediate state representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/adc_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/adc_hpc.html">HPC-QC implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/adc_exercises_new.html">Exercises</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/tddft.html">Time-dependent DFT</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/tddft_foundation.html">Foundations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_quasienergy.html">Quasi-energy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/tddft_linear_response.html">Linear response</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_lr_theory.html">Theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_lr_implementation.html">Implementation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../spec_prop/tddft_excited_states.html">Excited states</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_rsp_eq.html">TDDFT response equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_tda.html">Tamm–Dancoff approximation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_cvs.html">Core-valence separation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_triplet_inst.html">Triplet instability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../spec_prop/tddft_spin_flip.html">Spin-flip</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/tddft_charge_transfer.html">Charge transfer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../spec_prop/mr_response.html">Multireference methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/sa_mcscf.html">State-averaged MCSCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spec_prop/mr_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Environment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/localprop.html">Localized properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/esp.html">ESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/chelpg.html">CHELPG charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/resp.html">RESP charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/loprop.html">LoProp charges and polarisabilities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/embedding.html">Embedding potentials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/nonpol_emb.html">Non-polarizable embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/pol_emb.html">Polarizable embedding</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../env/pcm.html">Polarizable continuum models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../env/cpcm.html">Conductor-like polarizable continuum model</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/mol_struct.html">Molecular structure and dynamics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/struct_vis.html">Molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/md_vis.html">MD trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/opt_vib_vis.html">Optimization and normal modes</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/elec_struct.html">Electronic structure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/orb_vis.html">Orbitals and densities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../visualize/spec_prop.html">Spectra and properties</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/exc_vis.html">Excited states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/broadening.html">Spectrum broadening</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials and workflows</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/workflow.html">Constructing workflows</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_build.html">Building systems</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_struct.html">Optimizing molecular structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/wf_scf.html">Optimizing electronic structure</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../tutorials/wf_construct.html">Assembling a full workflow</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_methane.html">Methane combustion energy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_gwp.html">Global warming potential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/wf_spectra.html">From structure to spectrum</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/uv_vis.html">UV/vis spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_absorption.html">Absorption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_fluorescence.html">Fluorescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_analysis.html">Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/uv_vis_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/vib_ir.html">Vibrational spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_calc.html">IR spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_raman.html">Raman spectroscopy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/vib_ir_exercises.html">Exercises</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/openshells.html">Open shells</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/rest_unrest.html">Restricted versus unrestricted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/correlation.html">Static versus dynamic correlation correlation</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/xray.html">X-ray spectroscopies</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_calc.html">Spectrum calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_analysis.html">Spectrum analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_aspects.html">Special aspects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/dire_xps.html">Core-hole localization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_large.html">Larger systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_nonstandard.html">Non-standard calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_rec.html">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_exercises.html">Exercises</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/xray_cheatsheet.html">Cheat sheet</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/colab.html">Google Colab notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Bibliography</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">How to cite and contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../refs.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/kthpanor/echem/issues/new?title=Issue%20on%20page%20%2Fdocs/mol_struct/ts_guesser.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/docs/mol_struct/ts_guesser.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Guessing transition states with force fireld interpolation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-calculation-of-s-n-2-reaction">Step by step calculation of <span class="math notranslate nohighlight">\(S_N 2\)</span> reaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conformer-searching">Conformer searching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forced-bond-breaking">Forced bond breaking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-parameters-and-options">Available parameters and options</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="guessing-transition-states-with-force-fireld-interpolation">
+<h1>Guessing transition states with force fireld interpolation<a class="headerlink" href="#guessing-transition-states-with-force-fireld-interpolation" title="Link to this heading">#</a></h1>
+<p>Finding transition states is of crucial importance for computational chemistry, and there are many methods for doing so. However, most of these methods require some initial guess of the transition state structure. If the guess is not good enough, the method might not converge. Reaction Force Field interpolation allows for generating such guesses at a very cheap computational level by relying mostly on molecular mechanics.</p>
+<p>Force field interpolation works by describing the reactant and product states with classical force fields <span class="math notranslate nohighlight">\(E_{1}\)</span> and <span class="math notranslate nohighlight">\(E_{2}\)</span> respectively. By taking a linear combination</p>
+<div class="math notranslate nohighlight">
+\[V(\lambda) = (1-\lambda)E_{1} + \lambda E_{2}\]</div>
+<p>one can crudely describe the Potential Energy Surface (PES) along the reaction. By doing an MM optimisation of the structure at various values of <span class="math notranslate nohighlight">\(\lambda\)</span>, the relative MM energy can be obtained. The optimised structure can also be used to perform a single-point quantum mechanical (QM) calculation, which will give an more accurate energy. The structure at which these energies are highest is a good guess for the transition state structure. This workflow can be executed with just a couple lines of code. Let’s consider the Bromine substitution of Ethyl chloride:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{C_2H_5Cl + Br^- \rightarrow C_2H_5Br + Cl^-}\]</div>
+<p>The following code will perform the entire workflow and visualise the results:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">veloxchem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vlx</span>
+
+<span class="n">rea1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Br]&quot;</span><span class="p">)</span>
+<span class="n">rea2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CCCl&quot;</span><span class="p">)</span>
+<span class="n">rea1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pro1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Cl]&quot;</span><span class="p">)</span>
+<span class="n">pro2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CCBr&quot;</span><span class="p">)</span>
+<span class="n">pro1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">find_TS</span><span class="p">([</span><span class="n">rea1</span><span class="p">,</span> <span class="n">rea2</span><span class="p">],</span> <span class="p">[</span><span class="n">pro1</span><span class="p">,</span> <span class="n">pro2</span><span class="p">])</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Building forcefields. Disable mute_ff_builder to see detailed output.                                            
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * System has charge 0.0 and multiplicity 1. Provide correct values if this is wrong.                               
+* Info * Building MM systems for the transition state guess. Disable mute_sys_builder to see detailed output.             
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Saving reactant and product forcefield as json to ts_data                                                        
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Saving systems as xml to ts_data                                                                                 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                 Starting initial MM scan                                                 
+                                                                                                                          
+                                                      MM parameters:                                                      
+                                                mm steps:             1000                                                
+                                                mm temperature:      600 K                                                
+                                                mm step size:     0.001 ps                                                
+                                                folder name:       ts_data                                                
+                                                saving mm traj:          0                                                
+                                                                                                                          
+                                        Lambda |  E_int |     E1 |     E2 |     Em                                        
+                                      ---------------------------------------------                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.00    -85.0    -91.0    540.5    -91.0                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.05    -77.1    -86.8    503.2    -57.3                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.10    -70.2    -75.5    468.9    -21.1                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.15    -63.9    -58.9    436.1     15.3                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.20    -58.3    -38.3    403.5     50.1                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.25    -52.9    -14.4    371.1     82.0                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.30    -47.9     12.6    338.0    110.2                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.35    -43.3     42.2    304.0    133.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.40    -39.7     75.1    268.0    152.2                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.45    -36.1    112.3    228.9    164.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.50    -33.6    166.6    176.0    171.3                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.55    -36.4    231.2    115.7    167.6                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.60    -42.2    280.7     72.7    155.9                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.65    -49.6    324.5     37.2    137.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.70    -58.8    365.1      6.5    114.1                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.75    -68.6    403.0    -19.9     85.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.80    -79.6    438.8    -42.6     53.7                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.85    -91.2    473.9    -61.5     18.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.90   -103.8    508.1    -76.3    -17.8                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           0.95   -117.1    542.8    -86.0    -54.5                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                           1.00   -131.7    577.9    -89.4    -89.4                                       
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+* Info * Found highest MM E: 171.292 at Lammba: 0.5.                                                                      
+                                                                                                                          
+* Info * Saving results to ts_results.h5                                                                                  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                    Starting SCF scan                                                     
+                                                                                                                          
+                                             Lambda | SCF Energy | Difference                                             
+                                         ----------------------------------------                                         
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">12</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="n">pro1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+<span class="ne">---&gt; </span><span class="mi">12</span> <span class="n">results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">find_TS</span><span class="p">([</span><span class="n">rea1</span><span class="p">,</span> <span class="n">rea2</span><span class="p">],</span> <span class="p">[</span><span class="n">pro1</span><span class="p">,</span> <span class="n">pro2</span><span class="p">])</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/tsguesser.py:150,</span> in <span class="ni">TransitionStateGuesser.find_TS</span><span class="nt">(self, reactant, product, scf, **ff_kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span> <span class="c1"># Scan SCF</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span> <span class="k">if</span> <span class="n">scf</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">149</span>     <span class="c1"># assert False, &#39;Not implemented yet&#39;</span>
+<span class="ne">--&gt; </span><span class="mi">150</span>     <span class="bp">self</span><span class="o">.</span><span class="n">scan_scf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">152</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/tsguesser.py:491,</span> in <span class="ni">TransitionStateGuesser.scan_scf</span><span class="nt">(self, results)</span>
+<span class="g g-Whitespace">    </span><span class="mi">489</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lambda_vec</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">490</span>     <span class="n">geom</span> <span class="o">=</span> <span class="n">structures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="ne">--&gt; </span><span class="mi">491</span>     <span class="n">scf_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scf_energy</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">492</span>     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">493</span>         <span class="n">ref</span> <span class="o">=</span> <span class="n">scf_E</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/tsguesser.py:533,</span> in <span class="ni">TransitionStateGuesser._get_scf_energy</span><span class="nt">(self, positions)</span>
+<span class="g g-Whitespace">    </span><span class="mi">531</span>     <span class="bp">self</span><span class="o">.</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">532</span> <span class="n">basis</span> <span class="o">=</span> <span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scf_basis</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">533</span> <span class="n">scf_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">535</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">scf_drv</span><span class="o">.</span><span class="n">is_converged</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">536</span>     <span class="bp">self</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">print_warning</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">537</span>         <span class="s2">&quot;SCF did not converge, increasing convergence threshold to 1.0e-4 and maximum itterations to 200.&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">538</span>     <span class="p">)</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/scfdriver.py:575,</span> in <span class="ni">ScfDriver.compute</span><span class="nt">(self, molecule, ao_basis, min_basis)</span>
+<span class="g g-Whitespace">    </span><span class="mi">572</span>     <span class="bp">self</span><span class="o">.</span><span class="n">acc_type</span> <span class="o">=</span> <span class="s1">&#39;DIIS&#39;</span>
+<span class="g g-Whitespace">    </span><span class="mi">574</span> <span class="c1"># check molecule</span>
+<span class="ne">--&gt; </span><span class="mi">575</span> <span class="n">molecule_sanity_check</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">577</span> <span class="c1"># check dft setup</span>
+<span class="g g-Whitespace">    </span><span class="mi">578</span> <span class="n">dft_sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;compute&#39;</span><span class="p">)</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/sanitychecks.py:52,</span> in <span class="ni">molecule_sanity_check</span><span class="nt">(mol)</span>
+<span class="g g-Whitespace">     </span><span class="mi">44</span> <span class="k">def</span><span class="w"> </span><span class="nf">molecule_sanity_check</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">45</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">46</span><span class="sd">     Checks molecule for charge/multiplicity combination and geometry.</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span><span class="sd"> </span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span><span class="sd">     :param mol:</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span><span class="sd">         The molecule.</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="ne">---&gt; </span><span class="mi">52</span>     <span class="n">assert_msg_critical</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">53</span>         <span class="n">mol</span><span class="o">.</span><span class="n">check_multiplicity</span><span class="p">(),</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span>         <span class="s1">&#39;Molecule: Incompatible multiplicity and number of electrons&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span>     <span class="n">assert_msg_critical</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">check_proximity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="s1">&#39;Molecule: Atoms too close&#39;</span><span class="p">)</span>
+
+<span class="nn">File ~/miniconda3/envs/echem/lib/python3.12/site-packages/veloxchem/errorhandler.py:50,</span> in <span class="ni">assert_msg_critical</span><span class="nt">(condition, msg)</span>
+<span class="g g-Whitespace">     </span><span class="mi">40</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">41</span><span class="sd"> Asserts that the condition is true. Otherwise terminates the program with</span>
+<span class="g g-Whitespace">     </span><span class="mi">42</span><span class="sd"> an error message.</span>
+<span class="sd">   (...)     47     The error message.</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span><span class="sd"> &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">if</span> <span class="n">__debug__</span> <span class="ow">and</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">assert</span> <span class="n">condition</span><span class="p">,</span> <span class="n">msg</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">if</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">:</span>
+
+<span class="ne">AssertionError</span>: Molecule: Incompatible multiplicity and number of electrons
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>To better understand the workflow and it’s limitations, let’s go through it step by step.</p>
+<section id="step-by-step-calculation-of-s-n-2-reaction">
+<h2>Step by step calculation of <span class="math notranslate nohighlight">\(S_N 2\)</span> reaction<a class="headerlink" href="#step-by-step-calculation-of-s-n-2-reaction" title="Link to this heading">#</a></h2>
+<p>To create interpolated forcefields, we need to provide reactant and product structures as molecule objects. The program will then calculate partial charges, but it is also possible to provide those manually. The program figures out which bonds are broken and formed. It then does an MM optimisation of the combined reactand and product systems which will be used as starting points for the scan.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rea1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Br]&quot;</span><span class="p">)</span>
+<span class="n">rea2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CCCl&quot;</span><span class="p">)</span>
+<span class="n">rea1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pro1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Cl]&quot;</span><span class="p">)</span>
+<span class="n">pro2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CCBr&quot;</span><span class="p">)</span>
+<span class="n">pro1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">build_forcefields</span><span class="p">([</span><span class="n">rea1</span><span class="p">,</span> <span class="n">rea2</span><span class="p">],</span> <span class="p">[</span><span class="n">pro1</span><span class="p">,</span> <span class="n">pro2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Building forcefields. Disable mute_ff_build to see detailed output.                                              
+                                                                                                                          
+                                                     Reaction summary                                                     
+                                                    1 breaking bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          c3       c3    3  -    cl       cl    4                                         
+                                                                                                                          
+                                                     1 forming bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          br       br    1  -    c3       c3    3                                         
+                                                                                                                          
+* Info * System has charge -1.0 and multiplicity 1. Provide correct values if this is wrong.                              
+* Info * Building MM systems for the transition state guess. Disable mute_ff_build to see detailed output.                
+* Info * Saving reactant and product forcefield as json to ts_data_1758618280                                             
+* Info * Saving systems as xml to ts_data_1758618280/systems                                                              
+</pre></div>
+</div>
+</div>
+</div>
+<p>The optimised structures can be inspected as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tsguesser</span><span class="o">.</span><span class="n">reactant</span><span class="o">.</span><span class="n">molecule</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">molecule</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_1758618285671594"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_1758618285671594" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+}
+
+var viewer_1758618285671594 = null;
+var warn = document.getElementById("3dmolwarning_1758618285671594");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_1758618285671594 = $3Dmol.createViewer(document.getElementById("3dmolviewer_1758618285671594"),{backgroundColor:"white"});
+viewer_1758618285671594.zoomTo();
+	viewer_1758618285671594.addModel("9\n\nBr             0.579034287558         0.556599843131         1.190432599587\nC              3.031160096230        -2.243983402967        -0.215859859284\nC              3.991902202543        -1.251412341376         0.463951006702\nCl             5.700864063302        -1.844329663341         0.408709916625\nH              3.296562314021        -2.378507200160        -1.271557265048\nH              3.070638494683        -3.222324999294         0.278731313213\nH              1.999465645476        -1.873574449544        -0.164431416405\nH              3.951374118658        -0.277918343704        -0.041378666530\nH              3.710589877979        -1.112781064340         1.516017281859\n");
+	viewer_1758618285671594.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_1758618285671594.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_1758618285671594.zoomTo();
+viewer_1758618285671594.render();
+});
+</script></div><div class="output text_html"><div id="3dmolviewer_17586182856739829"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_17586182856739829" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+}
+
+var viewer_17586182856739829 = null;
+var warn = document.getElementById("3dmolwarning_17586182856739829");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_17586182856739829 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17586182856739829"),{backgroundColor:"white"});
+viewer_17586182856739829.zoomTo();
+	viewer_17586182856739829.addModel("9\n\nBr             3.624243029535        -1.814779995843        -1.871797848741\nC              2.983150724228        -3.871662244883         0.109467205350\nC              3.009221693289        -2.341242640345        -0.060697649383\nCl             2.429386611890        -2.559464338349         3.729491515747\nH              3.985563431224        -4.293965853405        -0.032037909863\nH              2.303646609984        -4.333344104868        -0.617411942785\nH              2.640365602833        -4.137399815913         1.117911691414\nH              2.007050896450        -1.917695169876         0.082444087665\nH              3.692482901052        -1.886294434223         0.669614840628\n");
+	viewer_17586182856739829.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_17586182856739829.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_17586182856739829.zoomTo();
+viewer_17586182856739829.render();
+});
+</script></div></div>
+</div>
+<p>If this looks reasonable, we can proceed to scan the reaction. By default, the reaction is split up in 21 steps. On every step, the structure is minimised to the new forcefield, then sampled for 1000 steps at 600K, and then optimised again. If the value of <span class="math notranslate nohighlight">\(E1\)</span> decreases (or <span class="math notranslate nohighlight">\(E2\)</span> increases), this indicates that the obtained structures are could be part of different valleys in the energy landscape. The program will then try to do a conformer search to find the lowest lying conformer.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mm_results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">scan_mm</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+Starting MM scan for lambda values [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
+                                                                                                                          
+                                                      MM parameters:                                                      
+                                            MD steps:                    1000                                             
+                                            MD temperature:             600 K                                             
+                                            MD step size:            0.001 ps                                             
+                                            folder name:   ts_data_1758618280                                             
+                                            saving MD traj:             False                                             
+                                            Lambda |     E1 |     E2 |      V                                             
+                                      ---------------------------------------------                                       
+                                               0.00    -90.2    544.5    -90.2                                            
+                                               0.05    -86.0    506.4    -56.4                                            
+                                               0.10    -74.7    471.9    -20.0                                            
+                                               0.15    -58.2    438.8     16.4                                            
+                                               0.20    -37.6    406.3     51.1                                            
+                                               0.25    -13.7    374.0     83.2                                            
+                                               0.30     13.0    340.8    111.4                                            
+                                               0.35     42.8    306.4    135.1                                            
+                                               0.40     75.7    270.3    153.5                                            
+                                               0.45    112.6    231.6    166.2                                            
+                                               0.50    176.5    169.8    173.1                                            
+                                               0.55    232.1    117.2    168.9                                            
+                                               0.60    281.0     74.8    157.3                                            
+                                               0.65    325.1     39.0    139.1                                            
+                                               0.70    365.2      8.4    115.5                                            
+                                               0.75    403.0    -18.1     87.2                                            
+                                               0.80    438.6    -40.7     55.1                                            
+                                               0.85    473.7    -59.7     20.3                                            
+                                               0.90    507.9    -74.4    -16.2                                            
+                                               0.95    542.1    -84.2    -52.8                                            
+                                               1.00    578.3    -87.7    -87.7                                            
+* Info * Found highest MM E: 173.114 at Lammba: 0.5.                                                                      
+                                                                                                                          
+* Info * Saving results to ts_results.h5                                                                                  
+***********                                                                                                               
+* Warning * File ts_results.h5 already exists. Overwriting it.                                                            
+***********                                                                                                               
+</pre></div>
+</div>
+</div>
+</div>
+<p>The results can then be visualised.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">mm_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "414f8440ac5a4680a09583800c0381c2", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>While the MM energies give a reasonable description of the energetic contributions from coloumbic and van der Waals interactions, they do not capture bond breaking and formation. To get a better estimate of the energy, we can perform single-point QM calculations on the MM optimised structures. Here, we use DFT with the B3LYP functional and the ‘def2-SVP’ basis set which are the default settings.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tsguesser</span><span class="o">.</span><span class="n">scf_xcfun</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">scf_basis</span> <span class="o">=</span> <span class="s1">&#39;def2-svp&#39;</span>
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">scan_scf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Disable mute_scf to see detailed output.                                                                         
+                                                                                                                          
+                                                    Starting SCF scan                                                     
+                                                                                                                          
+                                                     SCF parameters:                                                      
+                                                 basis:         def2-svp                                                  
+                                                 DFT xc fun:       b3lyp                                                  
+                                                                                                                          
+                                             Lambda | SCF Energy | Difference                                             
+                                         ----------------------------------------                                         
+                                               0.00   -8173664.35916     0.000                                            
+                                               0.05   -8173662.82513     1.534                                            
+                                               0.10   -8173654.75778     9.601                                            
+                                               0.15   -8173643.81409    20.545                                            
+                                               0.20   -8173631.75058    32.609                                            
+                                               0.25   -8173619.87759    44.482                                            
+                                               0.30   -8173608.84388    55.515                                            
+                                               0.35   -8173598.97950    65.380                                            
+                                               0.40   -8173590.71415    73.645                                            
+                                               0.45   -8173584.49864    79.861                                            
+                                               0.50   -8173582.89609    81.463                                            
+                                               0.55   -8173582.69938    81.660                                            
+                                               0.60   -8173583.52124    80.838                                            
+                                               0.65   -8173585.82457    78.535                                            
+                                               0.70   -8173589.56852    74.791                                            
+                                               0.75   -8173594.39379    69.965                                            
+                                               0.80   -8173600.14252    64.217                                            
+                                               0.85   -8173605.86392    58.495                                            
+                                               0.90   -8173611.16007    53.199                                            
+                                               0.95   -8173614.80039    49.559                                            
+                                               1.00   -8173614.02489    50.334                                            
+                                                                                                                          
+* Info * Found highest SCF E: -8173582.699 at Lambda: 0.55.                                                               
+* Info * Saving results to ts_results.h5                                                                                  
+***********                                                                                                               
+* Warning * File ts_results.h5 already exists. Overwriting it.                                                            
+***********                                                                                                               
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">scf_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "48dd1d20f52345099e9eea7e21022198", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>And these results can be visualised as well. Note how in this (simple) example, the peak of the MM energies coincides with the SCF peak. In more complex reactions, this is not always the case, but it is usually close and the MM peak might already be a good enough guess.</p>
+<p>Then we can proceed with a proper QM transition state optimisation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">MolecularBasis</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">tsguesser</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="s2">&quot;def2-svp&quot;</span><span class="p">)</span>
+<span class="n">scf_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">ScfRestrictedDriver</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+<span class="n">scf_drv</span><span class="o">.</span><span class="n">xcfun</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>
+<span class="n">scf_results</span> <span class="o">=</span> <span class="n">scf_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">tsguesser</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+<span class="n">scf_opt_drv</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">OptimizationDriver</span><span class="p">(</span><span class="n">scf_drv</span><span class="p">)</span>
+<span class="n">scf_opt_drv</span><span class="o">.</span><span class="n">ostream</span><span class="o">.</span><span class="n">mute</span><span class="p">()</span>
+<span class="n">scf_opt_drv</span><span class="o">.</span><span class="n">transition</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1">#We set the option to find transition states</span>
+<span class="n">opt_results</span> <span class="o">=</span> <span class="n">scf_opt_drv</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">tsguesser</span><span class="o">.</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">scf_results</span><span class="p">)</span>
+<span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_xyz_string</span><span class="p">(</span><span class="n">opt_results</span><span class="p">[</span><span class="s1">&#39;final_geometry&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id="3dmolviewer_17580126656321857"  style="position: relative; width: 400px; height: 300px;">
+        <p id="3dmolwarning_17580126656321857" style="background-color:#ffcccc;color:black">3Dmol.js failed to load for some reason.  Please check your browser console for error messages.<br></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    //this is to ignore the existence of requirejs amd
+    var savedexports, savedmodule;
+    if (typeof exports !== 'undefined') savedexports = exports;
+    else exports = {}
+    if (typeof module !== 'undefined') savedmodule = module;
+    else module = {}
+
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+        exports = savedexports;
+        module = savedmodule;
+        resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js');
+}
+
+var viewer_17580126656321857 = null;
+var warn = document.getElementById("3dmolwarning_17580126656321857");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_17580126656321857 = $3Dmol.createViewer(document.getElementById("3dmolviewer_17580126656321857"),{backgroundColor:"white"});
+viewer_17580126656321857.zoomTo();
+	viewer_17580126656321857.addModel("9\n\nBr             1.734782931168        -2.024600833734        -0.052894429183\nC             -0.856658915966        -0.333827817602         0.203935674125\nC              0.507025647689         0.168624183874        -0.179396879623\nCl            -0.059555653389         2.566748602627        -0.481482353063\nH             -1.557477019499         0.513725089239         0.203104209314\nH             -0.835494998094        -0.790752023668         1.204442949787\nH             -1.203979344481        -1.097241602688        -0.507964154006\nH              0.805291614555         0.247812498078        -1.216085856446\nH              1.188293136038         0.563301187460         0.562227515405\n");
+	viewer_17580126656321857.setViewStyle({"style": "outline", "width": 0.05});
+	viewer_17580126656321857.setStyle({"stick": {}, "sphere": {"scale": 0.25}});
+	viewer_17580126656321857.zoomTo();
+viewer_17580126656321857.render();
+});
+</script></div></div>
+</div>
+</section>
+<section id="conformer-searching">
+<h2>Conformer searching<a class="headerlink" href="#conformer-searching" title="Link to this heading">#</a></h2>
+<p>Some systems might have many conformers along the PES, and in order to find the correct transition state, it is important to find the lowest lying conformer. When <code class="docutils literal notranslate"><span class="pre">peak_conformer_search</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, a conformer search will be performed at the peak of the PES over a range of <span class="math notranslate nohighlight">\(\lambda\)</span> values. It is also possible to automatically perform a conformer search when a discontinuity in the PES is detected by setting <code class="docutils literal notranslate"><span class="pre">discont_conformer_search</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Lastly, setting <code class="docutils literal notranslate"><span class="pre">force_conformer_search</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> will perform a conformer search at every <span class="math notranslate nohighlight">\(\lambda\)</span> value. All of these functions are turned off by default because they are more time consuming. Depending on the system and the use case, the user has to decide which options are appropriate. In the following example, the longer carbon backbone gives the system more conformational freedom. Rescanning the entire PES is not necessary, but performing a conformer search at the peak is useful to obtain the correct conformer for the transition state guess.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rea1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Br]&quot;</span><span class="p">)</span>
+<span class="n">rea2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CC(C)CC(Cl)C&quot;</span><span class="p">)</span>
+<span class="n">rea1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">pro1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;[Cl]&quot;</span><span class="p">)</span>
+<span class="n">pro2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;CC(C)CC(Br)C&quot;</span><span class="p">)</span>
+<span class="n">pro1</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">build_forcefields</span><span class="p">([</span><span class="n">rea1</span><span class="p">,</span> <span class="n">rea2</span><span class="p">],</span> <span class="p">[</span><span class="n">pro1</span><span class="p">,</span> <span class="n">pro2</span><span class="p">])</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">peak_conformer_search</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">peak_conformer_search_range</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">scan_mm</span><span class="p">()</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Building forcefields. Disable mute_ff_build to see detailed output.                                              
+                                                                                                                          
+                                                     Reaction summary                                                     
+                                                    1 breaking bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          c3       c3    6  -    cl       cl    7                                         
+                                                                                                                          
+                                                     1 forming bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          br       br    1  -    c3       c3    6                                         
+                                                                                                                          
+* Info * System has charge -1.0 and multiplicity 1. Provide correct values if this is wrong.                              
+* Info * Building MM systems for the transition state guess. Disable mute_ff_build to see detailed output.                
+* Info * Saving reactant and product forcefield as json to ts_data_1758621028                                             
+* Info * Saving systems as xml to ts_data_1758621028/systems                                                              
+                                                                                                                          
+Starting MM scan for lambda values [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
+                                                                                                                          
+                                                      MM parameters:                                                      
+                                            MD steps:                    1000                                             
+                                            MD temperature:             600 K                                             
+                                            MD step size:            0.001 ps                                             
+                                            folder name:   ts_data_1758621028                                             
+                                            saving MD traj:             False                                             
+                                                                                                                          
+                                            Lambda |     E1 |     E2 |      V                                             
+                                      ---------------------------------------------                                       
+                                               0.00   -127.7    632.1   -127.7                                            
+                                               0.05   -122.1    581.1    -87.0                                            
+                                               0.10   -108.7    536.8    -44.2                                            
+                                               0.15    -90.5    491.1     -3.3                                            
+                                               0.20    -66.6    450.3     36.8                                            
+                                               0.25    -38.7    409.9     73.4                                            
+                                               0.30     -7.4    369.5    105.6                                            
+                                               0.35     27.4    328.3    132.7                                            
+                                               0.40     66.1    285.5    153.8                                            
+                                               0.45    109.8    239.4    168.1                                            
+                                               0.50    159.6    190.3    175.0                                            
+                                               0.55    221.8    134.3    173.7                                            
+                                               0.60    289.7     77.7    162.5                                            
+                                               0.65    340.7     36.8    143.2                                            
+                                               0.70    388.6      1.0    117.3                                            
+                                               0.75    434.7    -30.2     86.1                                            
+                                               0.80    478.5    -56.7     50.3                                            
+                                               0.85    523.0    -79.2     11.1                                            
+                                               0.90    567.2    -96.6    -30.2                                            
+                                               0.95    612.8   -108.5    -72.4                                            
+                                               1.00    660.9   -109.1   -109.1                                            
+* Info * Found peak MM E: 174.951 at Lambda: 0.5.                                                                         
+* Info * Doing conformer search from Lambda: 0.35 to Lambda: 0.65.                                                        
+                                                                                                                          
+             Starting MM scan with conformer search for lambda values [0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65]             
+                                            conf. steps:                10000                                             
+                                            conf. snapshots:               10                                             
+                                            MD temperature:             600 K                                             
+                                            MD step size:            0.001 ps                                             
+                                            folder name:   ts_data_1758621028                                             
+                                            saving MD traj:             False                                             
+                                        Lambda |     E1 |     E2 |      V |  E_int                                        
+                                      ---------------------------------------------                                       
+                                          0.35      8.0    318.0    116.5         3                                       
+                                          0.40     46.6    275.7    138.2         2                                       
+                                          0.45     89.5    230.4    152.9         3                                       
+                                          0.50    145.6    174.8    160.2         3                                       
+                                          0.55    213.8    113.7    158.7         3                                       
+                                          0.60    271.9     64.6    147.5         3                                       
+                                          0.65    324.4     22.9    128.4         5                                       
+* Info * Found highest MM E: 160.176 at Lammba: 0.5.                                                                      
+                                                                                                                          
+* Info * Saving results to ts_results.h5                                                                                  
+***********                                                                                                               
+* Warning * File ts_results.h5 already exists. Overwriting it.                                                            
+***********                                                                                                               
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "cfc4afc001f94d16a8540c3dd9c7ff08", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+<section id="forced-bond-breaking">
+<h2>Forced bond breaking<a class="headerlink" href="#forced-bond-breaking" title="Link to this heading">#</a></h2>
+<p>To correctly interpolate between the reactant and the product, each atom in the reactant and product need to match. This mapping is detected automatically, but can be provided manually. From this mapping the breaking and forming bonds are derived. It is even possible to specify bonds that should be forced to break which are then not allowed to reconnect. This is useful for example in certain catalysis reactions, where both the reactant and the product contain the same catalyst molecule. The optimal mapping would not break or form any bonds with these molecules, but the reaction of interest should involve this catalyst. The following example demonstrates this with methanol catalysing the proton transfer of a larger complex. In order to run the example faster, the partial charges are pre-computed and provided manually.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">evb</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">EvbDriver</span><span class="p">()</span>
+
+<span class="n">q_rea</span> <span class="o">=</span> <span class="p">[[</span>
+    <span class="o">-</span><span class="mf">0.63376</span><span class="p">,</span>
+    <span class="mf">0.155898</span><span class="p">,</span>
+    <span class="mf">0.40852</span><span class="p">,</span>
+    <span class="mf">0.023114</span><span class="p">,</span>
+    <span class="mf">0.023114</span><span class="p">,</span>
+    <span class="mf">0.023114</span><span class="p">,</span>
+<span class="p">],</span>
+         <span class="p">[</span>
+             <span class="o">-</span><span class="mf">0.053121</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.224161</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.146708</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.198581</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.104851</span><span class="p">,</span> <span class="mf">0.057048</span><span class="p">,</span>
+             <span class="mf">0.211108</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00552</span><span class="p">,</span> <span class="mf">0.582421</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.578475</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.239007</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.200459</span><span class="p">,</span>
+             <span class="mf">0.076475</span><span class="p">,</span> <span class="mf">0.046494</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.014331</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.064532</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.241586</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.879622</span><span class="p">,</span>
+             <span class="mf">0.102603</span><span class="p">,</span> <span class="mf">0.135941</span><span class="p">,</span> <span class="mf">0.12827</span><span class="p">,</span> <span class="mf">0.137736</span><span class="p">,</span> <span class="mf">0.085068</span><span class="p">,</span> <span class="mf">0.010794</span><span class="p">,</span>
+             <span class="mf">0.056581</span><span class="p">,</span> <span class="mf">0.118934</span><span class="p">,</span> <span class="mf">0.118934</span><span class="p">,</span> <span class="mf">0.118934</span><span class="p">,</span> <span class="mf">0.071642</span><span class="p">,</span> <span class="mf">0.071642</span><span class="p">,</span>
+             <span class="mf">0.084769</span><span class="p">,</span> <span class="mf">0.084769</span><span class="p">,</span> <span class="mf">0.084769</span><span class="p">,</span> <span class="mf">0.068894</span><span class="p">,</span> <span class="mf">0.068894</span><span class="p">,</span> <span class="mf">0.068894</span><span class="p">,</span>
+             <span class="mf">0.11978</span><span class="p">,</span> <span class="mf">0.11978</span><span class="p">,</span> <span class="mf">0.11978</span>
+         <span class="p">]]</span>
+<span class="n">q_pro</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span>
+        <span class="o">-</span><span class="mf">0.637505</span><span class="p">,</span>
+        <span class="mf">0.152377</span><span class="p">,</span>
+        <span class="mf">0.411487</span><span class="p">,</span>
+        <span class="mf">0.024547</span><span class="p">,</span>
+        <span class="mf">0.024547</span><span class="p">,</span>
+        <span class="mf">0.024547</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="o">-</span><span class="mf">0.088958</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.19184</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.147759</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.194697</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.060166</span><span class="p">,</span> <span class="mf">0.060322</span><span class="p">,</span>
+        <span class="mf">0.057387</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.279844</span><span class="p">,</span> <span class="mf">0.484962</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.274851</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.152366</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">0.7389260000000002</span><span class="p">,</span> <span class="mf">0.034466</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.007965</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.126105</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.288341</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">0.009113</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.684542</span><span class="p">,</span> <span class="mf">0.112558</span><span class="p">,</span> <span class="mf">0.144675</span><span class="p">,</span> <span class="mf">0.133772</span><span class="p">,</span> <span class="mf">0.134584</span><span class="p">,</span> <span class="mf">0.1315</span><span class="p">,</span>
+        <span class="mf">0.137143</span><span class="p">,</span> <span class="mf">0.100035</span><span class="p">,</span> <span class="mf">0.100035</span><span class="p">,</span> <span class="mf">0.100035</span><span class="p">,</span> <span class="mf">0.071572</span><span class="p">,</span> <span class="mf">0.071572</span><span class="p">,</span> <span class="mf">0.100344</span><span class="p">,</span>
+        <span class="mf">0.100344</span><span class="p">,</span> <span class="mf">0.100344</span><span class="p">,</span> <span class="mf">0.139586</span><span class="p">,</span> <span class="mf">0.139586</span><span class="p">,</span> <span class="mf">0.139586</span><span class="p">,</span> <span class="mf">0.066736</span><span class="p">,</span> <span class="mf">0.066736</span><span class="p">,</span>
+        <span class="mf">0.066736</span><span class="p">,</span> <span class="mf">0.450857</span>
+    <span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">rea1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;OC&quot;</span><span class="p">)</span>
+<span class="n">rea2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;C1=CC=CC=C1C(C(C(=O)OC)C[N+](C)(C)C)([O-])&quot;</span><span class="p">)</span>
+
+<span class="n">pro1</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;OC&quot;</span><span class="p">)</span>
+<span class="n">pro2</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s2">&quot;C1=CC=CC=C1C(C(=C(OC)[O-])C[N+](C)(C)C)O&quot;</span><span class="p">)</span>
+
+<span class="n">rea_charges</span> <span class="o">=</span> <span class="n">q_rea</span>
+<span class="n">pro_charges</span> <span class="o">=</span> <span class="n">q_pro</span>
+<span class="n">breaking_bonds</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+<span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">build_forcefields</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">rea1</span><span class="p">,</span> <span class="n">rea2</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">pro1</span><span class="p">,</span> <span class="n">pro2</span><span class="p">],</span>
+    <span class="n">breaking_bonds</span><span class="o">=</span><span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)},</span>
+    <span class="n">reactant_partial_charges</span><span class="o">=</span><span class="n">rea_charges</span><span class="p">,</span>
+    <span class="n">product_partial_charges</span><span class="o">=</span><span class="n">pro_charges</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>* Info * Building forcefields. Disable mute_ff_builder to see detailed output.                                            
+                                                                                                                          
+                                                     Reaction summary                                                     
+                                                    2 breaking bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          c3       c2    14 -    hc       ho    31                                        
+                                          oh       oh    1  -    ho       ho    3                                         
+                                                                                                                          
+                                                     2 forming bonds:                                                     
+                                       ReaType  ProType  ID - ReaType  ProType  ID                                        
+                                          oh       oh    1  -    hc       ho    31                                        
+                                          ho       ho    3  -    o        oh    24                                        
+                                                                                                                          
+* Info * System has charge 0.0 and multiplicity 1. Provide correct values if this is wrong.                               
+* Info * Building MM systems for the transition state guess. Disable mute_ff_build to see detailed output.                
+* Info * Saving reactant and product forcefield as json to ts_data                                                        
+* Info * Saving systems as xml to ts_data                                                                                 
+</pre></div>
+</div>
+</div>
+</div>
+<p>The output shows that the program found the correct forming and breaking bonds. We can then proceed with the mm scan.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mm_results</span> <span class="o">=</span> <span class="n">tsguesser</span><span class="o">.</span><span class="n">scan_mm</span><span class="p">()</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">show_results</span><span class="p">(</span><span class="n">mm_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                                                                                                                          
+                                                 Starting initial MM scan                                                 
+                                                                                                                          
+                                                      MM parameters:                                                      
+                                                mm steps:             1000                                                
+                                                mm temperature:      600 K                                                
+                                                mm step size:     0.001 ps                                                
+                                                folder name:       ts_data                                                
+                                                saving mm traj:          0                                                
+                                                                                                                          
+                                            Lambda |     E1 |     E2 |      V                                             
+                                      ---------------------------------------------                                       
+                                               0.00    -64.6   1092.9    -64.6                                            
+                                               0.05    -53.6    845.3     -8.7                                            
+                                               0.10    -42.8    785.3     40.0                                            
+                                               0.15    -11.3    724.4     99.0                                            
+                                               0.20     26.9    666.2    154.7                                            
+                                               0.25     69.4    610.7    204.7                                            
+                                               0.30    120.3    554.0    250.4                                            
+                                               0.35    164.3    506.7    284.1                                            
+                                               0.40    221.9    454.0    314.7                                            
+                                               0.45    268.2    403.1    328.9                                            
+                                               0.50    318.4    352.9    335.7                                            
+                                               0.55    373.4    300.8    333.5                                            
+                                               0.60    425.4    251.1    320.8                                            
+                                               0.65    483.5    199.2    298.7                                            
+                                               0.70    566.4    114.4    250.0                                            
+                                               0.75    641.9     72.4    214.8                                            
+                                               0.80    708.4     25.4    162.0                                            
+                                               0.85    768.8    -27.0     92.4                                            
+                                               0.90    848.3    -63.7     27.5                                            
+                                               0.95    974.7    -90.3    -37.0                                            
+                                               1.00   1176.5   -103.3   -103.3                                            
+                                                                                                                          
+* Info * Found highest MM E: 335.652 at Lammba: 0.5.                                                                      
+                                                                                                                          
+* Info * Saving results to ts_results.h5                                                                                  
+***********                                                                                                               
+* Warning * File ts_results.h5 already exists. Overwriting it.                                                            
+***********                                                                                                               
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "45e80741e8ef4240afdbfd1bb680d5fc", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+<section id="available-parameters-and-options">
+<h2>Available parameters and options<a class="headerlink" href="#available-parameters-and-options" title="Link to this heading">#</a></h2>
+<p>There are a bunch more options available to customise the TS-guesser. Below is a complete list of all options with their default values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">water</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+
+<span class="n">rea</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s1">&#39;C(C(=O)O)([O-])&#39;</span><span class="p">)</span>
+<span class="n">pro</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">read_smiles</span><span class="p">(</span><span class="s1">&#39;C(=C(O)[O-])O&#39;</span><span class="p">)</span>
+
+<span class="n">tsguesser</span> <span class="o">=</span> <span class="n">vlx</span><span class="o">.</span><span class="n">TransitionStateGuesser</span><span class="p">()</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mute_ff_build</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">optimize_mol</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, does an xtb optimization of every provided molecule object before reparameterisation.</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">reparameterize_bonds</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, reparameterizes unknown bond force constants with the Seminario method.</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">reparameterize_angles</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, reparameterizes unknown angle force constants with the Seminario method.</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">optimize_ff</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># If True, does an mm optimization of the combined reactant and product after reparameterisation.</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">mm_opt_constrain_bonds</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># If true, constrains nonbonded interactions of atoms involved in breaking/forming bonds during the mm optimization.</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">water_model</span> <span class="o">=</span> <span class="s1">&#39;spce&#39;</span>  <span class="c1"># Water model to use in case a water molecule is provided</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">product_mapping</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Optional mapping of product atoms to reactant atoms</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">mute_scf</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, mutes the scf output during xtb, resp and hessian calculations</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">skip_reaction_matching</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, skips the matching of product atoms to the reactant and assumes the order of the given structures to be correct</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">hessian_basis</span> <span class="o">=</span> <span class="s1">&#39;def2-SV_P_&#39;</span>  <span class="c1"># Basis set for hessian calculation. For now cannot contain f-functions</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">ffbuilder</span><span class="o">.</span><span class="n">hessian_xc_fun</span> <span class="o">=</span> <span class="s1">&#39;B3LYP&#39;</span>  <span class="c1"># xc functional for hessian calculation</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">lambda_vec</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span>
+    <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mi">1</span>
+<span class="p">]</span>  <span class="c1"># Lambda values to scan</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">scf_xcfun</span> <span class="o">=</span> <span class="s2">&quot;b3lyp&quot;</span>  <span class="c1"># xc functional for scf calculations</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">scf_basis</span> <span class="o">=</span> <span class="s1">&#39;def2-svp&#39;</span>  <span class="c1"># Basis set for scf calculations</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mute_scf</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># If True, mutes the scf output during scf calculations</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mute_ff_build</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># If True, mutes the output from the force field builder</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mm_temperature</span> <span class="o">=</span> <span class="mi">600</span>  <span class="c1"># Temperature for mm md runs in K</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mm_steps</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Number of steps for mm md runs</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">mm_step_size</span> <span class="o">=</span> <span class="mf">0.001</span>  <span class="c1"># Step size for mm md runs in ps</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">save_mm_traj</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, saves the mm md trajectory as an xyz file in the ts_data folder</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">scf_drv</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Custom scf driver to be used for all scf calculations</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">folder_name</span> <span class="o">=</span> <span class="s1">&#39;ts_data&#39;</span>  <span class="c1"># Folder name for all ts data</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">force_conformer_search</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, forces a conformer search on all lambda values</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">discont_conformer_search</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># If False, performs a conformer search where E2 is increasing or E1 is decreasing, which indicates a discontinuity in the PES</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">peak_conformer_search</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If True, performs a conformer search at the peak of the PES</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">peak_conformer_search_range</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Range of lambda values around the peak to perform the conformer search</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">conformer_steps</span> <span class="o">=</span> <span class="mi">10000</span>  <span class="c1"># Number of steps for the conformer search md runs</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">conformer_snapshots</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of snapshots to take during the conformer search</span>
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">results_file</span> <span class="o">=</span> <span class="s1">&#39;ts_results.h5&#39;</span>  <span class="c1"># File to save the results</span>
+
+<span class="n">tsguesser</span><span class="o">.</span><span class="n">find_TS</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">water</span><span class="p">,</span> <span class="n">rea</span><span class="p">],</span>  <span class="c1"># reactants</span>
+    <span class="p">[</span><span class="n">water</span><span class="p">,</span> <span class="n">pro</span><span class="p">],</span>  <span class="c1"># products</span>
+    <span class="c1"># If an scf calculation should be done. Defaults to True</span>
+    <span class="n">scf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="c1"># Set of tuples with indices (1-based) of bonds that have to break and are not allowed to re-connect</span>
+    <span class="n">breaking_bonds</span><span class="o">=</span><span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)},</span>
+    <span class="c1"># Optional partial charges for the reactant. Should be a list of list of floats matching the list of reactants</span>
+    <span class="n">reactant_partial_charges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># Optional partial charges for the product. Should be a list of list of floats matching the list of products</span>
+    <span class="n">product_partial_charges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># Optional hessians for the reactant. Should be a list of np.arrays matching the list of reactants</span>
+    <span class="n">reactant_hessians</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># Optional hessians for the product. Should be a list of np.arrays matching the list of products</span>
+    <span class="n">product_hessians</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># Total reactant multiplicity to override override the guess</span>
+    <span class="n">reactant_total_multiplicity</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="c1"># Total product multiplicity to override override the guess</span>
+    <span class="n">product_total_multiplicity</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./docs/mol_struct"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="tst_gen.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Transition state</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="impes.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">PES interpolation techniques</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-calculation-of-s-n-2-reaction">Step by step calculation of <span class="math notranslate nohighlight">\(S_N 2\)</span> reaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conformer-searching">Conformer searching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forced-bond-breaking">Forced bond breaking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-parameters-and-options">Available parameters and options</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The eChem team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

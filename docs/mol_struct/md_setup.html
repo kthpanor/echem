@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -265,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="opt_constrained.html">Constrained coordinates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conformer.html">Conformer search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tst_gen.html">Transition state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_guesser.html">Guessing transition states with force fireld interpolation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="impes.html">PES interpolation techniques</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -757,7 +758,8 @@ If the atomic coordinates at a given time <span class="math notranslate nohighli
 \end{align*}\]</div>
 <p>These two equations, together with the expression for the acceleration make up the Euler method. For each step, the acceleration is obtained from Newton’s law, then the velocities are calculated with above expression and finally a new set of coordinates <span class="math notranslate nohighlight">\(\mathbf{R}_{i+1}\)</span> before the process is repeated, step by step. This is an extremely simple method, with a local truncation error in order of <span class="math notranslate nohighlight">\(\Delta t^2\)</span> for each step and a global error of first order for the trajectory as a whole. This can be seen from the fact that a trajectory of length <span class="math notranslate nohighlight">\(T\)</span> requires <span class="math notranslate nohighlight">\(M = T / \Delta t\)</span> steps. For each step, an error of order <span class="math notranslate nohighlight">\(\Delta t^2\)</span> is added, leading to a total error of <span class="math notranslate nohighlight">\(T/ \Delta t \hspace{1mm} \mathcal{O}(\Delta t^2) = \mathcal{O}(\Delta t)\)</span>, <em>i.e.</em> first order. A simple example of integration using the Euler method is shown here:</p>
 <figure class="align-default" id="fig-euler">
-<a class="reference internal image-reference" href="../../_images/MD_euler_even.svg"><img alt="../../_images/MD_euler_even.svg" src="../../_images/MD_euler_even.svg" width="400px" /></a>
+<a class="reference internal image-reference" href="../../_images/MD_euler_even.svg"><img alt="../../_images/MD_euler_even.svg" src="../../_images/MD_euler_even.svg" style="width: 400px;" />
+</a>
 <figcaption>
 <p><span class="caption-number">Fig. 6 </span><span class="caption-text">Simulation of a harmonic oscillator using Euler integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <em>T</em>.</span><a class="headerlink" href="#fig-euler" title="Link to this image">#</a></p>
 </figcaption>
@@ -777,7 +779,8 @@ If the atomic coordinates at a given time <span class="math notranslate nohighli
 \]</div>
 <p>Neglecting higher order terms and using the acceleration from Newton’s second law, this expression makes up the Verlet algorithm, with a local truncation error in the order of <span class="math notranslate nohighlight">\(\Delta t^4\)</span>. The global error, however, is of second order, due to the presence of two previous coordinates in the expression. THe improvement over the Euler method is clear:</p>
 <figure class="align-default" id="fig-md-verlet-even">
-<a class="reference internal image-reference" href="../../_images/MD_verlet_even.svg"><img alt="../../_images/MD_verlet_even.svg" src="../../_images/MD_verlet_even.svg" width="400px" /></a>
+<a class="reference internal image-reference" href="../../_images/MD_verlet_even.svg"><img alt="../../_images/MD_verlet_even.svg" src="../../_images/MD_verlet_even.svg" style="width: 400px;" />
+</a>
 <figcaption>
 <p><span class="caption-number">Fig. 7 </span><span class="caption-text">Simulation of a harmonic oscillator using Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-verlet-even" title="Link to this image">#</a></p>
 </figcaption>
@@ -815,7 +818,8 @@ If the atomic coordinates at a given time <span class="math notranslate nohighli
 <p>This make up the velocity Verlet algorithm. First, we can calculate the coordinates of the next step, which are used to calculate the acceleration of that step. Finally, the velocities are calculated from above, completing the step.</p>
 <p>As is evident from these equations, the local truncation error of the velocity Verlet algorithm is in the order of <span class="math notranslate nohighlight">\(\mathcal{O}(\Delta t^3)\)</span>, both for coordinates and velocities, but the global error is of second order, same as for the standard Verlet algorithm. This can be seen in the velocity Verlet illustration:</p>
 <figure class="align-default" id="fig-md-vverlet-even">
-<a class="reference internal image-reference" href="../../_images/MD_vverlet_even.svg"><img alt="../../_images/MD_vverlet_even.svg" src="../../_images/MD_vverlet_even.svg" width="400px" /></a>
+<a class="reference internal image-reference" href="../../_images/MD_vverlet_even.svg"><img alt="../../_images/MD_vverlet_even.svg" src="../../_images/MD_vverlet_even.svg" style="width: 400px;" />
+</a>
 <figcaption>
 <p><span class="caption-number">Fig. 8 </span><span class="caption-text">Simulation of a harmonic oscillator using velocity Verlet integration. The integration time step, <span class="math notranslate nohighlight">\(\Delta t\)</span> is given as a fraction of the period of the oscillator, <span class="math notranslate nohighlight">\(T\)</span>.</span><a class="headerlink" href="#fig-md-vverlet-even" title="Link to this image">#</a></p>
 </figcaption>
