@@ -1,6 +1,6 @@
 # Computational Chemistry from Laptop to HPC
 
-<center><b><font size="6"> A notebook exploration of quantum chemistry </font></b></center>
+## A notebook exploration of quantum chemistry
 
 > For the things we have to learn before we can do them, we learn by doing them.
 > -[*Aristotle*](https://en.wikipedia.org/wiki/Aristotle)
