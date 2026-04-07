@@ -1,4 +1,4 @@
-#  <center><b>Computational Chemistry from Laptop to HPC</b></center>
+# Computational Chemistry from Laptop to HPC
 
 <center><b><font size="6"> A notebook exploration of quantum chemistry </font></b></center>
 
