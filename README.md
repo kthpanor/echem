@@ -1,61 +1,107 @@
-# Create a conda environment for the eChem book
+# Locaion of the web pages
 
-## Use a faster conda solver
+https://kthpanor.github.io/echem
 
-With the new conda-libmamba-solver conda can run much faster. Read more in [this blog post](https://www.anaconda.com/blog/conda-is-fast-now). For newer distributions libmamba is the default solver, and you can check which one you have and, if needed, update with
-
-```
-conda info
-conda update -n base conda
-conda install -n base conda-libmamba-solver
-conda config --set solver libmamba
-```
-
-## Create the echem environment
+# Create the echem environment
 
 Using the echem.yml file (stored at the root of the echem directory) to create a conda environment `echem` will install all needed packages to compile the book.
 
 ```
 conda env create -f echem.yml
 ```
-
-## Update your echem environment
-
-If the echem.yml file has been updated and you would like to update your echem environment accordingly, use the following command
+where the YML file contains
 
 ```
-conda env update -f echem.yml --prune
+name: echem
+channels:
+  - conda-forge
+  - veloxchem
+dependencies:
+  - python>=3.10
+  - jupyter-book
+  - jupyterlab
+  - jupyterlab-spellchecker
+  - jupyterlab_code_formatter
+  - webcolors
+  - jsonschema-with-format-nongpl
+  - black
+  - isort
+  - ghp-import
+  - k3d
+  - ipympl
+  - ipywidgets
+  - openmm
+  - py3dmol
+  - rdkit
+  - veloxchem
+  - multipsi
+  - dftd4-python
+  - xtb-python
+  - adcc<0.16
+  - pip
+  - pip:
+    - git+https://github.com/gator-program/respondo.git@v0.0.5
+    - git+https://github.com/gator-program/gator.git@vlx-newints
 ```
 
-## Known issues
-
-- If ``conda update -n base conda`` does not work as expected ([link to issue](https://github.com/conda/conda/issues/9469)), you can try ``conda install`` with explicit conda version, such as ``conda install -n base conda=23.3.1``
-
-- If you encounter ``InvalidArchiveError`` ([link to issue](https://github.com/conda/conda/issues/12235)), run ``conda clean --all`` and try again.
-
-- If you encounter ``DLL load failed`` error on Windows ([link to issue](https://github.com/conda/conda/issues/12161)), try the fix documented in [this link](https://github.com/conda/conda/issues/11795#issuecomment-1335666474).
-
-- When using Python 3.11 you may need to set environment variable ``PYDEVD_DISABLE_FILE_VALIDATION`` to ``1`` (see [this link](https://stackoverflow.com/a/75274358)).
-
-# Commands
-
-Run notebooks by opening *jupyter-lab* (or *jupyter-notebook*):
+# Get a local copy of the book
 
 ```
-$ jupyter-lab
+$ git clone 
+$ cd echem
+$ jupyter-book start
+$ open http://localhost:3000/
 ```
+The browser will show the Jupyter book and interactively update it as you edit pages in JupyterLab or any other tool.
 
-Jupyter can access folders below where it is spawned, so initiate it in, *e.g.* the main eChem folder. Examples on how to use Jupyter can be found [here](https://jupyter-notebook.readthedocs.io/en/latest/examples/Notebook/examples_index.html).
-
-
-Build the book:
-
-```
-$ jupyter-book build .
-```
-
-Publish the html-version:
+# Publish the manual
 
 ```
-$ ghp-import -n -p -f _build/html
+$ git pull
+$ git commit -m 'comment on your modifications'
+$ git push
+```
+
+# Style directives
+
+- Remove input and output of cells with the tags `remove-input` and `remove-output`, respectively.
+
+- Images are included with the syntax:
+
+````
+:::{image} ../images/myfig.png
+:width: 400px
+:align: left
+:::
+````
+
+- Figures are included with the syntax:
+
+````
+:::{figure} ../images/myfig.png
+:width: 400px
+:align: left
+
+Figure: My figure caption.
+:::
+````
+
+- Internal links in the manual are created with the syntax:
+
+```
+[visible text](#sec:link-name)
+```
+
+- Link targets are created with the syntax:
+
+```
+(sec:link-name)=
+```
+
+# References
+
+The file `references.bib` in the top directory is a regular BIBTEX file. Add your references in this file. A citation in the manual text is added with
+
+```
+{cite}`Wang2016, Schlegel2011`
 ```
