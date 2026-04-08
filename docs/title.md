@@ -8,6 +8,10 @@
 ```{figure} ../img/intro/cover_96dpi.png
 :align: center
 ```
+:::{image} ../img/intro/enzyme-viamd.gif
+:align: center
+:width: 500px
+:::
 
 The general eChem book reference is {cite}`echem_book`.
 
