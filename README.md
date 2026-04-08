@@ -1,6 +1,6 @@
 # Locaion of the web pages
 
-[https://veloxchem.org](https://kthpanor.github.io/echem/)
+https://kthpanor.github.io/echem/
 
 # Environment YML file
 
