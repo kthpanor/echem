@@ -111,7 +111,7 @@ Figure: My figure caption.
 
 # References
 
-The file `references.bib` in the top directory is a regular BIBTEX file. Add your references in this file. A citation in the manual text is added with
+The file `docs/references.bib` is a regular BIBTEX file. Add your references in this file. A citation in the manual text is added with
 
 ```
 {cite}`Wang2016, Schlegel2011`
